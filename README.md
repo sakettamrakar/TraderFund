@@ -13,6 +13,10 @@ TraderFund is a simple toolkit for managing trading funds. It provides basic fea
 ## Usage
 Outline your typical workflow or commands here. For example, you might run a trading script or analyze performance metrics.
 
+### Technical Scanner Example
+
+The project includes a `TechnicalScanner` class that scans OHLCV data for popular technical signals.  You can create an instance and call `scan_for_signals(df)` to receive a JSON alert summarizing bullish or bearish indications.
+
 ## Contribution Guidelines
 Contributions are welcome! Please open an issue to discuss your proposed changes before submitting a pull request.
 
