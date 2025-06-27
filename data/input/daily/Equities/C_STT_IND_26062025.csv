@@ -1,0 +1,839 @@
+SYMBOL,SERIES,ISIN,Sec Desc,STT Indicator                                                                                                             
+VF1DD,MF,INF903J011A5,SUNDARMAMC - VF1DD,EF                                                                                                           
+CPSEETF,EQ,INF457M01133,CPSE ETF,EF                                                                                                                   
+SMF541,MF,INF903J01M28,SUNDARMAMC - SMF541,EF                                                                                                         
+T5RD,MF,INF903J019C4,SUNDARMAMC - T5RD,EF                                                                                                             
+EC3DD,MF,INF903JA1DE9,SUNDARMAMC - EC3DD,EF                                                                                                           
+AJOONI-RE,BL,INE820Y20013,AJOONI BIOTECH LIMITED,RE                                                                                                   
+MITTAL-RE,BE,INE997Y20019,MITTAL LIFE STYLE LIMITED,RE                                                                                                
+LICNMID100,BL,INF767K01RN1,LICNAMC - LICNMID100,EF                                                                                                    
+PATINT-RE2,BL,INE529D20030,PATEL INTEGRATED LOGISTIC,RE                                                                                               
+ORIENT-RE,BE,INE998H20012,ORIENTAL TRIMEX LIMITED,RE                                                                                                  
+MOLOWVOL,BL,INF247L01BL0,MOTILALAMC - MOLOWVOL,EF                                                                                                     
+MC1RG,MF,INF903JA1DR1,SUNDARMAMC - MC1RG,EF                                                                                                           
+MC2RG,MF,INF903JA1ED9,SUNDARMAMC - MC2RG,EF                                                                                                           
+M15RD,MF,INF903JA1AM8,SUNDARMAMC - M15RD,EF                                                                                                           
+CAPTRU-RE,BL,INE707C20018,CAPITAL TRUST LTD,RE                                                                                                        
+PNB-RE,BE,INE572E20012,PNB HOUSING FIN LTD.,RE                                                                                                        
+IBULHSGFIN,W1,INE148I13017,INDIABULLS HSG FIN LTD,RE                                                                                                  
+EQUAL50,EQ,INF769K01OO2,MIRAEAMC - EQUAL50,EF                                                                                                         
+LLOYDS-RE1,BL,INE093R20029,LLOYDS ENG WORKS LTD,RE                                                                                                    
+SOLARA-RE,BE,INE624Z20016,SOLARA ACTIVE PHA SCI LTD,RE                                                                                                
+ASIAN-RE1,BL,INE022I20027,ASIAN GRANITO INDIA LIMIT,RE                                                                                                
+AONETOTAL,EQ,INF1J2R01015,AONEAMC - AONETOTAL,EF                                                                                                      
+MNC,BL,INF174KA1JF2,KOTAKMAMC - KOTAKMNC,EF                                                                                                           
+NANDANI-RE,BL,INE696V20013,NANDANI CREATION LTD,RE                                                                                                    
+ABSLBANETF,BL,INF209KB17D5,BIRLASLAMC - ABSLBANETF,EF                                                                                                 
+GRASIM-RE,BE,INE047A20013,GRASIM IND LTD,RE                                                                                                           
+HATSUN-RE,BE,INE473B20019,HATSUN AGRO PROD LTD-RE,RE                                                                                                  
+MOREALTY,EQ,INF247L01CI4,MOTILALAMC - MOREALTY,EF                                                                                                     
+ICICITECH,EQ,INF109KC16I6,ICICIPRAMC - ICICITECH,EF                                                                                                   
+MAHLIFE-RE,BE,INE813A20018,MAHINDRA LIFESPACE RE,RE                                                                                                   
+ICICI500,BL,INF109KC1V59,ICICIPRAMC - ICICI500,EF                                                                                                     
+GDL-RE,BL,INE852F20015,GATEWAY DISTRIPARKS RE,RE                                                                                                      
+LIBAS-RE,BE,INE908V20012,LIBAS CON PRODUCT LTD,RE                                                                                                     
+DIL-RE,BE,INE411Y20011,DEBOCK INDUSTRIES LIMITED,RE                                                                                                   
+HDFCLOWVOL,EQ,INF179KC1HU8,HDFCAMC - HDFCLOWVOL,EF                                                                                                    
+MID150BEES,EQ,INF204KB1V68,NIP IND ETF MIDCAP 150,EF                                                                                                  
+NIF100BEES,EQ,INF204K014N5,NIP IND ETF NIFTY 100,EF                                                                                                   
+LOWVOL,EQ,INF769K01JU9,MIRAEAMC - MANV30F,EF                                                                                                          
+NIFTYQLITY,BL,INF209KB15K4,BIRLASLAMC - NIFTYQLITY,EF                                                                                                 
+539031,BL,INF200KA1572,SBI Mutual Fund,EF                                                                                                             
+540154,EQ,INF194KA1T91,Bandhan Mutual Fund,EF                                                                                                         
+540154,BL,INF194KA1T91,Bandhan Mutual Fund,EF                                                                                                         
+COAST-RE,BL,INE377E20016,COASTAL CORP LIMITED-RE,RE                                                                                                   
+HDFCQUAL,EQ,INF179KC1DL6,HDFCAMC - HDFCQUAL,EF                                                                                                        
+GAL-RE,BE,INE482J20013,GYSCOAL ALLOYS LTD,RE                                                                                                          
+PATEL-RE,BL,INE244B20014,PATEL ENGINEERING LIMITED,RE                                                                                                 
+CGCL-RE,BL,INE180C20018,CAPRI GLOBAL CAP LTD,RE                                                                                                       
+SEPC-RE,BL,INE964H20014,SEPC LIMITED,RE                                                                                                               
+IRBIT-RE,ID,INE0C8K20042,IRB INFRA TRU RE,RE                                                                                                          
+MARSHAL-RE,BL,INE00SZ20018,MARSHALL MACHINES LIMITED,RE                                                                                               
+MIDCAPIETF,EQ,INF109KC11W8,ICICIPRAMC - ICICIM150,EF                                                                                                  
+HEALTHIETF,EQ,INF109KC1Q72,ICICIPRAMC - ICICIPHARM,EF                                                                                                 
+FMCGIETF,EQ,INF109KC19V3,ICICIPRAMC - ICICIFMCG,EF                                                                                                    
+PSUBNKIETF,EQ,INF109KC10S8,ICICIPRAMC - PSUBANKICI,EF                                                                                                 
+PVTBANIETF,EQ,INF109KC18U7,ICICIPRAMC - ICICIBANKP,EF                                                                                                 
+PVTBANIETF,BL,INF109KC18U7,ICICIPRAMC - ICICIBANKP,EF                                                                                                 
+HDFCPSUBK,EQ,INF179KC1HW4,HDFCAMC HDFCPSUBK,EF                                                                                                        
+HDFCPSUBK,BL,INF179KC1HW4,HDFCAMC HDFCPSUBK,EF                                                                                                        
+BANKETFADD,BL,INF740KA1RX3,DSPAMC - DSPBANKETF,EF                                                                                                     
+HCC-RE,BL,INE549A20018,HINDUSTAN CONSTRUCTION CO,RE                                                                                                   
+NIRMAN-RE,ST,INE0OK720014,NIRMAN AGRI GENTICS LTD,RE                                                                                                  
+ATAL-RE,BL,INE0ALR20011,ATAL REALTECH LIMITED,RE                                                                                                      
+AKSH-RE,BE,INE256Z20017,AKSHAR SPINTEX LIMITED,RE                                                                                                     
+EBANKNIFTY,BL,INF754K01TE4,EDELAMC - EBANKNIFTY,EF                                                                                                    
+SADHNAN-RE,BE,INE888C20016,SADHANA NITROCHEM LIMITED,RE                                                                                               
+AVON-RE,BE,INE323B20016,AVONMORE CAPITAL,RE                                                                                                           
+GROWWN200,EQ,INF666M01JV1,GROWWAMC - GROWWN200,EF                                                                                                     
+MON50EQUAL,EQ,INF247L01FC0,MOTILALAMC - MON50EQUAL,EF                                                                                                 
+750997,BE,INE789R20022,Franklin Industries Limited,RE                                                                                                 
+750998,BE,INE900A20013,BHARAT BHUSHAN FINANCE & COMMO,RE                                                                                              
+NIFMID150,BL,INF789F1AYX9,UTIAMC - NIFMID150,EF                                                                                                       
+M17RG,MF,INF903JA1BF0,SUNDARMAMC - M17RG,EF                                                                                                           
+EC4RG,MF,INF903JA1DN0,SUNDARMAMC - EC4RG,EF                                                                                                           
+NAVINIFTY,BL,INF959L01HI3,NAVIAMC - NAVINIFTY,EF                                                                                                      
+NAVINIFTY,EQ,INF959L01HI3,NAVIAMC - NAVINIFTY,EF                                                                                                      
+538593,MF,INF204KA1RW4,RELIANCE MUTUAL FUND- RELIANCE,EF                                                                                              
+VCL-RE,BE,INE098220010,VAXTEX COTFAB LIMITED,RE                                                                                                       
+EQUAL50ADD,BL,INF740KA1QK2,DSPAMC - DSPNEWETF,EF                                                                                                      
+BANKETFADD,EQ,INF740KA1RX3,DSPAMC - DSPBANKETF,EF                                                                                                     
+ACCENT-RE,ST,INE0Q5D20013,ACCENT MICROCELL LTD,RE                                                                                                     
+HDFCSENSEX,EQ,INF179KC1HX2,HDFCAMC - HDFCSENSEX,EF                                                                                                    
+EMULTIMQ,BL,INF754K01TF1,EDELAMC - EMULTIMQ,EF                                                                                                        
+BANKNIFTY1,EQ,INF174K01F59,KOTAKMAMC-KOTAKBKETF,EF                                                                                                    
+ALPHA,BL,INF174KA1IA5,KOTAKMAMC - KOTAKALPHA,EF                                                                                                       
+MIDCAP,BL,INF174KA1IB3,KOTAKMAMC - KOTAKMID50,EF                                                                                                      
+MIDCAP,EQ,INF174KA1IB3,KOTAKMAMC - KOTAKMID50,EF                                                                                                      
+SOBHA-RE,BL,INE671H20015,SOBHA LTD-RE,RE                                                                                                              
+SBINEQWETF,BL,INF200KB1282,SBIAMC - SBINEQWETF,EF                                                                                                     
+COMP-RE,BE,INE070C20011,COMPUAGE INFOCOM LTD,RE                                                                                                       
+SBIETFCON,EQ,INF200KA1X17,SBIAMC - SBIETFCON,EF                                                                                                       
+GISO-RE,BL,INE065J20016,GI ENGINEERING SOLUTIONS,RE                                                                                                   
+SENSEXETF,EQ,INF769K01KT9,MIRAEAMC - SENSEXETF,EF                                                                                                     
+VAL30IETF,BL,INF109KC16X5,ICICIPRAMC - VAL30IETF,EF                                                                                                   
+SARTE-RE,ST,INE0PUC20012,SAR TELEVENTURE LIMITED,RE                                                                                                   
+DOLLEX-RE,ST,INE0JHH20011,DOLLEX AGROTECH LTD,RE                                                                                                      
+NEXT30ADD,EQ,INF740KA1VE5,DSPAMC - NEXT30ADD,EF                                                                                                       
+ELECTCAST,W1,INE086A13016,ELECTCAST WARRANTS,RE                                                                                                       
+SRTRANS-RE,BL,INE721A20013,SHRIRAM TRANSPORT RE,RE                                                                                                    
+TOP100CASE,BL,INF0R8F01067,ZERODHAAMC - TOP100CASE,EF                                                                                                 
+METAL,BL,INF769K01LY7,MIRAEAMC - METAL,EF                                                                                                             
+BANKBETF,BL,INF0QA701714,BFAM - BANKBETF,EF                                                                                                           
+AURUM-RE,BE,INE898S20011,AURUM PROPTECH LIMITED,RE                                                                                                    
+SPENCER-RE,BL,INE020820010,SPENCERS RETAIL RE,RE                                                                                                      
+SM545,MF,INF903J01M69,SUNDARMAMC - SM545,EF                                                                                                           
+SM548,MF,INF903J01M93,SUNDARMAMC - SM548,EF                                                                                                           
+UTINIFTETF,BL,INF789F1AZC0,UTIAMC - UTINIFTETF,EF                                                                                                     
+SMCSRIIDG,MF,INF903J01ZA4,SUNDARMAMC - SMCSRIIDG,EF                                                                                                   
+VF1DG,MF,INF903J010A7,SUNDARMAMC - VF1DG,EF                                                                                                           
+CPSEETF,BL,INF457M01133,CPSE ETF,EF                                                                                                                   
+JUNIORBEES,EQ,INF732E01045,NIP IND ETF JUNIOR BEES,EF                                                                                                 
+EC1DD,MF,INF903JA1CK8,SUNDARMAMC - EC1DD,EF                                                                                                           
+BANKPSU,BL,INF769K01LZ4,MIRAEAMC - BANKPSU,EF                                                                                                         
+IBMFNIFTY,BL,INF666M01FS5,IBULLSAMC - IBMFNIFTY,EF                                                                                                    
+HDFCNEXT50,EQ,INF179KC1HS2,HDFCAMC - HDFCNEXT50,EF                                                                                                    
+ICICIBANKP,EQ,INF109KC1E35,ICICIPRAMC - ICICIBANKP,EF                                                                                                 
+SUVEN-RE,BL,INE495B20012,SUVEN LIFE SCIENCES LTD,RE                                                                                                   
+VHLTD-RE,BE,INE048C20017,VICEROY HOTELS LTD,RE                                                                                                        
+EC7DG,MF,INF903JA1FH7,SUNDARMAMC - EC7DG,EF                                                                                                           
+EC7RD,MF,INF903JA1FG9,SUNDARMAMC - EC7RD,EF                                                                                                           
+UTIBANKETF,BL,INF789F1AUV1,UTIAMC - UTIBANKETF,EF                                                                                                     
+JYOTI-RE,BE,INE197A20016,JYOTI STRUCTURES LTD,RE                                                                                                      
+MC1RD,MF,INF903JA1DS9,SUNDARMAMC - MC1RD,EF                                                                                                           
+M&MFIN-RE,BL,INE774D20016,MAHINDRA & MAHINDRA RE,RE                                                                                                   
+M15RG,MF,INF903JA1AL0,SUNDARMAMC - M15RG,EF                                                                                                           
+CAPTRU-RE,BE,INE707C20018,CAPITAL TRUST LTD,RE                                                                                                        
+HDFCLOWVOL,BL,INF179KC1HU8,HDFCAMC - HDFCLOWVOL,EF                                                                                                    
+ALPL30IETF,EQ,INF109KC17V7,ICICIPRAMC - ICICIALPLV,EF                                                                                                 
+ALPL30IETF,BL,INF109KC17V7,ICICIPRAMC - ICICIALPLV,EF                                                                                                 
+CONSUMIETF,EQ,INF109KC1V42,ICICIPRAMC - ICICICONSU,EF                                                                                                 
+MID150,EQ,INF174KA1VW2,KOTAKMAMC - MID150,EF                                                                                                          
+BHANDA-RE,BE,INE474E20011,BHANDARI HOSIERY EXP LTD,RE                                                                                                 
+IT,BL,INF174KA1GC5,KOTAKMAMC - KOTAKIT,EF                                                                                                             
+NIFTY1,EQ,INF174K014P6,KOTAK NIFTY ETF,EF                                                                                                             
+GACMDVR-RE,BE,INE224E20028,GACM TECHNOLOGIES LIMITED,RE                                                                                               
+MOM100,EQ,INF247L01023,MOTILAL OS MIDCAP100 ETF,EF                                                                                                    
+HDFCSML250,EQ,INF179KC1FB2,HDFCAMC - HDFCSML250,EF                                                                                                    
+BSLSENETFG,EQ,INF209KB10E8,BIRLASLAMC - BSLSENETFG,EF                                                                                                 
+SANG-RE,BL,INE753W20010,SANGINITA CHEMICALS LTD,RE                                                                                                    
+SAKUMA-RE,BE,INE190H20016,SAKUMA EXPORTS LIMITED,RE                                                                                                   
+BANKPSU,EQ,INF769K01LZ4,MIRAEAMC - BANKPSU,EF                                                                                                         
+GLOBE-RE1,BE,INE581X20021,GLOBE TEXTILES LTD,RE                                                                                                       
+MOMENTUM,EQ,INF209KB14K7,BIRLASLAMC - MOMENTUM,EF                                                                                                     
+GDL-RE,BE,INE852F20015,GATEWAY DISTRIPARKS RE,RE                                                                                                      
+NGIL-RE2,BE,INE236Y20038,NAKODA GROUP OF IND LTD,RE                                                                                                   
+GROWWMOM50,BL,INF666M01KJ4,GROWWAMC - GROWWMOM50,EF                                                                                                   
+TFL-RE,BE,INE804H20012,TRANSWARRANTY FINANCE LTD,RE                                                                                                   
+TFL-RE,BL,INE804H20012,TRANSWARRANTY FINANCE LTD,RE                                                                                                   
+ROML-RE,BE,INE294G20018,RAJ OIL MILLS LIMITED,RE                                                                                                      
+ESSEN-RE2,BL,INE418N20035,INTEGRA ESSENTIA LIMITED,RE                                                                                                 
+TNIDETF,BL,INF277KA1364,TATAAML - TNIDETF,EF                                                                                                          
+MAFANG,BL,INF769K01HF4,MIRAEAMC - MAFANG,EF                                                                                                           
+ECAPINSURE,EQ,INF754K01TX4,EDELAMC - ECAPINSURE,EF                                                                                                    
+PHARMABEES,EQ,INF204KC1089,NIPPONAMC - NETFPHARMA,EF                                                                                                  
+AUTOBEES,EQ,INF204KC1337,NIPPONAMC - NETFAUTO,EF                                                                                                      
+MOMENTUM,BL,INF209KB14K7,BIRLASLAMC - MOMENTUM,EF                                                                                                     
+538683,EQ,INF204KA1UN7,NIPPON INDIA ETF SENSEX,EF                                                                                                     
+541972,BL,INF200KA1VQ2,SBI Mutual Fund,EF                                                                                                             
+MAMFGETF,BL,INF769K01IB1,MIRAEAMC - MAMFGETF,EF                                                                                                       
+AKG-RE,BL,INE00Y820016,AKG EXIM LIMITED,RE                                                                                                            
+JETFRE-RE,BE,INE982V20017,JET FREIGHT LOGISTICS LTD,RE                                                                                                
+PSUBANKICI,EQ,INF109KC10S8,ICICIPRAMC - PSUBANKICI,EF                                                                                                 
+BRIGHT-RE,ST,INE684Z20010,BRIGHT SOLAR LIMITED,RE                                                                                                     
+PLPHAR-RE,BE,INE0DK520011,PIRAMAL PHARMA LIMITED,RE                                                                                                   
+NIFITETF,BL,INF789F1AZD8,UTIAMC - NIFITETF,EF                                                                                                         
+NIFTYETF,BL,INF769K01EG9,MIRAEAMC - MAN50ETF,EF                                                                                                       
+MIDCAPETF,BL,INF769K01IC9,MIRAEAMC - MAM150ETF,EF                                                                                                     
+BSE500IETF,EQ,INF109KC1V59,ICICIPRAMC - ICICI500,EF                                                                                                   
+ITIETF,BL,INF109KC16I6,ICICIPRAMC - ICICITECH,EF                                                                                                      
+COMMOIETF,BL,INF109KC19O8,ICICIPRAMC - ICICICOMMO,EF                                                                                                  
+INFRAIETF,BL,INF109KC16E5,ICICIPRAMC - ICICIINFRA,EF                                                                                                  
+IBUL-RE,BL,INE148I20012,INDIABULLS HSG FIN LTD,RE                                                                                                     
+ADRO-RE,BE,INE737B20017,ADROIT INFOTECH LIMITED,RE                                                                                                    
+MOREALTY,BL,INF247L01CI4,MOTILALAMC - MOREALTY,EF                                                                                                     
+KSHITI-RE,BE,INE013820019,KSHITIJ POLYLINE LIMITED,RE                                                                                                 
+KSHITI-RE,BL,INE013820019,KSHITIJ POLYLINE LIMITED,RE                                                                                                 
+SEPC-RE2,BE,INE964H20030,SEPC LIMITED,RE                                                                                                              
+AKSH-RE,BL,INE256Z20017,AKSHAR SPINTEX LIMITED,RE                                                                                                     
+GROWWDEFNC,EQ,INF666M01IO8,GROWWAMC - GROWWDEFNC,EF                                                                                                   
+GEOJIT-RE,BL,INE007B20015,GEOJIT FIN SERV LTD,RE                                                                                                      
+IRBIT-RE2,BL,INE0C8K20067,IRB INF TRU RE,RE                                                                                                           
+SIKKO-RE,BL,INE112X20017,SIKKO INDUSTRIES LTD,RE                                                                                                      
+CONSUMER,EQ,INF769K01NS5,MIRAEAMC - CONSUMER,EF                                                                                                       
+CAMLIN-RE,BL,INE052I20016,CAMLIN FINE SCIENCES LTD,RE                                                                                                 
+EQUAL200,EQ,INF769K01OA1,MIRAEAMC - EQUAL200,EF                                                                                                       
+SELECTIPO,EQ,INF769K01ON4,MIRAEAMC - SELECTIPO,EF                                                                                                     
+FUSI-RE,BL,INE139R20012,FUSION FINANCE LIMITED,RE                                                                                                     
+SNXT30BEES,BL,INF204KC1EZ3,NIPPONAMC - SNXT30BEES,EF                                                                                                  
+ETHOS-RE,BL,INE04TZ20018,ETHOS LIMITED,RE                                                                                                             
+M17DG,MF,INF903JA1BH6,SUNDARMAMC - M17DG,EF                                                                                                           
+M17RD,MF,INF903JA1BG8,SUNDARMAMC - M17RD,EF                                                                                                           
+EC4RD,MF,INF903JA1DO8,SUNDARMAMC - EC4RD,EF                                                                                                           
+538594,MF,INF204KA1RV6,RELIANCE MUTUAL FUND- RELIANCE,EF                                                                                              
+538630,MF,INF204KA1SW2,RELIANCE MUTUAL FUND - RELIANC,EF                                                                                              
+538631,MF,INF204KA1SV4,RELIANCE MUTUAL FUND- RELIANCE,EF                                                                                              
+ICICIAUTO,EQ,INF109KC1Y49,ICICIPRAMC - ICICIAUTO,EF                                                                                                   
+ICICIAUTO,BL,INF109KC1Y49,ICICIPRAMC - ICICIAUTO,EF                                                                                                   
+NEXT50IETF,EQ,INF109KC1NS5,ICICIPRAMC - ICICINXT50,EF                                                                                                 
+NV20IETF,BL,INF109KC11V0,ICICI PRUDENTIAL NV20 ETF,EF                                                                                                 
+543186,MF,INF204KB13U9,Nippon India Mutual Fund,EF                                                                                                    
+VARDM-RE,BE,INE835A20011,VARDHMAN POLYTEX LIMITED,RE                                                                                                  
+SRPL-RE,BE,INE008Z20012,SHREE RAM PROTEINS LTD,RE                                                                                                     
+SRPL-RE,BL,INE008Z20012,SHREE RAM PROTEINS LTD,RE                                                                                                     
+MID150CASE,EQ,INF0R8F01059,ZERODHAAMC - MID150CASE,EF                                                                                                 
+BROOKS-RE,BL,INE650L20011,BROOKS LAB LIMITED,RE                                                                                                       
+VCL-RE,BL,INE098220010,VAXTEX COTFAB LIMITED,RE                                                                                                       
+SENSEXADD,EQ,INF740KA1SZ6,DSPAMC - DSPSENXETF,EF                                                                                                      
+NPBET,EQ,INF277K010X4,TATAAML - NPBET,EF                                                                                                              
+VIJIFI-RE,BE,INE159N20019,VIJI FINANCE LIMITED,RE                                                                                                     
+MOPSE,EQ,INF247L01FO5,MOTILALAMC - MOPSE,EF                                                                                                           
+CONS,BL,INF174KA1JE5,KOTAKMAMC - KOTAKCONS,EF                                                                                                         
+CONS,EQ,INF174KA1JE5,KOTAKMAMC - KOTAKCONS,EF                                                                                                         
+SOUTH-RE,BL,INE683A20015,THE SOUTH INDIAN BANK LTD,RE                                                                                                 
+GLOBE-RE,BE,INE581X20013,GLOBE TEXTILES LIMITED,RE                                                                                                    
+ANURAS,W1,INE930P13013,ANUPAM RASAYAN INDIA LTD,RE                                                                                                    
+GISO-RE,BE,INE065J20016,GI ENGINEERING SOLUTIONS,RE                                                                                                   
+M16RD,MF,INF903JA1BC7,SUNDARMAMC - M16RD,EF                                                                                                           
+ICICINF100,EQ,INF109KA1962,ICICI PRUD NIFTY 100 ETF,EF                                                                                                
+ICICINF100,BL,INF109KA1962,ICICI PRUD NIFTY 100 ETF,EF                                                                                                
+MSCIINDIA,BL,INF174KA1VD2,KOTAKMAMC - MSCIINDIA,EF                                                                                                    
+NEXT30ADD,BL,INF740KA1VE5,DSPAMC - NEXT30ADD,EF                                                                                                       
+EC6DD,MF,INF903JA1EW9,SUNDARMAMC - EC6DD,EF                                                                                                           
+EC6DG,MF,INF903JA1EV1,SUNDARMAMC - EC6DG,EF                                                                                                           
+UTISXN50,EQ,INF789F1AUU3,UTIAMC - UTISXN50,EF                                                                                                         
+GREEN-RE,BE,INE999K20014,ORIENT GREEN POWER CO LTD,RE                                                                                                 
+BCIL-RE,BE,INE414D20019,BHAGIRADHA CHEM & IND LTD,RE                                                                                                  
+NIFTYBETF,EQ,INF0QA701722,BFAM - NIFTYBETF,EF                                                                                                         
+SM547,MF,INF903J01M85,SUNDARMAMC - SM547,EF                                                                                                           
+UTISENSETF,BL,INF789FB1X58,UTIAMC - UTISENSETF,EF                                                                                                     
+LICNFNHGP,BL,INF767K01PC8,LICNAMC - LICNFNHGP,EF                                                                                                      
+VF1RG,MF,INF903J01Z80,SUNDARMAMC - VF1RG,EF                                                                                                           
+LICNETFN50,EQ,INF767K01OS7,LICNAMC - LICNFENGP,EF                                                                                                     
+UTIFEFDDP2,MF,INF789FA16T6,UTIAMC - UTIFEFDDP2,EF                                                                                                     
+T4DD,MF,INF903J019A8,SUNDARMAMC - T4DD,EF                                                                                                             
+ABSLBANETF,EQ,INF209KB17D5,BIRLASLAMC - ABSLBANETF,EF                                                                                                 
+750999,BE,INE706F20013,Sylph Technologies Ltd,RE                                                                                                      
+OILIETF,EQ,INF109KC18W3,ICICIPRAMC - OILIETF,EF                                                                                                       
+SKIPPER-RE,BE,INE439E20014,SKIPPER LIMITED,RE                                                                                                         
+BBNPNBETF,EQ,INF251K01TL6,BARODABNP - BBNPNBETF,EF                                                                                                    
+AXISBNKETF,EQ,INF846K01X63,AXISAMC - AXISBNKETF,EF                                                                                                    
+GOKUL-RE,BL,INE314T20017,GOKUL AGRO RESOURCES LTD,RE                                                                                                  
+NETF,BL,INF277K015R5,TATAAML - NETF,EF                                                                                                                
+LICNMID100,EQ,INF767K01RN1,LICNAMC - LICNMID100,EF                                                                                                    
+IDFNIFTYET,EQ,INF194KA1U07,BANDHANAMC - IDFNIFTYET,EF                                                                                                 
+GAL-RE,BL,INE482J20013,GYSCOAL ALLOYS LTD,RE                                                                                                          
+SHRERA-RE,BE,INE879A20019,SHREE RAMA MULTI-TECH LTD,RE                                                                                                
+JYOTI-RE,BL,INE197A20016,JYOTI STRUCTURES LTD,RE                                                                                                      
+INDO-RE,BL,INE227G20018,INDOWIND ENERGY LIMITED,RE                                                                                                    
+SBIETFPB,BL,INF200KA1S22,SBIAMC - SBIETFPB,EF                                                                                                         
+ARVINDF-RE,BL,INE955V20013,ARVIND FASHIONS RE,RE                                                                                                      
+KEEPLN-RE,BL,INE055C20012,DSJ KEEP LEARNING LTD,RE                                                                                                    
+ICICIM150,BL,INF109KC1G82,ICICIPRAMC - ICICIM150,EF                                                                                                   
+CONSUMIETF,BL,INF109KC1V42,ICICIPRAMC - ICICICONSU,EF                                                                                                 
+AONETOTAL,BL,INF1J2R01015,AONEAMC - AONETOTAL,EF                                                                                                      
+HDFCNIFIT,EQ,INF179KC1IA8,HDFCAMC - HDFCNIFIT,EF                                                                                                      
+NANDANI-RE,BE,INE696V20013,NANDANI CREATION LTD,RE                                                                                                    
+HERIT-RE,BL,INE978A20019,HERITAGE FOODS LTD,RE                                                                                                        
+AXISHCETF,EQ,INF846K01Z12,AXISAMC - AXISHCETF,EF                                                                                                      
+HDFCMID150,BL,INF179KC1HT0,HDFCAMC - HDFCMID150,EF                                                                                                    
+SGIL-RE,BE,INE00QT20015,SYNERGY GREEN IND. LTD,RE                                                                                                     
+SGIL-RE,BL,INE00QT20015,SYNERGY GREEN IND. LTD,RE                                                                                                     
+BTML-RE1,BE,INE0EEJ20023,BODHI TREE MULTIMEDIA LTD,RE                                                                                                 
+EC5RG,MF,INF903JA1EL2,SUNDARMAMC - EC5RG,EF                                                                                                           
+MOSMALL250,EQ,INF247L01CH6,MOTILALAMC - MOSMALL250,EF                                                                                                 
+TEMBO-RE,BE,INE869Y20010,TEMBO GLOBAL IND LTD,RE                                                                                                      
+TEMBO-RE,BL,INE869Y20010,TEMBO GLOBAL IND LTD,RE                                                                                                      
+NECLTD-RE,BL,INE553C20016,NORTH EAST CARRY CORP LTD,RE                                                                                                
+CALSOFT-RE,BE,INE526B20014,CALIFORNIA SOFT LTD,RE                                                                                                     
+HILTON-RE,BL,INE788H20017,HILTON METAL FORGING LIMI,RE                                                                                                
+IIFL-RE,BL,INE530B20016,IIFL FINANCE LIMITED,RE                                                                                                       
+MOQUALITY,EQ,INF247L01BH8,MOTILALAMC - MOQUALITY,EF                                                                                                   
+GROWWMOM50,EQ,INF666M01KJ4,GROWWAMC - GROWWMOM50,EF                                                                                                   
+AXISNIFTY,EQ,INF846K01W98,AXISAMC - AXISNIFTY,EF                                                                                                      
+MODEFENCE,EQ,INF247L01DJ0,MOTILALAMC - MODEFENCE,EF                                                                                                   
+HDFCBANK,W3,INE040A13013,HDFC BANK LIMITED,RE                                                                                                         
+AXISCETF,EQ,INF846K016C7,AXISAMC - AXISCETF,EF                                                                                                        
+TECH,BL,INF209KB11D8,BIRLASLAMC - TECH,EF                                                                                                             
+ROML-RE,BL,INE294G20018,RAJ OIL MILLS LIMITED,RE                                                                                                      
+TNIDETF,EQ,INF277KA1364,TATAAML - TNIDETF,EF                                                                                                          
+ASIAN-RE1,BE,INE022I20027,ASIAN GRANITO INDIA LIMIT,RE                                                                                                
+ITBEES,BL,INF204KB15V2,NIP IND ETF IT,EF                                                                                                              
+NV20BEES,EQ,INF204KB18I3,NIP IND ETF ETF NV20,EF                                                                                                      
+LOWVOL,BL,INF769K01JU9,MIRAEAMC - MANV30F,EF                                                                                                          
+MAKEINDIA,EQ,INF769K01IB1,MIRAEAMC - MAMFGETF,EF                                                                                                      
+AXISTECETF,EQ,INF846K01Y96,AXISAMC - AXISTECETF,EF                                                                                                    
+AXISTECETF,BL,INF846K01Y96,AXISAMC - AXISTECETF,EF                                                                                                    
+532985,EQ,INF174KA1JD7,KOTAK MAHINDRA MUTUAL FUND,EF                                                                                                  
+542747,BL,INF204KB15D0,NIPPON INDIA ETF SENSEX NEXT 5,EF                                                                                              
+COAST-RE,BE,INE377E20016,COASTAL CORP LIMITED-RE,RE                                                                                                   
+HDFCGROWTH,EQ,INF179KC1DJ0,HDFCAMC - HDFCGROWTH,EF                                                                                                    
+SUZLON-RE,BE,INE040H20013,SUZLON ENERGY LTD,RE                                                                                                        
+AKG-RE,BE,INE00Y820016,AKG EXIM LIMITED,RE                                                                                                            
+EC1RD,MF,INF903JA1CI2,SUNDARMAMC - EC1RD,EF                                                                                                           
+PATEL-RE,BE,INE244B20014,PATEL ENGINEERING LIMITED,RE                                                                                                 
+CGCL-RE,BE,INE180C20018,CAPRI GLOBAL CAP LTD,RE                                                                                                       
+PRAXIS-RE1,BE,INE546Y20022,PRAXIS HOME RETAIL LTD,RE                                                                                                  
+PRAXIS-RE1,BL,INE546Y20022,PRAXIS HOME RETAIL LTD,RE                                                                                                  
+BANKETF,EQ,INF769K01KR3,MIRAEAMC - BANKETF,EF                                                                                                         
+IRBIT-RE,BL,INE0C8K20042,IRB INFRA TRU RE,RE                                                                                                          
+PLPHAR-RE,BL,INE0DK520011,PIRAMAL PHARMA LIMITED,RE                                                                                                   
+ICICIQTY30,BL,INF109KC15T5,ICICIPRAMC - ICICIQTY30,EF                                                                                                 
+DUDIG-RE,ST,INE0HPK20012,DUDIGITAL GLOBAL LIMITED,RE                                                                                                  
+MARSHAL-RE,BE,INE00SZ20018,MARSHALL MACHINES LIMITED,RE                                                                                               
+SENSEXIETF,EQ,INF346A01034,ICICI PRUD SENSEX ETF,EF                                                                                                   
+SENSEXIETF,BL,INF346A01034,ICICI PRUD SENSEX ETF,EF                                                                                                   
+MIDSELIETF,BL,INF109KC10W0,ICICI PRUD MIDCAP SEL ETF,EF                                                                                               
+HEALTHADD,EQ,INF740KA1UF4,DSPAMC - HEALTHADD,EF                                                                                                       
+MAGNUM-RE,BE,INE387I20016,MAGNUM VENTURES LIMITED,RE                                                                                                  
+ADRO-RE,EQ,INE737B20017,ADROIT INFOTECH LIMITED,RE                                                                                                    
+SMALLCAP,EQ,INF769K01LC3,MIRAEAMC - SMALLCAP,EF                                                                                                       
+IRBIT-RE1,BL,INE0C8K20059,IRB INFRA TRUST RE,RE                                                                                                       
+MOSMALL250,BL,INF247L01CH6,MOTILALAMC - MOSMALL250,EF                                                                                                 
+MITCON-RE,BE,INE828O20017,MITCON CON,RE                                                                                                               
+SAHANA-RE,ST,INE0LEX20011,SAHANA SYSTEM LIMITED,RE                                                                                                    
+GROWWRAIL,EQ,INF666M01JJ6,GROWWAMC - GROWWRAIL,EF                                                                                                     
+NIFTY100EW,BL,INF174KA1UW4,KOTAKMAMC - NIFTY100EW,EF                                                                                                  
+EQUAL200,BL,INF769K01OA1,MIRAEAMC - EQUAL200,EF                                                                                                       
+EVIETF,BL,INF109K1A153,ICICIPRAMC - EVIETF,EF                                                                                                         
+M&MFIN-RE1,BE,INE774D20024,MAHINDRA & MAHINDRA RE,RE                                                                                                  
+UGRO-RE,BE,INE583D20011,UGRO CAPITAL LTD,RE                                                                                                           
+751003,BE,INE714U20024,IFL ENTERPRISES LIMITED,RE                                                                                                     
+538633,MF,INF204KA1ST8,RELIANCE MUTUAL FUND- RELIANCE,EF                                                                                              
+ICICICONSU,BL,INF109KC1V42,ICICIPRAMC - ICICICONSU,EF                                                                                                 
+543181,MF,INF204KB13T1,Nippon India Mutual Fund,EF                                                                                                    
+543173,MF,INF204KB14U7,Nippon India Mutual Fund,EF                                                                                                    
+543176,MF,INF204KB16U2,Nippon India Mutual Fund,EF                                                                                                    
+PVR-RE,BL,INE191H20014,PVR LIMITED RE,RE                                                                                                              
+MOLDTKPAC,W1,INE893J13016,MOLD TEK PACKAGING LTD,RE                                                                                                   
+SEPC-RE2,BL,INE964H20030,SEPC LIMITED,RE                                                                                                              
+MOCAPITAL,BL,INF247L01EV3,MOTILALAMC - MOCAPITAL,EF                                                                                                   
+BROOKS-RE,BE,INE650L20011,BROOKS LAB LIMITED,RE                                                                                                       
+NIFTY50ADD,EQ,INF740KA1CL0,DSPAMC - DSPN50ETF,EF                                                                                                      
+PSUBANKADD,BL,INF740KA1SY9,DSPAMC - DSPPSBKETF,EF                                                                                                     
+MOKSH-RE,BL,INE514Y20012,MOKSH ORNAMENTS LIMITED,RE                                                                                                   
+GICL-RE,ST,INE947T20014,GLOBE INTL CARRIERS LTD,RE                                                                                                    
+METALIETF,EQ,INF109KC19W1,ICICIPRAMC - METALIETF,EF                                                                                                   
+ESSEN-RE1,BE,INE418N20027,INTEGRA ESSENTIA LIMITED,RE                                                                                                 
+SENSEXETF,BL,INF769K01KT9,MIRAEAMC - SENSEXETF,EF                                                                                                     
+ICICINIFTY,BL,INF109K012R6,ICICI PRUD NIFTY ETF,EF                                                                                                    
+ICICINV20,EQ,INF109KB1WY5,ICICI PRUDENTIAL NV20 ETF,EF                                                                                                
+MOTOUR,BL,INF247L01FP2,MOTILALAMC - MOTOUR,EF                                                                                                         
+NIFTYBETF,BL,INF0QA701722,BFAM - NIFTYBETF,EF                                                                                                         
+AURUM-RE,BL,INE898S20011,AURUM PROPTECH LIMITED,RE                                                                                                    
+SMF542,MF,INF903J01M36,SUNDARMAMC - SMF542,EF                                                                                                         
+SMF543,MF,INF903J01M44,SUNDARMAMC - SMF543,EF                                                                                                         
+SMF544,MF,INF903J01M51,SUNDARMAMC - SMF544,EF                                                                                                         
+T4RD,MF,INF903J017A2,SUNDARMAMC - T4RD,EF                                                                                                             
+SC2RD,MF,INF903J01X74,SUNDARMAMC - SC2RD,EF                                                                                                           
+BANKBEES,EQ,INF204KB15I9,NIP IND ETF BANK BEES,EF                                                                                                     
+NIFTYBEES,EQ,INF204KB14I2,NIP IND ETF NIFTY BEES,EF                                                                                                   
+T5RG,MF,INF903J018C6,SUNDARMAMC - T5RG,EF                                                                                                             
+NAGREE-RE,BL,INE123B20010,NAGREEKA EXPORTS LIMITED,RE                                                                                                 
+RUSHI-RE1,BE,INE573K20025,RUSHIL DECOR LIMITED,RE                                                                                                     
+HDFCNIF100,EQ,INF179KC1HR4,HDFCAMC - HDFCNIF100,EF                                                                                                    
+BBNPNBETF,BL,INF251K01TL6,BARODABNP - BBNPNBETF,EF                                                                                                    
+AXISBNKETF,BL,INF846K01X63,AXISAMC - AXISBNKETF,EF                                                                                                    
+EC7DD,MF,INF903JA1FI5,SUNDARMAMC - EC7DD,EF                                                                                                           
+EC7RG,MF,INF903JA1FF1,SUNDARMAMC - EC7RG,EF                                                                                                           
+MULTICAP,BL,INF769K01LX9,MIRAEAMC - MULTICAP,EF                                                                                                       
+GATDVR-RE,BL,INE224E20044,GACM TECHNOLOGIES LTD,RE                                                                                                    
+GROWWEV,EQ,INF666M01IH2,GROWWAMC - GROWWEV,EF                                                                                                         
+543180,MF,INF204KB17T2,Nippon India Mutual Fund,EF                                                                                                    
+AXSENSEX,BL,INF846K010Q0,AXISAMC - AXSENSEX,EF                                                                                                        
+SBIETFIT,EQ,INF200KA1S14,SBIAMC - SBIETFIT,EF                                                                                                         
+UTINEXT50,EQ,INF789F1AUW9,UTIAMC - UTINEXT50,EF                                                                                                       
+EC2RD,MF,INF903JA1CQ5,SUNDARMAMC - EC2RD,EF                                                                                                           
+ESSEN-RE2,BE,INE418N20035,INTEGRA ESSENTIA LIMITED,RE                                                                                                 
+EQUAL50,BL,INF769K01OO2,MIRAEAMC - EQUAL50,EF                                                                                                         
+MID150,BL,INF174KA1VW2,KOTAKMAMC - MID150,EF                                                                                                          
+SSFL-RE,ST,INE0ON220012,SRIVARI SPICES N FOODS L,RE                                                                                                   
+MOMGF,EQ,INF247L01FK3,MOTILALAMC - MOMGF,EF                                                                                                           
+AONENIFTY,EQ,INF1J2R01064,AONEAMC - AONENIFTY,EF                                                                                                      
+GODHA-RE,BE,INE925Y20010,GODHA CABCON INSULAT LTD,RE                                                                                                  
+HDFCMID150,EQ,INF179KC1HT0,HDFCAMC - HDFCMID150,EF                                                                                                    
+EC5DD,MF,INF903JA1EO6,SUNDARMAMC - EC5DD,EF                                                                                                           
+IRIS-RE,BL,INE01GN20017,IRIS CLOTHINGS LIMITED,RE                                                                                                     
+SANG-RE,BE,INE753W20010,SANGINITA CHEMICALS LTD,RE                                                                                                    
+UPL-RE,BL,INE628A20010,UPL LIMITED,RE                                                                                                                 
+ECAPINSURE,BL,INF754K01TX4,EDELAMC - ECAPINSURE,EF                                                                                                    
+HILTON-RE,BE,INE788H20017,HILTON METAL FORGING LIMI,RE                                                                                                
+MAFANG,EQ,INF769K01HF4,MIRAEAMC - MAFANG,EF                                                                                                           
+PHARMABEES,BL,INF204KC1089,NIPPONAMC - NETFPHARMA,EF                                                                                                  
+AUTOBEES,BL,INF204KC1337,NIPPONAMC - NETFAUTO,EF                                                                                                      
+DIVOPPBEES,EQ,INF204KA1MS3,NIP IND ETF DIV OPP,EF                                                                                                     
+ICICIMOM30,EQ,INF109KC17C7,ICICIPRAMC - ICICIMOM30,EF                                                                                                 
+NIFTYQLITY,EQ,INF209KB15K4,BIRLASLAMC - NIFTYQLITY,EF                                                                                                 
+532985,BL,INF174KA1JD7,KOTAK MAHINDRA MUTUAL FUND,EF                                                                                                  
+541972,EQ,INF200KA1VQ2,SBI Mutual Fund,EF                                                                                                             
+HDFCPVTBAN,EQ,INF179KC1HZ7,HDFCAMC - HDFCPVTBAN,EF                                                                                                    
+ICICICOMMO,EQ,INF109KC19O8,ICICIPRAMC - ICICICOMMO,EF                                                                                                 
+SHAREINDIA,W1,INE932X13013,SHARE IND. SECURITIES LTD,RE                                                                                               
+PSUBNKIETF,BL,INF109KC10S8,ICICIPRAMC - PSUBANKICI,EF                                                                                                 
+LOWVOLIETF,EQ,INF109KC19U5,ICICI PR NIF LW VL 30 ETF,EF                                                                                               
+LLOYDS-RE,BE,INE093R20011,LLOYDS ENGG WORK LIMITED,RE                                                                                                 
+GRASIM-RE,BL,INE047A20013,GRASIM IND LTD,RE                                                                                                           
+GREEN-RE1,BE,INE999K20022,ORIENT GREEN POWER CO LTD,RE                                                                                                
+CONSUMER,BL,INF769K01NS5,MIRAEAMC - CONSUMER,EF                                                                                                       
+CAMLIN-RE,BE,INE052I20016,CAMLIN FINE SCIENCES LTD,RE                                                                                                 
+GROWWN200,BL,INF666M01JV1,GROWWAMC - GROWWN200,EF                                                                                                     
+FUSI-RE,BE,INE139R20012,FUSION FINANCE LIMITED,RE                                                                                                     
+MON50EQUAL,BL,INF247L01FC0,MOTILALAMC - MON50EQUAL,EF                                                                                                 
+GROWWLOVOL,EQ,INF666M01LB9,GROWWAMC - GROWWLOVOL,EF                                                                                                   
+ABFRL,W1,INE647O13016,ADITYA BIRLA FAS & RT LTD,RE                                                                                                    
+NGIL-RE1,BE,INE236Y20020,NAKODA GRP OF IND LTD,RE                                                                                                     
+EC4DG,MF,INF903JA1DP5,SUNDARMAMC - EC4DG,EF                                                                                                           
+538591,MF,INF204KA1RY0,RELIANCE MUTUAL FUND - RELIANC,EF                                                                                              
+NIF100IETF,BL,INF109KC16V9,ICICI PRUD NIFTY 100 ETF,EF                                                                                                
+543179,MF,INF204KB16T4,Nippon India Mutual Fund,EF                                                                                                    
+DUCON-RE,BE,INE741L20018,DUCON INFRATECH LTD,RE                                                                                                       
+SEPC-RE3,BE,INE964H20055,SEPC LTD,RE                                                                                                                  
+SEPC-RE3,BL,INE964H20055,SEPC LTD,RE                                                                                                                  
+SEPC-RE1,BE,INE964H20022,SEPC LIMITED,RE                                                                                                              
+MIDQ50ADD,BL,INF740KA1QL0,DSPAMC - DSPQ50ETF,EF                                                                                                       
+PVTBANKADD,EQ,INF740KA1TA7,DSPAMC - DSPPVBKETF,EF                                                                                                     
+HDFCNIFTY,BL,INF179KC1965,HDFCAMC - HDFCNIFTY,EF                                                                                                      
+GICL-RE,SL,INE947T20014,GLOBE INTL CARRIERS LTD,RE                                                                                                    
+GATDVR-RE,BE,INE224E20044,GACM TECHNOLOGIES LTD,RE                                                                                                    
+LOWVOL1,BL,INF174KA1IY5,KOTAKMAMC - KOTAKLOVOL,EF                                                                                                     
+SOBHA-RE,BE,INE671H20015,SOBHA LTD-RE,RE                                                                                                              
+AARTI-RE,BE,INE09EO20013,AARTI SURFACTANTS LIMITED,RE                                                                                                 
+M16RG,MF,INF903JA1BB9,SUNDARMAMC - M16RG,EF                                                                                                           
+ICICISENSX,BL,INF346A01034,ICICI PRUD SENSEX ETF,EF                                                                                                   
+ICICIBANKN,EQ,INF109KC15I8,ICICIPRAMC - IPRU5008,EF                                                                                                   
+GLOBE-RE1,BL,INE581X20021,GLOBE TEXTILES LTD,RE                                                                                                       
+IRBIT-RE1,ID,INE0C8K20059,IRB INFRA TRUST RE,RE                                                                                                       
+BCIL-RE,BL,INE414D20019,BHAGIRADHA CHEM & IND LTD,RE                                                                                                  
+BANKBETF,EQ,INF0QA701714,BFAM - BANKBETF,EF                                                                                                           
+SPENCER-RE,BE,INE020820010,SPENCERS RETAIL RE,RE                                                                                                      
+SM546,MF,INF903J01M77,SUNDARMAMC - SM546,EF                                                                                                           
+ISMCSRIIRG,MF,INF903J01YY7,SUNDARMAMC - ISMCSRIIRG,EF                                                                                                 
+SMCSRIIRD,MF,INF903J01YZ4,SUNDARMAMC - SMCSRIIRD,EF                                                                                                   
+LICNFNHGP,EQ,INF767K01PC8,LICNAMC - LICNFNHGP,EF                                                                                                      
+SETFNIFBK,EQ,INF200KA1580,SBI-ETF NIFTY BANK,EF                                                                                                       
+EBANK,EQ,INF754K01EL1,EDELWEISS ETF-NIFTY BANK,EF                                                                                                     
+LICNETFSEN,EQ,INF767K01OT5,LICNAMC - LICNFESGP,EF                                                                                                     
+LICNETFN50,BL,INF767K01OS7,LICNAMC - LICNFENGP,EF                                                                                                     
+INFRABEES,EQ,INF732E01268,NIP IND ETF INFRA BEES,EF                                                                                                   
+EC3RG,MF,INF903JA1DB5,SUNDARMAMC - EC3RG,EF                                                                                                           
+ABSLNN50ET,EQ,INF209KB16D7,BIRLASLAMC - ABSLNN50ET,EF                                                                                                 
+RUSHI-RE1,BL,INE573K20025,RUSHIL DECOR LIMITED,RE                                                                                                     
+SKIPPER-RE,BL,INE439E20014,SKIPPER LIMITED,RE                                                                                                         
+VHLTD-RE,BL,INE048C20017,VICEROY HOTELS LTD,RE                                                                                                        
+ESSEN-RE,BL,INE418N20019,INTEGRA ESSENTIA LIMITED,RE                                                                                                  
+UTIBANKETF,EQ,INF789F1AUV1,UTIAMC - UTIBANKETF,EF                                                                                                     
+SOLARA-RE,BL,INE624Z20016,SOLARA ACTIVE PHA SCI LTD,RE                                                                                                
+WOCKH-RE,BL,INE049B20017,WOCKHARDT LIMITED,RE                                                                                                         
+IDFNIFTYET,BL,INF194KA1U07,BANDHANAMC - IDFNIFTYET,EF                                                                                                 
+AXSENSEX,EQ,INF846K010Q0,AXISAMC - AXSENSEX,EF                                                                                                        
+PATINT-RE2,BE,INE529D20030,PATEL INTEGRATED LOGISTIC,RE                                                                                               
+ORIENT-RE,BL,INE998H20012,ORIENTAL TRIMEX LIMITED,RE                                                                                                  
+SHRERA-RE,BL,INE879A20019,SHREE RAMA MULTI-TECH LTD,RE                                                                                                
+INDO-RE,BE,INE227G20018,INDOWIND ENERGY LIMITED,RE                                                                                                    
+ICICIB22,EQ,INF109KB15Y7,ICICIPRAMC - BHARATIWIN,EF                                                                                                   
+SBIETFPB,EQ,INF200KA1S22,SBIAMC - SBIETFPB,EF                                                                                                         
+REFEX-RE,BE,INE056I20017,REFEX INDUSTRIES RE,RE                                                                                                       
+REFEX-RE,BL,INE056I20017,REFEX INDUSTRIES RE,RE                                                                                                       
+JYOTI-RE1,BE,INE197A20024,JYOTI STRUCTURES LIMITED,RE                                                                                                 
+EVINDIA,BL,INF769K01LQ3,MIRAEAMC - EVINDIA,EF                                                                                                         
+EC2DD,MF,INF903JA1CS1,SUNDARMAMC - EC2DD,EF                                                                                                           
+EC2DG,MF,INF903JA1CR3,SUNDARMAMC - EC2DG,EF                                                                                                           
+LLOYDS-RE1,BE,INE093R20029,LLOYDS ENG WORKS LTD,RE                                                                                                    
+INFRAIETF,EQ,INF109KC16E5,ICICIPRAMC - ICICIINFRA,EF                                                                                                  
+TIL-RE,BL,INE806C20018,TIL LTD,RE                                                                                                                     
+GATECH-RE,BL,INE224E20010,GACM TECHNOLOGIES LIMITED,RE                                                                                                
+HERIT-RE,BE,INE978A20019,HERITAGE FOODS LTD,RE                                                                                                        
+BSLSENETFG,BL,INF209KB10E8,BIRLASLAMC - BSLSENETFG,EF                                                                                                 
+APCL-RE,BL,INE071F20012,ANJANI PORTLAND CEM LTD,RE                                                                                                    
+ICICIFMCG,BL,INF109KC1R48,ICICIPRAMC - ICICIFMCG,EF                                                                                                   
+ABIN-RE1,BE,INE00YB20025,A B INFRABUILD LTD,RE                                                                                                        
+MOHEALTH,BL,INF247L01BB1,MOTILALAMC - MOHEALTH,EF                                                                                                     
+TECH,EQ,INF209KB11D8,BIRLASLAMC - TECH,EF                                                                                                             
+538683,BL,INF204KA1UN7,NIPPON INDIA ETF SENSEX,EF                                                                                                     
+539031,EQ,INF200KA1572,SBI Mutual Fund,EF                                                                                                             
+HDFCQUAL,BL,INF179KC1DL6,HDFCAMC - HDFCQUAL,EF                                                                                                        
+HDFCVALUE,BL,INF179KC1DK8,HDFCAMC - HDFCVALUE,EF                                                                                                      
+ICICIFIN,BL,INF109KC17L8,ICICIPRAMC-ICICIFIN,EF                                                                                                       
+RSWM-RE,BE,INE611A20016,RSWM LIMITED,RE                                                                                                               
+EC1DG,MF,INF903JA1CJ0,SUNDARMAMC - EC1DG,EF                                                                                                           
+EC1RG,MF,INF903JA1CH4,SUNDARMAMC - EC1RG,EF                                                                                                           
+ESG,EQ,INF769K01GS9,MIRAEAMC - MAESGETF,EF                                                                                                            
+MAKEINDIA,BL,INF769K01IB1,MIRAEAMC - MAMFGETF,EF                                                                                                      
+HIGHWAY-RE,BL,INE0KXY20011,HIGHWAYS INFRA TRU RE,RE                                                                                                   
+MIDCAPETF,EQ,INF769K01IC9,MIRAEAMC - MAM150ETF,EF                                                                                                     
+AUTOIETF,BL,INF109KC10V2,ICICIPRAMC - ICICIAUTO,EF                                                                                                    
+COMMOIETF,EQ,INF109KC19O8,ICICIPRAMC - ICICICOMMO,EF                                                                                                  
+LOWVOLIETF,BL,INF109KC19U5,ICICI PR NIF LW VL 30 ETF,EF                                                                                               
+MAGNUM-RE,BL,INE387I20016,MAGNUM VENTURES LIMITED,RE                                                                                                  
+ADRO-RE,BL,INE737B20017,ADROIT INFOTECH LIMITED,RE                                                                                                    
+SILGO-RE,BE,INE01II20013,SILGO RETAIL LIMITED,RE                                                                                                      
+BHANDA-RE1,BE,INE474E20029,BHANDARI HOSIERY EXP LTD,RE                                                                                                
+VINNY-RE,BE,INE01KI20019,VINNY OVERSEAS LTD,RE                                                                                                        
+NARMA-RE,BE,INE117Z20011,NARMADA AGROBASE LIMITED,RE                                                                                                  
+SIKKO-RE,BE,INE112X20017,SIKKO INDUSTRIES LTD,RE                                                                                                      
+AVON-RE,BL,INE323B20016,AVONMORE CAPITAL,RE                                                                                                           
+EVIETF,EQ,INF109K1A153,ICICIPRAMC - EVIETF,EF                                                                                                         
+UGRO-RE,BL,INE583D20011,UGRO CAPITAL LTD,RE                                                                                                           
+ICICIINFRA,EQ,INF109KC16E5,ICICIPRAMC - ICICIINFRA,EF                                                                                                 
+NIFTYIETF,EQ,INF109K012R6,ICICI PRUD NIFTY ETF,EF                                                                                                     
+NIFTYIETF,BL,INF109K012R6,ICICI PRUD NIFTY ETF,EF                                                                                                     
+MIDCAPIETF,BL,INF109KC11W8,ICICIPRAMC - ICICIM150,EF                                                                                                  
+MOM30IETF,BL,INF109KC17C7,ICICIPRAMC - ICICIMOM30,EF                                                                                                  
+QUAL30IETF,EQ,INF109KC18V5,ICICIPRAMC - ICICIQTY30,EF                                                                                                 
+BASML-RE1,BL,INE186H20022,BANNARI AMMAN SPINNING,RE                                                                                                   
+543177,MF,INF204KB11U3,Nippon India Mutual Fund,EF                                                                                                    
+543178,MF,INF204KB12U1,Nippon India Mutual Fund,EF                                                                                                    
+DUCON-RE,BL,INE741L20018,DUCON INFRATECH LTD,RE                                                                                                       
+PVR-RE,BE,INE191H20014,PVR LIMITED RE,RE                                                                                                              
+MID150CASE,BL,INF0R8F01059,ZERODHAAMC - MID150CASE,EF                                                                                                 
+GROWWEV,BL,INF666M01IH2,GROWWAMC - GROWWEV,EF                                                                                                         
+ITETFADD,BL,INF740KA1SX1,DSPAMC - DSPITETF,EF                                                                                                         
+SENSEXADD,BL,INF740KA1SZ6,DSPAMC - DSPSENXETF,EF                                                                                                      
+PVTBANKADD,BL,INF740KA1TA7,DSPAMC - DSPPVBKETF,EF                                                                                                     
+MOKSH-RE,BE,INE514Y20012,MOKSH ORNAMENTS LIMITED,RE                                                                                                   
+HDFCNIFTY,EQ,INF179KC1965,HDFCAMC - HDFCNIFTY,EF                                                                                                      
+HDFCSENSEX,BL,INF179KC1HX2,HDFCAMC - HDFCSENSEX,EF                                                                                                    
+ESSEN-RE1,BL,INE418N20027,INTEGRA ESSENTIA LIMITED,RE                                                                                                 
+HINDWAR-RE,BL,INE05AN20011,HINDWARE HME INOVATON LTD,RE                                                                                               
+MOPSE,BL,INF247L01FO5,MOTILALAMC - MOPSE,EF                                                                                                           
+BANKNIFTY1,BL,INF174K01F59,KOTAKMAMC-KOTAKBKETF,EF                                                                                                    
+LOWVOL1,EQ,INF174KA1IY5,KOTAKMAMC - KOTAKLOVOL,EF                                                                                                     
+MNC,EQ,INF174KA1JF2,KOTAKMAMC - KOTAKMNC,EF                                                                                                           
+PSUBANK,BL,INF373I01023,KOTAK PSU BANK,EF                                                                                                             
+MONIFTY500,EQ,INF247L01BU1,MOTILALAMC - MONIFTY500,EF                                                                                                 
+INVENT-RE,BL,INE878H20016,INVENTURE GRO & SEC LTD,RE                                                                                                  
+M16DG,MF,INF903JA1BD5,SUNDARMAMC - M16DG,EF                                                                                                           
+ICICISENSX,EQ,INF346A01034,ICICI PRUD SENSEX ETF,EF                                                                                                   
+MOTOUR,EQ,INF247L01FP2,MOTILALAMC - MOTOUR,EF                                                                                                         
+ICICIALPLV,EQ,INF109KC1N59,ICICIPRAMC - ICICIALPLV,EF                                                                                                 
+UTINIFTETF,EQ,INF789F1AZC0,UTIAMC - UTINIFTETF,EF                                                                                                     
+SETFNIF50,BL,INF200KA1FS1,SBI-ETF NIFTY 50,EF                                                                                                         
+SETFNIF50,EQ,INF200KA1FS1,SBI-ETF NIFTY 50,EF                                                                                                         
+SETFNN50,EQ,INF200KA1598,SBI-ETF NIFTY NEXT 50,EF                                                                                                     
+SETFNN50,BL,INF200KA1598,SBI-ETF NIFTY NEXT 50,EF                                                                                                     
+EBANK,BL,INF754K01EL1,EDELWEISS ETF-NIFTY BANK,EF                                                                                                     
+VF1RD,MF,INF903J01Z98,SUNDARMAMC - VF1RD,EF                                                                                                           
+IVZINNIFTY,EQ,INF205K01DA9,INVESCO INDIA NIFTY ETF,EF                                                                                                 
+UTIFEFDGR2,MF,INF789FA17T4,UTIAMC - UTIFEFDGR2,EF                                                                                                     
+UTIFEFRGR2,MF,INF789FA15T8,UTIAMC - UTIFEFRGR2,EF                                                                                                     
+T4RG,MF,INF903J016A4,SUNDARMAMC - T4RG,EF                                                                                                             
+SC2DG,MF,INF903J01X82,SUNDARMAMC - SC2DG,EF                                                                                                           
+QNIFTY,EQ,INF082J01028,QUANTUM NIFTY 50 ETF,EF                                                                                                        
+EC3DG,MF,INF903JA1DD1,SUNDARMAMC - EC3DG,EF                                                                                                           
+AJOONI-RE,BE,INE820Y20013,AJOONI BIOTECH LIMITED,RE                                                                                                   
+MITTAL-RE,BL,INE997Y20019,MITTAL LIFE STYLE LIMITED,RE                                                                                                
+OILIETF,BL,INF109KC18W3,ICICIPRAMC - OILIETF,EF                                                                                                       
+GOKUL-RE,BE,INE314T20017,GOKUL AGRO RESOURCES LTD,RE                                                                                                  
+NETF,EQ,INF277K015R5,TATAAML - NETF,EF                                                                                                                
+EC6RG,MF,INF903JA1ET5,SUNDARMAMC - EC6RG,EF                                                                                                           
+MC2RD,MF,INF903JA1EE7,SUNDARMAMC - MC2RD,EF                                                                                                           
+ICICINIFTY,EQ,INF109K012R6,ICICI PRUD NIFTY ETF,EF                                                                                                    
+M15DD,MF,INF903JA1AO4,SUNDARMAMC - M15DD,EF                                                                                                           
+ARVINDF-RE,BE,INE955V20013,ARVIND FASHIONS RE,RE                                                                                                      
+ICICIPHARM,BL,INF109KC1Q72,ICICIPRAMC - ICICIPHARM,EF                                                                                                 
+GUJNRECOKE,W1,INE110D13018,GUJ NRE COKE WARRANTS,RE                                                                                                   
+AVANTEL-RE,BL,INE005B20019,AVANTEL LIMITED,RE                                                                                                         
+HATSUN-RE,BL,INE473B20019,HATSUN AGRO PROD LTD-RE,RE                                                                                                  
+QUAL30IETF,BL,INF109KC18V5,ICICIPRAMC - ICICIQTY30,EF                                                                                                 
+SBIBPB,EQ,INF200KB1712,SBIAMC - SBIBPB,EF                                                                                                             
+ABIN-RE,ST,INE00YB20017,A B INFRABUILD LIMITED,RE                                                                                                     
+BHANDA-RE,BL,INE474E20011,BHANDARI HOSIERY EXP LTD,RE                                                                                                 
+TIL-RE,BE,INE806C20018,TIL LTD,RE                                                                                                                     
+AONENIFTY,BL,INF1J2R01064,AONEAMC - AONENIFTY,EF                                                                                                      
+GODHA-RE,BL,INE925Y20010,GODHA CABCON INSULAT LTD,RE                                                                                                  
+GATECH-RE,BE,INE224E20010,GACM TECHNOLOGIES LIMITED,RE                                                                                                
+HEALTHY,BL,INF209KB10C2,BIRLASLAMC - HEALTHY,EF                                                                                                       
+THANG-RE,BE,INE085J20014,THANGAMAYIL JEWELLERY LTD,RE                                                                                                 
+IRIS-RE,BE,INE01GN20017,IRIS CLOTHINGS LIMITED,RE                                                                                                     
+MASPTOP50,BL,INF769K01HP3,MIRAEAMC - MASPTOP50,EF                                                                                                     
+SDBL-RE1,BE,INE480C20020,SOM DIST & BREW LTD,RE                                                                                                       
+CALSOFT-RE,BL,INE526B20014,CALIFORNIA SOFT LTD,RE                                                                                                     
+RIL-RE,BL,INE002A20018,RELIANCE INDUSTRIES RE,RE                                                                                                      
+ABFRL-RE,BE,INE647O20011,ADITYA BIRLA FASHION RE,RE                                                                                                   
+SBIETFCON,BL,INF200KA1X17,SBIAMC - SBIETFCON,EF                                                                                                       
+MOHEALTH,EQ,INF247L01BB1,MOTILALAMC - MOHEALTH,EF                                                                                                     
+LIBAS-RE,BL,INE908V20012,LIBAS CON PRODUCT LTD,RE                                                                                                     
+DIL-RE,BL,INE411Y20011,DEBOCK INDUSTRIES LIMITED,RE                                                                                                   
+DHAN-RE,BE,INE680A20011,DHANLAXMI BANK LTD,RE                                                                                                         
+MASPTOP50,EQ,INF769K01HP3,MIRAEAMC - MASPTOP50,EF                                                                                                     
+HDFCMOMENT,EQ,INF179KC1HV6,HDFCAMC - HDFCMOMENT,EF                                                                                                    
+ITBEES,EQ,INF204KB15V2,NIP IND ETF IT,EF                                                                                                              
+CONSUMBEES,EQ,INF204KA1LD7,NIP IND ETF CONSUMPTION,EF                                                                                                 
+ICICIMOM30,BL,INF109KC17C7,ICICIPRAMC - ICICIMOM30,EF                                                                                                 
+MOVALUE,EQ,INF247L01BE5,MOTILALAMC - MOVALUE,EF                                                                                                       
+535276,EQ,INF200K01VT2,SBI MUTUAL FUND - SBI ETF SENS,EF                                                                                              
+MAMFGETF,EQ,INF769K01IB1,MIRAEAMC - MAMFGETF,EF                                                                                                       
+DYNPRO-RE,BL,INE256H20015,DYNEMIC PRODUCTS LIMITED,RE                                                                                                 
+HDFCGROWTH,BL,INF179KC1DJ0,HDFCAMC - HDFCGROWTH,EF                                                                                                    
+SUZLON-RE,BL,INE040H20013,SUZLON ENERGY LTD,RE                                                                                                        
+ICICIFIN,EQ,INF109KC17L8,ICICIPRAMC-ICICIFIN,EF                                                                                                       
+JETFRE-RE,BL,INE982V20017,JET FREIGHT LOGISTICS LTD,RE                                                                                                
+PERF-RE,ST,INE925S20012,PERFECT INFRAENGINEER LTD,RE                                                                                                  
+ESG,BL,INF769K01GS9,MIRAEAMC - MAESGETF,EF                                                                                                            
+HIGHWAY-RE,ID,INE0KXY20011,HIGHWAYS INFRA TRU RE,RE                                                                                                   
+NIFITETF,EQ,INF789F1AZD8,UTIAMC - NIFITETF,EF                                                                                                         
+FMCGIETF,BL,INF109KC19V3,ICICIPRAMC - ICICIFMCG,EF                                                                                                    
+AUTOIETF,EQ,INF109KC10V2,ICICIPRAMC - ICICIAUTO,EF                                                                                                    
+IBUL-RE,EQ,INE148I20012,INDIABULLS HSG FIN LTD,RE                                                                                                     
+SMALLCAP,BL,INF769K01LC3,MIRAEAMC - SMALLCAP,EF                                                                                                       
+HCC-RE,BE,INE549A20018,HINDUSTAN CONSTRUCTION CO,RE                                                                                                   
+AJOONI-RE1,BL,INE820Y20021,AJOONI BIOTECH LIMITED,RE                                                                                                  
+MITCON-RE,BL,INE828O20017,MITCON CON,RE                                                                                                               
+TATACON-RE,BE,INE192A20017,TATA CONSUMER PRODUCT LTD,RE                                                                                               
+GREEN-RE1,BL,INE999K20022,ORIENT GREEN POWER CO LTD,RE                                                                                                
+ATAL-RE,BE,INE0ALR20011,ATAL REALTECH LIMITED,RE                                                                                                      
+MITTAL-RE1,BL,INE997Y20027,MITTAL LIFE STYLE LTD,RE                                                                                                   
+IRBIT-RE2,ID,INE0C8K20067,IRB INF TRU RE,RE                                                                                                           
+THANG-RE,BL,INE085J20014,THANGAMAYIL JEWELLERY LTD,RE                                                                                                 
+ABIN-RE1,BL,INE00YB20025,A B INFRABUILD LTD,RE                                                                                                        
+BTML-RE1,BL,INE0EEJ20023,BODHI TREE MULTIMEDIA LTD,RE                                                                                                 
+MOINFRA,EQ,INF247L01FL1,MOTILALAMC - MOINFRA,EF                                                                                                       
+750991,BE,INE273A20023,Aplab Ltd.,RE                                                                                                                  
+ITETF,EQ,INF769K01KV5,MIRAEAMC - ITETF,EF                                                                                                             
+SHARE-RE,BE,INE932X20018,SHARE IND SEC LTD,RE                                                                                                         
+NEXT50IETF,BL,INF109KC1NS5,ICICIPRAMC - ICICINXT50,EF                                                                                                 
+NIF100IETF,EQ,INF109KC16V9,ICICI PRUD NIFTY 100 ETF,EF                                                                                                
+MIDSELIETF,EQ,INF109KC10W0,ICICI PRUD MIDCAP SEL ETF,EF                                                                                               
+543174,MF,INF204KB10U5,Nippon India Mutual Fund,EF                                                                                                    
+543184,MF,INF204KB14T9,Nippon India Mutual Fund,EF                                                                                                    
+ABSLPSE,EQ,INF209KB19Z4,BIRLASLAMC-ABSLPSE,EF                                                                                                         
+ABSLPSE,BL,INF209KB19Z4,BIRLASLAMC-ABSLPSE,EF                                                                                                         
+INDO-RE1,BE,INE227G20026,INDOWIND ENERGY LIMITED,RE                                                                                                   
+INDO-RE1,BL,INE227G20026,INDOWIND ENERGY LIMITED,RE                                                                                                   
+ITETFADD,EQ,INF740KA1SX1,DSPAMC - DSPITETF,EF                                                                                                         
+UPL-RE,BE,INE628A20010,UPL LIMITED,RE                                                                                                                 
+HDFCNIFBAN,EQ,INF179KC1HY0,HDFCAMC - HDFCNIFBAN,EF                                                                                                    
+ICICINXT50,BL,INF109KC1NS5,ICICIPRAMC - ICICINXT50,EF                                                                                                 
+CLOUD-RE,ST,INE0JOO20013,VARANIUM CLOUD LIMITED,RE                                                                                                    
+METALIETF,BL,INF109KC19W1,ICICIPRAMC - METALIETF,EF                                                                                                   
+MIDSMALL,EQ,INF769K01LJ8,MIRAEAMC - MIDSMALL,EF                                                                                                       
+VINNY-RE,BL,INE01KI20019,VINNY OVERSEAS LTD,RE                                                                                                        
+EMULTIMQ,EQ,INF754K01TF1,EDELAMC - EMULTIMQ,EF                                                                                                        
+GATECH-RE1,BL,INE224E20036,GACM TECHNO LTD,RE                                                                                                         
+BASML-RE1,BE,INE186H20022,BANNARI AMMAN SPINNING,RE                                                                                                   
+IT,EQ,INF174KA1GC5,KOTAKMAMC - KOTAKIT,EF                                                                                                             
+MONEXT50,EQ,INF247L01FD8,MOTILALAMC - MONEXT50,EF                                                                                                     
+MONEXT50,BL,INF247L01FD8,MOTILALAMC - MONEXT50,EF                                                                                                     
+VAL30IETF,EQ,INF109KC16X5,ICICIPRAMC - VAL30IETF,EF                                                                                                   
+M16DD,MF,INF903JA1BE3,SUNDARMAMC - M16DD,EF                                                                                                           
+ICICIMCAP,EQ,INF109KB1XT3,ICICI PRUD MIDCAP SEL ETF,EF                                                                                                
+ICICIMCAP,BL,INF109KB1XT3,ICICI PRUD MIDCAP SEL ETF,EF                                                                                                
+ICICINV20,BL,INF109KB1WY5,ICICI PRUDENTIAL NV20 ETF,EF                                                                                                
+ICICIALPLV,BL,INF109KC1N59,ICICIPRAMC - ICICIALPLV,EF                                                                                                 
+ABSLNN50ET,BL,INF209KB16D7,BIRLASLAMC - ABSLNN50ET,EF                                                                                                 
+SMCSRIIDD,MF,INF903J01ZB2,SUNDARMAMC - SMCSRIIDD,EF                                                                                                   
+LICNETFSEN,BL,INF767K01OT5,LICNAMC - LICNFESGP,EF                                                                                                     
+T4DG,MF,INF903J018A0,SUNDARMAMC - T4DG,EF                                                                                                             
+SC2DD,MF,INF903J01X90,SUNDARMAMC - SC2DD,EF                                                                                                           
+SHARIABEES,EQ,INF732E01128,NIP IND ETF SHARIAH BEES,EF                                                                                                
+BSLNIFTY,EQ,INF209KB19D1,ADITYBIRLA SL NIF ETF-GR,EF                                                                                                  
+T5DG,MF,INF903J010D1,SUNDARMAMC - T5DG,EF                                                                                                             
+AXISVALUE,BL,INF846KA1119,AXISAMC - AXISVALUE,EF                                                                                                      
+HDFCNIF100,BL,INF179KC1HR4,HDFCAMC - HDFCNIF100,EF                                                                                                    
+MULTICAP,EQ,INF769K01LX9,MIRAEAMC - MULTICAP,EF                                                                                                       
+MGEL-RE,BE,INE0APB20016,MANGALAM GLOBAL ENT LTD,RE                                                                                                    
+MOLOWVOL,EQ,INF247L01BL0,MOTILALAMC - MOLOWVOL,EF                                                                                                     
+SBIETFIT,BL,INF200KA1S14,SBIAMC - SBIETFIT,EF                                                                                                         
+MC2DD,MF,INF903JA1EG2,SUNDARMAMC - MC2DD,EF                                                                                                           
+MC2DG,MF,INF903JA1EF4,SUNDARMAMC - MC2DG,EF                                                                                                           
+NGIL-RE,BL,INE236Y20012,NAKODA GRP OF IND LTD,RE                                                                                                      
+M15DG,MF,INF903JA1AN6,SUNDARMAMC - M15DG,EF                                                                                                           
+IBMFNIFTY,EQ,INF666M01FS5,IBULLSAMC - IBMFNIFTY,EF                                                                                                    
+PSUBANK,EQ,INF373I01023,KOTAK PSU BANK,EF                                                                                                             
+MOMGF,BL,INF247L01FK3,MOTILALAMC - MOMGF,EF                                                                                                           
+HDFCSML250,BL,INF179KC1FB2,HDFCAMC - HDFCSML250,EF                                                                                                    
+EC5DG,MF,INF903JA1EN8,SUNDARMAMC - EC5DG,EF                                                                                                           
+EC5RD,MF,INF903JA1EM0,SUNDARMAMC - EC5RD,EF                                                                                                           
+SBIBPB,BL,INF200KB1712,SBIAMC - SBIBPB,EF                                                                                                             
+ICICITECH,BL,INF109KC16I6,ICICIPRAMC - ICICITECH,EF                                                                                                   
+NECLTD-RE,BE,INE553C20016,NORTH EAST CARRY CORP LTD,RE                                                                                                
+ICICIFMCG,EQ,INF109KC1R48,ICICIPRAMC - ICICIFMCG,EF                                                                                                   
+ABFRL-RE,BL,INE647O20011,ADITYA BIRLA FASHION RE,RE                                                                                                   
+MAHLIFE-RE,BL,INE813A20018,MAHINDRA LIFESPACE RE,RE                                                                                                   
+NGIL-RE2,BL,INE236Y20038,NAKODA GROUP OF IND LTD,RE                                                                                                   
+AXISCETF,BL,INF846K016C7,AXISAMC - AXISCETF,EF                                                                                                        
+NEXT50,EQ,INF769K01FN2,MIRAEAMC - MANXT50,EF                                                                                                          
+DYNPRO-RE,BE,INE256H20015,DYNEMIC PRODUCTS LIMITED,RE                                                                                                 
+HDFCPVTBAN,BL,INF179KC1HZ7,HDFCAMC - HDFCPVTBAN,EF                                                                                                    
+BTML-RE,ST,INE0EEJ20015,BODHI TREE MULTIMEDIA LTD,RE                                                                                                  
+KHFM-RE,ST,INE00UG20014,KHFM HOS FAC MANA SER LTD,RE                                                                                                  
+SEPC-RE,BE,INE964H20014,SEPC LIMITED,RE                                                                                                               
+BANKETF,BL,INF769K01KR3,MIRAEAMC - BANKETF,EF                                                                                                         
+ICICIQTY30,EQ,INF109KC15T5,ICICIPRAMC - ICICIQTY30,EF                                                                                                 
+NIFTYETF,EQ,INF769K01EG9,MIRAEAMC - MAN50ETF,EF                                                                                                       
+HEALTHIETF,BL,INF109KC1Q72,ICICIPRAMC - ICICIPHARM,EF                                                                                                 
+ITIETF,EQ,INF109KC16I6,ICICIPRAMC - ICICITECH,EF                                                                                                      
+FINIETF,BL,INF109KC17L8,ICICIPRAMC-ICICIFIN,EF                                                                                                        
+MAGNUM-RE,EQ,INE387I20016,MAGNUM VENTURES LIMITED,RE                                                                                                  
+SILGO-RE,BL,INE01II20013,SILGO RETAIL LIMITED,RE                                                                                                      
+BHANDA-RE1,BL,INE474E20029,BHANDARI HOSIERY EXP LTD,RE                                                                                                
+GSTL-RE,ST,INE00WS20015,GLOBESECURE TECHNO LTD,RE                                                                                                     
+TATACON-RE,BL,INE192A20017,TATA CONSUMER PRODUCT LTD,RE                                                                                               
+GROWEV,EQ,INF666M01IH2,GROWWAMC - GROWWEV,EF                                                                                                          
+EBANKNIFTY,EQ,INF754K01TE4,EDELAMC - EBANKNIFTY,EF                                                                                                    
+NARMA-RE,BL,INE117Z20011,NARMADA AGROBASE LIMITED,RE                                                                                                  
+MITTAL-RE1,BE,INE997Y20027,MITTAL LIFE STYLE LTD,RE                                                                                                   
+GROWWDEFNC,BL,INF666M01IO8,GROWWAMC - GROWWDEFNC,EF                                                                                                   
+GEOJIT-RE,BE,INE007B20015,GEOJIT FIN SERV LTD,RE                                                                                                      
+GROWWRAIL,BL,INF666M01JJ6,GROWWAMC - GROWWRAIL,EF                                                                                                     
+MAXIND-RE,BE,INE0CG620016,MAX INDIA LTD,RE                                                                                                            
+MOINFRA,BL,INF247L01FL1,MOTILALAMC - MOINFRA,EF                                                                                                       
+GROWWLOVOL,BL,INF666M01LB9,GROWWAMC - GROWWLOVOL,EF                                                                                                   
+ETHOS-RE,BE,INE04TZ20018,ETHOS LIMITED,RE                                                                                                             
+ICICIINFRA,BL,INF109KC16E5,ICICIPRAMC - ICICIINFRA,EF                                                                                                 
+ITETF,BL,INF769K01KV5,MIRAEAMC - ITETF,EF                                                                                                             
+538592,MF,INF204KA1RX2,RELIANCE MUTUAL FUND- RELIANCE,EF                                                                                              
+538632,MF,INF204KA1SU6,RELIANCE MUTUAL FUND- RELIANCE,EF                                                                                              
+ICICICONSU,EQ,INF109KC1V42,ICICIPRAMC - ICICICONSU,EF                                                                                                 
+ICICIBANKP,BL,INF109KC1E35,ICICIPRAMC - ICICIBANKP,EF                                                                                                 
+543185,MF,INF204KB15T6,Nippon India Mutual Fund,EF                                                                                                    
+543175,MF,INF204KB15U4,Nippon India Mutual Fund,EF                                                                                                    
+543182,MF,INF204KB18T0,Nippon India Mutual Fund,EF                                                                                                    
+VARDM-RE,BL,INE835A20011,VARDHMAN POLYTEX LIMITED,RE                                                                                                  
+UCL-RE,ST,INE00NI20015,USHANTI COLOUR CHEM LTD,RE                                                                                                     
+MOCAPITAL,EQ,INF247L01EV3,MOTILALAMC - MOCAPITAL,EF                                                                                                   
+SEPC-RE1,BL,INE964H20022,SEPC LIMITED,RE                                                                                                              
+EQUAL50ADD,EQ,INF740KA1QK2,DSPAMC - DSPNEWETF,EF                                                                                                      
+NIFTY50ADD,BL,INF740KA1CL0,DSPAMC - DSPN50ETF,EF                                                                                                      
+PSUBANKADD,EQ,INF740KA1SY9,DSPAMC - DSPPSBKETF,EF                                                                                                     
+HDFCNIFBAN,BL,INF179KC1HY0,HDFCAMC - HDFCNIFBAN,EF                                                                                                    
+ICICINXT50,EQ,INF109KC1NS5,ICICIPRAMC - ICICINXT50,EF                                                                                                 
+HINDWAR-RE,BE,INE05AN20011,HINDWARE HME INOVATON LTD,RE                                                                                               
+AJOONI-RE1,BE,INE820Y20021,AJOONI BIOTECH LIMITED,RE                                                                                                  
+NV20,BL,INF174K01Z71,KOTAKMAMC - KTKNV20ETF,EF                                                                                                        
+SBINEQWETF,EQ,INF200KB1282,SBIAMC - SBINEQWETF,EF                                                                                                     
+COMP-RE,BL,INE070C20011,COMPUAGE INFOCOM LTD,RE                                                                                                       
+MONIFTY500,BL,INF247L01BU1,MOTILALAMC - MONIFTY500,EF                                                                                                 
+BFSI,BL,INF769K01HI8,MIRAEAMC - MAFSETF,EF                                                                                                            
+BFSI,EQ,INF769K01HI8,MIRAEAMC - MAFSETF,EF                                                                                                            
+INVENT-RE,BE,INE878H20016,INVENTURE GRO & SEC LTD,RE                                                                                                  
+MANAV-RE,ST,INE104Y20012,MANAV INFRA PROJECTS LTD,RE                                                                                                  
+SBIETFQLTY,BL,INF200KA1WX6,SBIAMC - SBIETFQLTY,EF                                                                                                     
+EC6RD,MF,INF903JA1EU3,SUNDARMAMC - EC6RD,EF                                                                                                           
+TOP100CASE,EQ,INF0R8F01067,ZERODHAAMC - TOP100CASE,EF                                                                                                 
+GREEN-RE,BL,INE999K20014,ORIENT GREEN POWER CO LTD,RE                                                                                                 
+UTISENSETF,EQ,INF789FB1X58,UTIAMC - UTISENSETF,EF                                                                                                     
+SETFNIFBK,BL,INF200KA1580,SBI-ETF NIFTY BANK,EF                                                                                                       
+UTIFEFRDP2,MF,INF789FA14T1,UTIAMC - UTIFEFRDP2,EF                                                                                                     
+SC2RG,MF,INF903J01X66,SUNDARMAMC - SC2RG,EF                                                                                                           
+PSUBNKBEES,EQ,INF204KB16I7,NIP IND ETF PSU BANK BEES,EF                                                                                               
+T5DD,MF,INF903J011D9,SUNDARMAMC - T5DD,EF                                                                                                             
+NPBET,BL,INF277K010X4,TATAAML - NPBET,EF                                                                                                              
+SRTRANS-RE,BE,INE721A20013,SHRIRAM TRANSPORT RE,RE                                                                                                    
+AXISVALUE,EQ,INF846KA1119,AXISAMC - AXISVALUE,EF                                                                                                      
+KEEPLN-RE,BE,INE055C20012,DSJ KEEP LEARNING LTD,RE                                                                                                    
+BALKRI-RE,BE,INE875R20011,BALKRSHNA PAPER MILLS LTD,RE                                                                                                
+NAGREE-RE,BE,INE123B20010,NAGREEKA EXPORTS LIMITED,RE                                                                                                 
+SAKUMA-RE,BL,INE190H20016,SAKUMA EXPORTS LIMITED,RE                                                                                                   
+ALPHAETF,BL,INF769K01KU7,MIRAEAMC - ALPHAETF,EF                                                                                                       
+HDFCNEXT50,BL,INF179KC1HS2,HDFCAMC - HDFCNEXT50,EF                                                                                                    
+SUVEN-RE,BE,INE495B20012,SUVEN LIFE SCIENCES LTD,RE                                                                                                   
+GATECH-RE1,BE,INE224E20036,GACM TECHNO LTD,RE                                                                                                         
+EC2RG,MF,INF903JA1CP7,SUNDARMAMC - EC2RG,EF                                                                                                           
+WOCKH-RE,BE,INE049B20017,WOCKHARDT LIMITED,RE                                                                                                         
+MC1DD,MF,INF903JA1DU5,SUNDARMAMC - MC1DD,EF                                                                                                           
+MC1DG,MF,INF903JA1DT7,SUNDARMAMC - MC1DG,EF                                                                                                           
+NGIL-RE,BE,INE236Y20012,NAKODA GRP OF IND LTD,RE                                                                                                      
+JYOTI-RE1,BL,INE197A20024,JYOTI STRUCTURES LIMITED,RE                                                                                                 
+ICICIPHARM,EQ,INF109KC1Q72,ICICIPRAMC - ICICIPHARM,EF                                                                                                 
+PNB-RE,BL,INE572E20012,PNB HOUSING FIN LTD.,RE                                                                                                        
+AVANTEL-RE,BE,INE005B20019,AVANTEL LIMITED,RE                                                                                                         
+EC3RD,MF,INF903JA1DC3,SUNDARMAMC - EC3RD,EF                                                                                                           
+ICICIM150,EQ,INF109KC1G82,ICICIPRAMC - ICICIM150,EF                                                                                                   
+HEALTHY,EQ,INF209KB10C2,BIRLASLAMC - HEALTHY,EF                                                                                                       
+AXISHCETF,BL,INF846K01Z12,AXISAMC - AXISHCETF,EF                                                                                                      
+MOM50,EQ,INF247L01536,MOTILAL OSWAL M50 ETF,EF                                                                                                        
+HDFCBSE500,EQ,INF179KC1EZ4,HDFCAMC - HDFCBSE500,EF                                                                                                    
+HDFCBSE500,BL,INF179KC1EZ4,HDFCAMC - HDFCBSE500,EF                                                                                                    
+APCL-RE,BE,INE071F20012,ANJANI PORTLAND CEM LTD,RE                                                                                                    
+SDBL-RE1,BL,INE480C20020,SOM DIST & BREW LTD,RE                                                                                                       
+RIL-RE,BE,INE002A20018,RELIANCE INDUSTRIES RE,RE                                                                                                      
+ICICI500,EQ,INF109KC1V59,ICICIPRAMC - ICICI500,EF                                                                                                     
+M&MFIN-RE,BE,INE774D20016,MAHINDRA & MAHINDRA RE,RE                                                                                                   
+IIFL-RE,BE,INE530B20016,IIFL FINANCE LIMITED,RE                                                                                                       
+MOQUALITY,BL,INF247L01BH8,MOTILALAMC - MOQUALITY,EF                                                                                                   
+750995,BE,INE229N20028,MARKOBENZ VENTURES LIMITED,RE                                                                                                  
+MODEFENCE,BL,INF247L01DJ0,MOTILALAMC - MODEFENCE,EF                                                                                                   
+VIJIFI-RE,BL,INE159N20019,VIJI FINANCE LIMITED,RE                                                                                                     
+GACMDVR-RE,BL,INE224E20028,GACM TECHNOLOGIES LIMITED,RE                                                                                               
+DHAN-RE,BL,INE680A20011,DHANLAXMI BANK LTD,RE                                                                                                         
+HDFCMOMENT,BL,INF179KC1HV6,HDFCAMC - HDFCMOMENT,EF                                                                                                    
+ALPHAETF,EQ,INF769K01KU7,MIRAEAMC - ALPHAETF,EF                                                                                                       
+MONQ50,EQ,INF247L01AU3,MOTILALAMC - MONQ50,EF                                                                                                         
+MONQ50,BL,INF247L01AU3,MOTILALAMC - MONQ50,EF                                                                                                         
+MOMOMENTUM,EQ,INF247L01BK2,MOTILALAMC - MOMOMENTUM,EF                                                                                                 
+MOMOMENTUM,BL,INF247L01BK2,MOTILALAMC - MOMOMENTUM,EF                                                                                                 
+ESSEN-RE,BE,INE418N20019,INTEGRA ESSENTIA LIMITED,RE                                                                                                  
+NEXT50,BL,INF769K01FN2,MIRAEAMC - MANXT50,EF                                                                                                          
+MOVALUE,BL,INF247L01BE5,MOTILALAMC - MOVALUE,EF                                                                                                       
+535276,BL,INF200K01VT2,SBI MUTUAL FUND - SBI ETF SENS,EF                                                                                              
+542747,EQ,INF204KB15D0,NIPPON INDIA ETF SENSEX NEXT 5,EF                                                                                              
+HDFCVALUE,EQ,INF179KC1DK8,HDFCAMC - HDFCVALUE,EF                                                                                                      
+HDFCNIFIT,BL,INF179KC1IA8,HDFCAMC - HDFCNIFIT,EF                                                                                                      
+ICICICOMMO,BL,INF109KC19O8,ICICIPRAMC - ICICICOMMO,EF                                                                                                 
+RSWM-RE,BL,INE611A20016,RSWM LIMITED,RE                                                                                                               
+DESTIN-RE,ST,INE0IGO20011,DESTINY LOGISTICS & I LTD,RE                                                                                                
+PSUBANKICI,BL,INF109KC10S8,ICICIPRAMC - PSUBANKICI,EF                                                                                                 
+BSE500IETF,BL,INF109KC1V59,ICICIPRAMC - ICICI500,EF                                                                                                   
+BANKIETF,EQ,INF109KC15I8,ICICIPRAMC - IPRU5008,EF                                                                                                     
+BANKIETF,BL,INF109KC15I8,ICICIPRAMC - IPRU5008,EF                                                                                                     
+FINIETF,EQ,INF109KC17L8,ICICIPRAMC-ICICIFIN,EF                                                                                                        
+NV20IETF,EQ,INF109KC11V0,ICICI PRUDENTIAL NV20 ETF,EF                                                                                                 
+HEALTHADD,BL,INF740KA1UF4,DSPAMC - HEALTHADD,EF                                                                                                       
+IBUL-RE,BE,INE148I20012,INDIABULLS HSG FIN LTD,RE                                                                                                     
+GROWEV,BL,INF666M01IH2,GROWWAMC - GROWWEV,EF                                                                                                          
+TOP10ADD,EQ,INF740KA1UR9,DSPAMC - TOP10ADD,EF                                                                                                         
+TOP10ADD,BL,INF740KA1UR9,DSPAMC - TOP10ADD,EF                                                                                                         
+SADHNAN-RE,BL,INE888C20016,SADHANA NITROCHEM LIMITED,RE                                                                                               
+MOMENTUM50,EQ,INF247L01DK8,MOTILALAMC - MOMENTUM50,EF                                                                                                 
+MOMENTUM50,BL,INF247L01DK8,MOTILALAMC - MOMENTUM50,EF                                                                                                 
+NIFTY100EW,EQ,INF174KA1UW4,KOTAKMAMC - NIFTY100EW,EF                                                                                                  
+SELECTIPO,BL,INF769K01ON4,MIRAEAMC - SELECTIPO,EF                                                                                                     
+MAXIND-RE,BL,INE0CG620016,MAX INDIA LTD,RE                                                                                                            
+M&MFIN-RE1,BL,INE774D20024,MAHINDRA & MAHINDRA RE,RE                                                                                                  
+SNXT30BEES,EQ,INF204KC1EZ3,NIPPONAMC - SNXT30BEES,EF                                                                                                  
+751001,BE,INE754C20010,Som Datt Finance Corporation L,RE                                                                                              
+M17DD,MF,INF903JA1BI4,SUNDARMAMC - M17DD,EF                                                                                                           
+EC4DD,MF,INF903JA1DQ3,SUNDARMAMC - EC4DD,EF                                                                                                           
+SHARE-RE,BL,INE932X20018,SHARE IND SEC LTD,RE                                                                                                         
+MOM30IETF,EQ,INF109KC17C7,ICICIPRAMC - ICICIMOM30,EF                                                                                                  
+543183,MF,INF204KB19T8,Nippon India Mutual Fund,EF                                                                                                    
+EVINDIA,EQ,INF769K01LQ3,MIRAEAMC - EVINDIA,EF                                                                                                         
+MIDQ50ADD,EQ,INF740KA1QL0,DSPAMC - DSPQ50ETF,EF                                                                                                       
+751002,BE,INE413X20027,7NR Retail Limited,RE                                                                                                          
+MIDSMALL,BL,INF769K01LJ8,MIRAEAMC - MIDSMALL,EF                                                                                                       
+NV20,EQ,INF174K01Z71,KOTAKMAMC - KTKNV20ETF,EF                                                                                                        
+ALPHA,EQ,INF174KA1IA5,KOTAKMAMC - KOTAKALPHA,EF                                                                                                       
+NIFTY1,BL,INF174K014P6,KOTAK NIFTY ETF,EF                                                                                                             
+SOUTH-RE,BE,INE683A20015,THE SOUTH INDIAN BANK LTD,RE                                                                                                 
+GLOBE-RE,BL,INE581X20013,GLOBE TEXTILES LIMITED,RE                                                                                                    
+AARTI-RE,BL,INE09EO20013,AARTI SURFACTANTS LIMITED,RE                                                                                                 
+MGEL-RE,BL,INE0APB20016,MANGALAM GLOBAL ENT LTD,RE                                                                                                    
+ICICILOVOL,EQ,INF109KB10T8,ICICI PR NIF LW VL 30 ETF,EF                                                                                               
+MSCIINDIA,EQ,INF174KA1VD2,KOTAKMAMC - MSCIINDIA,EF                                                                                                    
+SBIETFQLTY,EQ,INF200KA1WX6,SBIAMC - SBIETFQLTY,EF                                                                                                     
+NGIL-RE1,BL,INE236Y20020,NAKODA GRP OF IND LTD,RE                                                                                                     
+UTISXN50,BL,INF789F1AUU3,UTIAMC - UTISXN50,EF                                                                                                         
+ICICIBANKN,BL,INF109KC15I8,ICICIPRAMC - IPRU5008,EF                                                                                                   
+METAL,EQ,INF769K01LY7,MIRAEAMC - METAL,EF                                                                                                             
+NIFMID150,EQ,INF789F1AYX9,UTIAMC - NIFMID150,EF                                                                                                       

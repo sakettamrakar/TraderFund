@@ -1,0 +1,28 @@
+# NSE Equities
+APPSEC_COLLVAL_*.csv: landing_appsec_collval
+AUB_*.csv: landing_aub
+block.csv: landing_block
+bulk.csv: landing_bulk
+CMVOLT_*.CSV: landing_cmvolt
+CM_Latency_stats*.csv: landing_cm_latency_stats25062025
+corpbond*.csv: landing_corpbond260625
+CSQR_*.csv: landing_csqr_m2025120
+C_STT_IND_*.csv: landing_c_stt_ind
+C_STT_*.csv: landing_c_stt
+eq_band_changes_*.csv: landing_eq_band_changes
+MF_VAR_*.csv: landing_mf_var
+PE_*.csv: landing_pe
+REG1_IND*.csv: landing_reg1_ind260625
+REG_IND*.csv: landing_reg_ind260625
+sec_bhavdata_full_*.csv: landing_sec_bhavdata_full
+sec_list_*.csv: landing_sec_list
+series_change.csv: landing_series_change
+shortselling_*.csv: landing_shortselling
+sme*.csv: landing_sme260625
+sme_bands_complete_*.csv: landing_sme_bands_complete
+
+# Indices
+ind_close_all_*.csv: landing_ind_close_all
+top10nifty50_*.csv: landing_top10nifty50
+
+# Add more mappings as needed for new files

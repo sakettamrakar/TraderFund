@@ -1,0 +1,6 @@
+# PostgreSQL connection config
+host: localhost
+database: nse_data
+user: postgres
+password: 'Betsson@11'
+port: 5432
