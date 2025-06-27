@@ -20,14 +20,37 @@ def load_table_mapping(mapping_path):
         return yaml.safe_load(f)
 
 def get_engine(config):
+    """Create a SQLAlchemy engine.
+
+    If the configuration contains a ``url`` key it will be used directly.
+    Otherwise a PostgreSQL connection string is built from the remaining
+    parameters. This allows running the pipeline against lightweight
+    backends such as SQLite for testing.
+    """
+    if 'url' in config:
+        return create_engine(config['url'])
     user = quote_plus(config['user'])
     password = quote_plus(config['password'])
     url = f"postgresql+psycopg2://{user}:{password}@{config['host']}:{config['port']}/{config['database']}"
     return create_engine(url)
 
 def run_ddl(engine, ddl_path):
+    """Execute a DDL file against the given engine."""
     with open(ddl_path, 'r') as f:
         ddl = f.read()
+
+    # SQLite doesn't understand PostgreSQL schema statements. When using
+    # SQLite we simply strip any ``CREATE SCHEMA`` commands and remove the
+    # ``nse_raw.`` prefix from table names so that tables are created in the
+    # default namespace.
+    if engine.dialect.name == "sqlite":
+        cleaned_lines = []
+        for line in ddl.splitlines():
+            if line.strip().upper().startswith("CREATE SCHEMA"):
+                continue
+            cleaned_lines.append(line.replace("nse_raw.", ""))
+        ddl = "\n".join(cleaned_lines)
+
     with engine.connect() as conn:
         conn.execute(text(ddl))
 
@@ -140,6 +163,9 @@ def ingest_file(engine, file_path, ddl_dir, table_mapping):
         print(f"[DEBUG] DataFrame columns after DDL mapping: {df.columns.tolist()}")
     try:
         qualified_table = f"nse_raw.{table_name}"
+        if engine.dialect.name == "sqlite":
+            # SQLite has no concept of schemas; use plain table name
+            qualified_table = table_name
         df.to_sql(qualified_table, engine, if_exists='append', index=False, method='multi')
         print(f"[SUCCESS] Ingested {file_path} into {qualified_table}")
     except Exception as e:
