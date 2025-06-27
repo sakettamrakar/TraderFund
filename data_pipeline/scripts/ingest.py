@@ -166,7 +166,8 @@ def ingest_file(engine, file_path, ddl_dir, table_mapping):
         if engine.dialect.name == "sqlite":
             # SQLite has no concept of schemas; use plain table name
             qualified_table = table_name
-        df.to_sql(qualified_table, engine, if_exists='append', index=False, method='multi')
+        # Use a smaller chunksize to avoid 'too many SQL variables' error
+        df.to_sql(qualified_table, engine, if_exists='append', index=False, method='multi', chunksize=500)
         print(f"[SUCCESS] Ingested {file_path} into {qualified_table}")
     except Exception as e:
         print(f"[ERROR] Failed to ingest {file_path} into {qualified_table}: {e}")

@@ -1,6 +1,6 @@
 # NSE Equities
 APPSEC_COLLVAL_*.csv: landing_appsec_collval
-AUB_*.csv: landing_aub
+# AUB_*.csv: landing_aub
 block.csv: landing_block
 bulk.csv: landing_bulk
 CMVOLT_*.CSV: landing_cmvolt

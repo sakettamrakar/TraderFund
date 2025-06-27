@@ -2,9 +2,9 @@
 # The ingest script will use the provided `url` if present. Otherwise it will
 # fall back to constructing a PostgreSQL connection string using the remaining
 # fields.
-url: sqlite:///nse_data.db
-# host: localhost
-# database: nse_data
-# user: postgres
-# password: 'Betsson@11'
-# port: 5432
+#url: sqlite:///nse_data.db
+host: localhost
+database: nse_data
+user: postgres
+password: Betsson1234
+port: 5432
