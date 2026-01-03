@@ -1,0 +1,22 @@
+# ---- DATA (NEVER COMMIT) ----
+data/
+data/**
+
+# ---- OBSERVATION OUTPUT ----
+observations/daily_logs/
+observations/signal_reviews/
+observations/screenshots/
+
+# ---- RAW FILE TYPES ----
+*.jsonl
+*.parquet
+*.csv
+*.feather
+
+# ---- CACHES ----
+__pycache__/
+*.pyc
+
+# ---- LOCAL ENV ----
+.env
+.env.*

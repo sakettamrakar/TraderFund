@@ -16,3 +16,8 @@ psycopg2-binary
 pyyaml
 tqdm
 loguru
+logzero==1.7.0
+smartapi-python==1.5.5
+pyotp==2.9.0
+websocket-client==1.9.0
+
