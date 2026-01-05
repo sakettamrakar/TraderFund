@@ -1,22 +1,57 @@
-TraderFund is a simple toolkit for managing trading funds. It provides basic features for portfolio tracking, strategy development, and performance analysis.
+# TraderFund Platform
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone <repository-url>
-   ```
-2. Install required dependencies (if any):
+TraderFund is a disciplined algorithmic trading research and observation platform. It implements a multi-layer data pipeline—from raw ingestion to processed analytics—focused on momentum-based intraday strategies.
+
+## Core Modules
+
+### 1. Data Ingestion (`ingestion/`)
+- **Angel One SmartAPI Integrated**: Supports both live streaming (1m/5m candles) and historical daily backfills.
+- **Bronze Layer**: Raw data is stored in append-only JSONL format for maximum auditability.
+- **Instrument Master**: Automated caching and mapping of trading symbols to API tokens.
+
+### 2. Processed Data Layer (`processing/`)
+- **Silver Layer**: Raw JSONL data is cleaned, deduplicated, and converted to high-performance Parquet format.
+- **Idempotency**: Processing logic ensures that re-running on the same data produces identical results.
+
+### 3. Momentum Engine (`src/core_modules/momentum_engine/`)
+- **V0 Strategy**: High-probability momentum detection using VWAP, Relative Volume, and High-of-Day (HOD) proximity.
+- **Live Readiness**: Designed to consume standardized dataframes, making it compatible with both live feeds and historical datasets.
+
+### 4. Live Observation (`observations/`)
+- **Clinical Review**: Automated logging of generated signals into CSV templates for post-trade review.
+- **Signal Validation**: Automated T+5 and T+15 performance tracking and classification (A/B/C/D).
+- **Daily Review**: Automated generation of EOD reports summarizing signal quality and failure patterns.
+
+### 5. Historical Replay (`historical_replay/`)
+- **Diagnostic Replay**: Minute-by-minute historical simulation without lookahead bias.
+- **Learning Tool**: Designed for studying past price action through the lens of the same engine used in live markets.
+- **Batch Processing**: Supports replaying entire months or watchlist groups with a single command.
+
+## Getting Started
+
+1. **Setup**:
    ```bash
    pip install -r requirements.txt
+   # Configure .env with Angel One credentials
    ```
 
-## Usage
-Outline your typical workflow or commands here. For example, you might run a trading script or analyze performance metrics.
+2. **Ingest Data**:
+   ```bash
+   python -m ingestion.api_ingestion.angel_smartapi.market_data_ingestor
+   ```
 
-### Technical Scanner Example
+3. **Process Candles**:
+   ```bash
+   python processing/intraday_candles_processor.py
+   ```
 
-The project includes a `TechnicalScanner` class that scans OHLCV data for popular technical signals.  You can create an instance and call `scan_for_signals(df)` to receive a JSON alert summarizing bullish or bearish indications.
+4. **Run Replay**:
+   ```bash
+   python historical_replay/momentum_intraday/cli.py --symbol ALL --date 2025-12
+   ```
 
-## Contribution Guidelines
-Contributions are welcome! Please open an issue to discuss your proposed changes before submitting a pull request.
+## Governance & Safety
+- **PHASE LOCK**: All modules adhere to strict Phase-Lock restrictions.
+- **Diagnostic Only**: Historical Replay and Paper Trading modules are strictly for learning and observation, not for live trading or parameter optimization.
+- **No Lookahead**: Core abstractions like `CandleCursor` prevent any future-data leakage during simulations.
 

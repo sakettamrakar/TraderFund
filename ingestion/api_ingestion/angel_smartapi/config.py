@@ -33,6 +33,12 @@ class AngelConfig:
     pin: str = field(default_factory=lambda: os.getenv("ANGEL_PIN", ""))
     totp_secret: str = field(default_factory=lambda: os.getenv("ANGEL_TOTP_SECRET", ""))
 
+    # Historical API Credentials (different account/app)
+    hist_api_key: str = field(default_factory=lambda: os.getenv("ANGEL_HIST_API_KEY", ""))
+    hist_client_id: str = field(default_factory=lambda: os.getenv("ANGEL_HIST_CLIENT_ID", ""))
+    hist_pin: str = field(default_factory=lambda: os.getenv("ANGEL_HIST_PIN", ""))
+    hist_totp_secret: str = field(default_factory=lambda: os.getenv("ANGEL_HIST_TOTP_SECRET", ""))
+
     # Polling Configuration
     polling_interval_seconds: int = 60
 
@@ -75,17 +81,27 @@ class AngelConfig:
         """Check if all required credentials are present."""
         return all([self.api_key, self.client_id, self.pin, self.totp_secret])
 
-    def get_missing_credentials(self) -> List[str]:
-        """Return list of missing credential names."""
+    def validate_historical(self) -> bool:
+        """Check if all required historical credentials are present."""
+        return all([self.hist_api_key, self.hist_client_id, self.hist_pin, self.hist_totp_secret])
+
+    def get_missing_credentials(self, mode: str = "live") -> List[str]:
+        """Return list of missing credential names.
+        
+        Args:
+            mode: 'live' or 'historical'
+        """
         missing = []
-        if not self.api_key:
-            missing.append("ANGEL_API_KEY")
-        if not self.client_id:
-            missing.append("ANGEL_CLIENT_ID")
-        if not self.pin:
-            missing.append("ANGEL_PIN")
-        if not self.totp_secret:
-            missing.append("ANGEL_TOTP_SECRET")
+        if mode == "historical":
+            if not self.hist_api_key: missing.append("ANGEL_HIST_API_KEY")
+            if not self.hist_client_id: missing.append("ANGEL_HIST_CLIENT_ID")
+            if not self.hist_pin: missing.append("ANGEL_HIST_PIN")
+            if not self.hist_totp_secret: missing.append("ANGEL_HIST_TOTP_SECRET")
+        else:
+            if not self.api_key: missing.append("ANGEL_API_KEY")
+            if not self.client_id: missing.append("ANGEL_CLIENT_ID")
+            if not self.pin: missing.append("ANGEL_PIN")
+            if not self.totp_secret: missing.append("ANGEL_TOTP_SECRET")
         return missing
 
 

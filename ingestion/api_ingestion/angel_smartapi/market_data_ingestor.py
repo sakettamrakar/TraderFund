@@ -141,6 +141,10 @@ class MarketDataIngestor:
 
             except Exception as exc:
                 logger.exception(f"Error fetching candles for {symbol}: {exc}")
+            
+            # Add small delay to respect rate limits (3 req/sec)
+            import time
+            time.sleep(0.5)
 
         logger.info(f"Fetched {len(results)} candle records for {len(symbols)} symbols")
         return results
@@ -203,6 +207,10 @@ class MarketDataIngestor:
 
             except Exception as exc:
                 logger.exception(f"Error fetching LTP for {symbol}: {exc}")
+            
+            # Rate limit respect
+            import time
+            time.sleep(0.2)
 
         logger.info(f"Fetched LTP for {len(results)} symbols")
         return results

@@ -123,7 +123,71 @@ class MomentumEngine:
                 confidence=round(confidence, 2),
                 entry_hint=f"Above {latest['high']:.2f}",
                 stop_hint=f"Below {latest['vwap']:.2f}",
-                reason=reason
+                reason=reason,
+                price_t0=float(latest['close']),
+                volume_t0=float(latest['volume'])
+            )
+            signals.append(signal)
+            
+        return signals
+
+    def generate_signals_from_df(self, df: pd.DataFrame, symbol: str, exchange: str = "NSE") -> List[MomentumSignal]:
+        """Analyze data from a provided DataFrame and generate signals.
+        
+        This method allows external callers (like replay controller) to 
+        provide pre-filtered data, enabling lookahead-free historical replay.
+        
+        Args:
+            df: DataFrame containing candle data (must have OHLCV columns).
+            symbol: Trading symbol for signal labeling.
+            exchange: Exchange for signal labeling.
+            
+        Returns:
+            List of MomentumSignal objects.
+        """
+        if df.empty:
+            return []
+            
+        df = self._compute_indicators(df)
+        if len(df) < self.vol_ma_window:
+            return []
+
+        signals = []
+        
+        # Analyze the latest candle
+        latest = df.iloc[-1]
+        
+        # Criteria:
+        # 1. Price > VWAP
+        # 2. Near HOD
+        # 3. Volume Expansion
+        
+        above_vwap = latest['close'] > latest['vwap']
+        
+        hod_dist = (latest['hod'] - latest['close']) / latest['hod'] * 100
+        near_hod = hod_dist <= self.hod_proximity_pct
+        
+        vol_surge = latest['rel_vol'] >= self.vol_multiplier
+        
+        if above_vwap and near_hod and vol_surge:
+            reason = (
+                f"Price ({latest['close']:.2f}) > VWAP ({latest['vwap']:.2f}); "
+                f"Near HOD ({latest['hod']:.2f}, dist {hod_dist:.2f}%); "
+                f"Vol surge (x{latest['rel_vol']:.1f})"
+            )
+            
+            # Confidence calculation (simple heuristic for v0)
+            confidence = min(1.0, (latest['rel_vol'] / (self.vol_multiplier * 2)) + 0.5)
+            
+            signal = MomentumSignal(
+                symbol=symbol,
+                timestamp=latest['timestamp'].isoformat(),
+                confidence=round(confidence, 2),
+                entry_hint=f"Above {latest['high']:.2f}",
+                stop_hint=f"Below {latest['vwap']:.2f}",
+                reason=reason,
+                price_t0=float(latest['close']),
+                volume_t0=float(latest['volume'])
             )
             signals.append(signal)
             
