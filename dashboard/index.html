@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TraderFund | Executive Signal Observation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="dark-mode">
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo-area">
+                <div class="logo-icon">TF</div>
+                <h1>Executive Signal <span>Observation</span></h1>
+            </div>
+            <div class="last-updated">
+                <span id="update-label">Last Sync:</span>
+                <span id="update-time">Syncing...</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="metrics-grid">
+            <div class="glass-card stat-card">
+                <h3>Total Watchlist</h3>
+                <p id="total-count">0</p>
+            </div>
+            <div class="glass-card stat-card highlight">
+                <h3>Active Signals</h3>
+                <p id="signal-count">0</p>
+            </div>
+            <div class="glass-card stat-card warning">
+                <h3>High-Prob Candidates</h3>
+                <p id="candidate-count">0</p>
+            </div>
+        </section>
+
+        <section class="signal-table-area">
+            <div class="glass-card table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Price</th>
+                            <th>VWAP Dist</th>
+                            <th>HOD Dist</th>
+                            <th>Rel Vol</th>
+                            <th>Today's Signals</th>
+                            <th>Probability Score</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="signal-body">
+                        <!-- Data populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

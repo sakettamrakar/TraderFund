@@ -1,0 +1,125 @@
+{
+  "last_updated": "2026-01-12T15:27:30.636448",
+  "symbols": [
+    {
+      "symbol": "LT",
+      "price": 4024.3,
+      "vwap": 4015.164133490412,
+      "hod": 4025.0,
+      "hod_dist": 0.017391304347821566,
+      "rel_vol": 0.6322276510594417,
+      "score": 65.4,
+      "signals_count": 10,
+      "last_signal_time": "15:26",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "TCS",
+      "price": 3251.0,
+      "vwap": 3227.0455213023392,
+      "hod": 3252.0,
+      "hod_dist": 0.03075030750307503,
+      "rel_vol": 0.5034024018591448,
+      "score": 65.0,
+      "signals_count": 12,
+      "last_signal_time": "15:25",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "RELIANCE",
+      "price": 1483.9,
+      "vwap": 1481.6434672262424,
+      "hod": 1484.8,
+      "hod_dist": 0.060614224137921856,
+      "rel_vol": 0.2640471776393618,
+      "score": 64.0,
+      "signals_count": 6,
+      "last_signal_time": "15:12",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "INFY",
+      "price": 1597.1,
+      "vwap": 1596.3870679362306,
+      "hod": 1600.3,
+      "hod_dist": 0.1999625070299347,
+      "rel_vol": 0.4393390420872748,
+      "score": 59.4,
+      "signals_count": 2,
+      "last_signal_time": "14:53",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "ICICIBANK",
+      "price": 1416.2,
+      "vwap": 1414.0631043320743,
+      "hod": 1419.1,
+      "hod_dist": 0.20435487280669887,
+      "rel_vol": 0.25985885237091366,
+      "score": 59.3,
+      "signals_count": 3,
+      "last_signal_time": "15:25",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "KOTAKBANK",
+      "price": 2135.0,
+      "vwap": 2131.389440708332,
+      "hod": 2139.4,
+      "hod_dist": 0.20566513975881512,
+      "rel_vol": 0.4852514610412807,
+      "score": 59.2,
+      "signals_count": 6,
+      "last_signal_time": "15:15",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "SBIN",
+      "price": 1015.1,
+      "vwap": 1014.1835788217477,
+      "hod": 1017.25,
+      "hod_dist": 0.21135414106659892,
+      "rel_vol": 0.4012751698468006,
+      "score": 59.0,
+      "signals_count": 7,
+      "last_signal_time": "14:59",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "BHARTIARTL",
+      "price": 2043.4,
+      "vwap": 2032.7349873036578,
+      "hod": 2048.8,
+      "hod_dist": 0.26356891839125784,
+      "rel_vol": 0.43449931015292576,
+      "score": 57.3,
+      "signals_count": 5,
+      "last_signal_time": "15:10",
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "ITC",
+      "price": 338.5,
+      "vwap": 338.67634758536514,
+      "hod": 339.5,
+      "hod_dist": 0.29455081001472755,
+      "rel_vol": 0.38304263423984586,
+      "score": 23.3,
+      "signals_count": 0,
+      "last_signal_time": null,
+      "status": "MONITORING"
+    },
+    {
+      "symbol": "HDFCBANK",
+      "price": 936.3,
+      "vwap": 937.6556585594309,
+      "hod": 940.8,
+      "hod_dist": 0.47831632653061223,
+      "rel_vol": 0.31110716485286455,
+      "score": 17.2,
+      "signals_count": 1,
+      "last_signal_time": "13:48",
+      "status": "MONITORING"
+    }
+  ]
+}

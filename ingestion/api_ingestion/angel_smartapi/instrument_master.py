@@ -42,6 +42,7 @@ class InstrumentMaster:
         self._token_index: Dict[str, Dict] = {}  # token -> instrument
         self._cache_path = Path(self._config.instrument_master_path)
         self._cache_date: Optional[date] = None
+        self._last_download_attempt: Optional[datetime] = None
 
     def _ensure_cache_dir(self) -> None:
         """Ensure the cache directory exists."""
@@ -55,7 +56,7 @@ class InstrumentMaster:
         """
         try:
             logger.info("Downloading instrument master from Angel One...")
-            response = requests.get(INSTRUMENT_MASTER_URL, timeout=60)
+            response = requests.get(INSTRUMENT_MASTER_URL, timeout=5)
             response.raise_for_status()
 
             self._instruments = response.json()
@@ -160,17 +161,43 @@ class InstrumentMaster:
         """Ensure instrument master is loaded.
 
         Loads from cache if available and fresh, otherwise downloads.
+        Falls back to stale cache if download fails.
 
         Returns:
             True if instruments are available, False otherwise.
         """
+        # 1. If already loaded and fresh, we're good
         if self._instruments and not self.is_cache_stale():
             return True
 
-        if self.load_cached() and not self.is_cache_stale():
+        # 2. Try loading from cache if not already loaded (of if we need refresh)
+        if not self._instruments or self.is_cache_stale():
+            self.load_cached()
+
+        # 3. If fresh now, we're good
+        if self._instruments and not self.is_cache_stale():
             return True
 
-        return self.download_master()
+        # 4. If stale but we already tried downloading recently, don't retry immediately
+        # (Prevents loop/spam when server is down)
+        now = datetime.now()
+        if self._last_download_attempt and (now - self._last_download_attempt).total_seconds() < 300:
+            if self._instruments:
+                return True
+            return False
+
+        # 5. Try downloading
+        self._last_download_attempt = now
+        if self.download_master():
+            return True
+
+        # 6. Fallback: if we have instruments (loaded but stale), use them
+        if self._instruments:
+            logger.warning("Using stale instrument cache matches as download failed recently")
+            return True
+
+        return False
+
 
     def get_token(self, symbol: str, exchange: str = "NSE") -> Optional[str]:
         """Get instrument token for a symbol.

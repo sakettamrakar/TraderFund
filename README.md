@@ -5,9 +5,17 @@ TraderFund is a disciplined algorithmic trading research and observation platfor
 ## Core Modules
 
 ### 1. Data Ingestion (`ingestion/`)
-- **Angel One SmartAPI Integrated**: Supports both live streaming (1m/5m candles) and historical daily backfills.
-- **Bronze Layer**: Raw data is stored in append-only JSONL format for maximum auditability.
-- **Instrument Master**: Automated caching and mapping of trading symbols to API tokens.
+
+#### India Market (WebSocket-Based)
+- **WebSocket Ingestion (`india_ingestion/`)**: Real-time tick data via SmartAPI WebSocket v2
+- **Supports ~200 symbols** (NIFTY 50 + Midcap + Smallcap) without REST rate-limit constraints
+- **In-Memory Candle Aggregation**: Tick-to-candle conversion with minute-boundary finalization
+- **Zero REST Polling**: All live data via WebSocket; REST only for authentication and instrument master
+
+#### US Market (REST-Based)
+- **Alpha Vantage Integration**: Batch polling for historical and daily updates
+- **Research Pipeline**: Symbol filtering funnel from ~500 symbols to ~5-15 confirmed momentum
+- **Completely Separate**: No code sharing with India market infrastructure
 
 ### 2. Processed Data Layer (`processing/`)
 - **Silver Layer**: Raw JSONL data is cleaned, deduplicated, and converted to high-performance Parquet format.

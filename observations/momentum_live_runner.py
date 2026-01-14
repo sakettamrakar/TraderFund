@@ -67,6 +67,8 @@ def main():
     parser = argparse.ArgumentParser(description="TraderFund Momentum Live Runner")
     parser.add_argument("--interval", type=int, default=5, help="Interval in minutes")
     parser.add_argument("--force", action="store_true", help="Force run outside market hours")
+    parser.add_argument("--hod-dist", type=float, default=0.5, help="HOD proximity percentage")
+    parser.add_argument("--vol-mult", type=float, default=2.0, help="Volume multiplier")
     parser.add_argument("--symbols", type=str, help="Comma-separated symbols")
     args = parser.parse_args()
 
@@ -77,10 +79,16 @@ def main():
         watchlist = args.symbols.split(",")
     else:
         watchlist = config.symbol_watchlist
-    engine = MomentumEngine()
+    
+    # Initialize engine with provided parameters
+    engine = MomentumEngine(
+        hod_proximity_pct=args.hod_dist,
+        vol_multiplier=args.vol_mult
+    )
     obs_logger = ObservationLogger()
 
     logger.info(f"Starting Momentum Live Runner (Interval: {args.interval}m)")
+    logger.info(f"Parameters: HOD Dist {args.hod_dist}%, Vol Mult {args.vol_mult}x")
     logger.info(f"Watchlist: {watchlist}")
 
     while True:
@@ -93,7 +101,6 @@ def main():
         logger.info("--- Execution Cycle Triggered ---")
 
         # 1. Trigger Ingestion (Single Cycle)
-        # Note: In a production setup, ingestion might be a separate background process.
         ingest_cmd = ["-m", "ingestion.api_ingestion.angel_smartapi.scheduler", "--outside-market-hours", "--single-cycle"]
         if run_pipeline_step(ingest_cmd, "Data Ingestion"):
             
@@ -111,6 +118,14 @@ def main():
                         obs_logger.log_signal(sig.to_dict())
                 else:
                     logger.info("No signals generated in this cycle.")
+                
+                # 4. Generate Executive Dashboard Data
+                exec_cmd = ["observations/executive_data_generator.py"]
+                run_pipeline_step(exec_cmd, "Executive Dashboard Data Generation")
+
+        # 5. Update API Health Monitor (Always run, even if ingestion fails)
+        health_cmd = ["observations/api_health_monitor.py"]
+        run_pipeline_step(health_cmd, "API Health Monitoring")
 
         # Wait for the next interval
         elapsed = time.time() - loop_start

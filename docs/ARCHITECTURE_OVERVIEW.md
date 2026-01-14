@@ -8,6 +8,61 @@
 - **Scalable Data Pipelines**: Data ingestion, processing and storage components are designed for high volumes of streaming and historical financial data.
 - **Robust Security and Compliance**: Authentication, authorization, encryption and compliance checks are embedded at every layer.
 
+## Research Intelligence Funnel
+
+The system operates as a symbol filtering funnel, prioritizing computational efficiency and API budget preservation.
+
+```text
+[ ~7,000 US stocks (conceptual) ]
+        |
+        |  (Manual / curated selection,
+        |   exchange-supported,
+        |   non-OTC, liquid)
+        |  API calls: 0
+        v
+[ ~500 symbols in SYMBOL MASTER ]
+        |
+        |  Stage 0: Universe Hygiene
+        |  (active, daily data supported)
+        |  API calls: 0
+        v
+[ ~300 ACTIVE UNIVERSE ]
+        |
+        |  Layer 2: Historical Backfill
+        |  (25 symbols/day)
+        |  API calls: 25/day
+        v
+[ ~200 symbols with HISTORY LOADED ]
+        |
+        |  Stage 1: Structural Capability
+        |  (local compute, no API)
+        |  API calls: 0
+        v
+[ ~80–120 STRUCTURALLY CAPABLE ]
+        |
+        |  Stage 2: Energy Setup
+        |  (local compute)
+        |  API calls: 0
+         v
+[ ~20–40 ENERGY FORMING ]
+        |
+        |  Stage 3: Participation Trigger
+        |  (local compute)
+        |  API calls: 0
+        v
+[ ~5–15 PARTICIPATION EMERGING ]
+        |
+        |  Stage 4: Momentum Confirmation
+        |  (local compute)
+        |  API calls: 0
+        v
+[ ~1–5 CONFIRMED MOMENTUM ]
+        |
+        |  Stage 5: Risk & Sustainability
+        |  Narrative + Diff + Research Output
+        |  API calls: 0
+```
+
 ## Module Tiers
 
 The 32 modules are organized into three tiers reflecting complexity and user sophistication.
