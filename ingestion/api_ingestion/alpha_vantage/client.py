@@ -57,6 +57,16 @@ class AlphaVantageClient:
         }
         return self._make_request(params).json()
 
+    def get_intraday(self, symbol: str, interval: str = '5min', outputsize: str = 'compact') -> Dict[str, Any]:
+        """Fetch TIME_SERIES_INTRADAY (Free Tier)."""
+        params = {
+            'function': 'TIME_SERIES_INTRADAY',
+            'symbol': symbol,
+            'interval': interval,
+            'outputsize': outputsize
+        }
+        return self._make_request(params).json()
+
     def get_quote(self, symbol: str) -> Dict[str, Any]:
         """Fetch GLOBAL_QUOTE."""
         params = {'function': 'GLOBAL_QUOTE', 'symbol': symbol}

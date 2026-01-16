@@ -27,6 +27,7 @@ from ingestion.api_ingestion.angel_smartapi.instrument_master import InstrumentM
 from ingestion.api_ingestion.angel_smartapi.config import AngelConfig
 from src.core_modules.momentum_engine.momentum_engine import MomentumEngine
 from observations.signal_logger import ObservationLogger
+from traderfund.regime.integration_guards import MomentumRegimeGuard
 
 # Configure logging
 logging.basicConfig(
@@ -82,7 +83,8 @@ def load_watchlist(config: AngelConfig) -> List[str]:
 
 
 def on_candles_finalized(candles: List[Dict], engine: MomentumEngine, 
-                         obs_logger: ObservationLogger, watchlist: List[str]) -> None:
+                         obs_logger: ObservationLogger, watchlist: List[str],
+                         regime_guard: MomentumRegimeGuard) -> None:
     """Callback when candles are finalized.
     
     Runs momentum engine on latest candles and logs signals.
@@ -92,6 +94,7 @@ def on_candles_finalized(candles: List[Dict], engine: MomentumEngine,
         engine: MomentumEngine instance.
         obs_logger: ObservationLogger instance.
         watchlist: List of symbols to evaluate.
+        regime_guard: MomentumRegimeGuard instance (Phase 7 Integration).
     """
     try:
         logger.info(f"Running momentum evaluation on {len(watchlist)} symbols...")
@@ -100,9 +103,30 @@ def on_candles_finalized(candles: List[Dict], engine: MomentumEngine,
         signals = engine.run_on_all(watchlist)
         
         if signals:
-            logger.info(f"Generated {len(signals)} momentum signals!")
+            logger.info(f"Generated {len(signals)} raw momentum signals!")
+            executed_count = 0
+            
             for sig in signals:
-                obs_logger.log_signal(sig.to_dict())
+                signal_dict = sig.to_dict()
+                
+                # Phase 7: Regime Guard Check
+                decision = regime_guard.check_signal(signal_dict)
+                
+                if decision.allowed:
+                    # Enforce Size Multiplier (if < 1.0)
+                    if decision.size_multiplier < 1.0:
+                        signal_dict['constraints'] = f"THROTTLED: {decision.reason} Size x{decision.size_multiplier}"
+                        logger.warning(f"Strategy THROTTLED for {sig.symbol}: {decision.reason}")
+                    
+                    # Log execution
+                    obs_logger.log_signal(signal_dict)
+                    executed_count += 1
+                else:
+                    # Log Blockage
+                    logger.warning(f"Strategy BLOCKED for {sig.symbol}: {decision.reason}")
+                    # Optionally log to a 'blocked_signals.log' or similar if needed
+            
+            logger.info(f"Executed {executed_count}/{len(signals)} signals after Regime Check.")
         else:
             logger.debug("No momentum signals generated in this cycle")
         
@@ -167,10 +191,11 @@ def main():
         vol_multiplier=args.vol_mult
     )
     obs_logger = ObservationLogger()
+    regime_guard = MomentumRegimeGuard()
     
     # Initialize candle aggregator with callback
     def candle_callback(candles: List[Dict]):
-        on_candles_finalized(candles, engine, obs_logger, watchlist)
+        on_candles_finalized(candles, engine, obs_logger, watchlist, regime_guard)
     
     aggregator = CandleAggregator(on_candle_callback=candle_callback)
     

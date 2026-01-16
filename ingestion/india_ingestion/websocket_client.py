@@ -74,15 +74,17 @@ class IndiaWebSocketClient:
         # Thread safety
         self._lock = threading.Lock()
     
-    def _on_open(self, ws_app, response):
+    def _on_open(self, ws_app, *args):
         """WebSocket open callback."""
-        logger.info("WebSocket connection opened")
+        # args might contain 'response' or nothing depending on library version
+        logger.info(f"WebSocket connection opened. Args: {args}")
         with self._lock:
             self._connected = True
     
-    def _on_close(self, ws_app, code, reason):
+    def _on_close(self, ws_app, *args):
         """WebSocket close callback."""
-        logger.warning(f"WebSocket connection closed: code={code}, reason={reason}")
+        # args might contain code, reason
+        logger.warning(f"WebSocket connection closed: {args}")
         with self._lock:
             self._connected = False
     
