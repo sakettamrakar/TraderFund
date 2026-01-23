@@ -144,6 +144,10 @@ The system now uses an **API Key Pool** (`ApiKeyManager`) to scale capacity beyo
 ### 7.2. Windows Task Scheduler Setup
 To enable autonomous execution, register the provided Windows Tasks.
 
+**New Task Types (Phase 3):**
+- **Narrative Engine**: Runs daily at 16:15 IST (Market Close + 45m). Command: `python bin/run_narrative.py`
+- **Decision Engine**: Runs daily at 16:30 IST. Command: `python bin/run_decision.py`
+
 **Register Tasks:**
 ```powershell
 # Registers both Daily (18:30) and Weekly (Sat 10:00) tasks
