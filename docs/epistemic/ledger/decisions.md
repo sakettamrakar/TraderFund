@@ -71,3 +71,10 @@ Lower layers cannot override higher layers. Conflicts must be resolved upward, n
 **Decision**: Unfreeze Phase 5 (Structured Logging, Audit Viewer, Retention Policy).
 **Rationale**: To maintain "Glass Box" observability at scale, we must move from ad-hoc text logs to machine-parseable structured logs.
 **Impacted Documents**: `task_graph.md`, `execution_plan.md`, `logging.py`
+
+---
+
+### [2026-01-24] D008: Authorize Phase 6 (Selective Automation - Passive Only)
+**Decision**: Unfreeze Phase 6 for **Passive Monitoring** purposes only.
+**Rationale**: User requested next skill. Automation must be introduced gradually. First step is "Suggest, Don't Act".
+**Impacted Documents**: `task_graph.md`, `bounded_automation_contract.md`

@@ -144,6 +144,28 @@ All skills must operate within a strict hierarchy of authority.
 *   **Authority Level**: **Structural** (Gatekeeper).
 *   **Non-Responsibilities**: judging the *quality* of the trade, only the *validity* of the artifact.
 
+
+## 11. Audit Log Viewer
+*   **Purpose**: To provide a human-readable view of the machine-parseable JSON audit logs (Glass Box Verification).
+*   **Responsibilities**:
+    *   Parse and filter JSON logs from `logs/`.
+    *   Display structured history by User, Time, or Skill.
+*   **Read Scope**: `logs/*.json`.
+*   **Write Scope**: Stdout (ReadOnly).
+*   **Authority Level**: **Informational**.
+*   **Non-Responsibilities**: Modifying logs or alerting (Passive view only).
+
+## 12. Monitor Trigger (Passive)
+*   **Purpose**: To continuously observe the system state and suggest interventions (Passive).
+*   **Responsibilities**:
+    *   Scan Inbox for new files.
+    *   Scan Gap between Narratives and Decisions.
+    *   Log `[SUGGESTION]` entries.
+*   **Read Scope**: `data/events`, `data/narratives`.
+*   **Write Scope**: Logs only.
+*   **Authority Level**: **Advisory**.
+*   **Non-Responsibilities**: Executing any actions.
+
 ## Explicit Skill Non-Goals
 
 To prevent agentic drift, the following are explicitly OUT OF SCOPE for all skills:

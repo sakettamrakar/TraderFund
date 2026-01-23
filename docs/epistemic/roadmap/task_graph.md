@@ -155,18 +155,18 @@ This document translates the *Detailed Work Breakdown Structure (DWBS)* into exe
 *   **Freeze Impact**: Scoped Unfreeze (Approved).
 
 ### Phase P6: Selective Automation
-**Status**: FROZEN (High Risk).
+**Status**: ACTIVE / UNFROZEN (PASSIVE ONLY).
 
 #### Task P6.1.1: Define Bounded Automation Contract
 *   **Derived From**: DWBS 6.1
 *   **Description**: Create authoritative contract for any automated triggers.
-*   **Freeze Impact**: Requires Unfreeze.
+*   **Freeze Impact**: Scoped Unfreeze (Approved).
 
 #### Task P6.2.1: Prototype Monitor Trigger
 *   **Derived From**: DWBS 6.2
 *   **Description**: Create a passive monitor that suggests invocations but cannot run them.
 *   **Dependencies**: P6.1.1.
-*   **Freeze Impact**: Requires Unfreeze.
+*   **Freeze Impact**: Scoped Unfreeze (Approved).
 
 ### Phase P7: System Maturity
 **Status**: FROZEN.

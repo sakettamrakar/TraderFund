@@ -36,8 +36,11 @@ The following tasks are authorized for execution under this plan:
 | P4.1.1 | Define Conflict Resolution                    | Human-Only (A)     | Yes                   |
 | P4.2.1 | Implement Operator Attribution                | Human-Only (A)     | Yes                   |
 | P5.1.1 | Implement Structured Logging                  | Code Change        | Yes                   |
+| P5.1.1 | Implement Structured Logging                  | Code Change        | Yes                   |
 | P5.2.1 | Create Audit Log Viewer                       | Skill-Creation     | Yes                   |
 | P5.3.1 | Define Data Retention Policy                  | Documentation      | Yes                   |
+| P6.1.1 | Define Bounded Automation Contract            | Documentation      | Yes                   |
+| P6.2.1 | Prototype Monitor Trigger                     | Skill-Creation     | Yes (Passive Only)    |
 
 ## 4. Explicit Exclusions
 
