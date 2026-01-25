@@ -24,8 +24,10 @@ class ObservationLogger:
         self.daily_log_dir = self.base_dir / "daily_logs"
         self.header = [
             "timestamp", "symbol", "signal_type", "confidence", "reason",
-            "market_context", "result_5m", "result_15m", 
-            "classification", "reviewer_notes"
+            "price_t0", "price_t5", "price_t15",
+            "volume_t0", "volume_t5_change", "volume_continuation",
+            "market_index_trend", "vix",
+            "outcome", "classification", "reviewer_notes", "screenshot_path"
         ]
         self._ensure_paths()
 
@@ -59,14 +61,21 @@ class ObservationLogger:
                 row = {
                     "timestamp": signal_data.get("timestamp"),
                     "symbol": signal_data.get("symbol"),
-                    "signal_type": signal_data.get("signal_type"),
+                    "signal_type": signal_data.get("signal_type", "MOMENTUM_LONG"),
                     "confidence": signal_data.get("confidence"),
                     "reason": signal_data.get("reason"),
-                    "market_context": "",  # Placeholder for review
-                    "result_5m": "",       # Placeholder for review
-                    "result_15m": "",      # Placeholder for review
-                    "classification": "",  # Placeholder for review
-                    "reviewer_notes": ""   # Placeholder for review
+                    "price_t0": signal_data.get("price_t0", ""),
+                    "price_t5": "",
+                    "price_t15": "",
+                    "volume_t0": signal_data.get("volume_t0", ""),
+                    "volume_t5_change": "",
+                    "volume_continuation": "",
+                    "market_index_trend": signal_data.get("market_index_trend", ""),
+                    "vix": signal_data.get("vix", ""),
+                    "outcome": "",
+                    "classification": "",
+                    "reviewer_notes": "",
+                    "screenshot_path": ""
                 }
                 writer.writerow(row)
             

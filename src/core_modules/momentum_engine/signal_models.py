@@ -14,6 +14,8 @@ class MomentumSignal:
     entry_hint: str = ""
     stop_hint: str = ""
     reason: str = ""
+    price_t0: float = 0.0
+    volume_t0: float = 0.0
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert signal to dictionary."""

@@ -1,0 +1,17 @@
+diff --git a/src/main.py b/src/main.py
+index 83c4d21..2938492 100644
+--- a/src/main.py
++++ b/src/main.py
+@@ -10,4 +10,8 @@
+-def old_function():
+-    pass
++def new_function():
++    print("Hello World")
++    return True
+diff --git a/config/settings.yaml b/config/settings.yaml
+index 92834..29384 100644
+--- a/config/settings.yaml
++++ b/config/settings.yaml
+@@ -5,1 +5,1 @@
+-timeout: 30
++timeout: 60

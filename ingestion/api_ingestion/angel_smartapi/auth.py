@@ -29,13 +29,15 @@ class AngelAuthManager:
     # Token validity period (Angel tokens typically valid for ~6 hours)
     TOKEN_VALIDITY_HOURS = 5  # Refresh before actual expiry
 
-    def __init__(self, cfg: Optional[object] = None):
+    def __init__(self, cfg: Optional[object] = None, use_historical: bool = False):
         """Initialize the auth manager.
 
         Args:
             cfg: Configuration object. Uses default config if not provided.
+            use_historical: Whether to use historical data credentials.
         """
         self._config = cfg or config
+        self._use_historical = use_historical
         self._client: Optional[SmartConnect] = None
         self._auth_token: Optional[str] = None
         self._refresh_token: Optional[str] = None
@@ -44,7 +46,8 @@ class AngelAuthManager:
 
     def _generate_totp(self) -> str:
         """Generate current TOTP code from secret."""
-        totp = pyotp.TOTP(self._config.totp_secret)
+        secret = self._config.hist_totp_secret if self._use_historical else self._config.totp_secret
+        totp = pyotp.TOTP(secret)
         return totp.now()
 
     def login(self) -> bool:
@@ -53,19 +56,25 @@ class AngelAuthManager:
         Returns:
             True if login successful, False otherwise.
         """
-        if not self._config.validate():
-            missing = self._config.get_missing_credentials()
-            logger.error(f"Missing credentials: {missing}")
+        valid = self._config.validate_historical() if self._use_historical else self._config.validate()
+        if not valid:
+            mode = "historical" if self._use_historical else "live"
+            missing = self._config.get_missing_credentials(mode=mode)
+            logger.error(f"Missing {mode} credentials: {missing}")
             return False
 
         try:
-            self._client = SmartConnect(api_key=self._config.api_key)
+            api_key = self._config.hist_api_key if self._use_historical else self._config.api_key
+            client_id = self._config.hist_client_id if self._use_historical else self._config.client_id
+            pin = self._config.hist_pin if self._use_historical else self._config.pin
+            
+            self._client = SmartConnect(api_key=api_key)
 
             totp_code = self._generate_totp()
 
             data = self._client.generateSession(
-                clientCode=self._config.client_id,
-                password=self._config.pin,
+                clientCode=client_id,
+                password=pin,
                 totp=totp_code,
             )
 
@@ -76,7 +85,7 @@ class AngelAuthManager:
                 self._token_timestamp = datetime.now()
 
                 logger.info(
-                    f"Login successful for client {self._config.client_id}"
+                    f"Login successful for {('historical' if self._use_historical else 'live')} client {client_id}"
                 )
                 return True
             else:
@@ -169,7 +178,8 @@ class AngelAuthManager:
             return True
 
         try:
-            self._client.terminateSession(self._config.client_id)
+            client_id = self._config.hist_client_id if self._use_historical else self._config.client_id
+            self._client.terminateSession(client_id)
             logger.info("Logout successful")
         except Exception as exc:
             logger.warning(f"Logout exception (non-critical): {exc}")

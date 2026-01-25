@@ -1,49 +1,124 @@
-# Project Implementation Status: Documentation vs. Reality
+# TraderFund Intelligence Platform - Implementation Status & Backlog
 
-This document tracks the current development state of the TraderFund platform against the architectural goals defined in `ARCHITECTURE_OVERVIEW.md`.
-
-## Summary
-- **Total Planned Modules:** 32
-- **Modules with Directory Scaffolding:** 12
-- **Modules with Core Logic Implemented:** 3
-- **Architectural State:** Early Prototype / Modular Monolith (Scaffolded for Microservices)
+**Generated:** 2026-01-12
+**Status:** 🚧 ACTIVE DEVELOPMENT (US Market Integration)
 
 ---
 
-## Module Implementation Matrix
+## System Architecture Overview
 
-| Module Tier | Functional Module | Status | Details |
-| :--- | :--- | :--- | :--- |
-| **Core** | **Technical Scanner** | ✅ Implemented | Full indicator suite (EMA, SMA, Ichimoku, VWAP, StochRSI, MACD, Pivot). |
-| **Core** | **Watchlist Management** | ✅ Implemented | Logic for filtering by sector strength, cap, and volume. Includes FastAPI endpoint. |
-| **Core** | **Fundamental Screening** | ✅ Implemented | P/E, ROE, and Debt/Equity screening vs. sector medians. |
-| **Core** | **Simple Risk Estimation** | ❌ Placeholder | Directory `src/core_modules/risk_estimation` exists with no logic. |
-| **Core** | **Trade Notifications** | ❌ Placeholder | Directory `src/core_modules/trade_notifications` exists with no logic. |
-| **Pro** | **Strategy Engines** | ⚠️ Partial | Contains `TechnicalScanner`, but advanced engines are missing. |
-| **Pro** | **Backtesting Engine** | ❌ Placeholder | Directory `src/pro_modules/backtesting` exists with no logic. |
-| **Pro** | **News/Sentiment Analysis**| ❌ Placeholder | Directory `src/pro_modules/news_sentiment_analysis` exists with no logic. |
-| **Pro** | **Volatility Filters** | ❌ Placeholder | Directory `src/pro_modules/volatility_filters` exists with no logic. |
-| **Institutional** | **Portfolio Optimization** | ❌ Placeholder | Directory `src/institutional_modules/portfolio_optimization` exists with no logic. |
-| **Institutional** | **VaR & Stress Testing** | ❌ Placeholder | Directory `src/institutional_modules/var_stress_testing` exists with no logic. |
-| **Institutional** | **OMS/EMS** | ❌ Placeholder | Directory `src/institutional_modules/oms_ems` exists with no logic. |
-| **Institutional** | **Compliance Engine** | ❌ Placeholder | Directory `src/institutional_modules/compliance_engine` exists with no logic. |
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        TRADERFUND INTELLIGENCE PLATFORM                      │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐   │
+│  │  INGESTION  │───►│   SIGNALS   │───►│ CONFIDENCE  │───►│ NARRATIVES  │   │
+│  │   Layer 1   │    │   Layer 2   │    │   Layer 3   │    │   Layer 4   │   │
+│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘   │
+│                                                                  │          │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐          ▼          │
+│  │    ALPHA    │◄───│ ANALYTICS   │◄───│PRESENTATION │◄──────────┘          │
+│  │   Layer 5   │    │   Layer 7   │    │   Layer 6   │                      │
+│  └─────────────┘    └─────────────┘    └─────────────┘                      │
+│         │                                    │                               │
+│         ▼                                    ▼                               │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐                      │
+│  │VISUALIZATION│    │   REPORTS   │───►│ AUTOMATION  │                      │
+│  │   Layer 8   │    │   Layer 9   │    │  Layer 10   │                      │
+│  └─────────────┘    └─────────────┘    └─────────────┘                      │
+│                            │                  │                              │
+│                            ▼                  ▼                              │
+│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐   │
+│  │    AUDIT    │◄───│META-ANALYTICS│───►│  EVOLUTION  │───►│   SANDBOX   │   │
+│  │  Layer 11   │    │  Layer 12   │    │  Layer 13   │    │  Layer 14   │   │
+│  └─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘   │
+│                                                                              │
+│  ┌─────────────┐    ┌─────────────┐                                         │
+│  │  HARDENING  │    │     LLM     │                                         │
+│  │  Layer 15   │    │  Layer 16   │                                         │
+│  └─────────────┘    └─────────────┘                                         │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## Infrastructure & Architecture
+## Layer Implementation Details (US Market Focus)
 
-| Component | Documented Requirement | Current Reality |
-| :--- | :--- | :--- |
-| **Architecture** | Microservices (Independent scaling) | Modular Monolith (Single codebase, shared environment). |
-| **Communication** | Event-Driven (Kafka / RabbitMQ) | Synchronous function calls (No message broker integrated). |
-| **API Layer** | API-First (RESTful contracts) | Minimal; only Watchlist Builder has a functional API. |
-| **Data Ingestion** | Real-time & Historical Scrapers | Python scraper for NSE EOD exists but is currently paused/inactive. |
-| **Database** | Time-Series (InfluxDB) + Relational | SQLite (`nse_data.db`) used for both reference and historical data. |
-| **Security** | Embedded Auth & Compliance | Not yet implemented. |
+| # | Layer | Component | Directory | Status | Notes |
+|---|-------|-----------|-----------|--------|-------|
+| 1 | **Ingestion** | Universe Expansion | `ingestion/universe_expansion` | ✅ | Validated (500 symbols) |
+| 1 | **Ingestion** | Historical Backfill | `ingestion/historical_backfill` | ✅ | Resumable, budgeted |
+| 1 | **Ingestion** | Incremental Update | `ingestion/incremental_update` | ✅ | Idempotent, daily append |
+| C | **Controller** | Pipeline Activation | `research_modules/pipeline_controller` | ✅ | Selective execution logic |
+| 2-5| **Analysis** | Behavioral Stages | `research_modules/*` | ✅ | Stages 0-5 implemented |
+| 2 | **Signals** | Core Discovery | `signals/` | ✅ | Legacy/India (US uses Stages) |
+| 4 | **Narratives** | Evolution | `research_modules/narrative_evolution` | ✅ | State transitions tracked |
+| 11| **Audit** | Diff Engine | `research_modules/narrative_diff` | ✅ | Daily change detection |
+| 9 | **Reports** | Research Output | `research_modules/research_output` | 🟡 | Daily brief done, Weekly pending |
 
 ---
 
-## Next Steps for Alignment
-1. **Activate Data Ingestion:** Finish the NSE scraper to populate `nse_data.db`.
-2. **Infrastructure Hookup:** Implement a basic message broker (e.g., Redis Pub/Sub) to transition toward EDA.
-3. **Core Expansion:** Build the `risk_estimation` logic to support the current scanner signals.
+## System Backlog
+
+### 1. Ingestion & Scale
+| ID | Title | Priority | Status | Description |
+|----|-------|----------|--------|-------------|
+| I-01 | **API Key Pool & Quota Manager** | High | ❌ | Manage multiple Alpha Vantage keys to scale throughput. |
+| I-02 | **Symbol Lifecycle Management** | Medium | ❌ | Handle delistings, ticker changes, and IPOs automatically. |
+| I-03 | **Failure Recovery & Retry** | Medium | 🟡 | Basic retry exists; need persistent failure queues. |
+
+### 2. Orchestration & Automation
+| ID | Title | Priority | Status | Description |
+|----|-------|----------|--------|-------------|
+| O-01 | **Scheduler / Service Layer** | High | ❌ | Cron-like scheduler for daily E2E automation (Ingest -> Pipe -> Report). |
+| O-02 | **End-to-end Pipeline Driver** | High | ❌ | Single command to run the full daily cycle. |
+| O-03 | **Configuration Management** | Low | ❌ | Centralized config loading with environment overrides. |
+
+### 3. Intelligence & Analysis
+| ID | Title | Priority | Status | Description |
+|----|-------|----------|--------|-------------|
+| A-01 | **Weekly Research Summary** | Medium | ❌ | Aggregate daily diffs into weekly trend reports. |
+| A-02 | **Regime Awareness** | Later | ❌ | Modify thresholds based on VIX/Market regime. |
+| A-03 | **LLM Explanation Layer** | Later | ❌ | Generate text explanations for diffs (Read-Only). |
+
+### 4. Hardening & Observability
+| ID | Title | Priority | Status | Description |
+|----|-------|----------|--------|-------------|
+| H-01 | **Observability Suite** | Medium | ❌ | Centralized logs, health metrics, and heartbeats. |
+| H-02 | **Business Logic Alerts** | Low | ❌ | Alerts for anomalies (not trading signals). |
+| H-03 | **Backfill Monitoring** | Low | ❌ | Dashboard for backfill progress. |
+
+---
+
+## Scheduling & Automation Plan
+
+### Daily Workflow (Post-Market)
+1.  **Ingestion**: Incremental Update (Budgeted) -> `data/staging`
+2.  **Controller**: Determine eligible symbols -> `ActivationPlan`
+3.  **Execution**: Run eligible Stages (0-5) -> `data/{stage}`
+4.  **Narrative**: Update Narratives & Generate Diffs
+5.  **Reporting**: Generate Daily Research Brief
+
+### Weekly Workflow (Weekend)
+1.  **Hygiene**: Run Stage 0 (Universe Hygiene)
+2.  **Reporting**: Generate Weekly Research Summary
+3.  **Backfill**: Aggressive backfill (if quota allows)
+
+---
+
+## Verification Commands
+
+```powershell
+# 1. Run Pipeline
+python -m research_modules.pipeline_controller.runner --run --symbols AAPL,GOOGL --dry-run
+
+# 2. Generate Report
+python -m research_modules.research_output.runner --generate --type daily --symbols AAPL,GOOGL
+```
+
+---
+
+**Document Version:** 1.1 (Reconciled with US Market Implementation)
+**Last Updated:** 2026-01-12

@@ -3,9 +3,10 @@ data/
 data/**
 
 # ---- OBSERVATION OUTPUT ----
-observations/daily_logs/
-observations/signal_reviews/
-observations/screenshots/
+observations/*
+!observations/README.md
+!observations/*.py
+!observations/**/*.py
 
 # ---- RAW FILE TYPES ----
 *.jsonl
@@ -20,3 +21,7 @@ __pycache__/
 # ---- LOCAL ENV ----
 .env
 .env.*
+
+# ---- LOGS ----
+logs/
+
