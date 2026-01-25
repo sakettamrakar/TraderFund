@@ -1,28 +1,53 @@
 ---
-name: Cognitive Order Validator
+name: cognitive-order-validator
 description: Structural skill to enforce the cognitive hierarchy (Architecture > Logic > Execution).
-version: 1.0.0
 ---
 
-# Cognitive Order Validator
+# Cognitive Order Validator Skill
 
-**Purpose**: To enforce the strict separation of concerns defined in `architectural_invariants.md`. Specifically, ensuring that "Thinking" components do not perform "Acting".
+**Status:** Operational  
+**Skill Category:** Validation (Structural)
 
-## 1. Capabilities
+## 1. Skill Purpose
+The `cognitive-order-validator` enforces the strict separation of concerns defined in the `architectural_invariants.md`. It ensures that "Thinking" layers (Signals, Narratives) do not perform "Acting" (Execution, Adapters) or import their dependencies.
 
-### 1.1. Import Layer Check
-*   **Target**: Python Source files.
-*   **Logic**: Verifies that lower-layer modules (e.g., `signals`, `narratives`) do not import upper-layer execution modules (e.g., `execution`, `adapter`).
-*   **Constraint**: `from src.execution import ...` forbidden in `src/narratives`.
+## 2. Invocation Contract
 
-### 1.2. Direct Execution Check
-*   **Target**: Logic files.
-*   **Logic**: Scans for "Action" keywords (e.g., `place_order`, `buy`, `sell`) inside "Cognitive" files.
-*   **Output**: Error Report.
+### Standard Grammar
+```
+Invoke cognitive-order-validator
+Mode: <VERIFY | DRY_RUN>
+Target: <path/to/src_dir>
+ExecutionScope:
+  mode: all
+Options:
+  enforce: <warnings | errors>
+```
 
-## 2. Usage
+## 3. Supported Modes & Selectors
+- **VERIFY**: Scan target files and return PASS/FAIL based on layer interaction rules.
+- **DRY_RUN**: Perform the scan but return success even if violations are found (used for auditing legacy code).
 
-### Command Line
-```powershell
-python bin/run-skill.py cognitive-order-validator --target src/ --user validator_bot
+## 4. Hook & Skill Chaining
+- **Chained From**: Invoked as a **Post-Execution Hook** for implementation tasks.
+- **Chained To**: Reports are consumed by the `drift-detector`.
+
+## 5. Metadata & State
+- **Inputs**: Source code, `architectural_invariants.md`.
+- **Outputs**: Error report detailing illegal imports or keyword leaks.
+
+## 6. Invariants & Prohibitions
+1.  **Thinking != Acting**: Pure logic files must not contain execution side-effects.
+2.  **Unidirectional Flow**: Upper layers cannot be imported by lower layers.
+3.  **Market Logic Isolation**: Trading primitives are forbidden in the Regime/Narrative layers.
+
+## 7. Example Invocation
+```
+Invoke cognitive-order-validator
+Mode: VERIFY
+Target: src/narratives/
+ExecutionScope:
+  mode: all
+Options:
+  enforce: errors
 ```

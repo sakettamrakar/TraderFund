@@ -1,24 +1,55 @@
 ---
-name: Evolution Recorder
+name: evolution-recorder
 description: Structural skill to capture the 'What' and 'Why' of system lifecycle changes.
-version: 1.0.0
 ---
 
-# Evolution Recorder
+# Evolution Recorder Skill
 
-**Purpose**: To maintain the `evolution_log.md` ledger. This provides a narrative history of the system's growth.
+**Status:** Operational  
+**Skill Category:** Meta (Structural)
 
-## 1. Capabilities
+## 1. Skill Purpose
+The `evolution-recorder` maintains the [evolution_log.md](file:///c:/GIT/TraderFund/docs/epistemic/ledger/evolution_log.md) to provide a narrative history of the system's growth. It records architectural milestones and significant lifecycle events.
 
-### 1.1. Record Evolution
-*   **Action**: Append entry to `docs/epistemic/ledger/evolution_log.md`.
-*   **Inputs**: Scope (Code/Data/Ops), Summary.
-*   **Logic**:
-    1. Append Date + Scope + Summary.
+## 2. Invocation Contract
 
-## 2. Usage
+### Standard Grammar
+```
+Invoke evolution-recorder
+Mode: <REAL_RUN | DRY_RUN>
+Target: docs/epistemic/ledger/evolution_log.md
+ExecutionScope:
+  mode: all
+Options:
+  scope: <Code | Data | Ops | Cognition>
+  summary: "<string>"
+```
 
-### Command Line
-```powershell
-python bin/run-skill.py evolution-recorder --scope "Code" --summary "Added 5 new skills" --user recorder_bot
+## 3. Supported Modes & Selectors
+- **REAL_RUN**: Appends the formatted entry to the Evolution Log with a timestamp.
+- **DRY_RUN**: Prints the formatted entry to stdout.
+
+## 4. Hook & Skill Chaining
+- **Chained From**: Invoked as a **Post-Execution Hook** by `design-build-harness`.
+- **Chained To**: None.
+
+## 5. Metadata & State
+- **Inputs**: Summary of activity, scope of change.
+- **Outputs**: Append-only entry in `evolution_log.md`.
+
+## 6. Invariants & Prohibitions
+1.  **Descriptive Only**: Logs are descriptive records, not prescriptive decisions.
+2.  **No Privilege**: Logs cannot be used to justify or trigger system state changes.
+3.  **Subservience**: Logs do not supersede Decisions or Invariants.
+
+## 7. Example Invocation
+```
+Invoke evolution-recorder
+Mode: REAL_RUN
+Target: docs/epistemic/ledger/evolution_log.md
+ExecutionScope:
+  mode: all
+Options:
+  scope: Code
+  summary: "Refactored execution harness to support post-execution hooks."
 ```

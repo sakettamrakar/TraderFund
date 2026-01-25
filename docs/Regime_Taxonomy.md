@@ -2,7 +2,30 @@
 
 > **CHANGELOG**  
 > - 2026-01-16: Created from live implementation (`traderfund/regime/types.py`)  
-> - Status: **FROZEN** — Do not modify without architecture review
+> - 2026-01-24: Added epistemic framing and upstream dependency declaration
+> - Status: **FROZEN** — Do not modify states without architecture review
+
+---
+
+## Epistemic Framing
+
+> [!IMPORTANT]
+> The 7 regime states below are **behavioral classifications**, not root causes. Regime is a manifestation of underlying macro, flow, and structural conditions.
+
+### Upstream Dependency
+
+```
+macro_state → flow_state → regime_classification
+```
+
+**When Macro State is Unknown:**
+- Regime confidence degrades
+- Regime outputs are conditional, not absolute
+- Downstream consumers treat regime as "provisional"
+
+**The 7 states below describe WHAT the market is doing, not WHY.**
+
+See: [Market_Regime_Detection_Blueprint.md](file:///c:/GIT/TraderFund/docs/Market_Regime_Detection_Blueprint.md#15-epistemic-status-of-regime-critical-framing) for full epistemic status.
 
 ---
 

@@ -1,35 +1,52 @@
 ---
-name: Monitor Trigger (Passive)
+name: monitor-trigger
 description: Passive monitor to detect actionable system states and suggest interventions.
-version: 1.0.0
 ---
 
-# Monitor Trigger (Passive)
+# Monitor Trigger Skill (Passive)
 
-**Purpose**: To continuously observe the system state (Inbox, Artifacts, Logs) and identify when human intervention is required.
+**Status:** Operational  
+**Skill Category:** Analysis (Advisory)
 
-**Constraint**: This skill is **PASSIVE ONLY**. It must never execute the actions it suggests.
+## 1. Skill Purpose
+The `monitor-trigger` continuously observes the system state (Inbox, Artifacts, Logs) to identify when human intervention or specific system tasks are required. It is strictly passive and never acts on its own suggestions.
 
-## 1. Capabilities
+## 2. Invocation Contract
 
-### 1.1. Inbox Watcher
-*   **Target**: `data/events/inbox`
-*   **Condition**: Files exist.
-*   **Output**: Suggest `bin/run_narrative.py`.
-
-### 1.2. Decision Gap Detector
-*   **Target**: `data/narratives` vs `data/decisions`.
-*   **Condition**: Narrative exists without a corresponding Decision.
-*   **Output**: Suggest `bin/run_decision.py`.
-
-## 2. Usage
-
-### Command Line
-```powershell
-python bin/run-skill.py monitor-trigger --user monitor_agent
+### Standard Grammar
+```
+Invoke monitor-trigger
+Mode: <VERIFY | REAL_RUN>
+Target: <data_dir_path>
+ExecutionScope:
+  mode: all
+Options:
+  log-suggestions: <enabled | disabled>
 ```
 
-## 3. Operational Rules
-1.  **Log Only**: Outputs must be logged as `[SUGGESTION] ...`.
-2.  **No Side Effects**: Do not move, delete, or modify scanned files.
-3.  **Idempotency**: Runs must be stateless.
+## 3. Supported Modes & Selectors
+- **VERIFY**: Scan directories for actionable states (e.g., raw files in inbox) and return a list of suggestions.
+- **REAL_RUN**: Identical to VERIFY, but explicitly logs `[SUGGESTION]` entries to the system log.
+
+## 4. Hook & Skill Chaining
+Passive only. Does not chain or trigger other skills.
+
+## 5. Metadata & State
+- **Inputs**: `data/events/inbox`, `data/narratives`.
+- **Outputs**: List of suggested command-line actions.
+
+## 6. Invariants & Prohibitions
+1.  **Passive Only**: Must NEVER execute the actions it suggests.
+2.  **Log Only**: Outputs must be informational suggestions.
+3.  **State-Driven**: Suggestions are based strictly on current file presence or gap detection.
+
+## 7. Example Invocation
+```
+Invoke monitor-trigger
+Mode: REAL_RUN
+Target: data/
+ExecutionScope:
+  mode: all
+Options:
+  log-suggestions: enabled
+```

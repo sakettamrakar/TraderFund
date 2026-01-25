@@ -1,72 +1,76 @@
 ---
 name: drift-detector
-description: A skill to detect and report structural, configuration, or logic discrepancies against defining baselines.
+description: A skill to detect and report structural, configuration, logic, and epistemic discrepancies against defining baselines.
 ---
 
 # Drift Detector Skill
 
-**Status**: Defined (Phase 2 Unfreeze)
-**Authority**: Epistemic Guard (Read-Only)
+**Status:** Operational  
+**Skill Category:** Validation (Structural)
 
-## 1. Purpose
-The Drift Detector is responsible for ensuring the system's actual state matches its intended state (as defined by baselines, hashes, or specifications). It answers the question: "Has this component changed since we last approved it?"
+## 1. Skill Purpose
+The `drift-detector` ensures the system's actual state matches its intended state as defined by baselines and epistemic contracts. It answers: 
+1. "Has the system structure or config changed since last approval?" (Syntactic)
+2. "Is the system violating its own epistemic laws?" (Semantic)
 
-## 2. Core Capabilities
+## 2. Invocation Contract
 
-### A. Configuration Drift
-*   **Input**: Active `.env` or `config.py` content vs. authoritative `config.example`.
-*   **Action**: Compare keys and value types.
-*   **Output**: Report of missing keys, type mismatches, or unexpected extra keys.
-
-### B. Structural Drift
-*   **Input**: Directory structure vs. `Architecture_Overview.md` (or specific manifest).
-*   **Action**: verify existence of required folders and files.
-*   **Output**: List of missing critical components or unexpected (rogue) files.
-
-### C. Logic Drift (Future)
-*   **Input**: Source code hash vs. `deployment_manifest.json` (signed hash).
-*   **Action**: Verify integrity of critical modules (e.g., `regime`, `risk`).
-*   **Output**: Pass/Fail on integrity check.
-
-## 3. Operational Constraints
-
-1.  **Read-Only**: This skill **NEVER** modifies files. It does not "fix" drift; it only reports it.
-2.  **No Interpretation**: It does not judge whether a change is "good." It only judges if it matches the baseline.
-3.  **Deterministic**: Two runs on the same state must produce the exact same report.
-
-## 4. Input Schema
-
-```json
-{
-  "mode": "structure | config | integrity",
-  "target_path": "path/to/check",
-  "reference_path": "path/to/baseline (optional)"
-}
+### Standard Grammar
+```
+Invoke drift-detector
+Mode: <DRY_RUN | REAL_RUN | VERIFY>
+Target: <path/to/check>
+ExecutionScope:
+  mode: <all | selectors>
+  [rule_id: <OD-1 | CD-1 | ...>]
+Options:
+  validators: <enabled | disabled>
+  config: <check | ignore>
+  structure: <check | ignore>
 ```
 
-## 5. Output Schema
+## 3. Supported Modes & Selectors
 
-```json
-{
-  "status": "DRIFT_DETECTED | SYNCED | ERROR",
-  "drift_level": "CRITICAL | WARNING | INFO",
-  "differences": [
-    {
-      "location": "path/key",
-      "expected": "value",
-      "actual": "value"
-    }
-  ],
-  "timestamp": "ISO8601"
-}
+### A. Execution Modes
+- **DRY_RUN**: Identical to VERIFY, but does not trigger any potential side-effect hooks (though drift-detector is primarily read-only).
+- **REAL_RUN**: Execute full scan and generate a persistent [Drift Report].
+- **VERIFY**: Perform a read-only comparison against baselines and return a status code (PASS/FAIL).
+
+### B. Selectors
+- `all`: Run all 13 epistemic rules and all structural/config checks.
+- `rule_id`: Target a specific epistemic rule (e.g., `PD-1` for permission bypass).
+
+## 4. Hook & Skill Chaining
+- **Chained From**: Invoked as a **Pre-Execution Gate** by `design-build-harness`.
+- **Chained To**: If `CRITICAL` drift is detected, may inform `monitor-trigger`.
+
+## 5. Metadata & State
+- **Inputs**: Epistemic documents, `.env`, project root structure, source code.
+- **Outputs**: JSON Drift Report, violation count.
+
+## 6. Invariants & Prohibitions
+1.  **Read-Only**: NEVER modifies files; only reports drift.
+2.  **No Interpretation**: Judges against baselines, not "intent" or "quality."
+3.  **Deterministic**: Two runs on the same state MUST produce the same report.
+
+## 7. Example Invocation
+```
+Invoke drift-detector
+Mode: VERIFY
+Target: c:\GIT\TraderFund\
+ExecutionScope:
+  mode: all
+Options:
+  validators: enabled
+  config: check
+  structure: check
 ```
 
-## 6. Failure Behavior
-*   If the baseline is missing: **FAIL** (Cannot verify).
-*   If permissions deny read: **FAIL** (Observability Gap).
-*   If drift is detected: **SUCCEED** (Job is to report, not fix).
+---
 
-## 7. Relationship to Epistemic Framework
-*   **Drift = Epistemic Entropy**.
-*   This skill provides the raw data for the **Change Summarizer** or **Audit Log Viewer**.
-*   It is the "senses" detecting a violation of the "Freeze."
+## 8. Epistemic Validation Rules
+| Category | Rules | What They Detect |
+|:---------|:------|:-----------------|
+| Drift Taxonomy | OD-1 to LD-1 | Ontological, causal, boundary, permission, temporal, latent→active drift |
+| Macro/Factor | MF-1 to MF-4 | Macro dependency, factor policy, execution inference |
+| Harness Safety | EH-1 to EH-3 | Belief inference, factor bypass, implicit strategy |

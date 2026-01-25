@@ -78,3 +78,11 @@ Lower layers cannot override higher layers. Conflicts must be resolved upward, n
 **Decision**: Unfreeze Phase 6 for **Passive Monitoring** purposes only.
 **Rationale**: User requested next skill. Automation must be introduced gradually. First step is "Suggest, Don't Act".
 **Impacted Documents**: `task_graph.md`, `bounded_automation_contract.md`
+
+---
+
+### [2026-01-24] D009: Control Plane Authorization
+
+**Decision**: Authorize the commencement of work on the Control Plane (Tasks CP-1.1 through CP-1.4).
+**Rationale**: All epistemic foundations (Belief Policy, Factor Policy, Strategy Policy) are frozen. The Task Graph v2.1 is validated and the Execution Harness is operational.
+**Impacted Documents**: `task_graph.md`, `DWBS.md`, `current_phase.md`

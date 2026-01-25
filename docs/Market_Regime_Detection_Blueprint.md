@@ -22,6 +22,37 @@ The Regime Detection Layer functions exclusively as a **Gatekeeper**.
 
 > **Architectural Maxim:** Strategies ask "Is there a trade?" The Regime Layer answers "Is it safe to play?"
 
+### 1.5 Epistemic Status of Regime (Critical Framing)
+
+> [!WARNING]
+> Regime is a **behavioral manifestation**, not a root cause. This distinction is architecturally critical.
+
+**What Regime IS:**
+- A classification of observable market behavior
+- A downstream effect of underlying macro, flow, and structural conditions
+- A gating mechanism for strategy compatibility
+
+**What Regime is NOT:**
+- A root cause of market movements
+- An explanation of *why* the market behaves this way
+- A predictive signal
+
+**Upstream Dependency Declaration:**
+
+```
+macro_state → regime_classification
+```
+
+Regime classification is conditional on macro state. When macro state is unknown or uncertain:
+1. Regime confidence MUST degrade
+2. Regime outputs become conditional, not absolute
+3. Downstream consumers must treat regime as "provisional"
+
+**Failure Mode if Ignored:**
+Treating regime as root cause leads to circular reasoning: "The market is trending because it's in TRENDING regime" explains nothing. The correct framing is: "The market is in TRENDING regime because macro conditions (liquidity, rates, flows) support directional persistence."
+
+See: [latent_structural_layers.md](file:///c:/GIT/TraderFund/docs/epistemic/latent_structural_layers.md) for Macro Layer specification.
+
 ---
 
 ## 2. Regime Scope & Granularity Model

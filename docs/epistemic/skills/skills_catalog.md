@@ -26,6 +26,7 @@ All skills must operate within a strict hierarchy of authority.
 ---
 
 ## 1. Intent Consistency Reviewer
+- **Documentation**: [intent_consistency_reviewer.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/intent_consistency_reviewer.md)
 *   **Purpose**: To ensure that all proposed changes align with the Core Project Intent and Trading Philosophy.
 *   **Responsibilities**:
     *   Review proposed code or documentation changes.
@@ -37,6 +38,7 @@ All skills must operate within a strict hierarchy of authority.
 *   **Non-Responsibilities**: Code style checking, performance profiling.
 
 ## 2. Cognitive Order Validator
+- **Documentation**: [cognitive_order_validator.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/cognitive_order_validator.md)
 *   **Purpose**: To enforce the strict cognitive hierarchy rooted in `architectural_invariants.md`.
 *   **Responsibilities**:
     *   Verify that no strategy logic attempts to bypass Regime or Narrative context.
@@ -48,6 +50,7 @@ All skills must operate within a strict hierarchy of authority.
 *   **Non-Responsibilities**: Business logic verification, pnl optimization.
 
 ## 3. Decision Ledger Curator
+- **Documentation**: [decision_ledger_curator.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/decision_ledger_curator.md)
 *   **Purpose**: To maintain the integrity and chronological order of the Decision Ledger.
 *   **Responsibilities**:
     *   Format and append new Authoritative Decisions to `decisions.md`.
@@ -63,6 +66,7 @@ All skills must operate within a strict hierarchy of authority.
     *   **Human Origin**: All decisions must originate from humans.
 
 ## 4. Evolution Recorder
+- **Documentation**: [evolution_recorder.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/evolution_recorder.md)
 *   **Purpose**: To capture the "What" and "Why" of system lifecycle changes for historical continuity.
 *   **Responsibilities**:
     *   Append significant lifecycle events to `evolution_log.md`.
@@ -77,6 +81,7 @@ All skills must operate within a strict hierarchy of authority.
     *   **Subservience**: They do not supersede Decisions or Invariants.
 
 ## 5. Assumption Tracker
+- **Documentation**: [assumption_tracker.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/assumption_tracker.md)
 *   **Purpose**: To prevent regression by explicitly tracking invalidated assumptions and their permanent outcomes.
 *   **Responsibilities**:
     *   Record invalidated assumptions in `assumption_changes.md`.
@@ -91,6 +96,7 @@ All skills must operate within a strict hierarchy of authority.
     *   **Silence Forbidden**: Silent resurrection of failed assumptions is explicitly forbidden.
 
 ## 6. Runbook Generator
+- **Documentation**: [runbook_generator.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/runbook_generator.md)
 *   **Purpose**: To convert implicit operational knowledge into explicit executable runbooks.
 *   **Responsibilities**:
     *   Draft operational procedures based on successful execution logs.
@@ -105,6 +111,7 @@ All skills must operate within a strict hierarchy of authority.
     *   **Constraint Respect**: Runbooks cannot override `active_constraints.md`.
 
 ## 7. Change Summarizer
+- **Documentation**: [change_summarizer.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/change_summarizer.md)
 *   **Purpose**: To provide high-level, intent-focused summaries of complex changes for human consumption.
 *   **Responsibilities**:
     *   Synthesize diffs into natural language narratives.
@@ -114,17 +121,23 @@ All skills must operate within a strict hierarchy of authority.
 *   **Authority Level**: **Informational**.
 *   **Non-Responsibilities**: Approval or rejection.
 
-8. Drift Detector
-*   **Purpose**: To detect unauthorized or unintentional drift in system configuration and structure.
+## 8. Drift Detector
+- **Documentation**: [drift_detector.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/drift_detector.md)
+*   **Purpose**: To detect unauthorized or unintentional drift in system configuration, structure, and epistemic integrity.
 *   **Responsibilities**:
-    *   Compare current `.env` and directory structure against baselines (`.env.example`, known trees).
-    *   Report "Drift" (Missing keys, new files).
-*   **Read Scope**: `.env`, Project Root.
-*   **Write Scope**: Logs / Drift Reports.
-*   **Authority Level**: **Advisory** (Warning system).
-*   **Non-Responsibilities**: Fixing the drift automatically.
+    *   Compare current `.env` and directory structure against baselines.
+    *   Report syntactic drift (missing keys, new files).
+    *   Validate epistemic contracts and layer invariants (13 rules).
+    *   Detect permission bypass (PD-1), layer boundary violations (BD-1), latent layer activation (LD-1).
+    *   Flag CRITICAL violations that block deployment.
+*   **Read Scope**: `.env`, Project Root, `docs/epistemic/`, `src/`.
+*   **Write Scope**: Logs / Drift Reports (JSON).
+*   **Authority Level**: **Structural** (Gatekeeper for epistemic integrity).
+*   **Non-Responsibilities**: Fixing the drift automatically. Making PASS/FAIL judgments on strategy quality.
+*   **Scripts**: `drift_detector.py` (config/structure), `epistemic_validator.py` (13 epistemic rules).
 
 ## 9. Pattern Matcher
+- **Documentation**: [pattern_matcher.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/pattern_matcher.md)
 *   **Purpose**: To provide historical context by identifying price/volume patterns similar to the current regime.
 *   **Responsibilities**:
     *   Search historical data for correlated segments.
@@ -135,6 +148,7 @@ All skills must operate within a strict hierarchy of authority.
 *   **Non-Responsibilities**: Predicting future price action.
 
 ## 10. Constraint Validator
+- **Documentation**: [constraint_validator.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/constraint_validator.md)
 *   **Purpose**: To mechanically enforce the epistemic and logical constraints defined in the system.
 *   **Responsibilities**:
     *   Validate artifacts (Narratives, Decisions) against schema and logic rules (e.g. No Future Timestamps).
@@ -144,8 +158,8 @@ All skills must operate within a strict hierarchy of authority.
 *   **Authority Level**: **Structural** (Gatekeeper).
 *   **Non-Responsibilities**: judging the *quality* of the trade, only the *validity* of the artifact.
 
-
 ## 11. Audit Log Viewer
+- **Documentation**: [audit_log_viewer.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/audit_log_viewer.md)
 *   **Purpose**: To provide a human-readable view of the machine-parseable JSON audit logs (Glass Box Verification).
 *   **Responsibilities**:
     *   Parse and filter JSON logs from `logs/`.
@@ -155,7 +169,8 @@ All skills must operate within a strict hierarchy of authority.
 *   **Authority Level**: **Informational**.
 *   **Non-Responsibilities**: Modifying logs or alerting (Passive view only).
 
-## 12. Monitor Trigger (Passive)
+## 12. Monitor Trigger
+- **Documentation**: [monitor_trigger.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/monitor_trigger.md)
 *   **Purpose**: To continuously observe the system state and suggest interventions (Passive).
 *   **Responsibilities**:
     *   Scan Inbox for new files.
@@ -165,6 +180,20 @@ All skills must operate within a strict hierarchy of authority.
 *   **Write Scope**: Logs only.
 *   **Authority Level**: **Advisory**.
 *   **Non-Responsibilities**: Executing any actions.
+
+## 13. Design/Build Execution Harness
+- **Documentation**: [design_build_harness.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/design_build_harness.md)
+- **Contract**: [execution_contract.md](file:///c:/GIT/TraderFund/docs/epistemic/skills/execution_contract.md)
+*   **Purpose**: To deterministically execute the Design/Build Task Graph while obeying epistemic, policy, and validator constraints.
+*   **Responsibilities**:
+    *   Ingest `task_graph.md` and resolve dependencies.
+    *   Verify DWBS plane gates and task preconditions.
+    *   Invoke meta-engineering skills in correct order.
+    *   Coordinate ledger updates and post-execution verification.
+*   **Read Scope**: `docs/architecture/DWBS.md`, `docs/epistemic/roadmap/task_graph.md`, `docs/epistemic/ledger/`.
+*   **Write Scope**: `docs/epistemic/roadmap/task_graph.md`, `docs/epistemic/ledger/evolution_log.md`.
+*   **Authority Level**: **Structural** (Orchestration).
+*   **Non-Responsibilities**: Performing market execution, trading, or belief inference.
 
 ## Explicit Skill Non-Goals
 

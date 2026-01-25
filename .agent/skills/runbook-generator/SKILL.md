@@ -1,28 +1,57 @@
 ---
-name: Runbook Generator
+name: runbook-generator
 description: Tool to convert implicit operational knowledge into explicit executable runbooks (Template Generator).
-version: 1.0.0
 ---
 
-# Runbook Generator
+# Runbook Generator Skill
 
-**Purpose**: To reduce the friction of creating formal documentation. It generates standardized Runbook templates.
+**Status:** Operational  
+**Skill Category:** Meta (Documentation)
 
-## 1. Capabilities
+## 1. Skill Purpose
+The `runbook-generator` reduces documentation friction by generating standardized templates for operational procedures. It ensures that every new task has a corresponding "How-To" for human operators.
 
-### 1.1. Scaffolding
-*   **Action**: Create new markdown file in `docs/runbooks/`.
-*   **Inputs**: Runbook Name, Target Phase.
-*   **Output**: A file with headers for:
-    *   Purpose/Trigger
-    *   Pre-requisites (Permissions, Data)
-    *   Execution Steps (CLI commands)
-    *   Verification (How to know it worked)
-    *   Troubleshooting
+## 2. Invocation Contract
 
-## 2. Usage
+### Standard Grammar
+```
+Invoke runbook-generator
+Mode: <REAL_RUN | DRY_RUN>
+Target: docs/runbooks/
+ExecutionScope:
+  mode: all
+Options:
+  name: "<runbook_filename>"
+  phase: "<target_phase_number>"
+  template: "<standard | emergency | setup>"
+```
 
-### Command Line
-```powershell
-python bin/run-skill.py runbook-generator --name "monthly_cleanup" --user documentation_bot
+## 3. Supported Modes & Selectors
+- **REAL_RUN**: Creates a new `.md` file in the target directory with prepopulated headers.
+- **DRY_RUN**: Prints the template content to stdout without creating a file.
+
+## 4. Hook & Skill Chaining
+- **Chained From**: Triggered as a **Post-Execution Hook** for `Infrastructure` or `Workflow` tasks.
+- **Chained To**: Manual human review.
+
+## 5. Metadata & State
+- **Inputs**: Runbook name, phase context, [documentation_contract.md](file:///c:/GIT/TraderFund/docs/epistemic/documentation_contract.md).
+- **Outputs**: New Markdown runbook template.
+
+## 6. Invariants & Prohibitions
+1.  **Skeleton Only**: Does NOT automatically write the steps; generates the structural requirement only.
+2.  **Alignment**: Must follow the headings defined in the system's documentation standard.
+3.  **No Auto-Execution**: Generated runbooks MUST be reviewed by a human before being marked as `SUCCESS` in the task graph.
+
+## 7. Example Invocation
+```
+Invoke runbook-generator
+Mode: REAL_RUN
+Target: docs/runbooks/
+ExecutionScope:
+  mode: all
+Options:
+  name: "market_hours_init"
+  phase: "3"
+  template: "standard"
 ```

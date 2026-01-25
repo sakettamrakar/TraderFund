@@ -1,35 +1,62 @@
 ---
-name: Audit Log Viewer
+name: audit-log-viewer
 description: Read-only tool to inspect system logs and operator actions.
-version: 1.0.0
 ---
 
-# Audit Log Viewer
+# Audit Log Viewer Skill
 
-**Purpose**: To provide a human-readable view of the machine-parseable JSON audit logs. This skill enables "Glass Box" verification of system history.
+**Status:** Operational  
+**Skill Category:** Analysis (Informational)
 
-## 1. Capabilities
+## 1. Skill Purpose
+The `audit-log-viewer` provides a human-readable, filterable view of the machine-parseable JSON audit logs. It enables "Glass Box" verification of system history and the provenance of actions.
 
-### 1.1. Log Inspection
-*   **Target**: `logs/*.json`
-*   **Action**: Read, Parse, Filter, Display.
-*   **Constraint**: Read-Only.
+## 2. Invocation Contract
 
-### 1.2. Filtering
-*   **By User**: Filter actions by a specific operator (e.g., `--user alice`).
-*   **By Time**: Show only recent logs (e.g., `--last 50` or `--day 2026-01-24`).
-*   **By Logger**: Filter by component (e.g., `RunNarrativeCLI`).
-
-## 2. Usage
-
-### Command Line
-```powershell
-python bin/run-skill.py audit-log-viewer --last 20
-python bin/run-skill.py audit-log-viewer --user test_user
-python bin/run-skill.py audit-log-viewer --day 2026-01-24
+### Standard Grammar
+```
+Invoke audit-log-viewer
+Mode: <REAL_RUN | VERIFY>
+Target: logs/*.json
+ExecutionScope:
+  mode: <all | selectors>
+  [user: <string>]
+  [logger: <string>]
+  [last: <n>]
+  [day: <date>]
+Options:
+  format: <text | json | table>
 ```
 
-## 3. Operational Rules
-1.  **Transparency**: This skill must not hide any log entries that match the filter.
-2.  **Integrity**: This skill must not modify the log files.
-3.  **Availability**: This skill must handle malformed JSON lines gracefully (e.g., by printing raw text).
+## 3. Supported Modes & Selectors
+- **REAL_RUN / VERIFY**: Parse and display logs based on the provided filters. In this skill, these modes are technically identical as the skill is read-only.
+- **Selectors**:
+    - `user`: Filter by a specific operator.
+    - `logger`: Filter by component (e.g., `RunNarrativeCLI`).
+    - `last`: Show the most recent N lines.
+    - `day`: Filter logs for a specific calendar date.
+
+## 4. Hook & Skill Chaining
+Not Applicable (Passive viewer).
+
+## 5. Metadata & State
+- **Inputs**: JSON logs from `logs/`.
+- **Outputs**: Structured stdout display.
+
+## 6. Invariants & Prohibitions
+1.  **Read-Only**: NEVER modifies or deletes log files.
+2.  **Transparency**: Must not hide log entries that match the filter.
+3.  **Integrity**: Must report malformed JSON rather than silently skipping it.
+
+## 7. Example Invocation
+```
+Invoke audit-log-viewer
+Mode: REAL_RUN
+Target: logs/audit.json
+ExecutionScope:
+  mode: selectors
+  user: "agent_42"
+  last: 20
+Options:
+  format: table
+```

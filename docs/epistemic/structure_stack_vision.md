@@ -169,6 +169,35 @@ These layers translate internal belief into external interaction. They are const
 
 ---
 
+## 4.1 Latent Structural Layers
+
+> [!IMPORTANT]
+> The following layers are epistemically unavoidable but may not be implemented. See [latent_structural_layers.md](file:///c:/GIT/TraderFund/docs/epistemic/latent_structural_layers.md) for full specification.
+
+### Declared Latent Layers
+
+| Layer | Position | Responsibility | Status |
+|:------|:---------|:---------------|:-------|
+| **Macro / Liquidity** | L5.5 | Central bank policy, credit conditions, systemic liquidity | LATENT |
+| **Flow / Microstructure** | L5.7 | Forced flows, index rebalancing, margin calls | LATENT |
+| **Volatility Geometry** | L5.8 | Term structure, skew, convexity, tail risk pricing | LATENT |
+| **Factor / Style Risk** | L6.5 | Factor permissions, exposure constraints, policy layer | LATENT |
+
+### Downstream Anticipation Requirement
+
+Code consuming lower layers MUST anticipate that these latent layers will eventually exist. When unimplemented:
+- Assume degraded confidence
+- Proceed with baseline assumptions
+- Do NOT assume these layers will never exist
+
+### Related Documents
+
+- [latent_structural_layers.md](file:///c:/GIT/TraderFund/docs/epistemic/latent_structural_layers.md) — Full layer declarations
+- [factor_layer_policy.md](file:///c:/GIT/TraderFund/docs/epistemic/factor_layer_policy.md) — Factor Layer as policy layer
+- [flow_microstructure_layer.md](file:///c:/GIT/TraderFund/docs/epistemic/flow_microstructure_layer.md) — Flow/Microstructure documentation
+
+---
+
 ## 5. Structural Layers vs. Replaceable Engines
 
 It is critical to distinguish between the **Slot** (The Layer) and the **Card** (The Engine).
