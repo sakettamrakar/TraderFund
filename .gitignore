@@ -25,3 +25,47 @@ __pycache__/
 # ---- LOGS ----
 logs/
 
+
+# ===============================
+# Evolution / EV-RUN Generated Artifacts
+# ===============================
+
+# Ignore window-level evaluation outputs and run logs
+docs/evolution/evaluation/
+
+# Ignore window-scoped context snapshots (but keep schema)
+docs/evolution/context/*
+!docs/evolution/context/factor_context_schema.md
+!docs/evolution/context/regime_context.json
+
+# Ignore rolling diagnostics and window reports
+docs/diagnostics/**/window_*
+docs/diagnostics/**/rolling_*
+
+# Ignore EV execution bundles (regenerable)
+docs/evolution/**/bundles/
+docs/evolution/**/execution_runs/
+
+# Ignore shadow execution traces
+docs/evolution/**/shadow_*
+
+# ===============================
+# Explicitly KEEP canonical artifacts
+# ===============================
+
+!docs/evolution/evaluation_profiles/
+!docs/evolution/evaluation_profiles/*.yaml
+
+!docs/evolution/meta_analysis/
+!docs/evolution/meta_analysis/*.md
+!docs/evolution/meta_analysis/*.csv
+
+!docs/impact/
+!docs/impact/*.md
+
+!docs/epistemic/
+!docs/epistemic/**
+
+!docs/**/schema.md
+!docs/**/task_graph.md
+!docs/**/registry*.md

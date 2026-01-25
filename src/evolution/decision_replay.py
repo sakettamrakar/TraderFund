@@ -26,23 +26,32 @@ class RegimeContextError(Exception):
     pass
 
 class DecisionReplayWrapper:
-    def __init__(self):
+    def __init__(self, context_path: Optional[Path] = None):
+        self._context_path = context_path or Path("docs/evolution/context/regime_context.json")
         self._regime_context = self._load_regime_context()
+        self._factor_context = {}  # Loaded lazily
         self.engine = ReplayEngine()
+        
+    def load_factor_context(self, factor_path: Path):
+        """Load the Factor Context for binding."""
+        if not factor_path.exists():
+            return
+        with open(factor_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self._factor_context = data.get("factor_context", {}).get("factors", {})
         
     def _load_regime_context(self) -> Dict[str, Any]:
         """Load and validate the authoritative regime context."""
-        context_path = Path("docs/evolution/context/regime_context.json")
-        if not context_path.exists():
+        if not self._context_path.exists():
             raise RegimeContextError("MANDATORY REGIME CONTEXT MISSING. Run EV-RUN-0 first.")
         
-        with open(context_path, 'r', encoding='utf-8') as f:
+        with open(self._context_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             return data["regime_context"]
 
-    def execute_full_trace(self):
+    def execute_full_trace(self, output_dir: Optional[Path] = None):
         """Execute replay for all strategies over all data."""
-        output_dir = Path("docs/evolution/evaluation")
+        output_dir = output_dir or Path("docs/evolution/evaluation")
         output_dir.mkdir(parents=True, exist_ok=True)
         parquet_path = output_dir / "decision_trace_log.parquet"
         
@@ -56,6 +65,7 @@ class DecisionReplayWrapper:
             "decision_id": ["DEC-001", "DEC-002"],
             "action": ["BUY", "HOLD"],
             "regime": [regime_label, regime_label],
+            "factors": [str(self._factor_context), str(self._factor_context)], # Proof of binding
             "outcome": ["SHADOW_FILLED", "SHADOW_REJECTED"]
         }
         
@@ -64,10 +74,22 @@ class DecisionReplayWrapper:
         print(f"Generated: {parquet_path}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="EV-RUN-2: Decision Replay Engine")
+    parser.add_argument("--context", type=Path, help="Path to regime_context.json")
+    parser.add_argument("--output", type=Path, help="Directory for output artifacts")
+    args = parser.parse_args()
+
     try:
         print("Running Decision Replay Engine...")
-        wrapper = DecisionReplayWrapper()
-        wrapper.execute_full_trace()
+        wrapper = DecisionReplayWrapper(context_path=args.context)
+        
+        # Binding Factor Context
+        if args.output:
+            factor_path = args.output / "factor_context.json"
+            wrapper.load_factor_context(factor_path)
+            
+        wrapper.execute_full_trace(output_dir=args.output)
         print("EV-RUN-2 Complete.")
     except Exception as e:
         print(f"CRITICAL FAILURE: {str(e)}")

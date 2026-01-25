@@ -342,3 +342,26 @@ Verified authorization gating, dependency resolution, and zero side effects.
 
 
 
+
+### [2026-01-25T18:39:09.626178] EV-RUN Profile Execution
+- **Profile**: `EV-HISTORICAL-ROLLING-V1` (v1.0.0)
+- **Mode**: historical
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-25T18:42:06.354302] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BULL-CALM-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-25T18:58:34] EV-RUN Meta-Analysis
+- **Type**: Evidence Synthesis & Synthesis
+- **Input Profiles**: `EV-HISTORICAL-ROLLING-V1`, `EV-FORCED-BULL-CALM-V1`
+- **Window Count**: 70
+- **Outcome**: SUCCESS
+- **Artifacts**: `docs/evolution/meta_analysis/`
+- **Flags Assigned**: 2 Robust, 1 Regime-Dependent
+- **Principle**: Meaning extracted from evidence. No optimization permitted.

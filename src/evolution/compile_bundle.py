@@ -18,16 +18,25 @@ class RegimeContextError(Exception):
     pass
 
 class BundleCompiler:
-    def __init__(self):
+    def __init__(self, context_path: Optional[Path] = None):
+        self._context_path = context_path or Path("docs/evolution/context/regime_context.json")
         self._regime_context = self._load_regime_context()
+        self._factor_context = {}  # Loaded lazily
+        
+    def load_factor_context(self, factor_path: Path):
+        """Load the Factor Context for binding."""
+        if not factor_path.exists():
+            return
+        with open(factor_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self._factor_context = data.get("factor_context", {}).get("factors", {})
 
     def _load_regime_context(self) -> Dict[str, Any]:
         """Load and validate the authoritative regime context."""
-        context_path = Path("docs/evolution/context/regime_context.json")
-        if not context_path.exists():
-            raise RegimeContextError("MANDATORY REGIME CONTEXT MISSING. Run EV-RUN-0 first.")
+        if not self._context_path.exists():
+            raise RegimeContextError(f"MANDATORY REGIME CONTEXT MISSING at {self._context_path}. Run EV-RUN-0 first.")
         
-        with open(context_path, 'r', encoding='utf-8') as f:
+        with open(self._context_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             return data["regime_context"]
 
@@ -48,19 +57,33 @@ class BundleCompiler:
             
         return "\n".join([header, separator] + rows)
 
-    def compile(self):
-        output_dir = Path("docs/evolution/evaluation")
+    def compile(self, output_dir: Optional[Path] = None):
+        output_dir = output_dir or Path("docs/evolution/evaluation")
         if not output_dir.exists():
             print("No evaluation artifacts found to bundle.")
             return
 
         bundle_path = output_dir / "evolution_evaluation_bundle.md"
+        regime = self._regime_context
+        
+        # Factor Summary
+        factor_summary = "N/A"
+        if self._factor_context:
+            factor_summary = ", ".join([f"{k}={v['strength']}" if 'strength' in v else f"{k}={v.get('state','?')}" for k,v in self._factor_context.items()])
+            
+        md = []
+        md.append("# Evolution Evaluation Bundle")
+        md.append("")
+        md.append(f"**Window**: {regime['evaluation_window']['start']} to {regime['evaluation_window']['end']}")
+        md.append(f"**Regime**: `{regime['regime_label']}` ({regime['regime_code']})")
+        md.append(f"**Factors**: `{factor_summary}`")
+        md.append(f"**Generated**: {datetime.now().isoformat()}")
+        md.append("---")
+        md.append("")
         
         with open(bundle_path, 'w', encoding='utf-8') as f:
-            f.write("# Evolution Evaluation Bundle\n\n")
-            f.write(f"**Generated**: {datetime.now().isoformat()}\n")
-            f.write(f"**Execution Context**: {self._regime_context['regime_label']} ({self._regime_context['regime_code']})\n")
-            f.write(f"**Context Version**: {self._regime_context['version']}\n\n")
+            f.write("\n".join(md))
+            f.write("\n") # Add an extra newline after the header block
             
             f.write("## 1. Strategy Activation\n")
             matrix_path = output_dir / "strategy_activation_matrix.csv"
@@ -110,9 +133,22 @@ class BundleCompiler:
         print(f"Generated Bundle: {bundle_path}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="EV-RUN-6: Bundle Compiler")
+    parser.add_argument("--context", type=Path, help="Path to regime_context.json")
+    parser.add_argument("--output", type=Path, help="Directory for output artifacts")
+    args = parser.parse_args()
+
     try:
-        compiler = BundleCompiler()
-        compiler.compile()
+        compiler = BundleCompiler(context_path=args.context)
+        
+        # Binding Factor Context
+        if args.output:
+            factor_path = args.output / "factor_context.json"
+            compiler.load_factor_context(factor_path)
+            
+        print("Compiling Evaluation Bundle...")
+        compiler.compile(output_dir=args.output)
         print("EV-RUN-6 Complete.")
     except Exception as e:
         print(f"CRITICAL FAILURE: {str(e)}")

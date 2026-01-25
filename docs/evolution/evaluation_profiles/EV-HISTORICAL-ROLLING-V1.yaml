@@ -1,0 +1,53 @@
+# Evaluation Profile: Historical Rolling-Window (Observed Regime)
+#
+# Profile ID: EV-HISTORICAL-ROLLING-V1
+# Version: 1.0.0
+# Purpose: Historical evaluation with observed regimes and observed factors.
+#          Uses a 90-day rolling window with 30-day step.
+#
+# Decision Reference: D013 (Decision Plane Authorization)
+# Date: 2026-01-25
+
+profile_id: EV-HISTORICAL-ROLLING-V1
+version: 1.0.0
+description: >
+  Historical rolling-window evaluation with observed regimes and observed factors.
+  Evaluates strategy behavior across multiple historical windows, detecting the
+  actual regime state from data in each window. This profile is used to understand
+  how strategies would have performed under real market conditions.
+
+mode:
+  type: historical
+
+windowing:
+  type: rolling
+  window_size: 90d
+  step_size: 30d
+  anchor_dates: null
+
+regime:
+  detection: true
+  override: null
+
+factor:
+  observation: observe
+  override: null  # FORBIDDEN
+
+execution:
+  shadow_only: true
+  allow_replay: true
+  allow_parallel_windows: true
+
+outputs:
+  artifact_namespace: ev/historical/rolling/v1
+  persist_intermediate: true
+
+governance:
+  decision_ref: D013
+  ledger_required: true
+  did_required: true
+
+invariants:
+  forbid_real_execution: true
+  forbid_strategy_mutation: true
+  forbid_regime_fallback: true

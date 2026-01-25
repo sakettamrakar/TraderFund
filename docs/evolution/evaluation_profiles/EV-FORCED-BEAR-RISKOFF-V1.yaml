@@ -1,0 +1,39 @@
+profile_id: EV-FORCED-BEAR-RISKOFF-V1
+version: 1.0.0
+description: Counterfactual stress test under forced Bear / Risk-Off regime.
+
+mode:
+  type: forced_regime
+
+windowing:
+  type: rolling
+  window_size: 90d
+  step_size: 30d
+
+regime:
+  detection: false
+  override:
+    regime_code: BEAR_RISK_OFF
+    rationale: Stress testing downside and defensive behavior
+
+factor:
+  observation: observe
+
+execution:
+  shadow_only: true
+  allow_replay: true
+  allow_parallel_windows: true
+
+outputs:
+  artifact_namespace: ev/forced/bear_riskoff/v1
+  persist_intermediate: true
+
+governance:
+  decision_ref: D013
+  ledger_required: true
+  did_required: true
+
+invariants:
+  forbid_real_execution: true
+  forbid_strategy_mutation: true
+  forbid_regime_fallback: true

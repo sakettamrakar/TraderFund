@@ -93,6 +93,20 @@ Modifying existing layers without authorization is forbidden.
 Silent structural changes are drift, not evolution.
 ```
 
+### PRIN-7: Factors Are Observational
+
+```
+Regime defines permissibility; factors define suitability.
+Factors explain why strategies activate within regimes.
+Strategies do not compute their own factors.
+```
+
+### PRIN-8: Explanation not Coercion
+
+```
+Factor Context exists to explain why strategies reject, not to coerce them into trading.
+```
+
 ---
 
 ## 3. System Planes Overview
@@ -453,7 +467,11 @@ Cross-plane shortcuts create hidden dependencies:
 | Attribute | Value |
 |:----------|:------|
 | **What Is Produced** | Bulk strategy registration and evaluation pipeline |
-| **Why It Must Exist** | All strategies must be evaluable without manual wiring |
+| **Why It Must Exist** | All strategies must be evaluable without manual wiring
+- **EV-INV-001**: Observational data (e.g., price, volume) must be distinct from Signal data (e.g., alpha factors).
+- **EV-INV-002**: Observational data may not be used as a Signal.
+- **EV-INV-003**: Regimes must be exclusive and exhaustive within a hierarchy.
+- **EV-INV-004**: No strategy may gate execution on Factor Context v1.1 fields (acceleration, etc.) without explicit governance approval.
 | **Depends On** | Strategy Registry, Decision Plane |
 | **What Depends On It** | Comparative evaluation, Paper P&L |
 | **What Breaks If Skipped** | Per-strategy manual setup → unscalable |
@@ -624,6 +642,17 @@ FactorPermission:
   - max_exposure: Exposure limits by factor
   - granted_at: Timestamp
   - expires_at: Expiration (if applicable)
+```
+
+### FactorContext Interface
+
+```
+FactorContext:
+  - computed_at: Timestamp
+  - window: Start/End
+  - factors: Map[FactorName, State]
+  - inputs_used: List[Metric]
+  - validity: Boolean
 ```
 
 ### TaskSpec Interface

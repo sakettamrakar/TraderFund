@@ -72,19 +72,19 @@ class CoverageDiagnostics:
     OBL-EV-FAILURE-SURFACE: This is the primary enforcement mechanism.
     """
     
-    def __init__(self):
+    def __init__(self, context_path: Optional[Path] = None):
         self._undefined_log: List[UndefinedStateEntry] = []
         self._regime_coverage: Dict[str, RegimeCoverage] = {}
         self._factor_coverage: Dict[str, FactorCoverage] = {}
+        self._context_path = context_path or Path("docs/evolution/context/regime_context.json")
         self._regime_context = self._load_regime_context()
         
     def _load_regime_context(self) -> Dict[str, Any]:
         """Load and validate the authoritative regime context."""
-        context_path = Path("docs/evolution/context/regime_context.json")
-        if not context_path.exists():
-            raise RegimeContextError("MANDATORY REGIME CONTEXT MISSING. Run EV-RUN-0 first.")
+        if not self._context_path.exists():
+            raise RegimeContextError(f"MANDATORY REGIME CONTEXT MISSING at {self._context_path}. Run EV-RUN-0 first.")
         
-        with open(context_path, 'r', encoding='utf-8') as f:
+        with open(self._context_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             return data["regime_context"]
 
@@ -111,9 +111,9 @@ class CoverageDiagnostics:
         self._undefined_log.append(entry)
         return entry
     
-    def generate_report_markdown(self):
+    def generate_report_markdown(self, output_dir: Optional[Path] = None):
         """Generate Coverage Diagnostics Report Artifact."""
-        output_dir = Path("docs/evolution/evaluation")
+        output_dir = output_dir or Path("docs/evolution/evaluation")
         output_dir.mkdir(parents=True, exist_ok=True)
         report_path = output_dir / "coverage_diagnostics.md"
         
@@ -130,10 +130,16 @@ class CoverageDiagnostics:
         print(f"Generated: {report_path}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="EV-RUN-4: Coverage Diagnostics")
+    parser.add_argument("--context", type=Path, help="Path to regime_context.json")
+    parser.add_argument("--output", type=Path, help="Directory for output artifacts")
+    args = parser.parse_args()
+
     try:
-        diag = CoverageDiagnostics()
+        diag = CoverageDiagnostics(context_path=args.context)
         print("Running Coverage Diagnostics...")
-        diag.generate_report_markdown()
+        diag.generate_report_markdown(output_dir=args.output)
         print("EV-RUN-4 Complete.")
     except Exception as e:
         print(f"CRITICAL FAILURE: {str(e)}")

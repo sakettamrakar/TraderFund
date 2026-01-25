@@ -20,6 +20,7 @@ sys.path.insert(0, str(project_root / "src"))
 
 from decision.decision_spec import DecisionSpec, DecisionFactory, ProposedAction, StateSnapshot, DecisionRouting
 from decision.shadow_sink import ShadowExecutionSink
+from strategy.registry import STRATEGY_REGISTRY
 
 class RegimeContextError(Exception):
     """Raised when regime context is missing or violated."""
@@ -54,18 +55,30 @@ class BulkEvaluator:
     - Shadow execution only.
     """
     
-    def __init__(self):
+    def __init__(self, context_path: Optional[Path] = None):
         self._shadow_sink = ShadowExecutionSink()
         self._evaluation_log: List[StrategyEvaluationResult] = []
+        self._context_path = context_path or Path("docs/evolution/context/regime_context.json")
+        # Infer factor context path from output dir (if available) or assume relative
         self._regime_context = self._load_regime_context()
+        self._factor_context = {}  # Loaded lazily or via separate init
+    
+    def load_factor_context(self, factor_path: Path):
+        """Load the Factor Context for binding."""
+        if not factor_path.exists():
+            print(f"WARNING: Factor Context not found at {factor_path}. Proceeding without it.")
+            return
+
+        with open(factor_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self._factor_context = data.get("factor_context", {}).get("factors", {})
     
     def _load_regime_context(self) -> Dict[str, Any]:
         """Load and validate the authoritative regime context."""
-        context_path = Path("docs/evolution/context/regime_context.json")
-        if not context_path.exists():
+        if not self._context_path.exists():
             raise RegimeContextError("MANDATORY REGIME CONTEXT MISSING. Run EV-RUN-0 first.")
         
-        with open(context_path, 'r', encoding='utf-8') as f:
+        with open(self._context_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             return data["regime_context"]
 
@@ -73,12 +86,7 @@ class BulkEvaluator:
         """
         Get all registered strategies.
         """
-        # Placeholder: would integrate with actual registry
-        return [
-            "STRATEGY_MOMENTUM_V1",
-            "STRATEGY_VALUE_QUALITY_V1",
-            "STRATEGY_FACTOR_ROTATION_V1"
-        ]
+        return list(STRATEGY_REGISTRY.keys())
     
     def evaluate_strategy(
         self,
@@ -91,10 +99,14 @@ class BulkEvaluator:
         """
         # FORBIDDEN: Independent regime computation
         if state_snapshot is None:
-            state_snapshot = StateSnapshot(regime=self._regime_context["regime_label"])
+            state_snapshot = StateSnapshot(
+                regime=self._regime_context["regime_label"],
+                factor_context=self._factor_context
+            )
         elif state_snapshot.regime != self._regime_context["regime_label"]:
              # Force consistency
              state_snapshot.regime = self._regime_context["regime_label"]
+             state_snapshot.factor_context = self._factor_context
         
         failures = []
         decisions = []
@@ -161,9 +173,9 @@ class BulkEvaluator:
         """Get the complete evaluation log."""
         return self._evaluation_log.copy()
 
-    def generate_activation_matrix(self):
+    def generate_activation_matrix(self, output_dir: Optional[Path] = None):
         """Generate the Strategy Activation Matrix artifact."""
-        output_dir = Path("docs/evolution/evaluation")
+        output_dir = output_dir or Path("docs/evolution/evaluation")
         output_dir.mkdir(parents=True, exist_ok=True)
         csv_path = output_dir / "strategy_activation_matrix.csv"
         
@@ -185,10 +197,22 @@ class BulkEvaluator:
         print(f"Generated: {csv_path}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="EV-RUN-1: Bulk Strategy Evaluator")
+    parser.add_argument("--context", type=Path, help="Path to regime_context.json")
+    parser.add_argument("--output", type=Path, help="Directory for output artifacts")
+    args = parser.parse_args()
+
     try:
-        evaluator = BulkEvaluator()
+        evaluator = BulkEvaluator(context_path=args.context)
+        
+        # Load Factor Context (Expected in output dir)
+        if args.output:
+            factor_path = args.output / "factor_context.json"
+            evaluator.load_factor_context(factor_path)
+            
         print("Running Bulk Strategy Evaluation...")
-        evaluator.generate_activation_matrix()
+        evaluator.generate_activation_matrix(output_dir=args.output)
         print("EV-RUN-1 Complete.")
     except Exception as e:
         print(f"CRITICAL FAILURE: {str(e)}")

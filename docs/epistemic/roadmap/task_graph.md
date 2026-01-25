@@ -112,6 +112,7 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 | **OBL-EV-SHADOW-INTEGRITY** | **Shadow Integrity**: Paper execution never affects capital. | Evolution | TRUE | `EV-7.3` | ✅ SATISFIED |
 | **OBL-EV-FAILURE-SURFACE** | **Failure Surfacing**: Undefined states explicitly logged. | Evolution | TRUE | `EV-7.4` | ✅ SATISFIED |
 | **OBL-EV-COMPARATIVE** | **Comparative Eval**: Side-by-side strategy evaluation. | Evolution | TRUE | `EV-7.5` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT** | **Factor Context**: Observational context schema defined & governed. | Evolution | TRUE | `EV-CTX-FACTOR-DESIGN` | ✅ SATISFIED |
 | **OBL-EV-CLOSURE** | **Closure**: All OBL-EV-* must be satisfied for closure. | Evolution | TRUE | *All EV Tasks* | ✅ SATISFIED |
 
 ### Regime Observability Obligations (EV Sub-phase)
@@ -716,6 +717,84 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 **Gate:** Learning and debugging phase. No execution. **Shadow + Diagnostics only.**
 
 ---
+
+### Task EV-CTX-FACTOR-DESIGN: Factor Context Design
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-CTX-FACTOR-DESIGN |
+| **Status** | SUCCESS |
+| **DWBS Ref** | 4.4.2 |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Define Factor Context schema, binding rules, and DWV integration. |
+| **Inputs** | `DWBS.md`, `Regime Context` |
+| **Artifacts** | `docs/evolution/context/factor_context_schema.md` |
+| **Impacts** | `docs/architecture/DWBS.md` |
+| **Post Hooks** | `decision-ledger-curator` |
+| **Validator** | Schema Verification |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT` |
+
+---
+
+### Task EV-RUN-CTX-FACTOR: Factor Context Builder
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-RUN-CTX-FACTOR |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Compute and bind Factor Context per window for EV-RUN execution. |
+| **Inputs** | `EV-RUN-0` (Regime Context) |
+| **Artifacts** | `factor_context.json` |
+| **Impacts** | `src/evolution/pipeline_runner.py` |
+| **Post Hooks** | None |
+| **Validator** | Viability Check |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT` |
+
+---
+
+### Task EV-CTX-FACTOR-V1.1: Factor Context Extension
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-CTX-FACTOR-V1.1 |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Extend Factor Context from v1 to v1.1 with higher-resolution observational descriptors. |
+| **Inputs** | `EV-CTX-FACTOR-DESIGN` |
+| **Artifacts** | `factor_context_schema.md` |
+| **Impacts** | `factor_context_builder.py` |
+| **Post Hooks** | None |
+| **Validator** | Schema Check |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT-V1.1` |
+
+---
+
+### Task SP-MOMENTUM-VARIANTS: Momentum Strategy Evolution
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | SP-MOMENTUM-VARIANTS |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Strategy |
+| **Blocking** | TRUE |
+| **Purpose** | Register factor-informed Momentum strategy variants. |
+| **Inputs** | `EV-CTX-FACTOR-V1.1` |
+| **Artifacts** | `src/strategy/registry.py` |
+| **Impacts** | `bulk_evaluator.py`, `rejection_analysis.py` |
+| **Post Hooks** | None |
+| **Validator** | EV-RUN Rejection Analysis |
+| **Satisfies** | `OBL-SP-MOMENTUM-EVOLUTION` |
+
+---
+
+
 
 ### Task EV-7.1: Bulk Strategy Registration
 
