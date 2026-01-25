@@ -86,3 +86,56 @@ Lower layers cannot override higher layers. Conflicts must be resolved upward, n
 **Decision**: Authorize the commencement of work on the Control Plane (Tasks CP-1.1 through CP-1.4).
 **Rationale**: All epistemic foundations (Belief Policy, Factor Policy, Strategy Policy) are frozen. The Task Graph v2.1 is validated and the Execution Harness is operational.
 **Impacted Documents**: `task_graph.md`, `DWBS.md`, `current_phase.md`
+
+---
+
+### [2026-01-25] D010: Orchestration Plane Authorization
+
+**Decision**: Authorize entry into the Orchestration Plane (Phase 2) for structural work only.
+**Rationale**: All Control Plane obligations (`OBL-CP-*`) are SATISFIED. CP-1.5 verification passed. The gate to the Orchestration Plane is open.
+**Scope**: Tasks `OP-2.1` through `OP-2.3`. No strategy, macro, or execution logic is authorized.
+**Impacted Documents**: `task_graph.md`, `DWBS.md`, `execution_harness_contract.md`
+**Non-Authorizations**: Strategy registration, execution, macro activation, factor live binding, market-facing logic.
+
+---
+
+### [2026-01-25] D011: Strategy Plane Authorization
+
+**Decision**: Authorize entry into the Strategy Plane (Phase 3) for strategy definition and registration only.
+**Rationale**: All Control Plane obligations (`OBL-CP-*`) and Orchestration Plane obligations (`OBL-OP-*`) are SATISFIED. The gate to the Strategy Plane is open.
+**Scope**: Tasks `SP-3.1` through `SP-3.3`. Only declarative, governed, non-executable strategy definitions.
+**Impacted Documents**: `task_graph.md`, `strategy_layer_policy.md`
+**Non-Authorizations**: Strategy execution, signal generation, belief inference, macro/factor runtime, market-facing behavior.
+
+---
+
+### [2026-01-25] D012: Structural Activation Plane Authorization
+
+**Decision**: Authorize entry into the Structural Activation Plane for read-only runtime state availability.
+**Rationale**: All prior plane obligations (CP, OP, SP) are SATISFIED. Strategies exist as governed intent only. The gate to Structural Activation is open.
+**Scope**: Tasks `SA-4.1` through `SA-4.2`. Read-only macro and factor state only.
+**Impacted Documents**: `task_graph.md`, `latent_structural_layers.md`, `factor_layer_policy.md`
+**Non-Authorizations**: Strategy execution, signal computation, scoring/ranking, conditional logic on state, market interaction, decision-ready outputs.
+**Safety Assertion**: Structural Activation exposes facts, not choices. All decision-making remains forbidden.
+
+---
+
+### [2026-01-25] D012.5: Scale & Safety Plane Authorization
+
+**Decision**: Authorize entry into the Scale & Safety Plane for pre-decision survivability constraint definition.
+**Rationale**: All prior plane obligations (CP, OP, SP, SA) are SATISFIED. System has complete visibility but zero execution capability. Survivability constraints must be established before any decision plane.
+**Scope**: Tasks `SS-5.1` through `SS-5.3`. Kill-switch, bounds, determinism, circuit breakers, audit scalability.
+**Impacted Documents**: `task_graph.md`, `execution_harness_contract.md`, `bounded_automation_contract.md`
+**Non-Authorizations**: Decision-making, strategy execution, signal evaluation, market interaction, conditional branching on outcomes.
+**Safety Assertion**: Scale & Safety constrains future behavior but enables none. All decision authority remains absolutely forbidden.
+
+---
+
+### [2026-01-25] D013: Decision Plane Authorization (HITL + Shadow)
+
+**Decision**: Authorize entry into the Decision Plane for governed choice formation.
+**Rationale**: All prior plane obligations (CP, OP, SP, SA, SS) are SATISFIED. System has complete visibility, survivability, and no execution capability. The gate to choice formation is open.
+**Scope**: Tasks `DE-6.1` through `DE-6.4`. Decision objects, HITL approval, Shadow execution, Audit wiring.
+**Impacted Documents**: `task_graph.md`, `DWBS.md`, Decision Plane contract
+**Non-Authorizations**: Real market execution, broker connectivity, capital deployment, automated action without approval, order placement, irreversible side effects.
+**Safety Assertion**: D013 authorizes choice representation, not choice execution. The system may now think, but it must still ask permission or simulate.

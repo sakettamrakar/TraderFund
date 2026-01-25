@@ -1,0 +1,25 @@
+{
+  "regime_context": {
+    "regime_label": "Bull Volatile",
+    "regime_code": "BULL_VOL",
+    "computed_at": "2026-01-25T09:48:26.190518",
+    "evaluation_window": {
+      "start": "2023-01-01T00:00:00",
+      "end": "2026-01-25T09:48:26.190518"
+    },
+    "inputs_used": [
+      "SPY",
+      "VIX",
+      "QQQ",
+      "^TNX",
+      "^TYX",
+      "HYG",
+      "LQD"
+    ],
+    "viability": {
+      "viable": true,
+      "reason": "Data ingestion sufficiency verified 2026-01-25"
+    },
+    "version": "1.0.0"
+  }
+}

@@ -380,6 +380,134 @@ Cross-plane shortcuts create hidden dependencies:
 
 ---
 
+### 4.6 Decision Plane
+
+**Purpose:** Enable governed choice formation with human approval and shadow execution.
+
+**Scope:** Decision object formalization, HITL approval, Shadow execution, Decision auditing.
+
+**Explicit Exclusions:** No real execution. No broker connectivity. No capital movement.
+
+---
+
+#### 4.6.1 Decision Object Specification
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | DecisionSpec schema for immutable, versioned decision objects |
+| **Why It Must Exist** | Choices must be first-class, auditable entities |
+| **Depends On** | Scale & Safety Plane complete |
+| **What Depends On It** | HITL Gate, Shadow Sink, Execution Plane |
+| **What Breaks If Skipped** | Decisions are informal → no audit trail |
+
+---
+
+#### 4.6.2 HITL Approval Gate
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Human-in-the-Loop approval interface and workflow |
+| **Why It Must Exist** | Decisions must not act without human approval |
+| **Depends On** | Decision Object Specification |
+| **What Depends On It** | Production deployment |
+| **What Breaks If Skipped** | Automated action without oversight |
+
+---
+
+#### 4.6.3 Shadow Execution Sink
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Paper trading / simulation environment for decisions |
+| **Why It Must Exist** | Decisions must be testable without real capital risk |
+| **Depends On** | Decision Object Specification, HITL Gate |
+| **What Depends On It** | Strategy validation, Performance measurement |
+| **What Breaks If Skipped** | No way to validate decisions before real execution |
+
+---
+
+#### 4.6.4 Decision Audit Wiring
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Ledger + DID integration for all decisions |
+| **Why It Must Exist** | Every decision must be traceable |
+| **Depends On** | Decision Object Specification |
+| **What Depends On It** | Compliance, Post-mortem analysis |
+| **What Breaks If Skipped** | Decisions are lost → no accountability |
+
+---
+
+### 4.7 Evolution Phase
+
+**Purpose:** Evaluate, compare, and debug strategies using shadow execution and full auditability.
+
+**Scope:** Bulk strategy evaluation, paper P&L, regime/factor diagnostics, failure surfacing.
+
+**Explicit Exclusions:** No real execution. No optimization. No auto-selection. No failure suppression.
+
+---
+
+#### 4.7.1 Bulk Strategy Registration
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Bulk strategy registration and evaluation pipeline |
+| **Why It Must Exist** | All strategies must be evaluable without manual wiring |
+| **Depends On** | Strategy Registry, Decision Plane |
+| **What Depends On It** | Comparative evaluation, Paper P&L |
+| **What Breaks If Skipped** | Per-strategy manual setup → unscalable |
+
+---
+
+#### 4.7.2 Decision Cycle Replay Engine
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Engine to replay decision cycles in shadow mode |
+| **Why It Must Exist** | Must evaluate strategies on historical/simulated data |
+| **Depends On** | Decision Plane, Shadow Sink |
+| **What Depends On It** | Paper P&L, Diagnostics |
+| **What Breaks If Skipped** | No way to test strategies before production |
+
+---
+
+#### 4.7.3 Paper P&L Attribution
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Non-actionable paper P&L per strategy |
+| **Why It Must Exist** | Debug strategy logic, understand behavior |
+| **Depends On** | Shadow Execution, Decision Audit |
+| **What Depends On It** | Comparative evaluation |
+| **What Breaks If Skipped** | Cannot compare strategy performance |
+
+---
+
+#### 4.7.4 Regime & Factor Coverage Diagnostics
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Diagnostics showing regime coverage and factor alignment |
+| **Why It Must Exist** | Understand which conditions strategies address |
+| **Depends On** | Structural Activation (macro/factor state) |
+| **What Depends On It** | Strategy debugging |
+| **What Breaks If Skipped** | Cannot explain strategy behavior gaps |
+
+---
+
+#### 4.7.5 Decision Rejection Analysis
+
+| Attribute | Value |
+|:----------|:------|
+| **What Is Produced** | Analysis of HITL rejections and failure reasons |
+| **Why It Must Exist** | Understand why decisions are rejected |
+| **Depends On** | HITL Gate, Decision Audit |
+| **What Depends On It** | Strategy improvement (manual) |
+| **What Breaks If Skipped** | Rejections are opaque |
+
+---
+
 ## 5. Dependency Graph & Build Order
 
 ### Legal Build Order
@@ -422,7 +550,30 @@ Phase 5: Scale & Safety Plane
   5.2 Failure Mode Validation
   5.3 Permission Revocation Handling
   ────────────────────────────
-  GATE: Scale & Safety Complete → PRODUCTION READY
+  GATE: Scale & Safety Complete → STRUCTURALLY PRODUCTION READY
+  ────────────────────────────
+
+Phase 6: Decision Plane (HITL + Shadow)
+  6.1 Decision Object Specification
+  6.2 HITL Approval Gate
+  6.3 Shadow Execution Sink
+  6.4 Decision Audit Wiring
+  ────────────────────────────
+  GATE: Decision Plane Complete → CHOICE FORMATION AUTHORIZED
+  ────────────────────────────
+
+Phase 7: Evolution Phase (Learning & Debugging)
+  7.1 Bulk Strategy Registration
+  7.2 Decision Cycle Replay Engine
+  7.3 Paper P&L Attribution
+  7.4 Regime & Factor Diagnostics
+  7.5 Decision Rejection Analysis
+  ────────────────────────────
+  GATE: Evolution Phase Complete → STRATEGY EVALUATION AUTHORIZED
+  ────────────────────────────
+
+Future: Optimization Phase — BLOCKED UNTIL EV CLOSURE
+Future: Execution Plane (D014+) — PERMANENTLY BLOCKED
 ```
 
 ### Illegal Build Orders
