@@ -96,7 +96,98 @@ The introduction of `EV-FORCED-BEAR-RISKOFF-V1` provides the first counterfactua
 
 ---
 
-## 7. Governance & Traceability
+## 7. Momentum Emergence Diagnostics (v1.2)
+
+With the enrichment of Factor Context to v1.2, we now observe granular "textures" of momentum beyond simple levels.
+
+### Diagnostic Signatures
+Analyzing 105 windows across all profiles:
+
+1.  **Breadth State**: consistently `NARROW`.
+    *   *Interpretation*: Momentum is not broad-based; confirming the "Neutral" top-level assessment.
+2.  **Dispersion**: consistently `STABLE`.
+    *   *Interpretation*: Returns are not expanding (which would indicate leadership emergence) nor contracting significantly.
+3.  **Time-in-State**: consistently `MEDIUM`.
+    *   *Interpretation*: The current neutral/flat state is entrenched, not a fleeting transition.
+
+### Meta-Alignment
+*   **Quality**: Classified as `NOISY`.
+*   **Correlation**:
+    *   High correlation between `ACCELERATION: FLAT` and `BREADTH: NARROW`.
+    *   This confirms that the absence of momentum is structural (broad market apathy) rather than specific (single sector failure).
+
+**Conclusion**: Momentum is currently **ABSENT/NOISY**. It is not "forming" (which would show `ACCELERATING` + `EXPANDING`). Strategies correctly reject this environment.
+
+## 8. Momentum Emergence Timeline (Watcher)
+
+The `MomentumEmergenceWatcher` (EV-WATCH-MOMENTUM) confirms the above diagnostics with explicit state tracking.
+
+### Emergence States Observed
+*   **NONE**: 100% of windows.
+*   **EMERGING_ATTEMPT**: 0%
+*   **EMERGING_CONFIRMING**: 0%
+*   **EMERGING_PERSISTENT**: 0%
+
+### Interpretation
+The Watcher detected zero structural attempts at momentum formation in the evaluated historical or forced windows.
+*   **Why no Attempts?** `time_in_state` was consistently `MEDIUM`, meaning the "Flat/Neutral" state is entrenched. An "Attempt" requires `acceleration=accelerating` AND `time_in_state=short` (a fresh move).
+*   **System Integrity**: The Watcher output (`momentum_emergence.json`) was generated for all 105 windows without interrupting execution.
+
+---
+
+## 9. Alpha Environment & Compression Diagnostics (v1.3)
+
+With the enrichment of Factor Context to v1.3 and the Liquidity Watcher, we can diagnose the *structure* of the current alpha void.
+
+### A. Alpha-Friendly Environment
+*   **Observations**:
+    *   **Value Dispersion**: `STABLE`. This indicates no widening of valuation spreads, which suppresses the opportunity set for Value strategies.
+    *   **Mean Reversion Pressure**: `LOW`. Extreme valuations are not reverting, reducing the efficacy of mean-reversion alpha.
+    *   **Quality Defensiveness**: `NEUTRAL`. Quality assets are not decoupling from the broad market, reducing their utility as a hedge.
+*   **Conclusion**: The environment is **MIXED**. It is not hostile to Value/Quality (as proven by their robustness), but it lacks the *dispersion* required for outsized alpha generation.
+
+### B. Compression → Expansion Diagnostics
+The `LiquidityCompressionWatcher` provides the missing link for Momentum's absence.
+
+*   **Compression State**: `NEUTRAL` (across all windows).
+*   **Diagnostic**:
+    *   The market is NOT in a `COMPRESSED` state (coiling for a move).
+    *   The market is NOT in an `EXPANDING` state (realizing volatility).
+    *   It is structurally **stagnant**.
+*   **Causal Link**: Momentum requires *expansion* of volatility and dispersion. The persistent `NEUTRAL` liquidity state explains why `MomentumEmergenceWatcher` sees zero attempts. The engine of momentum (expansion) is idling.
+
+---
+
+## 10. Readiness Dashboard (Path 1)
+Using the newly integrated `EV-WATCH-EXPANSION` and `EV-WATCH-DISPERSION`.
+
+### A. Expansion Transition
+*   **State Observed**: `NONE`.
+*   **Significance**: The market remains in the "Stagnation Trap". Volatility is not expanding, meaning transition to a high-opportunity regime is not yet occurring.
+
+### B. Dispersion Breakout
+*   **State Observed**: `NONE`.
+*   **Significance**: Opportunity sets are not widening. This confirms that attempting to scale alpha capture now would yield diminishing returns.
+
+**Readiness Verdict**: **NOT READY**. The system must remain in "Wait-and-Diagnosis" mode.
+
+---
+
+## 11. Portfolio Interaction Map (Path 2)
+Counterfactual analysis using `EV-PORTFOLIO-PAPER`.
+
+### A. Overlap Analysis
+*   **Metrics**:
+    *   **Average Overlap Score**: `0.0` (Perfect Diversification / Isolation).
+    *   **Redundancy Clusters**: None detected.
+*   **Interpretation**: Since momentum strategies are largely inactive (rejecting), there is zero overlap with active Value/Quality strategies. The portfolio is currently **Partitioned** by regime.
+
+### B. Structural Validity
+The paper portfolio construction confirms that should momentum activate, it would do so in a regime distinct from the current one, minimizing risk correlation.
+
+---
+
+## 12. Governance & Traceability
 
 - **Evidence Source**: [evolution_metrics_table.csv](file:///c:/GIT/TraderFund/docs/evolution/meta_analysis/evolution_metrics_table.csv)
 - **Evaluation Profiles**: [EV-HISTORICAL-ROLLING-V1](file:///c:/GIT/TraderFund/docs/evolution/evaluation_profiles/EV-HISTORICAL-ROLLING-V1.yaml), [EV-FORCED-BULL-CALM-V1](file:///c:/GIT/TraderFund/docs/evolution/evaluation_profiles/EV-FORCED-BULL-CALM-V1.yaml), [EV-FORCED-BEAR-RISKOFF-V1](file:///c:/GIT/TraderFund/docs/evolution/evaluation_profiles/EV-FORCED-BEAR-RISKOFF-V1.yaml)

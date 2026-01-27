@@ -57,21 +57,37 @@ class FactorContextBuilder:
                 "level": {"state": mom_level, "confidence": 0.5},
                 "acceleration": {"state": "flat", "confidence": 0.5},
                 "persistence": {"state": "intermittent", "confidence": 0.5},
+                # v1.2 Fields
+                "breadth": {"state": "narrow", "confidence": 0.5},
+                "dispersion": {"state": "stable", "confidence": 0.5},
+                "time_in_state": {"state": "medium", "confidence": 0.5},
                 # v1 Compatibility (Aliasing)
                 "strength": mom_level
             },
             "value": {
                 # v1.1 Fields
                 "spread": {"state": "neutral", "confidence": 0.5}, # Kept as primary
-                "trend": {"state": "flat", "confidence": 0.5}
+                "trend": {"state": "flat", "confidence": 0.5},
+                # v1.3 Fields
+                "dispersion": {"state": "stable", "confidence": 0.5},
+                "mean_reversion_pressure": {"state": "low", "confidence": 0.5}
             },
             "quality": {
                 # v1.1 Fields
                 "signal": {"state": "neutral", "confidence": 0.5},
-                "stability": {"state": "stable", "confidence": 0.5}
+                "stability": {"state": "stable", "confidence": 0.5},
+                # v1.3 Fields
+                "defensiveness": {"state": "neutral", "confidence": 0.5},
+                "drawdown_resilience": {"state": "medium", "confidence": 0.5}
             },
             "volatility": {
                 "confidence": 0.5
+            },
+            "meta": {
+                "factor_alignment": "mixed",
+                "momentum_quality": "noisy",
+                "alpha_environment": "mixed",
+                "notes": None
             }
         }
 
@@ -86,7 +102,7 @@ class FactorContextBuilder:
                     "viable": True,
                     "reason": "Structural binding verification (mock data)"
                 },
-                "version": "1.0.0"
+                "version": "1.3.0"
             }
         }
 

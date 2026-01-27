@@ -1,6 +1,6 @@
 # Factor Context Schema
 
-**Version**: 1.1.0
+**Version**: 1.2.0
 **Type**: Observational Context
 **Layer**: Execution (Evolution Phase)
 
@@ -11,7 +11,7 @@ The Factor Context provides a resolved, observational view of market factors (Mo
 
 ### 1. Metadata
 ```yaml
-version: "1.1.0"
+version: "1.3.0"
 computed_at: ISO8601_TIMESTAMP
 window:
   start: ISO8601_TIMESTAMP
@@ -34,6 +34,21 @@ momentum:
   persistence:
     state: enum [persistent | intermittent | fading]
     confidence: float
+  breadth:
+    state: enum [broad | narrow | isolated]
+    confidence: float
+    description: >
+      Cross-asset or cross-symbol confirmation of momentum.
+  dispersion:
+    state: enum [expanding | contracting | stable]
+    confidence: float
+    description: >
+      Distribution spread of returns; distinguishes leadership vs noise.
+  time_in_state:
+    state: enum [short | medium | long]
+    confidence: float
+    description: >
+      Duration momentum has remained in its current state.
 ```
 
 #### Value `value`
@@ -47,6 +62,16 @@ value:
   trend:
     state: enum [improving | deteriorating | flat]
     confidence: float
+  dispersion:
+    state: enum [expanding | contracting | stable]
+    confidence: float
+    description: >
+      Cross-sectional valuation dispersion; proxy for value opportunity set.
+  mean_reversion_pressure:
+    state: enum [high | medium | low]
+    confidence: float
+    description: >
+      Degree to which extreme valuations are reverting.
 ```
 
 #### Quality `quality`
@@ -59,6 +84,14 @@ quality:
     # v1 Compatibility: 'signal' exists at root
   stability:
     state: enum [stable | volatile]
+    confidence: float
+  defensiveness:
+    state: enum [defensive | neutral | cyclical]
+    confidence: float
+    description: >
+      Indicates whether quality assets behave defensively in stress.
+  drawdown_resilience:
+    state: enum [high | medium | low]
     confidence: float
 ```
 
@@ -80,6 +113,8 @@ Explanatory context for human operators or high-level reasoning.
 ```yaml
 meta:
   factor_alignment: enum [aligned | mixed | conflicting]
+  momentum_quality: enum [clean | noisy | transitional]
+  alpha_environment: enum [momentum_friendly | value_friendly | quality_defensive | mixed]
   notes: string | null
 ```
 

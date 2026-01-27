@@ -113,6 +113,14 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 | **OBL-EV-FAILURE-SURFACE** | **Failure Surfacing**: Undefined states explicitly logged. | Evolution | TRUE | `EV-7.4` | ✅ SATISFIED |
 | **OBL-EV-COMPARATIVE** | **Comparative Eval**: Side-by-side strategy evaluation. | Evolution | TRUE | `EV-7.5` | ✅ SATISFIED |
 | **OBL-EV-FACTOR-CONTEXT** | **Factor Context**: Observational context schema defined & governed. | Evolution | TRUE | `EV-CTX-FACTOR-DESIGN` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT-V1.1** | **Factor Context v1.1** | Observational context extended to v1.1. | Evolution | TRUE | `EV-CTX-FACTOR-V1.1` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT-V1.2** | **Factor Context v1.2** | Observational context enriched (breadth, dispersion). | Evolution | TRUE | `EV-CTX-FACTOR-V1.2` | ✅ SATISFIED |
+| **OBL-EV-MOMENTUM-WATCHER** | **Momentum Watcher** | Diagnostic watcher for momentum emergence states. | Evolution | TRUE | `EV-WATCH-MOMENTUM` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT-V1.3** | **Factor Context v1.3** | Observational context enriched (Value/Quality). | Evolution | TRUE | `EV-CTX-FACTOR-V1.3` | ✅ SATISFIED |
+| **OBL-EV-LIQUIDITY-WATCHER** | **Liquidity Watcher** | Diagnostic watcher for compression states. | Evolution | TRUE | `EV-WATCH-LIQUIDITY` | ✅ SATISFIED |
+| **OBL-EV-EXPANSION-WATCHER** | **Expansion Watcher** | Diagnostic watcher for expansion transitions. | Evolution | TRUE | `EV-WATCH-EXPANSION` | ✅ SATISFIED |
+| **OBL-EV-DISPERSION-WATCHER** | **Dispersion Watcher** | Diagnostic watcher for dispersion breakouts. | Evolution | TRUE | `EV-WATCH-DISPERSION` | ✅ SATISFIED |
+| **OBL-EV-PAPER-PORTFOLIO** | **Paper Portfolio** | Counterfactual portfolio verification. | Evolution | TRUE | `EV-PORTFOLIO-PAPER` | ✅ SATISFIED |
 | **OBL-EV-CLOSURE** | **Closure**: All OBL-EV-* must be satisfied for closure. | Evolution | TRUE | *All EV Tasks* | ✅ SATISFIED |
 
 ### Regime Observability Obligations (EV Sub-phase)
@@ -775,6 +783,24 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 
 ---
 
+### Task EV-CTX-FACTOR-V1.2: Factor Context Enrichment
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-CTX-FACTOR-V1.2 |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Enrich Momentum factor observability with breadth, dispersion, and time-in-state descriptors (v1.2). |
+| **Inputs** | `EV-CTX-FACTOR-V1.1` |
+| **Artifacts** | `factor_context_schema.md` |
+| **Impacts** | `factor_context_builder.py` |
+| **Post Hooks** | None |
+| **Validator** | Schema Check |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT-V1.2` |
+
+---
+
 ### Task SP-MOMENTUM-VARIANTS: Momentum Strategy Evolution
 
 | Attribute | Value |
@@ -794,7 +820,41 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 
 ---
 
+### Task EV-WATCH-EXPANSION: Expansion Transition Watcher
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-WATCH-EXPANSION |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Observe volatility and breadth expansion transitions. |
+| **Inputs** | `EV-CTX-FACTOR-V1.3` |
+| **Artifacts** | `expansion_transition.json` |
+| **Impacts** | `expansion_transition_watcher.py` |
+| **Post Hooks** | None |
+| **Validator** | Check Artifact Existence |
+| **Satisfies** | `OBL-EV-EXPANSION-WATCHER` |
 
+---
+
+### Task EV-WATCH-DISPERSION: Dispersion Breakout Watcher
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-WATCH-DISPERSION |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Observe factor dispersion breakout conditions. |
+| **Inputs** | `EV-CTX-FACTOR-V1.3` |
+| **Artifacts** | `dispersion_breakout.json` |
+| **Impacts** | `dispersion_breakout_watcher.py` |
+| **Post Hooks** | None |
+| **Validator** | Check Artifact Existence |
+| **Satisfies** | `OBL-EV-DISPERSION-WATCHER` |
+
+---
 
 ### Task EV-7.1: Bulk Strategy Registration
 
@@ -831,6 +891,24 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 | **Post Hooks** | `evolution-recorder`, `drift-detector` |
 | **Validator** | Replay produces audit trail |
 | **Satisfies** | `OBL-EV-VISIBILITY` |
+
+---
+
+### Task EV-PORTFOLIO-PAPER: Paper Portfolio Intelligence
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-PORTFOLIO-PAPER |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Measure strategy interaction and redundancy (counterfactual). |
+| **Inputs** | `EV-RUN-1` |
+| **Artifacts** | `paper_portfolio.json` |
+| **Impacts** | `paper_portfolio_builder.py` |
+| **Post Hooks** | None |
+| **Validator** | Check Artifact Existence |
+| **Satisfies** | `OBL-EV-PAPER-PORTFOLIO` |
 
 ---
 

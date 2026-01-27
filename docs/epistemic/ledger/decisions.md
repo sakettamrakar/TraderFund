@@ -167,3 +167,11 @@ Lower layers cannot override higher layers. Conflicts must be resolved upward, n
 **Authority**: Governance Obligation `OBL-SP-MOMENTUM-EVOLUTION`.
 **Rationale**: Specialization of strategy logic to consume Factor Context v1.1 resolution.
 **Impacted Documents**: `src/strategy/registry.py`, `bulk_evaluator.py`, `rejection_analysis.py`
+### [2026-01-27] EV-006: Readiness & Portfolio Intelligence
+**Action**: Executed `EV-RUN-WATCH-READINESS` and `EV-RUN-PORTFOLIO-PAPER` diagnostics.
+**Authority**: D013 (Decision Plane Authorization)
+**Rationale**: Required to diagnose structural opportunity sets and quantify strategy interaction before any optimization or activation is considered.
+**Outcome**:
+*   **Expansion/Dispersion**: `NONE` (confirmed stagnation).
+*   **Portfolio Overlap**: `0.0` (confirmed regime-partitioned architecture).
+**Impacted Documents**: `task_graph.md`, `evolution_comparative_summary.md`, `paper_portfolio_schema.md`

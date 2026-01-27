@@ -30,6 +30,12 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from evolution.profile_loader import load_profile, EvaluationProfile
 from evolution.regime_context_builder import RegimeContextBuilder
+from evolution.factor_context_builder import FactorContextBuilder
+from evolution.watchers.momentum_emergence_watcher import MomentumEmergenceWatcher
+from evolution.watchers.liquidity_compression_watcher import LiquidityCompressionWatcher
+from evolution.watchers.expansion_transition_watcher import ExpansionTransitionWatcher
+from evolution.watchers.dispersion_breakout_watcher import DispersionBreakoutWatcher
+from evolution.portfolio.paper_portfolio_builder import PaperPortfolioBuilder
 from evolution.bulk_evaluator import BulkEvaluator
 from evolution.decision_replay import DecisionReplayWrapper
 from evolution.paper_pnl import PaperPnLCalculator
@@ -41,10 +47,40 @@ def run_ev_sequence(context_path: Path, output_dir: Path, window_id: str):
     """Executes EV-RUN-1 through EV-RUN-6 for a specific context window."""
     print(f"  [Window: {window_id}] Starting Sequence...")
     
+    # EV-RUN-CTX-FACTOR
+    print(f"  [Window: {window_id}] EV-RUN-CTX-FACTOR: Building Factor Context")
+    factor_output_path = output_dir / "factor_context.json"
+    factor_builder = FactorContextBuilder(context_path=context_path, output_path=factor_output_path)
+    factor_builder.build()
+
+    # EV-RUN-WATCH-MOMENTUM
+    print(f"  [Window: {window_id}] EV-RUN-WATCH-MOMENTUM: Observing Factor Emergence")
+    watcher = MomentumEmergenceWatcher()
+    watcher.watch(window_id, factor_output_path, output_dir)
+
+    # EV-RUN-WATCH-LIQUIDITY
+    print(f"  [Window: {window_id}] EV-RUN-WATCH-LIQUIDITY: Observing Compression")
+    liq_watcher = LiquidityCompressionWatcher()
+    liq_watcher.watch(window_id, factor_output_path, output_dir)
+
+    # EV-RUN-WATCH-EXPANSION & DISPERSION
+    print(f"  [Window: {window_id}] EV-RUN-WATCH-READINESS: Observing Expansion/Dispersion")
+    exp_watcher = ExpansionTransitionWatcher()
+    exp_watcher.watch(window_id, factor_output_path, output_dir)
+    dis_watcher = DispersionBreakoutWatcher()
+    dis_watcher.watch(window_id, factor_output_path, output_dir)
+
     # EV-RUN-1
     print(f"  [Window: {window_id}] EV-RUN-1: Bulk Evaluation")
     evaluator = BulkEvaluator(context_path=context_path)
+    evaluator.load_factor_context(factor_output_path)
     evaluator.generate_activation_matrix(output_dir=output_dir)
+
+    # EV-RUN-PORTFOLIO-PAPER
+    print(f"  [Window: {window_id}] EV-RUN-PORTFOLIO-PAPER: Building Counterfactual Portfolio")
+    portfolio_builder = PaperPortfolioBuilder()
+    activation_matrix_path = output_dir / "strategy_activation_matrix.csv"
+    portfolio_builder.build(window_id, activation_matrix_path, output_dir)
 
     # EV-RUN-2
     print(f"  [Window: {window_id}] EV-RUN-2: Decision Replay")

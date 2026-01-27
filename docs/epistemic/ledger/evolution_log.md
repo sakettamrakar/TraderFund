@@ -365,3 +365,100 @@ Verified authorization gating, dependency resolution, and zero side effects.
 - **Artifacts**: `docs/evolution/meta_analysis/`
 - **Flags Assigned**: 2 Robust, 1 Regime-Dependent
 - **Principle**: Meaning extracted from evidence. No optimization permitted.
+
+### [2026-01-27T00:04:56.457002] EV-RUN Profile Execution
+- **Profile**: `EV-HISTORICAL-ROLLING-V1` (v1.0.0)
+- **Mode**: historical
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:05:52.335218] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BULL-CALM-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:06:04.156897] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BEAR-RISKOFF-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:14:44.341084] EV-RUN Profile Execution
+- **Profile**: `EV-HISTORICAL-ROLLING-V1` (v1.0.0)
+- **Mode**: historical
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:14:56.965382] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BULL-CALM-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:15:08.847538] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BEAR-RISKOFF-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:27:46.539253] EV-RUN Profile Execution
+- **Profile**: `EV-HISTORICAL-ROLLING-V1` (v1.0.0)
+- **Mode**: historical
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:27:58.681775] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BULL-CALM-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:28:10.563230] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BEAR-RISKOFF-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:56:59.827977] EV-RUN Profile Execution
+- **Profile**: `EV-HISTORICAL-ROLLING-V1` (v1.0.0)
+- **Mode**: historical
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:57:12.668069] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BULL-CALM-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+
+### [2026-01-27T00:57:25.103773] EV-RUN Profile Execution
+- **Profile**: `EV-FORCED-BEAR-RISKOFF-V1` (v1.0.0)
+- **Mode**: forced_regime
+- **Windows Executed**: 35
+- **Decision Ref**: `D013`
+- **Outcome**: SUCCESS
+### [2026-01-27] EXECUTION: Readiness & Portfolio Intelligence (REAL_RUN)
+
+- **Mode**: REAL_RUN (Automated Build Harness)
+- **Scope**: `EV-WATCH-EXPANSION`, `EV-WATCH-DISPERSION`, `EV-PORTFOLIO-PAPER`
+- **Output**:
+    - **EV-WATCH-EXPANSION**: SUCCESS. Created `expansion_transition.json`.
+    - **EV-WATCH-DISPERSION**: SUCCESS. Created `dispersion_breakout.json`.
+    - **EV-PORTFOLIO-PAPER**: SUCCESS. Created `paper_portfolio.json`.
+- **Validation**: 
+    - Artifacts exist for all windows.
+    - Constraints `no_execution, no_capital, no_optimization` verified.
+- **Milestone**: System is instrumented for transition-readiness. Decision overlap quantified.
+- **DID Committed**: `docs/impact/2026-01-27__evolution__readiness_and_portfolio_intelligence.md`
