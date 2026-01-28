@@ -121,6 +121,8 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 | **OBL-EV-EXPANSION-WATCHER** | **Expansion Watcher** | Diagnostic watcher for expansion transitions. | Evolution | TRUE | `EV-WATCH-EXPANSION` | ✅ SATISFIED |
 | **OBL-EV-DISPERSION-WATCHER** | **Dispersion Watcher** | Diagnostic watcher for dispersion breakouts. | Evolution | TRUE | `EV-WATCH-DISPERSION` | ✅ SATISFIED |
 | **OBL-EV-PAPER-PORTFOLIO** | **Paper Portfolio** | Counterfactual portfolio verification. | Evolution | TRUE | `EV-PORTFOLIO-PAPER` | ✅ SATISFIED |
+| **OBL-EV-TIME-ADVANCEMENT** | **Time Advancement** | Passive CRON-based time progression. | Evolution | TRUE | `EV-TICK` | ✅ SATISFIED |
+| **OBL-DASHBOARD-OBSERVER-ONLY** | **Dashboard Observer** | Read-Only UI with no execution/write paths. | Evolution | TRUE | `EV-DASHBOARD` | ✅ SATISFIED |
 | **OBL-EV-CLOSURE** | **Closure**: All OBL-EV-* must be satisfied for closure. | Evolution | TRUE | *All EV Tasks* | ✅ SATISFIED |
 
 ### Regime Observability Obligations (EV Sub-phase)
@@ -909,6 +911,42 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 | **Post Hooks** | None |
 | **Validator** | Check Artifact Existence |
 | **Satisfies** | `OBL-EV-PAPER-PORTFOLIO` |
+
+---
+
+### Task EV-TICK: Passive Time Advancement
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-TICK |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Advance system time and run diagnostics passively. |
+| **Inputs** | Market Data, CRON |
+| **Artifacts** | `evolution_log.md` |
+| **Impacts** | `execution-harness` |
+| **Post Hooks** | `evolution-recorder` |
+| **Validator** | Time advances without execution |
+| **Satisfies** | `OBL-EV-TIME-ADVANCEMENT` |
+
+---
+
+### Task EV-DASHBOARD: Market Intelligence Dashboard (Observer)
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-DASHBOARD |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Visualize system state without influencing it. |
+| **Inputs** | `EV-TICK` Artifacts, `evolution_log.md` |
+| **Artifacts** | `src/dashboard/` |
+| **Impacts** | Operational Visibility |
+| **Post Hooks** | None |
+| **Validator** | Safety Invariants (Observer-Only) |
+| **Satisfies** | `OBL-DASHBOARD-OBSERVER-ONLY`, `OBL-DASHBOARD-FRONTEND`, `OBL-DASHBOARD-ALERTING` |
 
 ---
 

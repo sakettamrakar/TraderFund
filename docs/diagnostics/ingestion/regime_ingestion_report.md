@@ -1,6 +1,6 @@
 # Regime Ingestion Report
 
-**Generated**: 2026-01-25T09:04:22.280939
+**Generated**: 2026-01-29T01:18:59.221548
 **Scope**: SPY, QQQ, VIX, ^TNX, ^TYX, HYG, LQD
 
 ## Summary
@@ -11,13 +11,13 @@
 
 | Symbol | Status | Bars | Calls | Start Date | Note |
 |:-------|:-------|:-----|:------|:-----------|:-----|
-| SPY | SUCCESS_OPTIMAL | 1306 | 5 | 2021-01-22 |  |
-| QQQ | SUCCESS_OPTIMAL | 1306 | 5 | 2021-01-22 |  |
-| VIX | SUCCESS_OPTIMAL | 1303 | 5 | 2021-01-22 |  |
-| ^TNX | SUCCESS_OPTIMAL | 1306 | 5 | 2021-01-22 |  |
-| ^TYX | SUCCESS_OPTIMAL | 1306 | 5 | 2021-01-22 |  |
-| HYG | SUCCESS_OPTIMAL | 1306 | 5 | 2021-01-22 |  |
-| LQD | SUCCESS_OPTIMAL | 1306 | 5 | 2021-01-22 |  |
+| SPY | SUCCESS_OPTIMAL | 1308 | 5 | 2021-01-26 |  |
+| QQQ | SUCCESS_OPTIMAL | 1308 | 5 | 2021-01-26 |  |
+| VIX | SUCCESS_OPTIMAL | 1305 | 5 | 2021-01-26 |  |
+| ^TNX | SUCCESS_OPTIMAL | 1308 | 5 | 2021-01-26 |  |
+| ^TYX | SUCCESS_OPTIMAL | 1308 | 5 | 2021-01-26 |  |
+| HYG | SUCCESS_OPTIMAL | 1308 | 5 | 2021-01-26 |  |
+| LQD | SUCCESS_OPTIMAL | 1308 | 5 | 2021-01-26 |  |
 
 ## Obligations
 

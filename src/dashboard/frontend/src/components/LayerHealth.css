@@ -1,0 +1,47 @@
+.layer-health-panel h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.health-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1rem;
+}
+
+.health-card {
+    background: #252525;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 90px;
+}
+
+.health-card.ok {
+    border-left: 3px solid #48bb78;
+}
+
+.health-card.error {
+    border-left: 3px solid #e53e3e;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    color: #ddd;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #888;
+}

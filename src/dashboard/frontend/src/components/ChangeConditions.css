@@ -1,0 +1,77 @@
+.change-conditions {
+    margin-top: 2rem;
+    background: #1a202c;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #4a5568;
+}
+
+.change-conditions h3 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.layman-intro {
+    font-size: 0.85rem;
+    color: #a0aec0;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.condition-box {
+    margin-bottom: 2rem;
+}
+
+.condition-box h4 {
+    color: #63b3ed;
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+}
+
+.causal-reasoning {
+    font-size: 0.8rem;
+    color: #e2e8f0;
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+.condition-box ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 0.8rem;
+    color: #a0aec0;
+}
+
+.condition-box li {
+    margin-bottom: 0.6rem;
+    padding-left: 1.2rem;
+    position: relative;
+}
+
+.condition-box li:before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: #63b3ed;
+}
+
+.condition-box code {
+    background: #2d3748;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.75rem;
+}
+
+.note-footer {
+    font-size: 0.7rem;
+    color: #718096;
+    font-style: italic;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #2d3748;
+}

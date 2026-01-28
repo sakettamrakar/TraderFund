@@ -1,0 +1,38 @@
+.system-narrative-panel {
+    background: #1a202c;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #4a5568;
+}
+
+.narrative-badge {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #a0aec0;
+}
+
+.tone-indicator,
+.posture-indicator {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.narrative-text {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #e2e8f0;
+    margin: 0;
+    font-weight: 400;
+}
+
+.loading-narrative {
+    padding: 1rem;
+    color: #718096;
+    font-style: italic;
+}

@@ -1,0 +1,170 @@
+.strategy-matrix.narrative-focus {
+    background: transparent;
+    padding: 0;
+}
+
+.matrix-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.matrix-title {
+    color: #e2e8f0;
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.evolution-badge {
+    background: #2d3748;
+    color: #a0aec0;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.family-story-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.story-block {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 1.25rem;
+    border-left: 4px solid #4a5568;
+    transition: all 0.2s ease;
+}
+
+.story-block.active {
+    border-left-color: #48bb78;
+}
+
+.story-block.inactive {
+    opacity: 0.9;
+}
+
+.story-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.story-name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.story-icon {
+    font-size: 1.2rem;
+}
+
+.story-family {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.story-block.conditional-family {
+    border-left-color: #ecc94b;
+}
+
+.story-block.conditional-family .story-status-text {
+    color: #ecc94b;
+}
+
+.story-status-text {
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.story-block.active .story-status-text {
+    color: #48bb78;
+}
+
+.story-block.inactive .story-status-text {
+    color: #f56565;
+}
+
+.story-meta {
+    font-size: 0.7rem;
+    color: #718096;
+}
+
+.story-narrative {
+    font-size: 0.9rem;
+    color: #cbd5e0;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.story-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 0.75rem;
+    font-size: 0.8rem;
+    color: #4a5568;
+    cursor: pointer;
+    text-align: center;
+}
+
+.story-footer:hover {
+    color: #a0aec0;
+}
+
+.story-details-panel {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.details-label {
+    font-size: 0.75rem;
+    color: #718096;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem 0;
+}
+
+.strategy-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.strategy-item {
+    font-size: 0.85rem;
+}
+
+.strategy-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.s-name {
+    color: #e2e8f0;
+    font-weight: 500;
+}
+
+.s-reason {
+    font-size: 0.75rem;
+    color: #718096;
+    margin-top: 2px;
+}
+
+.s-hint {
+    font-size: 0.7rem;
+    color: #48bb78;
+    background: rgba(72, 187, 120, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    display: inline-block;
+    margin-top: 4px;
+}

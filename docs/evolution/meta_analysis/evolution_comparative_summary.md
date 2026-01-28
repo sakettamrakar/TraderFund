@@ -193,3 +193,13 @@ The paper portfolio construction confirms that should momentum activate, it woul
 - **Evaluation Profiles**: [EV-HISTORICAL-ROLLING-V1](file:///c:/GIT/TraderFund/docs/evolution/evaluation_profiles/EV-HISTORICAL-ROLLING-V1.yaml), [EV-FORCED-BULL-CALM-V1](file:///c:/GIT/TraderFund/docs/evolution/evaluation_profiles/EV-FORCED-BULL-CALM-V1.yaml), [EV-FORCED-BEAR-RISKOFF-V1](file:///c:/GIT/TraderFund/docs/evolution/evaluation_profiles/EV-FORCED-BEAR-RISKOFF-V1.yaml)
 - **Decision Authority**: D013 (Decision Plane Authorization)
 - **Audit Hash**: [Calculated per system policy]
+
+---
+
+## 13. Passive Time Progression Log (EV-TICK)
+
+The system now supports passive time advancement via `EV-TICK`. This mechanism runs diagnostic watchers without triggering strategy execution or capital allocation.
+
+*   **Log Location**: [evolution_log.md](file:///c:/GIT/TraderFund/docs/epistemic/ledger/evolution_log.md)
+*   **Traceability**: Each tick is logged with timestamp, watcher states, and action (which is strictly NONE).
+*   **Artifacts**: Per-tick artifacts are stored in `docs/evolution/ticks/`.

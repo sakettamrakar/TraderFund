@@ -1,0 +1,119 @@
+.system-status-banner {
+  background: #1e1e1e;
+  border-bottom: 2px solid #333;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+}
+
+.status-main {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 1px;
+}
+
+.status-tag {
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.status-tag.idle {
+  background: #3e3e3e;
+  color: #aaa;
+}
+
+.status-tag.observing {
+  background: #2a4d69;
+  color: #63b3ed;
+}
+
+.status-tag.ready {
+  background: #276749;
+  color: #9ae6b4;
+}
+
+.status-tag.active {
+  background: #e53e3e;
+  color: #fff;
+}
+
+.reason {
+  font-size: 0.95rem;
+  color: #ccc;
+  font-style: italic;
+}
+
+.status-meta {
+  display: flex;
+  gap: 2rem;
+}
+
+.meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.meta-label {
+  font-size: 0.75rem;
+  color: #666;
+  margin-bottom: 0.2rem;
+}
+
+.meta-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+  color: #eee;
+}
+
+.governance-clean {
+  color: #48bb78;
+}
+
+.system-status_wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.alert-banner {
+  background: #742a2a;
+  color: #fed7d7;
+  padding: 0.5rem 2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  border-bottom: 1px solid #9b2c2c;
+  animation: pulse 2s infinite;
+}
+
+.meta-value.stale {
+  color: #e53e3e;
+  text-decoration: line-through;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.9;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.9;
+  }
+}

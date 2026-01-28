@@ -1,0 +1,113 @@
+.capital-panel {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #2d3748;
+}
+
+.cap-title {
+    color: #e2e8f0;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #2d3748;
+    padding-bottom: 0.5rem;
+}
+
+.cap-status-row {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.status-badge.ready {
+    background: rgba(72, 187, 120, 0.2);
+    color: #48bb78;
+    border: 1px solid #48bb78;
+}
+
+.status-badge.not-ready {
+    background: rgba(245, 101, 101, 0.2);
+    color: #f56565;
+    border: 1px solid #f56565;
+}
+
+.status-badge.normal {
+    background: rgba(66, 153, 225, 0.2);
+    color: #63b3ed;
+    border: 1px solid #63b3ed;
+}
+
+.status-badge.warning {
+    background: rgba(236, 201, 75, 0.2);
+    color: #ecc94b;
+    border: 1px solid #ecc94b;
+}
+
+.status-badge.critical {
+    background: rgba(245, 101, 101, 0.2);
+    color: #f56565;
+    border: 1px solid #f56565;
+}
+
+
+.bucket-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.bucket-item {
+    background: rgba(255, 255, 255, 0.03);
+    padding: 0.75rem;
+    border-radius: 6px;
+}
+
+.bucket-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 0.75rem;
+}
+
+.bucket-name {
+    color: #cbd5e0;
+    font-weight: 500;
+}
+
+.bucket-val {
+    color: #718096;
+}
+
+.bucket-bar-bg {
+    height: 6px;
+    background: #2d3748;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.bucket-bar-fill {
+    height: 100%;
+    background: #4a5568;
+    /* Default Neutral */
+}
+
+/* Add specialized colors if bucket is active/full */
+
+.cap-footer {
+    margin-top: 1rem;
+    font-size: 0.7rem;
+    color: #718096;
+    font-style: italic;
+    text-align: center;
+}

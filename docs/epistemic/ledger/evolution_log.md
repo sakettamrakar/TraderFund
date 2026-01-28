@@ -462,3 +462,151 @@ Verified authorization gating, dependency resolution, and zero side effects.
     - Constraints `no_execution, no_capital, no_optimization` verified.
 - **Milestone**: System is instrumented for transition-readiness. Decision overlap quantified.
 - **DID Committed**: `docs/impact/2026-01-27__evolution__readiness_and_portfolio_intelligence.md`
+
+### [2026-01-27T23:04:09.118357] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `UNKNOWN`
+- **Liquidity**: `UNKNOWN`
+- **Expansion**: `UNKNOWN`
+- **Dispersion**: `UNKNOWN`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-27T23:05:13.429053] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-27T23:46:53.163487] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-27T23:52:03.513561] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-27T23:57:03.507781] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-28T06:00:02.385509] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-28T23:00:02.221011] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T01:20:07.026082] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T01:20:38.180603] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29] UPGRADE: Diagnostic Observability (Duration & Derivatives)
+
+**What Changed**: 
+- **Time Normalization**: Upgraded Timeline to use full ISO 8601 timestamps (YYYY-MM-DD HH:MM:SS TZ).
+- **State Duration**: Added backend logic to track 'Time in State' by scanning history.
+- **Derivative Alerts**: Implemented detection of state transitions (e.g., NONE -> EMERGING).
+
+**Why**: To answer 'How long has the system been in this state?' and 'What just changed?' without ambiguity.
+**Scope**: Dashboard (Observer Layer)
+**Safety**: 
+- Logic is strictly read-only (history scanning).
+- Alerts are informational only.
+- No new execution triggers added.
+
+
+### [2026-01-29] MILESTONE: Strategy Universe Finalized
+
+**Summary**: Completed comprehensive Strategy Universe Build.
+- **8 Families**: Momentum, Mean Reversion, Value, Quality, Carry, Volatility, Spread, Stress
+- **24 Strategies**: Each with declared regime + factor contracts
+- **All EVOLUTION_ONLY**: No strategy may execute without explicit evolution validation
+
+**Documentation**:
+- [strategy_universe.md](file:///c:/GIT/TraderFund/docs/strategy/strategy_universe.md)
+- [strategy_contracts.md](file:///c:/GIT/TraderFund/docs/strategy/strategy_contracts.md)
+
+**Dashboard**: All strategies visible, grouped by family, with 'Why Inactive?' and 'Activation Conditions' displayed.
+
+**Safety**: Observer-only. No execution triggers. No broker wiring.
+
+
+### [2026-01-29T01:59:29.465628] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T02:26:13.515538] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T02:34:47.305283] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T02:58:16.391639] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T03:11:01.389968] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)

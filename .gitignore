@@ -17,6 +17,7 @@ observations/*
 # ---- CACHES ----
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # ---- LOCAL ENV ----
 .env
@@ -46,6 +47,9 @@ docs/diagnostics/**/rolling_*
 docs/evolution/**/bundles/
 docs/evolution/**/execution_runs/
 
+# Ignore high-volume tick snapshots
+docs/evolution/ticks/
+
 # Ignore shadow execution traces
 docs/evolution/**/shadow_*
 
@@ -69,3 +73,9 @@ docs/evolution/**/shadow_*
 !docs/**/schema.md
 !docs/**/task_graph.md
 !docs/**/registry*.md
+
+# ---- TEMP / JUNK ----
+temp_debug/
+synthesis_output.txt
+*.patch
+regime_shadow.jsonl
