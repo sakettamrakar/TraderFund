@@ -1,0 +1,115 @@
+.macro-weather-panel {
+    background: #0f1115;
+    border: 1px solid #2a2e35;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+    color: #e0e0e0;
+}
+
+.macro-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #1e2228;
+    padding-bottom: 12px;
+}
+
+.weather-icon {
+    font-size: 24px;
+}
+
+.macro-title-block h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #d0d0d0;
+}
+
+.macro-timestamp {
+    font-size: 11px;
+    color: #666;
+    margin-top: 2px;
+}
+
+.macro-narrative-box {
+    background: #16191f;
+    border-left: 3px solid #646cff;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #a0a0a0;
+    font-style: italic;
+    margin-bottom: 16px;
+}
+
+.macro-grid {
+    display: flex;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+.macro-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.macro-col h4 {
+    margin: 0 0 4px 0;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #555;
+    letter-spacing: 0.5px;
+}
+
+.macro-cell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #13161a;
+    padding: 6px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    border: 1px solid transparent;
+}
+
+.macro-label {
+    color: #777;
+}
+
+.macro-value {
+    font-weight: 500;
+}
+
+/* State Colors */
+.macro-cell.positive {
+    border-left: 2px solid #4caf50;
+}
+
+/* Green */
+.macro-cell.negative {
+    border-left: 2px solid #f44336;
+}
+
+/* Red */
+.macro-cell.neutral {
+    border-left: 2px solid #9e9e9e;
+}
+
+/* Gray */
+.macro-cell.tightening {
+    border-left: 2px solid #ff9800;
+}
+
+/* Orange */
+
+.macro-footer {
+    margin-top: 12px;
+    font-size: 10px;
+    color: #444;
+    text-align: right;
+}

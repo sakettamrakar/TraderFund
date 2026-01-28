@@ -138,4 +138,40 @@ Lower layers cannot override higher layers. Conflicts must be resolved upward, n
 **Scope**: Tasks `DE-6.1` through `DE-6.4`. Decision objects, HITL approval, Shadow execution, Audit wiring.
 **Impacted Documents**: `task_graph.md`, `DWBS.md`, Decision Plane contract
 **Non-Authorizations**: Real market execution, broker connectivity, capital deployment, automated action without approval, order placement, irreversible side effects.
-**Safety Assertion**: D013 authorizes choice representation, not choice execution. The system may now think, but it must still ask permission or simulate.
+### [2026-01-26] EV-001: Bear / Risk-Off Stress Evaluation
+
+**Action**: Executed `EV-FORCED-BEAR-RISKOFF-V1` counterfactual evaluation.
+**Authority**: D013 (Decision Plane Authorization)
+**Rationale**: Required to prove "Robustness under Adversity" per Epistemic Policy.
+**Outcome**:
+*   `STRATEGY_MOMENTUM_V1`: Graceful failure (Rejection) confirmed.
+*   `STRATEGY_VALUE_QUALITY_V1`: Robustness confirmed (0 rejections).
+### [2026-01-26] EV-002: Factor Context Layer Design
+
+**Action**: Defined `FactorContext` schema and updated DWBS `PRIN-7`.
+**Authority**: Governance Obligation `OBL-EV-FACTOR-CONTEXT`.
+**Rationale**: Factor resolution required to explain strategy behavior (Suitability vs Permissibility).
+### [2026-01-26] EV-003: Factor Context Execution Binding
+
+**Action**: Implemented `EV-RUN-CTX-FACTOR` and updated pipeline consumers.
+**Authority**: Governance Obligation `OBL-EV-FACTOR-CONTEXT` (Constraint satisfaction).
+**Rationale**: Enables observational explanation of strategy behavior without mutation.
+### [2026-01-26] EV-004: Factor Context Extension v1.1
+
+**Action**: Extended Factor Context Schema to v1.1.0 (enriched resolution).
+**Authority**: Governance Obligation `OBL-EV-FACTOR-CONTEXT-V1.1`.
+**Rationale**: Provide granular explanatory power for rejections without coercing strategy behavior.
+### [2026-01-26] EV-005: Momentum Strategy Evolution
+
+**Action**: Registered `STRICT`, `ACCELERATING`, and `PERSISTENT` Momentum variants.
+**Authority**: Governance Obligation `OBL-SP-MOMENTUM-EVOLUTION`.
+**Rationale**: Specialization of strategy logic to consume Factor Context v1.1 resolution.
+**Impacted Documents**: `src/strategy/registry.py`, `bulk_evaluator.py`, `rejection_analysis.py`
+### [2026-01-27] EV-006: Readiness & Portfolio Intelligence
+**Action**: Executed `EV-RUN-WATCH-READINESS` and `EV-RUN-PORTFOLIO-PAPER` diagnostics.
+**Authority**: D013 (Decision Plane Authorization)
+**Rationale**: Required to diagnose structural opportunity sets and quantify strategy interaction before any optimization or activation is considered.
+**Outcome**:
+*   **Expansion/Dispersion**: `NONE` (confirmed stagnation).
+*   **Portfolio Overlap**: `0.0` (confirmed regime-partitioned architecture).
+**Impacted Documents**: `task_graph.md`, `evolution_comparative_summary.md`, `paper_portfolio_schema.md`

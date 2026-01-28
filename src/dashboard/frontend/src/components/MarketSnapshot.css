@@ -1,0 +1,154 @@
+.market-snapshot {
+    margin-top: 2rem;
+}
+
+.snapshot-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.snapshot-header h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #666;
+    margin: 0;
+}
+
+.details-toggle {
+    background: #4a5568;
+    color: #fff;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.details-toggle:hover {
+    background: #2d3748;
+}
+
+.snapshot-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.metric-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.metric-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.metric-sub {
+    font-size: 0.7rem;
+    color: #555;
+    margin-top: 0.5rem;
+    max-width: 100%;
+}
+
+.metric-duration {
+    font-size: 0.7rem;
+    color: #48bb78;
+    /* Greenish/Distinct */
+    margin-top: 0.25rem;
+    font-family: 'JetBrains Mono', monospace;
+    opacity: 0.8;
+}
+
+.alerts-section {
+    background: rgba(255, 165, 0, 0.1);
+    border: 1px solid #d69e2e;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.alerts-section h4 {
+    color: #ecc94b;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem 0;
+}
+
+.audit-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+    font-size: 0.9rem;
+    padding: 0.25rem 0;
+}
+
+.factor-breakdown-panel {
+    margin-top: 1rem;
+    background: #1a202c;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #4a5568;
+}
+
+.factor-breakdown-panel h4 {
+    color: #a0aec0;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+
+.factor-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.factor-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.factor-name {
+    font-size: 0.75rem;
+    color: #718096;
+    font-weight: 600;
+}
+
+.factor-state {
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 700;
+    margin: 4px 0;
+}
+
+.factor-desc {
+    font-size: 0.7rem;
+    color: #a0aec0;
+    line-height: 1.4;
+}
+
+.panel-footer {
+    margin-top: 1.5rem;
+    font-size: 0.65rem;
+    color: #718096;
+    font-style: italic;
+}

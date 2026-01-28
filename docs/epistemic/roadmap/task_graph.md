@@ -112,6 +112,17 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 | **OBL-EV-SHADOW-INTEGRITY** | **Shadow Integrity**: Paper execution never affects capital. | Evolution | TRUE | `EV-7.3` | ✅ SATISFIED |
 | **OBL-EV-FAILURE-SURFACE** | **Failure Surfacing**: Undefined states explicitly logged. | Evolution | TRUE | `EV-7.4` | ✅ SATISFIED |
 | **OBL-EV-COMPARATIVE** | **Comparative Eval**: Side-by-side strategy evaluation. | Evolution | TRUE | `EV-7.5` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT** | **Factor Context**: Observational context schema defined & governed. | Evolution | TRUE | `EV-CTX-FACTOR-DESIGN` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT-V1.1** | **Factor Context v1.1** | Observational context extended to v1.1. | Evolution | TRUE | `EV-CTX-FACTOR-V1.1` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT-V1.2** | **Factor Context v1.2** | Observational context enriched (breadth, dispersion). | Evolution | TRUE | `EV-CTX-FACTOR-V1.2` | ✅ SATISFIED |
+| **OBL-EV-MOMENTUM-WATCHER** | **Momentum Watcher** | Diagnostic watcher for momentum emergence states. | Evolution | TRUE | `EV-WATCH-MOMENTUM` | ✅ SATISFIED |
+| **OBL-EV-FACTOR-CONTEXT-V1.3** | **Factor Context v1.3** | Observational context enriched (Value/Quality). | Evolution | TRUE | `EV-CTX-FACTOR-V1.3` | ✅ SATISFIED |
+| **OBL-EV-LIQUIDITY-WATCHER** | **Liquidity Watcher** | Diagnostic watcher for compression states. | Evolution | TRUE | `EV-WATCH-LIQUIDITY` | ✅ SATISFIED |
+| **OBL-EV-EXPANSION-WATCHER** | **Expansion Watcher** | Diagnostic watcher for expansion transitions. | Evolution | TRUE | `EV-WATCH-EXPANSION` | ✅ SATISFIED |
+| **OBL-EV-DISPERSION-WATCHER** | **Dispersion Watcher** | Diagnostic watcher for dispersion breakouts. | Evolution | TRUE | `EV-WATCH-DISPERSION` | ✅ SATISFIED |
+| **OBL-EV-PAPER-PORTFOLIO** | **Paper Portfolio** | Counterfactual portfolio verification. | Evolution | TRUE | `EV-PORTFOLIO-PAPER` | ✅ SATISFIED |
+| **OBL-EV-TIME-ADVANCEMENT** | **Time Advancement** | Passive CRON-based time progression. | Evolution | TRUE | `EV-TICK` | ✅ SATISFIED |
+| **OBL-DASHBOARD-OBSERVER-ONLY** | **Dashboard Observer** | Read-Only UI with no execution/write paths. | Evolution | TRUE | `EV-DASHBOARD` | ✅ SATISFIED |
 | **OBL-EV-CLOSURE** | **Closure**: All OBL-EV-* must be satisfied for closure. | Evolution | TRUE | *All EV Tasks* | ✅ SATISFIED |
 
 ### Regime Observability Obligations (EV Sub-phase)
@@ -717,6 +728,136 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 
 ---
 
+### Task EV-CTX-FACTOR-DESIGN: Factor Context Design
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-CTX-FACTOR-DESIGN |
+| **Status** | SUCCESS |
+| **DWBS Ref** | 4.4.2 |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Define Factor Context schema, binding rules, and DWV integration. |
+| **Inputs** | `DWBS.md`, `Regime Context` |
+| **Artifacts** | `docs/evolution/context/factor_context_schema.md` |
+| **Impacts** | `docs/architecture/DWBS.md` |
+| **Post Hooks** | `decision-ledger-curator` |
+| **Validator** | Schema Verification |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT` |
+
+---
+
+### Task EV-RUN-CTX-FACTOR: Factor Context Builder
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-RUN-CTX-FACTOR |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Compute and bind Factor Context per window for EV-RUN execution. |
+| **Inputs** | `EV-RUN-0` (Regime Context) |
+| **Artifacts** | `factor_context.json` |
+| **Impacts** | `src/evolution/pipeline_runner.py` |
+| **Post Hooks** | None |
+| **Validator** | Viability Check |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT` |
+
+---
+
+### Task EV-CTX-FACTOR-V1.1: Factor Context Extension
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-CTX-FACTOR-V1.1 |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Extend Factor Context from v1 to v1.1 with higher-resolution observational descriptors. |
+| **Inputs** | `EV-CTX-FACTOR-DESIGN` |
+| **Artifacts** | `factor_context_schema.md` |
+| **Impacts** | `factor_context_builder.py` |
+| **Post Hooks** | None |
+| **Validator** | Schema Check |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT-V1.1` |
+
+---
+
+### Task EV-CTX-FACTOR-V1.2: Factor Context Enrichment
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-CTX-FACTOR-V1.2 |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Enrich Momentum factor observability with breadth, dispersion, and time-in-state descriptors (v1.2). |
+| **Inputs** | `EV-CTX-FACTOR-V1.1` |
+| **Artifacts** | `factor_context_schema.md` |
+| **Impacts** | `factor_context_builder.py` |
+| **Post Hooks** | None |
+| **Validator** | Schema Check |
+| **Satisfies** | `OBL-EV-FACTOR-CONTEXT-V1.2` |
+
+---
+
+### Task SP-MOMENTUM-VARIANTS: Momentum Strategy Evolution
+
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | SP-MOMENTUM-VARIANTS |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Strategy |
+| **Blocking** | TRUE |
+| **Purpose** | Register factor-informed Momentum strategy variants. |
+| **Inputs** | `EV-CTX-FACTOR-V1.1` |
+| **Artifacts** | `src/strategy/registry.py` |
+| **Impacts** | `bulk_evaluator.py`, `rejection_analysis.py` |
+| **Post Hooks** | None |
+| **Validator** | EV-RUN Rejection Analysis |
+| **Satisfies** | `OBL-SP-MOMENTUM-EVOLUTION` |
+
+---
+
+### Task EV-WATCH-EXPANSION: Expansion Transition Watcher
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-WATCH-EXPANSION |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Observe volatility and breadth expansion transitions. |
+| **Inputs** | `EV-CTX-FACTOR-V1.3` |
+| **Artifacts** | `expansion_transition.json` |
+| **Impacts** | `expansion_transition_watcher.py` |
+| **Post Hooks** | None |
+| **Validator** | Check Artifact Existence |
+| **Satisfies** | `OBL-EV-EXPANSION-WATCHER` |
+
+---
+
+### Task EV-WATCH-DISPERSION: Dispersion Breakout Watcher
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-WATCH-DISPERSION |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Observe factor dispersion breakout conditions. |
+| **Inputs** | `EV-CTX-FACTOR-V1.3` |
+| **Artifacts** | `dispersion_breakout.json` |
+| **Impacts** | `dispersion_breakout_watcher.py` |
+| **Post Hooks** | None |
+| **Validator** | Check Artifact Existence |
+| **Satisfies** | `OBL-EV-DISPERSION-WATCHER` |
+
+---
+
 ### Task EV-7.1: Bulk Strategy Registration
 
 | Attribute | Value |
@@ -752,6 +893,60 @@ To prevent structural debt, this graph tracks **Obligations**—explicit expecta
 | **Post Hooks** | `evolution-recorder`, `drift-detector` |
 | **Validator** | Replay produces audit trail |
 | **Satisfies** | `OBL-EV-VISIBILITY` |
+
+---
+
+### Task EV-PORTFOLIO-PAPER: Paper Portfolio Intelligence
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-PORTFOLIO-PAPER |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Measure strategy interaction and redundancy (counterfactual). |
+| **Inputs** | `EV-RUN-1` |
+| **Artifacts** | `paper_portfolio.json` |
+| **Impacts** | `paper_portfolio_builder.py` |
+| **Post Hooks** | None |
+| **Validator** | Check Artifact Existence |
+| **Satisfies** | `OBL-EV-PAPER-PORTFOLIO` |
+
+---
+
+### Task EV-TICK: Passive Time Advancement
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-TICK |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Advance system time and run diagnostics passively. |
+| **Inputs** | Market Data, CRON |
+| **Artifacts** | `evolution_log.md` |
+| **Impacts** | `execution-harness` |
+| **Post Hooks** | `evolution-recorder` |
+| **Validator** | Time advances without execution |
+| **Satisfies** | `OBL-EV-TIME-ADVANCEMENT` |
+
+---
+
+### Task EV-DASHBOARD: Market Intelligence Dashboard (Observer)
+| Attribute | Value |
+|:----------|:------|
+| **Task ID** | EV-DASHBOARD |
+| **Status** | SUCCESS |
+| **DWBS Ref** | Meta |
+| **Plane** | Evolution |
+| **Blocking** | TRUE |
+| **Purpose** | Visualize system state without influencing it. |
+| **Inputs** | `EV-TICK` Artifacts, `evolution_log.md` |
+| **Artifacts** | `src/dashboard/` |
+| **Impacts** | Operational Visibility |
+| **Post Hooks** | None |
+| **Validator** | Safety Invariants (Observer-Only) |
+| **Satisfies** | `OBL-DASHBOARD-OBSERVER-ONLY`, `OBL-DASHBOARD-FRONTEND`, `OBL-DASHBOARD-ALERTING` |
 
 ---
 

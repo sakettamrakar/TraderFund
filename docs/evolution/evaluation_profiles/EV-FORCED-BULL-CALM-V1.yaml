@@ -1,0 +1,58 @@
+# Evaluation Profile: Forced Regime (Counterfactual Stress Test)
+#
+# Profile ID: EV-FORCED-BULL-CALM-V1
+# Version: 1.0.0
+# Purpose: Counterfactual stress test under forced Bull Calm regime.
+#          Answers: "How would strategies behave IF the market stayed Bull Calm?"
+#
+# Decision Reference: D013 (Decision Plane Authorization)
+# Date: 2026-01-25
+
+profile_id: EV-FORCED-BULL-CALM-V1
+version: 1.0.0
+description: >
+  Counterfactual stress test under forced Bull Calm regime. This profile overrides
+  regime detection and injects a constant BULL_CALM regime across all evaluation
+  windows. Used to understand strategy sensitivity to regime assumptions and to
+  test behavior under hypothetical market conditions.
+
+mode:
+  type: forced_regime
+
+windowing:
+  type: rolling
+  window_size: 90d
+  step_size: 30d
+  anchor_dates: null
+
+regime:
+  detection: false
+  override:
+    regime_code: BULL_CALM
+    rationale: >
+      Counterfactual stress testing. Forces Bull Calm regime to evaluate
+      strategy behavior under sustained low-volatility bullish conditions,
+      regardless of actual historical market state.
+
+factor:
+  observation: observe
+  override: null  # FORBIDDEN
+
+execution:
+  shadow_only: true
+  allow_replay: true
+  allow_parallel_windows: true
+
+outputs:
+  artifact_namespace: ev/forced/bull_calm/v1
+  persist_intermediate: true
+
+governance:
+  decision_ref: D013
+  ledger_required: true
+  did_required: true
+
+invariants:
+  forbid_real_execution: true
+  forbid_strategy_mutation: true
+  forbid_regime_fallback: true

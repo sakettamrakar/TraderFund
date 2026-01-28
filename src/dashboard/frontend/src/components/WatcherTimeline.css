@@ -1,0 +1,53 @@
+.watcher-timeline {
+    margin-top: 2rem;
+    background: #1e1e1e;
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.watcher-timeline h3 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.timeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 600px;
+    /* Ensure wide enough for full timestamp */
+}
+
+.timeline-table th {
+    text-align: left;
+    color: #888;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid #333;
+}
+
+.timeline-table td {
+    padding: 0.8rem 0;
+    border-bottom: 1px solid #252525;
+    color: #ccc;
+}
+
+.time-col {
+    color: #666 !important;
+    font-family: 'JetBrains Mono', monospace;
+    width: 220px;
+    /* Fixed width for full timestamp alignment */
+}
+
+.state-col.none {
+    color: #555;
+}
+
+.state-col.neutral {
+    color: #888;
+}
+
+.state-col.active {
+    color: #48bb78;
+}

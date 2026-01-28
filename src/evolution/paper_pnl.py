@@ -59,19 +59,28 @@ class PaperPnLCalculator:
     - Traceable to individual decisions.
     """
     
-    def __init__(self):
+    def __init__(self, context_path: Optional[Path] = None):
         self._paper_trades: List[PaperTrade] = []
         self._pnl_cache: Dict[str, PaperPnL] = {}
         self._trade_counter = 0
+        self._context_path = context_path or Path("docs/evolution/context/regime_context.json")
         self._regime_context = self._load_regime_context()
+        self._factor_context = {}  # Loaded lazily
+        
+    def load_factor_context(self, factor_path: Path):
+        """Load the Factor Context for binding."""
+        if not factor_path.exists():
+            return
+        with open(factor_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            self._factor_context = data.get("factor_context", {}).get("factors", {})
     
     def _load_regime_context(self) -> Dict[str, Any]:
         """Load and validate the authoritative regime context."""
-        context_path = Path("docs/evolution/context/regime_context.json")
-        if not context_path.exists():
+        if not self._context_path.exists():
             raise RegimeContextError("MANDATORY REGIME CONTEXT MISSING. Run EV-RUN-0 first.")
         
-        with open(context_path, 'r', encoding='utf-8') as f:
+        with open(self._context_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
             return data["regime_context"]
 
@@ -138,9 +147,9 @@ class PaperPnLCalculator:
         """Get paper P&L for all strategies."""
         return self._pnl_cache.copy()
     
-    def generate_summary(self):
+    def generate_summary(self, output_dir: Optional[Path] = None):
         """Generate Paper P&L Summary Artifact."""
-        output_dir = Path("docs/evolution/evaluation")
+        output_dir = output_dir or Path("docs/evolution/evaluation")
         output_dir.mkdir(parents=True, exist_ok=True)
         csv_path = output_dir / "paper_pnl_summary.csv"
         
@@ -164,10 +173,22 @@ class PaperPnLCalculator:
         print(f"Generated: {csv_path}")
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="EV-RUN-3: Paper P&L Calculator")
+    parser.add_argument("--context", type=Path, help="Path to regime_context.json")
+    parser.add_argument("--output", type=Path, help="Directory for output artifacts")
+    args = parser.parse_args()
+
     try:
-        calc = PaperPnLCalculator()
-        print("Running Paper P&L Engine...")
-        calc.generate_summary()
+        calculator = PaperPnLCalculator(context_path=args.context)
+        
+        # Binding Factor Context
+        if args.output:
+            factor_path = args.output / "factor_context.json"
+            calculator.load_factor_context(factor_path)
+            
+        print("Running Paper P&L Calculation...")
+        calculator.generate_summary(output_dir=args.output)
         print("EV-RUN-3 Complete.")
     except Exception as e:
         print(f"CRITICAL FAILURE: {str(e)}")

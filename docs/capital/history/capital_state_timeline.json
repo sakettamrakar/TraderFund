@@ -1,0 +1,29 @@
+[
+  {
+    "timestamp": "2026-01-29T03:11:03.328779",
+    "tick_id": "tick_1769636461",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-01-29T02:58:17.645180",
+    "tick_id": "tick_1769635696",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-01-29T02:34:49.183436",
+    "tick_id": "tick_1769634287",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  }
+]

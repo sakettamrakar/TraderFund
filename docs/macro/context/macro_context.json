@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-01-29T03:11:01.389968",
+  "window_id": "TICK-2026-01-29T03:11:01.389968",
+  "monetary": {
+    "policy_stance": "NEUTRAL",
+    "rate_level": "MID",
+    "curve_shape": "NORMAL",
+    "real_rates": "POSITIVE"
+  },
+  "liquidity": {
+    "impulse": "STABLE",
+    "credit_spreads": "NORMAL",
+    "funding_stress": "LOW"
+  },
+  "growth_inflation": {
+    "growth_trend": "STABLE",
+    "inflation_regime": "STABLE",
+    "policy_growth_alignment": "NEUTRAL"
+  },
+  "risk": {
+    "appetite": "MIXED",
+    "volatility": "NORMAL",
+    "correlation": "NORMAL"
+  },
+  "summary_narrative": "Yield curve is relatively flat."
+}

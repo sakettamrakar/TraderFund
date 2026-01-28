@@ -1,0 +1,58 @@
+{
+  "factor_context": {
+    "computed_at": "2026-01-26T03:31:33.885823",
+    "window": {
+      "start": "2023-01-01T00:00:00",
+      "end": "2026-01-25T09:48:26.190518"
+    },
+    "factors": {
+      "momentum": {
+        "level": {
+          "state": "neutral",
+          "confidence": 0.5
+        },
+        "acceleration": {
+          "state": "flat",
+          "confidence": 0.5
+        },
+        "persistence": {
+          "state": "intermittent",
+          "confidence": 0.5
+        },
+        "strength": "neutral"
+      },
+      "value": {
+        "spread": {
+          "state": "neutral",
+          "confidence": 0.5
+        },
+        "trend": {
+          "state": "flat",
+          "confidence": 0.5
+        }
+      },
+      "quality": {
+        "signal": {
+          "state": "neutral",
+          "confidence": 0.5
+        },
+        "stability": {
+          "state": "stable",
+          "confidence": 0.5
+        }
+      },
+      "volatility": {
+        "confidence": 0.5
+      }
+    },
+    "inputs_used": [
+      "price_series",
+      "volatility_index"
+    ],
+    "validity": {
+      "viable": true,
+      "reason": "Structural binding verification (mock data)"
+    },
+    "version": "1.0.0"
+  }
+}
