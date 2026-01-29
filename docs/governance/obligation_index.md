@@ -17,6 +17,8 @@
 | `OBL-ARCH-INTELLIGENCE-BOUNDS` | **Intelligence Bounds** | No component may suggest action unless it belongs to the Intelligence Layer and is explicitly marked “Non-Executing”. | ✅ ACTIVE | `DWBS_DECISION_ADJACENCY_AUDIT.md` |
 | `OBL-INTELLIGENCE-NON-EXECUTING` | **Non-Executing Intelligence** | Intelligence components must never execute trades. | ✅ ACTIVE | `DWBS_INTELLIGENCE_LAYER.md` |
 | `OBL-INTELLIGENCE-RESEARCH-RESPECT` | **Research Respect** | Intelligence must verify research state before suggesting attention. | ✅ ACTIVE | `DWBS_INTELLIGENCE_LAYER.md` |
+| `OBL-MARKET-PARITY` | **Market Parity** | Research structures must be identical across markets. | ✅ ACTIVE | `DWBS_INDIA_RESEARCH_INSTANTIATION.md` |
+| `OBL-NO-MARKET-SPECIFIC-LOGIC` | **No Market Logic** | Logic resides in Core, not Adapters. Adapters only provide inputs. | ✅ ACTIVE | `DWBS_INDIA_RESEARCH_INSTANTIATION.md` |
 
 ---
 

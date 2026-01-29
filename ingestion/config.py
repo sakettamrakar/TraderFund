@@ -8,7 +8,7 @@ load_dotenv()
 
 # Project Root
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-DATA_BASE_DIR = PROJECT_ROOT.parent / "data"
+DATA_BASE_DIR = PROJECT_ROOT / "data"
 
 # Global API Limits
 GLOBAL_DAILY_BUDGET = 50

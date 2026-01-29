@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { getMacroContext } from '../services/api';
 import './MacroContextPanel.css';
 
-const MacroContextPanel = () => {
+const MacroContextPanel = ({ market = "US" }) => {
     const [context, setContext] = useState(null);
 
     useEffect(() => {
-        getMacroContext().then(setContext).catch(console.error);
-    }, []);
+        getMacroContext(market).then(setContext).catch(console.error);
+    }, [market]);
 
     if (!context) return <div className="loading-macro">Loading Macro Weather...</div>;
 

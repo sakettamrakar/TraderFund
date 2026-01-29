@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { getSystemStatus } from '../services/api';
 import './SystemStatus.css';
 
-const SystemStatus = () => {
+const SystemStatus = ({ market = "US" }) => {
     const [data, setData] = useState(null);
 
     useEffect(() => {
-        getSystemStatus().then(setData).catch(console.error);
-    }, []);
+        getSystemStatus(market).then(setData).catch(console.error);
+    }, [market]);
 
     if (!data) return <div className="status-banner loading">Loading System Status...</div>;
 
