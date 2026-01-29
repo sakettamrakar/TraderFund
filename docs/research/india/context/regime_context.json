@@ -1,0 +1,17 @@
+{
+  "regime_context": {
+    "evaluation_window": {
+      "window_id": "TICK-IN-2026-01-29T00:26:59.141908",
+      "start_date": "2026-01-29T00:26:59.141908",
+      "end_date": "2026-01-29T00:26:59.141908"
+    },
+    "market": "INDIA",
+    "regime": "NEUTRAL",
+    "confidence": 0.5,
+    "details": "India Regime Instantiation (Heuristic)",
+    "inputs": {
+      "index": 24000.0,
+      "volatility": 14.0
+    }
+  }
+}

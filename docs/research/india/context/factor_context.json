@@ -1,0 +1,94 @@
+{
+  "factor_context": {
+    "computed_at": "2026-01-29T00:26:59.146358",
+    "window": {
+      "window_id": "TICK-IN-2026-01-29T00:26:59.141908",
+      "start_date": "2026-01-29T00:26:59.141908",
+      "end_date": "2026-01-29T00:26:59.141908"
+    },
+    "market": "INDIA",
+    "factors": {
+      "momentum": {
+        "level": {
+          "state": "neutral",
+          "confidence": 0.5
+        },
+        "acceleration": {
+          "state": "flat",
+          "confidence": 0.5
+        },
+        "persistence": {
+          "state": "intermittent",
+          "confidence": 0.5
+        },
+        "breadth": {
+          "state": "narrow",
+          "confidence": 0.5
+        },
+        "dispersion": {
+          "state": "stable",
+          "confidence": 0.5
+        },
+        "time_in_state": {
+          "state": "medium",
+          "confidence": 0.5
+        },
+        "strength": "neutral"
+      },
+      "value": {
+        "spread": {
+          "state": "neutral",
+          "confidence": 0.5
+        },
+        "trend": {
+          "state": "flat",
+          "confidence": 0.5
+        },
+        "dispersion": {
+          "state": "stable",
+          "confidence": 0.5
+        },
+        "mean_reversion_pressure": {
+          "state": "low",
+          "confidence": 0.5
+        }
+      },
+      "quality": {
+        "signal": {
+          "state": "neutral",
+          "confidence": 0.5
+        },
+        "stability": {
+          "state": "stable",
+          "confidence": 0.5
+        },
+        "defensiveness": {
+          "state": "neutral",
+          "confidence": 0.5
+        },
+        "drawdown_resilience": {
+          "state": "medium",
+          "confidence": 0.5
+        }
+      },
+      "volatility": {
+        "confidence": 0.5
+      },
+      "meta": {
+        "factor_alignment": "mixed",
+        "momentum_quality": "noisy",
+        "alpha_environment": "mixed",
+        "notes": "India Research Instantiation"
+      }
+    },
+    "inputs_used": [
+      "nifty_series",
+      "india_vix"
+    ],
+    "validity": {
+      "viable": true,
+      "reason": "Structural binding verification (India)"
+    },
+    "version": "1.3.0-IN"
+  }
+}

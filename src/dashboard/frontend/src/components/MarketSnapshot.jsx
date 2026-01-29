@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { getMarketSnapshot } from '../services/api';
 import './MarketSnapshot.css';
 
-const MarketSnapshot = () => {
+const MarketSnapshot = ({ market = "US" }) => {
     const [snap, setSnap] = useState(null);
     const [showFactorDetail, setShowFactorDetail] = useState(false);
 
     useEffect(() => {
-        getMarketSnapshot().then(setSnap).catch(console.error);
-    }, []);
+        getMarketSnapshot(market).then(setSnap).catch(console.error);
+    }, [market]);
 
     if (!snap) return <div>Loading...</div>;
 

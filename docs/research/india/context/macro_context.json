@@ -1,6 +1,7 @@
 {
   "timestamp": "2026-01-29T00:26:59.141908",
-  "window_id": "TICK-2026-01-29T00:26:59.141908",
+  "window_id": "TICK-IN-2026-01-29T00:26:59.141908",
+  "market": "INDIA",
   "monetary": {
     "policy_stance": "NEUTRAL",
     "rate_level": "MID",
@@ -14,13 +15,13 @@
   },
   "growth_inflation": {
     "growth_trend": "STABLE",
-    "inflation_regime": "STABLE",
-    "policy_growth_alignment": "NEUTRAL"
+    "inflation_regime": "MODERATE",
+    "policy_growth_alignment": "SUPPORTIVE"
   },
   "risk": {
     "appetite": "MIXED",
     "volatility": "NORMAL",
     "correlation": "NORMAL"
   },
-  "summary_narrative": "Yield curve is relatively flat."
+  "summary_narrative": "India rates are mid with a normal curve."
 }

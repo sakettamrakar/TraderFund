@@ -14,6 +14,10 @@ TICKS_DIR = EV_DIR / "ticks"
 LEDGER_DIR = DOCS_DIR / "epistemic" / "ledger"
 META_DIR = EV_DIR / "meta_analysis"
 
+# India Research Paths
+INDIA_RESEARCH_DIR = DOCS_DIR / "research" / "india"
+INDIA_CTX_DIR = INDIA_RESEARCH_DIR / "context"
+
 app = FastAPI(title="TraderFund Market Intelligence Dashboard", version="1.0.0")
 
 # Allow CORS for local frontend
@@ -140,10 +144,28 @@ def _calculate_state_durations(target_states: Dict[str, str], latest_ts: datetim
 # --- Endpoints ---
 
 @app.get("/api/system/status")
-async def get_system_status():
+async def get_system_status(market: str = "US"):
     """
     Returns high-level system state based on last tick and ledger.
     """
+    if market.upper() in ["IN", "INDIA"]:
+        # India System Status (Based on static context)
+        regime_data = _read_json_safe(INDIA_CTX_DIR / "regime_context.json")
+        regime = regime_data.get("regime_context", {}).get("regime", "UNKNOWN")
+
+        status = "OBSERVING" if regime != "UNKNOWN" else "OFFLINE"
+        reason = f"India Market Regime: {regime}"
+
+        # Check timestamp
+        ts = regime_data.get("regime_context", {}).get("evaluation_window", {}).get("start_date", "N/A")
+
+        return {
+            "status": status,
+            "reason": reason,
+            "last_ev_tick": ts,
+            "governance_status": "CLEAN (India Adapter)"
+        }
+
     latest_tick = _get_latest_tick_dir()
     
     last_tick_ts = "N/A"
@@ -203,10 +225,44 @@ async def get_layer_health():
     }
 
 @app.get("/api/market/snapshot")
-async def get_market_snapshot():
+async def get_market_snapshot(market: str = "US"):
     """
     Aggregates diagnostic states from the latest tick with DURATION tracking.
     """
+    if market.upper() in ["IN", "INDIA"]:
+        # India Snapshot (Static)
+        regime = _read_json_safe(INDIA_CTX_DIR / "regime_context.json")
+        factor = _read_json_safe(INDIA_CTX_DIR / "factor_context.json")
+
+        # Extract states from Factor Context
+        factors = factor.get("factor_context", {}).get("factors", {})
+        mom_state = factors.get("momentum", {}).get("level", {}).get("state", "UNKNOWN").upper()
+
+        # Derive others or use defaults if not in factor context
+        # In India Instantiation, we are reusing Factor Context structure.
+
+        current_states = {
+            "Regime": regime.get("regime_context", {}).get("regime", "UNKNOWN"),
+            "Liquidity": factors.get("liquidity", {}).get("state", "NEUTRAL"), # Default or from factor
+            "Momentum": mom_state,
+            "Dispersion": "UNKNOWN", # Not yet in India Factor Context explicitly as top level
+            "Expansion": "UNKNOWN"
+        }
+
+        return {
+            "Regime": current_states["Regime"],
+            "Liquidity": current_states["Liquidity"],
+            "Momentum": current_states["Momentum"],
+            "Dispersion": current_states["Dispersion"],
+            "Expansion": current_states["Expansion"],
+            "Durations": {}, # Not tracked for India yet
+            "Alerts": [],
+            "Details": {
+                "Momentum": factors.get("momentum", {}).get("meta", {}).get("notes", "India Research"),
+                "Liquidity": "Estimated"
+            }
+        }
+
     latest_tick = _get_latest_tick_dir()
     if not latest_tick:
         return {}
@@ -288,7 +344,7 @@ async def get_watcher_timeline(limit: int = 20):
     return timeline
 
 @app.get("/api/strategies/eligibility")
-async def get_strategy_eligibility():
+async def get_strategy_eligibility(market: str = "US"):
     """
     Returns daily strategy eligibility from persisted snapshot.
     Uses frozen Strategy Evolution v1 - no live recomputation.
@@ -296,21 +352,29 @@ async def get_strategy_eligibility():
     import os
     from datetime import datetime
     
-    # First, try to read from daily resolution snapshot (preferred)
-    daily_dir = PROJECT_ROOT / "docs" / "evolution" / "daily_strategy_resolution"
-    
     resolution = None
-    if daily_dir.exists():
-        # Find the latest snapshot
-        snapshots = sorted([f for f in daily_dir.iterdir() if f.suffix == ".json"], reverse=True)
-        if snapshots:
-            resolution = _read_json_safe(snapshots[0])
     
-    # Fallback: try to read from latest tick directory
-    if not resolution:
-        latest_tick = _get_latest_tick_dir()
-        if latest_tick:
-            resolution = _read_json_safe(latest_tick / "strategy_resolution.json")
+    if market.upper() in ["IN", "INDIA"]:
+        # Read from India static file
+        res_path = INDIA_RESEARCH_DIR / "strategy_eligibility.json"
+        if res_path.exists():
+            resolution = _read_json_safe(res_path)
+    else:
+        # US Logic
+        # First, try to read from daily resolution snapshot (preferred)
+        daily_dir = PROJECT_ROOT / "docs" / "evolution" / "daily_strategy_resolution"
+
+        if daily_dir.exists():
+            # Find the latest snapshot
+            snapshots = sorted([f for f in daily_dir.iterdir() if f.suffix == ".json"], reverse=True)
+            if snapshots:
+                resolution = _read_json_safe(snapshots[0])
+
+        # Fallback: try to read from latest tick directory
+        if not resolution:
+            latest_tick = _get_latest_tick_dir()
+            if latest_tick:
+                resolution = _read_json_safe(latest_tick / "strategy_resolution.json")
     
     if not resolution:
         return {"strategies": [], "families": {}, "evolution_version": "v1", "error": "No resolution snapshot found"}
@@ -412,6 +476,18 @@ async def get_meta_summary():
     """
     content = _read_markdown_safe(META_DIR / "evolution_comparative_summary.md")
     return {"content": content}
+
+@app.get("/api/macro/context")
+async def get_macro_context(market: str = "US"):
+    """
+    Returns the latest Macro Context.
+    """
+    if market.upper() in ["IN", "INDIA"]:
+        return _read_json_safe(INDIA_CTX_DIR / "macro_context.json")
+    else:
+        # US Macro Context
+        MACRO_DIR = DOCS_DIR / "macro" / "context"
+        return _read_json_safe(MACRO_DIR / "macro_context.json")
 
 if __name__ == "__main__":
     import uvicorn

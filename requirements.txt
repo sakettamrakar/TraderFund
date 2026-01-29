@@ -3,7 +3,6 @@ numpy==1.26.4
 scikit-learn==1.4.2
 tensorflow==2.16.1  # Or pytorch
 requests==2.31.0
-websocket-client==1.7.0
 influxdb-client==1.41.0
 SQLAlchemy==2.0.29
 matplotlib==3.8.4

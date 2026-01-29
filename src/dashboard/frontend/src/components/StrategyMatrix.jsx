@@ -15,13 +15,13 @@ const FAMILY_DISPLAY_NAMES = {
 
 const FAMILY_ORDER = ["momentum", "mean_reversion", "value", "quality", "carry", "volatility", "spread", "stress"];
 
-const StrategyMatrix = () => {
+const StrategyMatrix = ({ market = "US" }) => {
     const [data, setData] = useState(null);
     const [expandedFamily, setExpandedFamily] = useState(null);
 
     useEffect(() => {
-        getStrategyEligibility().then(setData).catch(console.error);
-    }, []);
+        getStrategyEligibility(market).then(setData).catch(console.error);
+    }, [market]);
 
     if (!data) return <div>Loading Strategy Universe...</div>;
 

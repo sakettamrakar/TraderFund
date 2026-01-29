@@ -15,6 +15,7 @@ import './App.css';
 
 function App() {
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
+  const [selectedMarket, setSelectedMarket] = useState("US");
 
   const handleRefresh = () => {
     window.location.reload();
@@ -22,23 +23,43 @@ function App() {
 
   return (
     <div className="dashboard-container">
-      <SystemStatus />
+      <div className="market-selector-bar" style={{ padding: '10px 20px', background: '#111', borderBottom: '1px solid #333', display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
+          <span style={{ color: '#888', alignSelf: 'center' }}>MARKET VIEW:</span>
+          <button
+              onClick={() => setSelectedMarket("US")}
+              style={{
+                  background: selectedMarket === "US" ? '#2196F3' : '#333',
+                  color: '#fff', border: 'none', padding: '5px 15px', cursor: 'pointer', borderRadius: '4px'
+              }}>
+              US (Core)
+          </button>
+          <button
+              onClick={() => setSelectedMarket("IN")}
+              style={{
+                  background: selectedMarket === "IN" ? '#FF9800' : '#333',
+                  color: '#fff', border: 'none', padding: '5px 15px', cursor: 'pointer', borderRadius: '4px'
+              }}>
+              INDIA (Adapter)
+          </button>
+      </div>
+
+      <SystemStatus market={selectedMarket} />
 
       <SystemNarrative />
 
       <div className="main-content">
         <div className="left-panel">
-          <MacroContextPanel />
+          <MacroContextPanel market={selectedMarket} />
           <WhyNothingIsHappening />
           <CapitalStoryPanel />
           <LayerHealth />
-          <MarketSnapshot />
+          <MarketSnapshot market={selectedMarket} />
           <WatcherTimeline />
         </div>
 
         <div className="right-panel">
           <CapitalReadinessPanel />
-          <StrategyMatrix />
+          <StrategyMatrix market={selectedMarket} />
           <CapitalInvariants />
           <ChangeConditions />
         </div>

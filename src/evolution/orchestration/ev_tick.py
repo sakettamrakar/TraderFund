@@ -46,6 +46,11 @@ from capital.capital_history_recorder import record_capital_history
 
 # Macro Context (Step 3b)
 from macro.macro_context_builder import MacroContextBuilder
+# India Research (Step 3b-IN)
+from macro.india_macro_context_builder import IndiaMacroContextBuilder
+from evolution.india_regime_engine import IndiaRegimeEngine
+from evolution.india_factor_context_builder import IndiaFactorContextBuilder
+from evolution.india_strategy_eligibility import resolve_india_eligibility
 
 from ingestion.api_ingestion.alpha_vantage.market_data_ingestor import USMarketIngestor
 
@@ -76,6 +81,9 @@ class EvTickOrchestrator:
         # 3b. Build Macro Context (Explanatory / Read-Only)
         self._build_macro_context()
         
+        # 3c. Run India Research Instantiation (Non-Blocking)
+        self._run_india_research_cycle()
+
         # 4. Resolve Strategy Eligibility (NEW)
         resolution = self._resolve_strategy_eligibility(watcher_results)
         
@@ -170,6 +178,54 @@ class EvTickOrchestrator:
         
         builder.build(current_data, self.timestamp)
         return macro_dir / "macro_context.json"
+
+    def _run_india_research_cycle(self):
+        print("  [Step 3b-IN] Running India Research Instantiation")
+        try:
+            india_research_dir = PROJECT_ROOT / "docs" / "research" / "india" / "context"
+            india_research_dir.mkdir(parents=True, exist_ok=True)
+
+            # 1. Ingest Data (Mock for structural instantiation)
+            # In production, call India Ingestor
+            current_data_in = {
+                "NIFTY50": {"close": 24000.0},
+                "INDIA_VIX": {"close": 14.0},
+                "INDIA_10Y": {"close": 7.1},
+                "USDINR": {"volatility": 0.05}
+            }
+
+            # 2. Macro Context
+            macro_builder = IndiaMacroContextBuilder(output_dir=india_research_dir)
+            macro_builder.build(current_data_in, self.timestamp)
+
+            # 3. Regime Engine
+            regime_engine = IndiaRegimeEngine(output_dir=india_research_dir)
+            regime_engine.analyze(self.timestamp, current_data_in)
+
+            # 4. Factor Context
+            regime_path = india_research_dir / "regime_context.json"
+            factor_path = india_research_dir / "factor_context.json"
+
+            factor_builder = IndiaFactorContextBuilder(
+                context_path=regime_path,
+                output_path=factor_path
+            )
+            factor_builder.build()
+
+            # 5. Strategy Eligibility
+            # Save to docs/research/india/ (parent of context)
+            eligibility_dir = PROJECT_ROOT / "docs" / "research" / "india"
+            resolve_india_eligibility(
+                regime_ctx_path=regime_path,
+                factor_ctx_path=factor_path,
+                output_dir=eligibility_dir
+            )
+            print("    -> India Research Cycle Complete (Structurally Valid)")
+
+        except Exception as e:
+            print(f"    ! India Research Cycle Failed: {e}")
+            import traceback
+            traceback.print_exc()
 
     def _run_watchers(self, factor_path: Path) -> Dict[str, Any]:
         print("  [Step 3] Running Diagnostic Watchers")
