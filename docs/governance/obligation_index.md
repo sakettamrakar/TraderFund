@@ -15,6 +15,8 @@
 | `OBL-NO-IMPLICIT-DECISIONS` | **No Implicit Decisions** | Any artifact that ranks or selects symbols must be declared as Intelligence. | ✅ ACTIVE | `DWBS_DECISION_ADJACENCY_AUDIT.md` |
 | `OBL-DECISION-SEMANTIC-CLARITY` | **Decision Semantic Clarity** | Decisions must be distinguished from Research verdicts. | ✅ ACTIVE | `DWBS_DECISION_ADJACENCY_AUDIT.md` |
 | `OBL-ARCH-INTELLIGENCE-BOUNDS` | **Intelligence Bounds** | No component may suggest action unless it belongs to the Intelligence Layer and is explicitly marked “Non-Executing”. | ✅ ACTIVE | `DWBS_DECISION_ADJACENCY_AUDIT.md` |
+| `OBL-INTELLIGENCE-NON-EXECUTING` | **Non-Executing Intelligence** | Intelligence components must never execute trades. | ✅ ACTIVE | `DWBS_INTELLIGENCE_LAYER.md` |
+| `OBL-INTELLIGENCE-RESEARCH-RESPECT` | **Research Respect** | Intelligence must verify research state before suggesting attention. | ✅ ACTIVE | `DWBS_INTELLIGENCE_LAYER.md` |
 
 ---
 
