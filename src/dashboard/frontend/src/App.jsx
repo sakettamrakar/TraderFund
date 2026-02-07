@@ -95,7 +95,7 @@ function App() {
 
       <div className="footer-system-posture">
         <div className="posture-disclaimer">
-          <strong>SYSTEM POSTURE:</strong> Intentional Inactivity. All execution hooks are recorded as DISABLED for Truth Epoch TE-2026-01-30. The system is operating in Observer-Only mode to protect equity. This state does not imply future activation.
+          <strong>SYSTEM POSTURE:</strong> Intentional Inactivity. All execution hooks are recorded as DISABLED for Truth Epoch TE-2026-02-07. The system is operating in Observer-Only mode to protect equity. This state does not imply future activation.
         </div>
         <div className="footer-meta">
           <span>TraderFund Market Intelligence Dashboard (Observer Only) [{market}]</span>

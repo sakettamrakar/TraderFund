@@ -38,8 +38,8 @@ def load_data_anchor(market: str = "US") -> Dict[str, Any]:
     return {
         "market": market,
         "truth_epoch": {
-            "epoch_id": "TE-2026-01-30",
-            "activation_time": epoch_data.get("epoch", {}).get("activation_time", "2026-01-30T00:00:00Z"),
+            "epoch_id": epoch_data.get("epoch", {}).get("epoch_id", "TE-2026-02-07"),
+            "activation_time": epoch_data.get("epoch", {}).get("activation_time", "2026-02-07T00:00:00Z"),
             "mode": "REAL_ONLY",
             "immutable": True
         },

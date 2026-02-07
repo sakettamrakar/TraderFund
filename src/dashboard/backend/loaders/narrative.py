@@ -4,6 +4,18 @@ import json
 from dashboard.backend.loaders.market_snapshot import load_market_snapshot
 from dashboard.backend.loaders.strategies import load_strategy_eligibility
 
+def _get_truth_epoch() -> str:
+    """Helper to retrieve the current truth epoch ID."""
+    try:
+        path = Path("docs/epistemic/truth_epoch.json")
+        if path.exists():
+            with open(path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return data.get("epoch", {}).get("epoch_id", "TE-UNKNOWN")
+    except Exception:
+        pass
+    return "TE-UNKNOWN"
+
 def load_system_narrative() -> Dict[str, Any]:
     """
     Generates a 3-5 sentence plain English summary of the system state.
@@ -11,6 +23,7 @@ def load_system_narrative() -> Dict[str, Any]:
     """
     snapshot = load_market_snapshot()
     eligibility = load_strategy_eligibility()
+    epoch_id = _get_truth_epoch()
     
     regime = snapshot.get("regime", {}).get("state", "UNKNOWN")
     mom = snapshot.get("momentum", {}).get("state", "UNKNOWN")
@@ -25,13 +38,13 @@ def load_system_narrative() -> Dict[str, Any]:
     
     # Sentence 1: Regime
     if regime == "NEUTRAL":
-        sentences.append("As of Truth Epoch TE-2026-01-30, the market environment is classified as neutral with no directional bias observed.")
+        sentences.append(f"As of Truth Epoch {epoch_id}, the market environment is classified as neutral with no directional bias observed.")
     elif "BULL" in regime:
-        sentences.append(f"In Truth Epoch TE-2026-01-30, the system observed {regime.replace('_', ' ').lower()} characteristics, maintaining a risk-on observation state.")
+        sentences.append(f"In Truth Epoch {epoch_id}, the system observed {regime.replace('_', ' ').lower()} characteristics, maintaining a risk-on observation state.")
     elif "BEAR" in regime:
-        sentences.append(f"The system recorded a {regime.replace('_', ' ').lower()} regime for Truth Epoch TE-2026-01-30, enforcing a capital preservation posture.")
+        sentences.append(f"The system recorded a {regime.replace('_', ' ').lower()} regime for Truth Epoch {epoch_id}, enforcing a capital preservation posture.")
     else:
-        sentences.append(f"Market regime for Truth Epoch TE-2026-01-30 is {regime}, maintaining structural uncertainty.")
+        sentences.append(f"Market regime for Truth Epoch {epoch_id} is {regime}, maintaining structural uncertainty.")
 
     # Sentence 2: Factors
     if mom == "NONE" and exp == "NONE":
@@ -50,7 +63,7 @@ def load_system_narrative() -> Dict[str, Any]:
         sentences.append(f"Structural alignment allowed for {eligible_count} strategies to meet eligibility criteria for observation.")
 
     # Sentence 4: Final Posture & Disclaimer
-    sentences.append("The system is currently in 'Explanatory Observer' mode. This explanation reflects the current truth epoch (TE-2026-01-30) only and does not imply future action.")
+    sentences.append(f"The system is currently in 'Explanatory Observer' mode. This explanation reflects the current truth epoch ({epoch_id}) only and does not imply future action.")
 
     return {
         "summary": " ".join(sentences),
@@ -64,6 +77,7 @@ def load_system_blockers() -> List[Dict[str, Any]]:
     State-closed and backward-looking only.
     """
     snapshot = load_market_snapshot()
+    epoch_id = _get_truth_epoch()
     
     regime = snapshot.get("regime", {}).get("state", "UNKNOWN")
     mom = snapshot.get("momentum", {}).get("state", "UNKNOWN")
@@ -75,7 +89,7 @@ def load_system_blockers() -> List[Dict[str, Any]]:
             "id": "regime_gate",
             "label": "Regime Gate",
             "passed": regime not in ["UNKNOWN", "UNDEFINED", "BEAR_RISK_OFF"],
-            "reason": f"Regime was recorded as {regime} for TE-2026-01-30."
+            "reason": f"Regime was recorded as {regime} for {epoch_id}."
         },
         {
             "id": "momentum_gate",
@@ -87,13 +101,13 @@ def load_system_blockers() -> List[Dict[str, Any]]:
             "id": "volatility_gate",
             "label": "Volatility Gate",
             "passed": exp != "NONE",
-            "reason": "Market was recorded in a contraction phase for TE-2026-01-30." if exp == "NONE" else f"Expansion recorded as {exp}."
+            "reason": f"Market was recorded in a contraction phase for {epoch_id}." if exp == "NONE" else f"Expansion recorded as {exp}."
         },
         {
             "id": "liquidity_gate",
             "label": "Liquidity Gate",
             "passed": liq != "STRESSED",
-            "reason": f"Liquidity was recorded as {liq} for TE-2026-01-30."
+            "reason": f"Liquidity was recorded as {liq} for {epoch_id}."
         }
     ]
     

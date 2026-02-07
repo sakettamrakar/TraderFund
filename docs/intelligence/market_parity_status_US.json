@@ -1,50 +1,50 @@
 {
     "market": "US",
-    "computed_at": "2026-01-30T06:30:00.000000",
+    "computed_at": "2026-02-07T23:23:10.972286",
+    "truth_epoch": "TRUTH_EPOCH_2026-02-07_01",
     "parity_status": "CANONICAL",
     "proxy_diagnostics": {
         "equity_core": {
             "status": "ACTIVE",
             "role": "equity_core",
             "symbol": "SPY",
-            "source": "Yahoo Finance",
+            "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/regime/raw/SPY.csv",
-            "rows": 1308,
+            "path": "data\\us_market\\SPY_daily.csv",
+            "rows": 116,
             "staleness": "NONE"
         },
         "growth_proxy": {
             "status": "ACTIVE",
             "role": "growth_proxy",
             "symbol": "QQQ",
-            "source": "Yahoo Finance",
+            "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/regime/raw/QQQ.csv",
-            "rows": 1308,
+            "path": "data\\us_market\\QQQ_daily.csv",
+            "rows": 116,
             "staleness": "NONE"
         },
         "volatility_gauge": {
             "status": "ACTIVE",
             "role": "volatility_gauge",
-            "symbol": "VIX",
-            "source": "Yahoo Finance",
+            "symbol": "VIXY",
+            "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/regime/raw/VIX.csv",
-            "rows": 1308,
+            "path": "data\\us_market\\VIXY_daily.csv",
+            "rows": 116,
             "staleness": "NONE"
         },
         "rates_anchor": {
-            "status": "ACTIVE",
+            "status": "ERROR",
             "role": "rates_anchor",
-            "symbol": "^TNX",
-            "source": "Yahoo Finance / FRED",
+            "symbol": "TNX",
+            "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/regime/raw/^TNX.csv",
+            "path": "data\\regime\\raw\\^TNX.csv",
             "rows": 1308,
-            "staleness": "NONE"
+            "staleness": "HIGH"
         }
     },
     "gaps": [],
-    "canonical_ready": true,
-    "truth_epoch": "TE-2026-01-30"
+    "canonical_ready": true
 }

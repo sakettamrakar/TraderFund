@@ -1,45 +1,54 @@
 {
     "US": {
-        "version": "1.0.0",
+        "version": "1.1.0",
         "status": "CANONICAL",
         "roles": {
-            "benchmark_equity": [
+            "equity_core": [
                 "SPY"
             ],
             "growth_proxy": [
                 "QQQ"
             ],
             "volatility_gauge": [
-                "VIX"
+                "VIXY"
             ],
             "rates_anchor": [
-                "^TNX"
+                "TNX"
             ],
             "liquidity_proxy": [],
             "sector_proxies": {}
         },
         "ingestion_binding": {
-            "SPY": "data/regime/raw/SPY.csv",
-            "QQQ": "data/regime/raw/QQQ.csv",
-            "VIX": "data/regime/raw/VIX.csv",
-            "^TNX": "data/regime/raw/^TNX.csv"
+            "SPY": "data/us_market/SPY_daily.csv",
+            "QQQ": "data/us_market/QQQ_daily.csv",
+            "VIXY": "data/us_market/VIXY_daily.csv",
+            "TNX": "data/regime/raw/^TNX.csv"
         }
     },
     "INDIA": {
-        "version": "1.0.0-DEGRADED",
-        "status": "DEGRADED",
+        "version": "1.1.0",
+        "status": "CANONICAL",
         "roles": {
             "benchmark_equity": [
-                "NSE_RELIANCE"
+                "NIFTY50"
             ],
-            "growth_proxy": [],
-            "volatility_gauge": [],
-            "rates_anchor": [],
+            "growth_proxy": [
+                "BANKNIFTY"
+            ],
+            "volatility_gauge": [
+                "INDIAVIX"
+            ],
+            "rates_anchor": [
+                "IN10Y"
+            ],
             "liquidity_proxy": [],
             "sector_proxies": {}
         },
         "ingestion_binding": {
-            "NSE_RELIANCE": "data/raw/api_based/angel/historical/NSE_RELIANCE_1d.jsonl"
+            "NIFTY50": "data/india/NIFTY50.csv",
+            "BANKNIFTY": "data/india/BANKNIFTY.csv",
+            "INDIAVIX": "data/india/INDIAVIX.csv",
+            "IN10Y": "data/india/IN10Y.csv"
         }
     }
 }

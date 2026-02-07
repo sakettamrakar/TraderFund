@@ -37,7 +37,7 @@ const DataAnchorPanel = ({ market = "US" }) => {
             <div className="anchor-header">
                 <div className="epoch-badge">
                     <span className="epoch-label">Truth Epoch</span>
-                    <span className="epoch-id">TE-2026-01-30</span>
+                    <span className="epoch-id">{data?.truth_epoch?.epoch_id || "TE-2026-02-07"}</span>
                 </div>
                 <div className="market-badge">
                     <span className="market-label">Market Sector:</span>
@@ -67,10 +67,10 @@ const DataAnchorPanel = ({ market = "US" }) => {
 
             <div className="trace-footer">
                 <div className="trace-badge">
-                    A1.1 | Source Artifact: {trace?.source} | Generation: TE-2026-01-30
+                    A1.1 | Source Artifact: {trace?.source} | Generation: {data?.truth_epoch?.epoch_id || "TE-2026-02-07"}
                 </div>
                 <div className="disclaimer-mini">
-                    Measurements reflect Truth Epoch TE-2026-01-30 and do not imply future sufficiency or intent.
+                    Measurements reflect Truth Epoch {data?.truth_epoch?.epoch_id || "TE-2026-02-07"} and do not imply future sufficiency or intent.
                 </div>
             </div>
         </div>

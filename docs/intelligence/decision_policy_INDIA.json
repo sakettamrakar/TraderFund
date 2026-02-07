@@ -1,7 +1,7 @@
 {
   "policy_decision": {
     "market": "INDIA",
-    "computed_at": "2026-01-30T18:43:21.622053",
+    "computed_at": "2026-02-07T21:50:43.622114",
     "policy_state": "ACTIVE",
     "permissions": [
       "ALLOW_POSITION_HOLD",

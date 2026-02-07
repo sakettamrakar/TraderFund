@@ -143,6 +143,7 @@ class IndiaMarketLoader:
         result = {
             "market": "INDIA",
             "computed_at": datetime.now().isoformat(),
+            "truth_epoch": "TE-2026-02-07",
             "parity_status": parity_status,
             "proxy_diagnostics": diagnostics,
             "gaps": self.gaps,
@@ -184,7 +185,7 @@ def run_parity_check():
     loader = IndiaMarketLoader()
     result = loader.check_parity()
     
-    output_path = PROJECT_ROOT / "docs" / "intelligence" / "india_parity_status.json"
+    output_path = PROJECT_ROOT / "docs" / "intelligence" / "market_parity_status_INDIA.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     
     with open(output_path, 'w', encoding='utf-8') as f:

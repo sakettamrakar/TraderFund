@@ -1,9 +1,9 @@
 {
     "epoch": {
-        "epoch_id": "TRUTH_EPOCH_2026-01-30_01",
-        "activation_time": "2026-01-30T01:20:00+05:30",
+        "epoch_id": "TRUTH_EPOCH_2026-02-07_01",
+        "activation_time": "2026-02-07T21:50:00+05:30",
         "frozen_by": "ANTIGRAVITY_AGENT",
-        "mode": "EPISTEMIC_RESTORATION",
+        "mode": "CANONICAL_OBSERVATION",
         "immutable": true
     },
     "markets_enabled": [
@@ -34,7 +34,7 @@
     },
     "confidence_levels": {
         "US": "HIGH",
-        "INDIA": "MEDIUM"
+        "INDIA": "HIGH"
     },
     "verification_checklist": {
         "all_mocks_purged": true,
@@ -42,5 +42,5 @@
         "dashboard_shows_known_vs_unknown": true,
         "truth_epoch_visible": true
     },
-    "notes": "Data anchor established. Truth epoch frozen. Dashboard trust restored."
+    "notes": "Truth epoch updated to 2026-02-07 post-ingestion. All market parity canonical."
 }

@@ -28,7 +28,7 @@ const WhyNothingIsHappening = () => {
                 ))}
             </div>
             <div className="why-footer">
-                * This explanation reflects the current truth epoch (TE-2026-01-30) only and does not imply future action.
+                * This explanation reflects the current truth epoch (TE-2026-02-07) only and does not imply future action.
             </div>
         </div>
     );
