@@ -28,7 +28,7 @@ const WhyNothingIsHappening = () => {
                 ))}
             </div>
             <div className="why-footer">
-                * All safety gates must be [Open] before any strategy family can activate.
+                * This explanation reflects the current truth epoch (TE-2026-01-30) only and does not imply future action.
             </div>
         </div>
     );

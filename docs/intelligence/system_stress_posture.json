@@ -1,0 +1,8 @@
+{
+    "system_stress_posture": "CRITICAL",
+    "derived_from": {
+        "US": "SYSTEMIC_STRESS",
+        "INDIA": "NORMAL"
+    },
+    "truth_epoch": "TE-2026-01-30"
+}

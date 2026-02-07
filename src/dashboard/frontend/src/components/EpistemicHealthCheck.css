@@ -1,0 +1,41 @@
+.epistemic-check {
+    font-size: 0.7rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background: #111;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+.epistemic-check.degraded {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.epistemic-check.canonical {
+    border-color: #22c55e;
+    background: rgba(34, 197, 94, 0.05);
+}
+
+.health-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.health-row .label {
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.health-row .value {
+    color: #e5e7eb;
+    font-family: monospace;
+}
+
+.epistemic-check.degraded .value {
+    color: #fca5a5;
+    font-weight: bold;
+}

@@ -1,24 +1,17 @@
-import json
-from pathlib import Path
+from dashboard.backend.utils.filesystem import get_latest_tick_dir, read_json_safe
 from typing import Dict, Any, Optional
 
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent # c:\GIT\TraderFund
-
-def _read_json_safe(path: Path) -> Dict[str, Any]:
-    if not path.exists():
-        return {}
-    try:
-        with open(path, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    except Exception:
-        return {}
-
-def load_macro_context() -> Dict[str, Any]:
+def load_macro_context(market: str = "US") -> Dict[str, Any]:
     """
     Loads the latest persisted macro context.
     """
-    macro_path = PROJECT_ROOT / "docs" / "macro" / "context" / "macro_context.json"
+    latest_tick = get_latest_tick_dir()
+    if not latest_tick:
+        return {"error": "No tick data found"}
+        
+    macro_path = latest_tick / market / "macro_context.json"
     if not macro_path.exists():
+        # Fallback to global if strict not enforced? No, strict.
         return {"error": "Macro context not found", "timestamp": None}
         
-    return _read_json_safe(macro_path)
+    return read_json_safe(macro_path)

@@ -1,0 +1,48 @@
+.panel-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    background: #1e2228;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #333;
+}
+
+.control-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #888;
+    letter-spacing: 0.5px;
+}
+
+.market-selector-global {
+    display: flex;
+    gap: 6px;
+    background: #111;
+    padding: 3px;
+    border-radius: 4px;
+}
+
+.market-selector-global button {
+    background: transparent;
+    border: none;
+    color: #666;
+    padding: 4px 16px;
+    font-size: 11px;
+    cursor: pointer;
+    border-radius: 3px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.market-selector-global button.active {
+    background: #007bff;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.market-selector-global button:hover:not(.active) {
+    color: #aaa;
+    background: #222;
+}

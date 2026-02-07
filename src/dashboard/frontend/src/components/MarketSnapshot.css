@@ -1,3 +1,32 @@
+.proxy-header {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 6px 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.proxy-label {
+    color: #888;
+    font-weight: 600;
+}
+
+.proxy-value {
+    color: #00d4ff;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.proxy-source {
+    color: #555;
+    font-family: monospace;
+    font-size: 10px;
+}
+
 .market-snapshot {
     margin-top: 2rem;
 }
@@ -37,7 +66,29 @@
     gap: 1rem;
 }
 
+.metric-tooltip {
+    display: none;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0f3460;
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    white-space: nowrap;
+    border: 1px solid #00d4ff;
+    z-index: 10;
+}
+
+.metric-card:hover .metric-tooltip {
+    display: block;
+}
+
 .metric-card {
+    position: relative;
+    /* For absolute tooltip */
     background: #1a1a1a;
     border: 1px solid #333;
     padding: 1.5rem;

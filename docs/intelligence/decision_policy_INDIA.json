@@ -1,0 +1,18 @@
+{
+  "policy_decision": {
+    "market": "INDIA",
+    "computed_at": "2026-01-30T18:43:21.622053",
+    "policy_state": "ACTIVE",
+    "permissions": [
+      "ALLOW_POSITION_HOLD",
+      "ALLOW_REBALANCING"
+    ],
+    "blocked_actions": [],
+    "reason": "Regime NEUTRAL. Hold/Rebalance only.",
+    "epistemic_health": {
+      "grade": "CANONICAL",
+      "proxy_status": "CANONICAL"
+    },
+    "version": "1.0.0-INDIA"
+  }
+}

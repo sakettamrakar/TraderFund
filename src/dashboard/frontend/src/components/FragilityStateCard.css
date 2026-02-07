@@ -1,0 +1,119 @@
+.fragility-card {
+    background: #141414;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid #333;
+}
+
+.fragility-card.normal {
+    border-left-color: #22c55e;
+}
+
+.fragility-card.elevated {
+    border-left-color: #f59e0b;
+}
+
+.fragility-card.systemic {
+    border-left-color: #ef4444;
+    border-color: #ef444466;
+    background: #200d0d;
+}
+
+.fragility-card.transition {
+    border-left-color: #8b5cf6;
+}
+
+.fragility-card.neutral {
+    border-left-color: #6b7280;
+    opacity: 0.8;
+}
+
+.fragility-header {
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #222;
+    padding-bottom: 0.5rem;
+}
+
+.fragility-header h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+}
+
+.status-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.status-badge.normal {
+    background: #064e3b;
+    color: #34d399;
+}
+
+.status-badge.elevated {
+    background: #78350f;
+    color: #fbbf24;
+}
+
+.status-badge.systemic {
+    background: #7f1d1d;
+    color: #f87171;
+}
+
+.status-badge.transition {
+    background: #4c1d95;
+    color: #a78bfa;
+}
+
+.reason-box {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    background: #1a1a1a;
+    padding: 0.6rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    border-left: 2px solid #ef4444;
+}
+
+.constraints-section h4,
+.final-intents h4 {
+    font-size: 0.7rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.blocked-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+.blocked-list li {
+    font-size: 0.75rem;
+    color: #f87171;
+    text-decoration: line-through;
+    opacity: 0.8;
+    font-family: monospace;
+}
+
+.intent-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.intent-chip {
+    background: #22c55e22;
+    color: #4ade80;
+    border: 1px solid #4ade8044;
+    padding: 0.2rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-family: monospace;
+}

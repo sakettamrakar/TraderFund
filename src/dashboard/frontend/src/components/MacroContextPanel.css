@@ -66,6 +66,23 @@
     letter-spacing: 0.5px;
 }
 
+.macro-scope-tag {
+    font-size: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 1px 3px;
+    border-radius: 2px;
+    margin-right: 4px;
+    color: #4db8ff;
+    vertical-align: middle;
+}
+
+.macro-label {
+    font-size: 11px;
+    color: #aaa;
+    display: flex;
+    align-items: center;
+}
+
 .macro-cell {
     display: flex;
     justify-content: space-between;

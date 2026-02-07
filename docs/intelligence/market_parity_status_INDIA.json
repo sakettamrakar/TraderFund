@@ -1,0 +1,50 @@
+{
+    "market": "INDIA",
+    "computed_at": "2026-01-30T06:27:00.000000",
+    "parity_status": "CANONICAL",
+    "proxy_diagnostics": {
+        "equity_core": {
+            "status": "ACTIVE",
+            "role": "equity_core",
+            "symbol": "NIFTY50",
+            "source": "Yahoo Finance",
+            "provenance": "REAL",
+            "path": "data/india/NIFTY50.csv",
+            "rows": 496,
+            "staleness": "NONE"
+        },
+        "sector_proxy": {
+            "status": "ACTIVE",
+            "role": "sector_proxy",
+            "symbol": "BANKNIFTY",
+            "source": "Yahoo Finance",
+            "provenance": "REAL",
+            "path": "data/india/BANKNIFTY.csv",
+            "rows": 492,
+            "staleness": "NONE"
+        },
+        "volatility_gauge": {
+            "status": "ACTIVE",
+            "role": "volatility_gauge",
+            "symbol": "INDIAVIX",
+            "source": "Yahoo Finance",
+            "provenance": "REAL",
+            "path": "data/india/INDIAVIX.csv",
+            "rows": 492,
+            "staleness": "NONE"
+        },
+        "rates_anchor": {
+            "status": "ACTIVE",
+            "role": "rates_anchor",
+            "symbol": "IN10Y",
+            "source": "FRED/IMF",
+            "provenance": "REAL",
+            "path": "data/india/IN10Y.csv",
+            "rows": 72,
+            "staleness": "NONE"
+        }
+    },
+    "gaps": [],
+    "canonical_ready": true,
+    "truth_epoch": "TE-2026-01-30"
+}

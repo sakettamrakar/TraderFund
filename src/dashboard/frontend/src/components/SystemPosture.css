@@ -1,0 +1,125 @@
+.system-posture-container {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.posture-widget {
+    flex: 1;
+    padding: 1.25rem;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    transition: all 0.3s ease;
+}
+
+.widget-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.widget-id {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #666;
+    background: #2a2a2a;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+.widget-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #888;
+    letter-spacing: 0.05em;
+}
+
+.posture-value {
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-family: 'Inter', sans-serif;
+}
+
+.posture-decomposition {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.decomp-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+}
+
+.decomp-market {
+    color: #666;
+    font-weight: 500;
+}
+
+.decomp-state {
+    color: #ddd;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+}
+
+/* Stress States */
+.stress.normal {
+    border-left: 4px solid #4a5568;
+}
+
+.stress.elevated {
+    border-left: 4px solid #ed8936;
+    color: #ed8936;
+}
+
+.stress.critical {
+    border-left: 4px solid #e53e3e;
+    color: #e53e3e;
+}
+
+.stress.unknown {
+    border-left: 4px solid #718096;
+    color: #718096;
+}
+
+/* Constraint States */
+.constraint.maintenance-only {
+    border-left: 4px solid #3182ce;
+    color: #3182ce;
+}
+
+.constraint.expansion-blocked {
+    border-left: 4px solid #ecc94b;
+    color: #ecc94b;
+}
+
+.constraint.unrestricted {
+    border-left: 4px solid #38a169;
+    color: #38a169;
+}
+
+.constraint.unknown {
+    border-left: 4px solid #718096;
+    color: #718096;
+}
+
+.trace-badge {
+    font-size: 9px;
+    color: #444;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 0.5rem;
+}

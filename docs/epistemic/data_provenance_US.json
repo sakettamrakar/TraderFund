@@ -1,0 +1,66 @@
+{
+    "market": "US",
+    "provenance_generated_at": "2026-01-30T01:20:00+05:30",
+    "data_sources": [
+        {
+            "symbol": "SPY",
+            "path": "data/regime/raw/SPY.csv",
+            "format": "CSV",
+            "source": "AlphaVantage",
+            "total_records": 1308,
+            "date_range": {
+                "start": "2021-01-26",
+                "end": "2026-01-29"
+            },
+            "coverage_years": 5.01,
+            "frequency": "daily"
+        }
+    ],
+    "required_coverage": {
+        "regime_detection": {
+            "lookback_days": 50,
+            "symbols": [
+                "SPY"
+            ]
+        },
+        "factor_context": {
+            "lookback_days": 50,
+            "symbols": [
+                "SPY"
+            ]
+        },
+        "liquidity_analysis": {
+            "lookback_days": 20,
+            "symbols": [
+                "SPY",
+                "QQQ",
+                "IWM"
+            ]
+        }
+    },
+    "sufficiency_analysis": {
+        "regime_detection": {
+            "required": 50,
+            "available": 1308,
+            "status": "SUFFICIENT",
+            "gap_days": 0
+        },
+        "factor_context": {
+            "required": 50,
+            "available": 1308,
+            "status": "SUFFICIENT",
+            "gap_days": 0
+        },
+        "liquidity_analysis": {
+            "required": 20,
+            "available": 1308,
+            "status": "SUFFICIENT",
+            "gap_days": 0
+        }
+    },
+    "missing_windows": [],
+    "mock_data_status": "NONE",
+    "backfill_status": "COMPLETE",
+    "last_data_timestamp": "2026-01-29",
+    "confidence_level": "HIGH"
+}

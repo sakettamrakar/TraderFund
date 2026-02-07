@@ -15,13 +15,13 @@ const FAMILY_DISPLAY_NAMES = {
 
 const FAMILY_ORDER = ["momentum", "mean_reversion", "value", "quality", "carry", "volatility", "spread", "stress"];
 
-const StrategyMatrix = () => {
+const StrategyMatrix = ({ market }) => {
     const [data, setData] = useState(null);
     const [expandedFamily, setExpandedFamily] = useState(null);
 
     useEffect(() => {
-        getStrategyEligibility().then(setData).catch(console.error);
-    }, []);
+        getStrategyEligibility(market).then(setData).catch(console.error);
+    }, [market]);
 
     if (!data) return <div>Loading Strategy Universe...</div>;
 
@@ -65,8 +65,9 @@ const StrategyMatrix = () => {
                     const isExpanded = expandedFamily === familyKey;
                     const familyStatus = getFamilyStatus(family);
 
-                    // Simple duration mock if not in data (should come from backend eventually)
-                    const timeInState = "24 Ticks";
+                    // T-DASH-08: Resolve "Calculating" States
+                    // Look for duration in family metadata or fallback to empty string
+                    const timeInState = family.duration ? `${family.duration}` : "No Duration";
 
                     return (
                         <div key={familyKey} className={`story-block ${familyStatus.className}`}>
@@ -81,7 +82,7 @@ const StrategyMatrix = () => {
                                     </span>
                                 </div>
                                 <div className="story-meta">
-                                    <span className="story-duration">{timeInState} in state</span>
+                                    <span className="story-duration">{timeInState}</span>
                                 </div>
                             </div>
 
@@ -99,7 +100,9 @@ const StrategyMatrix = () => {
                                                     <span className="s-name">{s.strategy}</span>
                                                     {getStatusBadge(s.eligibility_status)}
                                                 </div>
-                                                <div className="s-reason">{s.reason || "Structurally Gated"}</div>
+                                                <div className="s-reason">
+                                                    {s.reason ? s.reason : (s.eligibility_status === 'eligible' ? 'Passes all criteria.' : 'Structurally Gated')}
+                                                </div>
                                                 {s.activation_hint && (
                                                     <div className="s-hint">Requires: {s.activation_hint}</div>
                                                 )}

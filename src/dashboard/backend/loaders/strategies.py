@@ -1,54 +1,79 @@
 from typing import Dict, Any, List, Optional
-from pathlib import Path
-import json
-import os
-from datetime import datetime
+from dashboard.backend.utils.filesystem import get_latest_tick_dir, get_ticks_history, read_json_safe, PROJECT_ROOT
 
-# PROJECT_ROOT setup
-# This loader is in src/dashboard/backend/loaders/strategies.py
-# Root is 4 levels up
-PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
-
-def _read_json_safe(path: Path) -> Dict[str, Any]:
-    try:
-        if path.exists():
-            with open(path, 'r') as f:
-                return json.load(f)
-    except Exception:
-        pass
-    return {}
-
-def _get_latest_tick_dir() -> Optional[Path]:
-    ticks_dir = PROJECT_ROOT / "docs" / "evolution" / "ticks"
-    if not ticks_dir.exists():
-        return None
-    
-    ticks = [d for d in ticks_dir.iterdir() if d.is_dir() and d.name.startswith("tick_")]
-    if not ticks:
-        return None
+def _get_family_status_from_resolution(resolution: Dict[str, Any], family_id: str) -> str:
+    strategies = resolution.get("strategies", [])
+    family_strats = [s for s in strategies if s.get("family") == family_id]
+    if not family_strats:
+        return "UNKNOWN"
         
-    return sorted(ticks, key=lambda x: x.name, reverse=True)[0]
+    has_eligible = any(s.get("eligibility_status") == "ELIGIBLE" for s in family_strats)
+    if has_eligible:
+        return "ELIGIBLE"
+        
+    has_conditional = any(s.get("eligibility_status") == "CONDITIONAL" for s in family_strats)
+    if has_conditional:
+        return "CONDITIONAL"
+        
+    return "GATED"
 
-def load_strategy_eligibility() -> Dict[str, Any]:
+def _calculate_family_durations(families: Dict[str, Any], market: str) -> Dict[str, str]:
+    history = get_ticks_history(limit=20)
+    durations = {}
+    current_statuses = {}
+    
+    # Target statuses based on current data
+    for fid, fdoc in families.items():
+        if fdoc['eligible_count'] > 0:
+            current_statuses[fid] = "ELIGIBLE"
+        elif any(s['eligibility_status'] == 'conditional' for s in fdoc['strategies']):
+            current_statuses[fid] = "CONDITIONAL"
+        else:
+            current_statuses[fid] = "GATED"
+            
+    # Scan history
+    for fid, current_status in current_statuses.items():
+        count = 0
+        for d in history:
+            res_path = d / market / "strategy_resolution.json"
+            if not res_path.exists():
+                break
+            
+            res_data = read_json_safe(res_path)
+            h_status = _get_family_status_from_resolution(res_data, fid)
+            
+            if h_status == current_status:
+                count += 1
+            else:
+                break
+        durations[fid] = f"{count} ticks"
+        
+    return durations
+
+
+def load_strategy_eligibility(market: str = "US") -> Dict[str, Any]:
     """
     Returns daily strategy eligibility from persisted snapshot.
     Uses frozen Strategy Evolution v1 - no live recomputation.
     """
     # First, try to read from daily resolution snapshot (preferred)
+    # TODO: Partition daily resolution by market?
     daily_dir = PROJECT_ROOT / "docs" / "evolution" / "daily_strategy_resolution"
     
     resolution = None
-    if daily_dir.exists():
-        # Find the latest snapshot
+    # For now, daily resolution is global or assumed US?
+    # Strict correction: we should read from tick if partitioned.
+    
+    # Try Tick First for Scoped Resolution
+    latest_tick = get_latest_tick_dir()
+    if latest_tick:
+        resolution = read_json_safe(latest_tick / market / "strategy_resolution.json")
+    
+    if not resolution and daily_dir.exists():
+        # Find the latest snapshot (fallback to global)
         snapshots = sorted([f for f in daily_dir.iterdir() if f.suffix == ".json"], reverse=True)
         if snapshots:
-            resolution = _read_json_safe(snapshots[0])
-    
-    # Fallback: try to read from latest tick directory
-    if not resolution:
-        latest_tick = _get_latest_tick_dir()
-        if latest_tick:
-            resolution = _read_json_safe(latest_tick / "strategy_resolution.json")
+            resolution = read_json_safe(snapshots[0])
     
     if not resolution:
         return {"strategies": [], "families": {}, "evolution_version": "v1", "error": "No resolution snapshot found"}
@@ -98,6 +123,12 @@ def load_strategy_eligibility() -> Dict[str, Any]:
         families[family]["total_count"] += 1
         if ui_strategy["eligible"]:
             families[family]["eligible_count"] += 1
+            
+    # Calculate durations for each family
+    durations = _calculate_family_durations(families, market)
+    print(f"DEBUG: Calculated durations for {market}: {durations}")
+    for fid, duration_str in durations.items():
+        families[fid]["duration"] = duration_str
     
     return {
         "strategies": [s for fam in families.values() for s in fam["strategies"]],

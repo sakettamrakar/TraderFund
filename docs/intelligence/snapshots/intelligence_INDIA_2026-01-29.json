@@ -1,0 +1,30 @@
+{
+  "timestamp": "2026-01-29T23:09:48.521372",
+  "market": "INDIA",
+  "metadata": {
+    "source": "IntelligenceEngine v1.0",
+    "universe_size": 12
+  },
+  "signals": [
+    {
+      "symbol": "RELIANCE",
+      "type": "VOLUME_SPIKE",
+      "domain": "VOLUME",
+      "metric_label": "Rel Volume",
+      "metric": 5.0,
+      "unit": "x",
+      "baseline": "vs 20d Avg (200k)",
+      "reason": "Volume is 3x 20-day average",
+      "explanation": {
+        "what": "Volume spike 5.0x normal",
+        "why": "Indicates institutional participation",
+        "not": "Not a buy/sell signal"
+      },
+      "overlay": {
+        "status": "ALLOWED",
+        "reason": "Congruent with NEUTRAL regime.",
+        "regime": "NEUTRAL"
+      }
+    }
+  ]
+}

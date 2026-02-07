@@ -1,0 +1,33 @@
+{
+  "market": "INDIA",
+  "computed_at": "2026-01-30T18:43:10.805013",
+  "parity_status": "CANONICAL",
+  "proxy_diagnostics": {
+    "equity_core": {
+      "status": "ACTIVE",
+      "role": "equity_core",
+      "path": "C:\\GIT\\TraderFund\\data\\india\\NIFTY50.csv",
+      "rows": 496
+    },
+    "sector_proxy": {
+      "status": "ACTIVE",
+      "role": "sector_proxy",
+      "path": "C:\\GIT\\TraderFund\\data\\india\\BANKNIFTY.csv",
+      "rows": 492
+    },
+    "volatility_gauge": {
+      "status": "ACTIVE",
+      "role": "volatility_gauge",
+      "path": "C:\\GIT\\TraderFund\\data\\india\\INDIAVIX.csv",
+      "rows": 492
+    },
+    "rates_anchor": {
+      "status": "ACTIVE",
+      "role": "rates_anchor",
+      "path": "C:\\GIT\\TraderFund\\data\\india\\IN10Y.csv",
+      "rows": 72
+    }
+  },
+  "gaps": [],
+  "canonical_ready": true
+}

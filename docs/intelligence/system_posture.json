@@ -1,0 +1,19 @@
+{
+    "system_constraint_posture": "MAINTENANCE_ONLY",
+    "derived_from": {
+        "US": {
+            "permissions": [
+                "ALLOW_POSITION_HOLD"
+            ],
+            "source": "fragility_context_US.json"
+        },
+        "INDIA": {
+            "permissions": [
+                "ALLOW_POSITION_HOLD",
+                "ALLOW_REBALANCING"
+            ],
+            "source": "fragility_context_INDIA.json"
+        }
+    },
+    "truth_epoch": "TE-2026-01-30"
+}

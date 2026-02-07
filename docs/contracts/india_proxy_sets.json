@@ -1,0 +1,70 @@
+{
+    "market": "INDIA",
+    "proxy_set_version": "2.0.0-CANONICAL-DRAFT",
+    "status": "DESIGN_PENDING",
+    "truth_epoch_scope": "TE-2026-01-30",
+    "deprecations": [
+        {
+            "role": "benchmark_equity",
+            "deprecated_proxy": "RELIANCE.NS",
+            "deprecation_reason": "Single-stock cannot represent market beta. Correlation to NIFTY50 is unstable.",
+            "deprecated_since": "2026-01-30"
+        }
+    ],
+    "canonical_proxies": {
+        "benchmark_equity": {
+            "role": "Primary market trend indicator",
+            "canonical_ticker": "NIFTY50",
+            "acceptable_alternates": [
+                "^NSEI",
+                "NIFTYBEES.NS"
+            ],
+            "data_format": "OHLCV Daily",
+            "required_history_days": 200,
+            "status": "NOT_INGESTED"
+        },
+        "sector_proxy": {
+            "role": "Banking/Credit sector for breadth/rotation",
+            "canonical_ticker": "BANKNIFTY",
+            "acceptable_alternates": [
+                "^NSEBANK",
+                "BANKBEES.NS"
+            ],
+            "data_format": "OHLCV Daily",
+            "required_history_days": 200,
+            "status": "NOT_INGESTED"
+        },
+        "volatility_gauge": {
+            "role": "Market fear/greed indicator",
+            "canonical_ticker": "INDIAVIX",
+            "acceptable_alternates": [
+                "^INDIAVIX"
+            ],
+            "data_format": "Close Daily",
+            "required_history_days": 50,
+            "status": "NOT_INGESTED"
+        },
+        "rates_anchor": {
+            "role": "Liquidity/Monetary policy indicator",
+            "canonical_ticker": "IN10Y",
+            "acceptable_alternates": [
+                "RBI_10Y_YIELD"
+            ],
+            "data_format": "Yield % Daily",
+            "required_history_days": 100,
+            "notes": "May require manual ingestion from RBI data portal",
+            "status": "NOT_INGESTED"
+        }
+    },
+    "upgrade_criteria": {
+        "description": "India market may transition from DEGRADED to CANONICAL when ALL conditions are met.",
+        "conditions": [
+            "benchmark_equity.status == ACTIVE",
+            "sector_proxy.status == ACTIVE",
+            "volatility_gauge.status == ACTIVE",
+            "rates_anchor.status == ACTIVE",
+            "All proxies have >= required_history_days of data",
+            "No proxy is stale (> 2 trading days old)"
+        ]
+    }
+}

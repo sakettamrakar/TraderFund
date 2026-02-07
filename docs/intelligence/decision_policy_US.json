@@ -1,0 +1,19 @@
+{
+  "policy_decision": {
+    "market": "US",
+    "computed_at": "2026-01-30T04:37:51.295036",
+    "policy_state": "ACTIVE",
+    "permissions": [
+      "ALLOW_SHORT_ENTRY",
+      "ALLOW_POSITION_HOLD",
+      "ALLOW_LONG_ENTRY_SPECIAL"
+    ],
+    "blocked_actions": [],
+    "reason": "Regime BEARISH but Tech Lead detected. Specialized Longs permitted.",
+    "epistemic_health": {
+      "grade": "CANONICAL",
+      "proxy_status": "CANONICAL"
+    },
+    "version": "1.0.0-EVAL_ONLY"
+  }
+}

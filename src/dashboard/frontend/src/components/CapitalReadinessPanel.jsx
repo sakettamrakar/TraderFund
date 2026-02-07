@@ -2,16 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { getCapitalReadiness } from '../services/api';
 import './CapitalReadinessPanel.css';
 
-const CapitalReadinessPanel = () => {
-    const [data, setData] = useState(null);
+const CapitalReadinessPanel = ({ market }) => {
+    const [readiness, setReadiness] = useState(null);
 
     useEffect(() => {
-        getCapitalReadiness().then(setData).catch(console.error);
-    }, []);
+        getCapitalReadiness(market).then(setReadiness).catch(console.error);
+    }, [market]);
 
-    if (!data) return <div className="loading-cap">Loading Capital Logic...</div>;
+    if (!readiness) return <div className="loading-cap">Loading Capital Logic...</div>;
 
-    const { status, drawdown_state, kill_switch, allocations, meta } = data;
+    const { status, drawdown_state, kill_switch, allocations, meta } = readiness;
     const totalCapital = meta?.total_capital || 100;
 
     // Hardcoded ceilings for visualization based on docs/capital/capital_buckets.md
@@ -28,16 +28,16 @@ const CapitalReadinessPanel = () => {
 
     return (
         <div className="capital-panel">
-            <h3 className="cap-title">Capital Readiness (Paper Only)</h3>
+            <h3 className="cap-title">Capital Readiness ({market}) (Paper Only)</h3>
 
             <div className="cap-status-row">
-                <div className={`status-badge ${status === 'READY' ? 'ready' : 'not-ready'}`}>
+                <div className={`status - badge ${status === 'READY' ? 'ready' : 'not-ready'} `}>
                     {status === 'READY' ? '✅ READY' : '🛑 NOT READY'}
                 </div>
-                <div className={`status-badge ${drawdown_state === 'NORMAL' ? 'normal' : 'warning'}`}>
+                <div className={`status - badge ${drawdown_state === 'NORMAL' ? 'normal' : 'warning'} `}>
                     DD: {drawdown_state}
                 </div>
-                <div className={`status-badge ${kill_switch?.global === 'DISARMED' ? 'normal' : 'critical'}`}>
+                <div className={`status - badge ${kill_switch?.global === 'DISARMED' ? 'normal' : 'critical'} `}>
                     KS: {kill_switch?.global || 'UNKNOWN'}
                 </div>
             </div>
@@ -57,7 +57,7 @@ const CapitalReadinessPanel = () => {
                             <div className="bucket-bar-bg">
                                 <div
                                     className="bucket-bar-fill"
-                                    style={{ width: `${(allocPct / ceilingPct) * 100}%` }}
+                                    style={{ width: `${(allocPct / ceilingPct) * 100}% ` }}
                                 ></div>
                             </div>
                         </div>

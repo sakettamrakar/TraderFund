@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { getWatcherTimeline } from '../services/api';
 import './WatcherTimeline.css';
 
-const WatcherTimeline = () => {
+const WatcherTimeline = ({ market }) => {
     const [timeline, setTimeline] = useState([]);
 
     useEffect(() => {
-        getWatcherTimeline().then(data => setTimeline(data.history || [])).catch(console.error);
-    }, []);
+        getWatcherTimeline(market).then(setTimeline).catch(console.error);
+    }, [market]);
 
     if (!timeline || !timeline.length) return <div>No Timeline Data</div>;
 
@@ -18,6 +18,7 @@ const WatcherTimeline = () => {
                 <thead>
                     <tr>
                         <th>Time</th>
+                        <th>Regime</th>
                         <th>Momentum</th>
                         <th>Expansion</th>
                         <th>Dispersion</th>
@@ -34,10 +35,11 @@ const WatcherTimeline = () => {
                                     hour12: false
                                 }) + " UTC" : 'N/A'}
                             </td>
-                            <td className={`state-col ${t.momentum?.toLowerCase() || 'unknown'}`}>{t.momentum || 'N/A'}</td>
-                            <td className={`state-col ${t.expansion?.toLowerCase() || 'unknown'}`}>{t.expansion || 'N/A'}</td>
-                            <td className={`state-col ${t.dispersion?.toLowerCase() || 'unknown'}`}>{t.dispersion || 'N/A'}</td>
-                            <td className={`state-col ${t.liquidity?.toLowerCase() || 'unknown'}`}>{t.liquidity || 'N/A'}</td>
+                            <td className={`state - col ${t.regime?.toLowerCase() || 'unknown'} `}>{t.regime || 'N/A'}</td>
+                            <td className={`state - col ${t.momentum?.toLowerCase() || 'unknown'} `}>{t.momentum || 'N/A'}</td>
+                            <td className={`state - col ${t.expansion?.toLowerCase() || 'unknown'} `}>{t.expansion || 'N/A'}</td>
+                            <td className={`state - col ${t.dispersion?.toLowerCase() || 'unknown'} `}>{t.dispersion || 'N/A'}</td>
+                            <td className={`state - col ${t.liquidity?.toLowerCase() || 'unknown'} `}>{t.liquidity || 'N/A'}</td>
                         </tr>
                     ))}
                 </tbody>

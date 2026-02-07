@@ -1,0 +1,18 @@
+{
+  "fragility_context": {
+    "market": "US",
+    "computed_at": "2026-01-30T04:50:19.435940",
+    "stress_state": "SYSTEMIC_STRESS",
+    "constraints_applied": [
+      "ALLOW_LONG_ENTRY_SPECIAL",
+      "ALLOW_LONG_ENTRY",
+      "ALLOW_REBALANCING",
+      "ALLOW_SHORT_ENTRY"
+    ],
+    "final_authorized_intents": [
+      "ALLOW_POSITION_HOLD"
+    ],
+    "reason": "CRITICAL VOLATILITY (101.58 > 35). | Blocking ALL entries due to Systemic Stress.",
+    "version": "1.0.0-SUBTRACTIVE"
+  }
+}

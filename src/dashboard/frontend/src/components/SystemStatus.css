@@ -50,6 +50,32 @@
   color: #fff;
 }
 
+.status-tag.closed {
+  background: #742a2a;
+  color: #fed7d7;
+}
+
+.status-tag.unknown {
+  background: #4a5568;
+  color: #edf2f7;
+}
+
+.trace-badge {
+  font-size: 10px;
+  color: #555;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-top: 4px;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.trace-badge.mini {
+  font-size: 8px;
+  margin-top: 2px;
+}
+
 .reason {
   font-size: 0.95rem;
   color: #ccc;
@@ -83,9 +109,46 @@
   color: #48bb78;
 }
 
+.gate-reason {
+  display: flex;
+  flex-direction: column;
+  margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.reason-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  color: #888;
+}
+
+.reason-text {
+  font-size: 11px;
+  color: #ddd;
+  font-style: italic;
+}
+
 .system-status_wrapper {
   display: flex;
   flex-direction: column;
+}
+
+.role-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #666;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1px 4px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+
+.gate-header,
+.meta-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
 .alert-banner {

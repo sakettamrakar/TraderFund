@@ -1,0 +1,45 @@
+{
+    "US": {
+        "version": "1.0.0",
+        "status": "CANONICAL",
+        "roles": {
+            "benchmark_equity": [
+                "SPY"
+            ],
+            "growth_proxy": [
+                "QQQ"
+            ],
+            "volatility_gauge": [
+                "VIX"
+            ],
+            "rates_anchor": [
+                "^TNX"
+            ],
+            "liquidity_proxy": [],
+            "sector_proxies": {}
+        },
+        "ingestion_binding": {
+            "SPY": "data/regime/raw/SPY.csv",
+            "QQQ": "data/regime/raw/QQQ.csv",
+            "VIX": "data/regime/raw/VIX.csv",
+            "^TNX": "data/regime/raw/^TNX.csv"
+        }
+    },
+    "INDIA": {
+        "version": "1.0.0-DEGRADED",
+        "status": "DEGRADED",
+        "roles": {
+            "benchmark_equity": [
+                "NSE_RELIANCE"
+            ],
+            "growth_proxy": [],
+            "volatility_gauge": [],
+            "rates_anchor": [],
+            "liquidity_proxy": [],
+            "sector_proxies": {}
+        },
+        "ingestion_binding": {
+            "NSE_RELIANCE": "data/raw/api_based/angel/historical/NSE_RELIANCE_1d.jsonl"
+        }
+    }
+}

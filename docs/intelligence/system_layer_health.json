@@ -1,0 +1,16 @@
+{
+    "layers": {
+        "DATA": "HEALTHY",
+        "FACTOR": "HEALTHY",
+        "INTELLIGENCE": "HEALTHY",
+        "GOVERNANCE": "FROZEN",
+        "STRATEGY": "DISABLED",
+        "EXECUTION": "LOCKED"
+    },
+    "truth_epoch": "TE-2026-01-30",
+    "updated_at": "2026-01-30T06:00:00Z",
+    "trace": {
+        "source": "docs/intelligence/system_layer_health.json",
+        "role": "SYSTEM_LAYER_MONITOR"
+    }
+}
