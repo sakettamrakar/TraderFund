@@ -41,6 +41,47 @@ body {
   flex-direction: column;
 }
 
+.market-scope-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.market-selector-global {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.market-selector-global button {
+  background: #2d3748;
+  color: #a0aec0;
+  border: 1px solid #4a5568;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.market-selector-global button.active {
+  background: #3182ce;
+  color: #fff;
+  border-color: #4299e1;
+}
+
+.market-selector-global button.out-of-scope {
+  opacity: 0.5;
+  cursor: not-allowed;
+  border-style: dotted;
+  color: #718096;
+}
+
+.market-selector-global button:disabled {
+  cursor: not-allowed;
+}
+
 .footer-system-posture {
   margin-top: auto;
   padding: 2rem;

@@ -1,0 +1,78 @@
+{
+    "market": "INDIA",
+    "provenance_generated_at": "2026-01-30T18:50:00+05:30",
+    "truth_epoch": "TE-2026-01-30",
+    "data_sources": [
+        {
+            "role": "equity_core",
+            "symbol": "NIFTY50",
+            "path": "data/india/NIFTY50.csv",
+            "format": "CSV",
+            "source": "Yahoo Finance (^NSEI)",
+            "total_records": 496,
+            "date_range": {
+                "start": "2024-01-30",
+                "end": "2026-01-30"
+            },
+            "coverage_years": 2.00,
+            "frequency": "daily"
+        },
+        {
+            "role": "sector_proxy",
+            "symbol": "BANKNIFTY",
+            "path": "data/india/BANKNIFTY.csv",
+            "format": "CSV",
+            "source": "Yahoo Finance (^NSEBANK)",
+            "total_records": 492,
+            "coverage_years": 2.00,
+            "frequency": "daily"
+        },
+        {
+            "role": "volatility_gauge",
+            "symbol": "INDIAVIX",
+            "path": "data/india/INDIAVIX.csv",
+            "format": "CSV",
+            "source": "Yahoo Finance (^INDIAVIX)",
+            "total_records": 492,
+            "coverage_years": 2.00,
+            "frequency": "daily"
+        },
+        {
+            "role": "rates_anchor",
+            "symbol": "IN10Y",
+            "path": "data/india/IN10Y.csv",
+            "format": "CSV",
+            "source": "FRED/IMF (INDIRLTLT01STM)",
+            "total_records": 72,
+            "coverage_years": 6.00,
+            "frequency": "monthly"
+        }
+    ],
+    "sufficiency_analysis": {
+        "equity_core": {
+            "required": 200,
+            "available": 496,
+            "status": "SUFFICIENT"
+        },
+        "sector_proxy": {
+            "required": 200,
+            "available": 492,
+            "status": "SUFFICIENT"
+        },
+        "volatility_gauge": {
+            "required": 50,
+            "available": 492,
+            "status": "SUFFICIENT"
+        },
+        "rates_anchor": {
+            "required": 60,
+            "available": 72,
+            "status": "SUFFICIENT"
+        }
+    },
+    "missing_windows": [],
+    "mock_data_status": "NONE",
+    "backfill_status": "COMPLETE",
+    "confidence_level": "CANONICAL",
+    "confidence_notes": "All proxies successfully bound to canonical index data for Truth Epoch TE-2026-01-30."
+}

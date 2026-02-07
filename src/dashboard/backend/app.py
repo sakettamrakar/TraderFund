@@ -22,24 +22,24 @@ app.add_middleware(
 )
 
 @app.get("/api/system/status")
-async def get_system_status():
-    return load_system_status()
+async def get_system_status(market: str = "US"):
+    return load_system_status(market)
 
 @app.get("/api/layers/health")
-async def get_layer_health():
-    return load_layer_health()
+async def get_layer_health(market: str = "US"):
+    return load_layer_health(market)
 
 @app.get("/api/market/snapshot")
-async def get_market_snapshot():
-    return load_market_snapshot()
+async def get_market_snapshot(market: str = "US"):
+    return load_market_snapshot(market)
 
 @app.get("/api/watchers/timeline")
-async def get_watcher_timeline(limit: int = 10):
-    return load_watcher_timeline(limit)
+async def get_watcher_timeline(market: str = "US", limit: int = 10):
+    return load_watcher_timeline(market, limit)
 
 @app.get("/api/strategies/eligibility")
-async def get_strategy_eligibility():
-    return load_strategy_eligibility()
+async def get_strategy_eligibility(market: str = "US"):
+    return load_strategy_eligibility(market)
 
 @app.get("/api/meta/summary")
 async def get_meta_summary():
@@ -67,17 +67,68 @@ async def get_activation_conditions():
     }
 
 @app.get("/api/capital/readiness")
-async def get_capital_readiness():
-    return load_capital_readiness()
+async def get_capital_readiness(market: str = "US"):
+    return load_capital_readiness(market)
 
 @app.get("/api/capital/history")
-async def get_capital_history():
-    return load_capital_history()
+async def get_capital_history(market: str = "US"):
+    return load_capital_history(market)
 
 from dashboard.backend.loaders.macro import load_macro_context
 @app.get("/api/macro/context")
-async def get_macro_context():
-    return load_macro_context()
+async def get_macro_context(market: str = "US"):
+    return load_macro_context(market)
+
+from dashboard.backend.loaders.intelligence import load_intelligence_snapshot, load_decision_policy, load_fragility_context, load_execution_gate, load_stress_posture, load_constraint_posture, load_evaluation_scope, load_market_parity
+@app.get("/api/intelligence/gate")
+async def get_execution_gate():
+    """
+    Returns the canonical Execution Gate Status (A1.2).
+    """
+    return load_execution_gate()
+
+@app.get("/api/intelligence/parity/{market}")
+async def get_market_parity(market: str = "US"):
+    return load_market_parity(market)
+
+@app.get("/api/meta/evaluation/scope")
+async def get_evaluation_scope():
+    return load_evaluation_scope()
+
+@app.get("/api/intelligence/stress_posture")
+async def get_stress_posture():
+    return load_stress_posture()
+
+@app.get("/api/intelligence/constraint_posture")
+async def get_constraint_posture():
+    return load_constraint_posture()
+
+@app.get("/api/intelligence/snapshot")
+async def get_intelligence_snapshot(market: str = "US"):
+    return load_intelligence_snapshot(market)
+
+@app.get("/api/intelligence/policy/{market}")
+async def get_policy_decision(market: str = "US"):
+    """
+    Returns the Governance Decision Policy for the market.
+    """
+    return load_decision_policy(market)
+
+@app.get("/api/intelligence/fragility/{market}")
+async def get_fragility_context(market: str = "US"):
+    """
+    Returns the Systemic Fragility/Stress context for the market.
+    """
+    return load_fragility_context(market)
+
+from dashboard.backend.loaders.data_anchor import load_data_anchor
+@app.get("/api/data_anchor")
+async def get_data_anchor(market: str = "US"):
+    """
+    EPISTEMIC RESTORATION: Data Anchor endpoint.
+    Returns Truth Epoch, Data Provenance, and Confidence for the specified market.
+    """
+    return load_data_anchor(market)
 
 if __name__ == "__main__":
     import uvicorn

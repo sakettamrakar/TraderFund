@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { getSystemNarrative } from '../services/api';
 import './SystemNarrative.css';
 
-const SystemNarrative = () => {
+const SystemNarrative = ({ market }) => {
     const [narrative, setNarrative] = useState(null);
 
     useEffect(() => {
+        // Narrative is currently global, but we re-fetch on market switch
+        // to ensure freshness if context switches.
         getSystemNarrative().then(setNarrative).catch(console.error);
-    }, []);
+    }, [market]);
 
     if (!narrative) return <div className="loading-narrative">Loading system narrative...</div>;
 

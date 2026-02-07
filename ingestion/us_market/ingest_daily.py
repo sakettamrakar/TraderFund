@@ -19,7 +19,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(level
 logger = logging.getLogger("USIngestion")
 
 class USMarketIngestor:
-    SYMBOLS = ["SPY", "QQQ", "IWM", "VIXY"]
+    SYMBOLS = ["SPY", "QQQ", "IWM", "VIXY", "TNX"]
     DATA_DIR = Path("data/us_market")
 
     def __init__(self):

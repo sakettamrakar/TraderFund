@@ -610,3 +610,210 @@ Verified authorization gating, dependency resolution, and zero side effects.
 - **Dispersion**: `NONE`
 - **Strategies**: 0/24 eligible (Evolution v1)
 - **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T06:00:02.380712] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T21:32:45.200379] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T22:18:51.145401] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:00:01.417349] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:06:19.883302] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:08:19.033479] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:09:48.504784] EV-TICK Passive Trace
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:30:56.032121] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:30:56.032121] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:41:45.153307] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:41:45.153307] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:41:50.959051] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:41:50.959051] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:58:49.390241] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-29T23:58:49.390241] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T00:18:43.023337] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T00:18:43.023337] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/3 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T00:23:29.620119] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T00:23:29.620119] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T00:25:38.458020] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T00:25:38.458020] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T01:22:49.040447] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-01-30T01:22:49.040447] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Action**: NONE (Passive Diagnosis)

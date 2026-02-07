@@ -10,7 +10,7 @@ def _parse_timestamp(tick_name: str) -> datetime.datetime:
     except:
         return datetime.datetime.now()
 
-def _calculate_state_durations(current_states: Dict[str, str], latest_ts: datetime.datetime) -> Dict[str, Any]:
+def _calculate_state_durations(current_states: Dict[str, str], latest_ts: datetime.datetime, market: str) -> Dict[str, Any]:
     """
     Scans history to see how long each factor has been in its current state.
     """
@@ -53,7 +53,9 @@ def _calculate_state_durations(current_states: Dict[str, str], latest_ts: dateti
         if not filename: continue
         
         for d in history_dirs:
-            data = read_json_safe(d / filename).get(json_key, {})
+            # FIX: Ensure we read from market specific path in history too
+            market_d = d / market
+            data = read_json_safe(market_d / filename).get(json_key, {})
             state = data.get(state_key, "UNKNOWN")
             
             if state == current_state:
@@ -70,18 +72,19 @@ def _calculate_state_durations(current_states: Dict[str, str], latest_ts: dateti
         
     return durations
 
-def load_market_snapshot() -> Dict[str, Any]:
+def load_market_snapshot(market: str = "US") -> Dict[str, Any]:
     latest_tick = get_latest_tick_dir()
     if not latest_tick:
         return {}
         
     latest_ts = _parse_timestamp(latest_tick.name)
+    market_dir = latest_tick / market
     
-    regime = read_json_safe(latest_tick / "regime_context.json").get("regime_context", {})
-    liq = read_json_safe(latest_tick / "liquidity_compression.json").get("liquidity_compression", {})
-    mom = read_json_safe(latest_tick / "momentum_emergence.json").get("momentum_emergence", {})
-    dis = read_json_safe(latest_tick / "dispersion_breakout.json").get("dispersion_breakout", {})
-    exp = read_json_safe(latest_tick / "expansion_transition.json").get("expansion_transition", {})
+    regime = read_json_safe(market_dir / "regime_context.json").get("regime_context", {})
+    liq = read_json_safe(market_dir / "liquidity_compression.json").get("liquidity_compression", {})
+    mom = read_json_safe(market_dir / "momentum_emergence.json").get("momentum_emergence", {})
+    dis = read_json_safe(market_dir / "dispersion_breakout.json").get("dispersion_breakout", {})
+    exp = read_json_safe(market_dir / "expansion_transition.json").get("expansion_transition", {})
     
     current_states = {
         "Regime": regime.get("regime", "UNKNOWN"),
@@ -91,15 +94,17 @@ def load_market_snapshot() -> Dict[str, Any]:
         "Expansion": exp.get("state", "UNKNOWN")
     }
     
-    durations = _calculate_state_durations(current_states, latest_ts)
+    durations = _calculate_state_durations(current_states, latest_ts, market)
     
     # Derivative Alerts
     alerts = []
     history = get_ticks_history(limit=2)
     if len(history) >= 2:
         prev_tick = history[1]
-        p_mom = read_json_safe(prev_tick / "momentum_emergence.json").get("momentum_emergence", {}).get("state", "UNKNOWN")
-        p_exp = read_json_safe(prev_tick / "expansion_transition.json").get("expansion_transition", {}).get("state", "UNKNOWN")
+        prev_market_dir = prev_tick / market
+        
+        p_mom = read_json_safe(prev_market_dir / "momentum_emergence.json").get("momentum_emergence", {}).get("state", "UNKNOWN")
+        p_exp = read_json_safe(prev_market_dir / "expansion_transition.json").get("expansion_transition", {}).get("state", "UNKNOWN")
         
         if current_states["Momentum"] != p_mom:
             alerts.append(f"Momentum Changed: {p_mom} -> {current_states['Momentum']}")
@@ -107,11 +112,15 @@ def load_market_snapshot() -> Dict[str, Any]:
             alerts.append(f"Expansion Changed: {p_exp} -> {current_states['Expansion']}")
             
     return {
-        "regime": { "state": current_states["Regime"] },
-        "liquidity": { "state": current_states["Liquidity"], "note": liq.get("notes", "") },
-        "momentum": { "state": current_states["Momentum"], "acceleration": mom.get("acceleration", "Flat"), "breadth": mom.get("breadth", "Narrow") },
-        "expansion": { "state": current_states["Expansion"] },
-        "dispersion": { "state": current_states["Dispersion"] },
+        "Regime": current_states["Regime"], # Case match Frontend expectation
+        "Liquidity": current_states["Liquidity"],
+        "Momentum": current_states["Momentum"],
+        "Expansion": current_states["Expansion"],
+        "Dispersion": current_states["Dispersion"],
         "Durations": durations,
-        "Alerts": alerts
+        "Alerts": alerts,
+        "Details": {
+             "Momentum": mom.get("notes", ""), # Fix key access? mom has notes?
+             "Liquidity": liq.get("notes", "")
+        }
     }

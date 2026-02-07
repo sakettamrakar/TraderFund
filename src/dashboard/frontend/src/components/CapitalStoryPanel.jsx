@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { getCapitalHistory } from '../services/api';
 import './CapitalStoryPanel.css';
 
-const CapitalStoryPanel = () => {
+const CapitalStoryPanel = ({ market }) => {
     const [history, setHistory] = useState(null);
 
     useEffect(() => {
-        getCapitalHistory().then(setHistory).catch(console.error);
-    }, []);
+        getCapitalHistory(market).then(setHistory).catch(console.error);
+    }, [market]);
 
     if (!history) return <div className="loading-story">Loading Narrative History...</div>;
 

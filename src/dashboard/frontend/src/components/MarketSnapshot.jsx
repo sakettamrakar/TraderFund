@@ -2,30 +2,42 @@ import React, { useEffect, useState } from 'react';
 import { getMarketSnapshot } from '../services/api';
 import './MarketSnapshot.css';
 
-const MarketSnapshot = () => {
-    const [snap, setSnap] = useState(null);
+const MarketSnapshot = ({ market }) => {
+    const [snapshot, setSnapshot] = useState(null);
     const [showFactorDetail, setShowFactorDetail] = useState(false);
 
     useEffect(() => {
-        getMarketSnapshot().then(setSnap).catch(console.error);
-    }, []);
+        getMarketSnapshot(market).then(setSnapshot).catch(console.error);
+    }, [market]);
 
-    if (!snap) return <div>Loading...</div>;
+    if (!snapshot) return <div>Loading...</div>;
 
     const metrics = [
-        { label: 'REGIME', value: snap.regime?.state || 'UNKNOWN' },
-        { label: 'LIQUIDITY', value: snap.liquidity?.state || 'UNKNOWN', sub: snap.liquidity?.note },
-        { label: 'MOMENTUM', value: snap.momentum?.state || 'UNKNOWN' },
-        { label: 'EXPANSION', value: snap.expansion?.state || 'NONE' },
-        { label: 'DISPERSION', value: snap.dispersion?.state || 'NONE' },
+        { label: 'REGIME', value: snapshot.Regime || 'UNKNOWN' },
+        { label: 'LIQUIDITY', value: snapshot.Liquidity || 'UNKNOWN' },
+        { label: 'MOMENTUM', value: snapshot.Momentum || 'UNKNOWN' },
+        { label: 'EXPANSION', value: snapshot.Expansion || 'NONE' },
+        { label: 'DISPERSION', value: snapshot.Dispersion || 'NONE' },
     ];
+
+    // T-DASH-04: Market Proxy Sets (Explicit Data Declaration)
+    const PROXY_MAP = {
+        'US': { name: 'S&P 500', source: 'SPY.csv (Yahoo Finance)' },
+        'INDIA': { name: 'NIFTY 50 (Proxy)', source: 'NIFTY50.csv (Yahoo Finance)' }
+    };
+    const activeProxy = PROXY_MAP[market] || { name: 'Unknown', source: 'Unknown' };
 
     return (
         <div className="market-snapshot">
-            {snap.Alerts && snap.Alerts.length > 0 && (
+            <div className="proxy-header">
+                <span className="proxy-label">OBSERVING PROXY:</span>
+                <span className="proxy-value">{activeProxy.name}</span>
+                <span className="proxy-source" title={`Data Source: ${activeProxy.source}`}>[{activeProxy.source}]</span>
+            </div>
+            {snapshot.Alerts && snapshot.Alerts.length > 0 && (
                 <div className="alerts-section">
                     <h4>Recent Transitions</h4>
-                    {snap.Alerts.map((alert, i) => (
+                    {snapshot.Alerts.map((alert, i) => (
                         <div key={i} className="audit-alert">
                             <span className="alert-icon">⚡</span>
                             <span className="alert-text">{alert}</span>
@@ -47,7 +59,7 @@ const MarketSnapshot = () => {
             <div className="snapshot-grid">
                 {metrics.map((m) => {
                     // Extract duration for this metric if available
-                    const durationData = snap.Durations ? snap.Durations[m.label] : null;
+                    const durationData = snapshot.Durations ? snapshot.Durations[m.label] : null;
                     return (
                         <div key={m.label} className="metric-card">
                             <span className="metric-label">{m.label}</span>
@@ -57,6 +69,15 @@ const MarketSnapshot = () => {
                                     In State: {durationData.duration}
                                 </span>
                             )}
+                            {/* T-DASH-05: Transparency Tooltip */}
+                            <div className="metric-tooltip">
+                                Driven by: {
+                                    m.label === 'MOMENTUM' ? 'Price SMA50 x SMA200' :
+                                        m.label === 'LIQUIDITY' ? 'Avg Daily Volume (20d)' :
+                                            m.label === 'EXPANSION' ? 'ATR Breakout > 1.5σ' :
+                                                'Regime Classification Model'
+                                }
+                            </div>
                             {m.sub && <span className="metric-sub">{m.sub}</span>}
                         </div>
                     );
@@ -69,17 +90,17 @@ const MarketSnapshot = () => {
                     <div className="factor-list">
                         <div className="factor-item">
                             <span className="factor-name">Acceleration</span>
-                            <span className="factor-state">{snap?.momentum?.acceleration || 'Flat'}</span>
+                            <span className="factor-state">{snapshot?.Details?.Momentum || 'Flat'}</span>
                             <span className="factor-desc">Speed of the trend. Flat = No new power.</span>
                         </div>
                         <div className="factor-item">
                             <span className="factor-name">Breadth</span>
-                            <span className="factor-state">{snap?.momentum?.breadth || 'Narrow'}</span>
+                            <span className="factor-state">{'Narrow'}</span>
                             <span className="factor-desc">Market participation. Narrow = Few stocks leading.</span>
                         </div>
                         <div className="factor-item">
                             <span className="factor-name">Expansion</span>
-                            <span className="factor-state">{snap?.expansion?.state || 'None'}</span>
+                            <span className="factor-state">{snapshot?.Expansion || 'None'}</span>
                             <span className="factor-desc">Volatility opening. None = Market is contracting.</span>
                         </div>
                     </div>

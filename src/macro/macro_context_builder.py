@@ -16,16 +16,18 @@ class MacroContextBuilder:
         self.output_dir = output_dir
         self.output_path = output_dir / "macro_context.json"
 
-    def build(self, current_data: Dict[str, Any], timestamp: str) -> Dict[str, Any]:
+    def build(self, current_data: Dict[str, Any], timestamp: str, market: str) -> Dict[str, Any]:
         """
-        Builds the macro context snapshot.
+        Builds the macro context snapshot for a specific market.
         
         Args:
             current_data: Dictionary containing latest price/indicator data.
-                          Expected keys: 'SPY', 'QQQ', 'VIX', '^TNX' (10Y), 
-                          'SHY' (2Y proxy), 'HYG', 'LQD'.
             timestamp: ISO timestamp string.
+            market: "US" or "INDIA"
         """
+        market_dir = self.output_dir / market
+        market_dir.mkdir(parents=True, exist_ok=True)
+        output_path = market_dir / "macro_context.json"
         
         # 1. Extract Proxies (with fallbacks for robustness)
         # Note: In a real system, we'd use rolling windows. 
@@ -108,8 +110,7 @@ class MacroContextBuilder:
         }
         
         # 5. Persist
-        self.output_dir.mkdir(parents=True, exist_ok=True)
-        with open(self.output_path, "w") as f:
+        with open(output_path, "w") as f:
             json.dump(context, f, indent=2)
             
         return context

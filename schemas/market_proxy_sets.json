@@ -1,0 +1,86 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "name": "MarketProxySet",
+    "description": "Definition of the canonical set of instruments used to represent a market's regime, liquidity, and factor state.",
+    "type": "object",
+    "properties": {
+        "market": {
+            "type": "string",
+            "enum": [
+                "US",
+                "INDIA"
+            ]
+        },
+        "version": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$"
+        },
+        "status": {
+            "type": "string",
+            "enum": [
+                "CANONICAL",
+                "DEGRADED",
+                "INVALID"
+            ],
+            "description": "The epistemic reliance status of this proxy set."
+        },
+        "roles": {
+            "type": "object",
+            "properties": {
+                "benchmark_equity": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Primary equity index ticker(s)."
+                },
+                "growth_proxy": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "volatility_gauge": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "primary volatility index or realized vol source."
+                },
+                "rates_anchor": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Risk-free rate reference."
+                },
+                "liquidity_proxy": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "sector_proxies": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                }
+            },
+            "required": [
+                "benchmark_equity",
+                "volatility_gauge"
+            ]
+        },
+        "ingestion_binding": {
+            "type": "object",
+            "description": "Maps roles to specific file patterns or API endpoints."
+        }
+    },
+    "required": [
+        "market",
+        "version",
+        "status",
+        "roles"
+    ]
+}

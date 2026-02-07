@@ -1,0 +1,8 @@
+{
+    "last_successful_evaluation": "2026-01-30T06:00:00Z",
+    "truth_epoch": "TE-2026-01-30",
+    "status": "VALID",
+    "trace": {
+        "source": "docs/intelligence/last_successful_evaluation.json"
+    }
+}

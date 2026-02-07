@@ -1,0 +1,9 @@
+{
+    "execution_gate": "CLOSED",
+    "reasons": [
+        "INV-NO-EXECUTION",
+        "CAPITAL_NOT_CONNECTED",
+        "STRATEGY_DISABLED"
+    ],
+    "truth_epoch": "TE-2026-01-30"
+}

@@ -1,0 +1,14 @@
+{
+  "fragility_context": {
+    "market": "INDIA",
+    "computed_at": "2026-02-07T21:50:43.623315",
+    "stress_state": "NORMAL",
+    "constraints_applied": [],
+    "final_authorized_intents": [
+      "ALLOW_POSITION_HOLD",
+      "ALLOW_REBALANCING"
+    ],
+    "reason": "Nominal Conditions.",
+    "version": "1.0.0-INDIA-SUBTRACTIVE"
+  }
+}

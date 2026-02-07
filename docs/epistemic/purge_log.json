@@ -1,0 +1,44 @@
+{
+    "purge_operation": {
+        "operation_id": "EPISTEMIC_RESTORATION_2026-01-30",
+        "initiated_at": "2026-01-30T01:14:26+05:30",
+        "completed_at": "2026-01-30T01:25:00+05:30",
+        "operator": "ANTIGRAVITY_AGENT",
+        "mode": "EPISTEMIC_RESTORATION",
+        "constraints": {
+            "no_execution": true,
+            "no_capital_logic": true,
+            "no_strategy_mutation": true,
+            "no_heuristic_tuning": true,
+            "no_silent_defaults": true,
+            "fail_closed_on_missing_data": true
+        }
+    },
+    "purged_artifacts": [
+        {
+            "file": "src/evolution/orchestration/ev_tick.py",
+            "line_range": "270-279",
+            "artifact_type": "mock_market_data dictionary",
+            "reason": "Hardcoded SPY/TSLA/NIFTY_50/RELIANCE volatility and volume data for Intelligence Engine",
+            "replacement": "Empty dictionary - Intelligence Engine receives no mock data",
+            "status": "PURGED"
+        },
+        {
+            "file": "src/evolution/factor_context_builder.py",
+            "line_range": "49-106",
+            "artifact_type": "Mock Factor Calculation",
+            "reason": "Entire build() method returned hardcoded 'neutral' factors with 0.5 confidence",
+            "replacement": "Fail-closed sufficiency contract; UNKNOWN if data insufficient; derived from regime if sufficient",
+            "status": "PURGED"
+        }
+    ],
+    "pending_removals": [],
+    "verification_status": {
+        "all_mocks_purged": true,
+        "fail_closed_enforced": true,
+        "data_sufficiency_declared": true,
+        "truth_epoch_frozen": true,
+        "dashboard_anchor_visible": true
+    },
+    "final_note": "Data anchor established. Truth epoch frozen. Dashboard trust restored."
+}

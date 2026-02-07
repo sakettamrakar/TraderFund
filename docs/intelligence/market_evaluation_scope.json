@@ -1,0 +1,12 @@
+{
+    "evaluated_markets": [
+        "US",
+        "INDIA"
+    ],
+    "observation_mode": "ACTIVE",
+    "truth_epoch": "TE-2026-01-30",
+    "trace": {
+        "source": "docs/intelligence/market_evaluation_scope.json",
+        "role": "STRATEGIC_SCOPE"
+    }
+}

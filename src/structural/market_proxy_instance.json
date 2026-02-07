@@ -1,0 +1,54 @@
+{
+    "US": {
+        "version": "1.1.0",
+        "status": "CANONICAL",
+        "roles": {
+            "equity_core": [
+                "SPY"
+            ],
+            "growth_proxy": [
+                "QQQ"
+            ],
+            "volatility_gauge": [
+                "VIXY"
+            ],
+            "rates_anchor": [
+                "TNX"
+            ],
+            "liquidity_proxy": [],
+            "sector_proxies": {}
+        },
+        "ingestion_binding": {
+            "SPY": "data/us_market/SPY_daily.csv",
+            "QQQ": "data/us_market/QQQ_daily.csv",
+            "VIXY": "data/us_market/VIXY_daily.csv",
+            "TNX": "data/regime/raw/^TNX.csv"
+        }
+    },
+    "INDIA": {
+        "version": "1.1.0",
+        "status": "CANONICAL",
+        "roles": {
+            "benchmark_equity": [
+                "NIFTY50"
+            ],
+            "growth_proxy": [
+                "BANKNIFTY"
+            ],
+            "volatility_gauge": [
+                "INDIAVIX"
+            ],
+            "rates_anchor": [
+                "IN10Y"
+            ],
+            "liquidity_proxy": [],
+            "sector_proxies": {}
+        },
+        "ingestion_binding": {
+            "NIFTY50": "data/india/NIFTY50.csv",
+            "BANKNIFTY": "data/india/BANKNIFTY.csv",
+            "INDIAVIX": "data/india/INDIAVIX.csv",
+            "IN10Y": "data/india/IN10Y.csv"
+        }
+    }
+}

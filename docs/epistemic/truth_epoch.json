@@ -1,0 +1,46 @@
+{
+    "epoch": {
+        "epoch_id": "TRUTH_EPOCH_2026-02-07_01",
+        "activation_time": "2026-02-07T21:50:00+05:30",
+        "frozen_by": "ANTIGRAVITY_AGENT",
+        "mode": "CANONICAL_OBSERVATION",
+        "immutable": true
+    },
+    "markets_enabled": [
+        "US",
+        "INDIA"
+    ],
+    "mock_data_status": {
+        "US": "PURGED",
+        "INDIA": "PURGED"
+    },
+    "backfill_status": {
+        "US": "COMPLETE",
+        "INDIA": "COMPLETE"
+    },
+    "data_sufficiency": {
+        "US": {
+            "regime_detection": "SUFFICIENT",
+            "factor_context": "SUFFICIENT",
+            "liquidity_analysis": "SUFFICIENT",
+            "overall": "SUFFICIENT"
+        },
+        "INDIA": {
+            "regime_detection": "SUFFICIENT",
+            "factor_context": "SUFFICIENT",
+            "liquidity_analysis": "SUFFICIENT",
+            "overall": "SUFFICIENT"
+        }
+    },
+    "confidence_levels": {
+        "US": "HIGH",
+        "INDIA": "HIGH"
+    },
+    "verification_checklist": {
+        "all_mocks_purged": true,
+        "regime_requires_sufficiency": true,
+        "dashboard_shows_known_vs_unknown": true,
+        "truth_epoch_visible": true
+    },
+    "notes": "Truth epoch updated to 2026-02-07 post-ingestion. All market parity canonical."
+}

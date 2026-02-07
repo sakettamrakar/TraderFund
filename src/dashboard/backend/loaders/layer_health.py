@@ -1,28 +1,39 @@
-import datetime
+import json
 from pathlib import Path
 from typing import Dict, Any
-from dashboard.backend.utils.filesystem import get_latest_tick_dir, META_DIR
 
-def load_layer_health() -> Dict[str, Any]:
-    latest_tick = get_latest_tick_dir()
-    if not latest_tick:
-         return {"layers": []}
-         
-    def check(name: str, path: Path):
-        exists = path.exists()
+PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
+
+def load_layer_health(market: str = "US") -> Dict[str, Any]:
+    """
+    Loads System Layer Health (A0.1).
+    """
+    path = PROJECT_ROOT / "docs" / "intelligence" / "system_layer_health.json"
+    if not path.exists():
         return {
-            "name": name,
-            "status": "OK" if exists else "ERROR",
-            "last_updated": datetime.datetime.fromtimestamp(path.stat().st_mtime).isoformat() if exists else None
+            "DATA": {"status": "UNKNOWN"},
+            "FACTOR": {"status": "UNKNOWN"},
+            "INTELLIGENCE": {"status": "UNKNOWN"},
+            "GOVERNANCE": {"status": "UNKNOWN"},
+            "error": "Artifact missing: docs/intelligence/system_layer_health.json"
         }
-
-    layers = [
-        check("Regime Context", latest_tick / "regime_context.json"),
-        check("Factor Context", latest_tick / "factor_context.json"),
-        check("Momentum Watcher", latest_tick / "momentum_emergence.json"),
-        check("Expansion Watcher", latest_tick / "expansion_transition.json"),
-        check("Dispersion Watcher", latest_tick / "dispersion_breakout.json"),
-        check("Liquidity Watcher", latest_tick / "liquidity_compression.json"),
-        check("Meta-Analysis", META_DIR / "evolution_comparative_summary.md")
-    ]
-    return {"layers": layers}
+    
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            # Flatten to allow Object.entries in frontend if preferred, 
+            # but let's return a simple dict.
+            result = {}
+            for name, status in data.get("layers", {}).items():
+                result[name] = {
+                    "status": status,
+                    "last_updated": data.get("updated_at"),
+                    "trace": data.get("trace", {}).get("source")
+                }
+            result["_meta"] = {
+                "truth_epoch": data.get("truth_epoch"),
+                "role_id": "A0.1"
+            }
+            return result
+    except Exception as e:
+        return {"error": str(e)}

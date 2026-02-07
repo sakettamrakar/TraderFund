@@ -1,0 +1,50 @@
+{
+  "timestamp": "2026-01-29T23:09:48.520372",
+  "market": "US",
+  "metadata": {
+    "source": "IntelligenceEngine v1.0",
+    "universe_size": 19
+  },
+  "signals": [
+    {
+      "symbol": "TSLA",
+      "type": "VOLATILITY_EXPANSION",
+      "domain": "VOLATILITY",
+      "metric_label": "Rel Volatility",
+      "metric": 2.25,
+      "unit": "x",
+      "baseline": "vs 20d Avg (2.00)",
+      "reason": "Current volatility (4.50) is > 2x average (2.00)",
+      "explanation": {
+        "what": "Volatility is 2.2x normal levels",
+        "why": "Expansion marks potential regime shift",
+        "not": "Not a direction signal"
+      },
+      "overlay": {
+        "status": "CAUTION",
+        "reason": "Volatility expansion in NEUTRAL regime requires manual check.",
+        "regime": "NEUTRAL"
+      }
+    },
+    {
+      "symbol": "TSLA",
+      "type": "LARGE_MOVE_UP",
+      "domain": "PRICE",
+      "metric_label": "Daily Change",
+      "metric": 9.090909090909092,
+      "unit": "%",
+      "baseline": "vs Prev Close (220.0)",
+      "reason": "Price moved 9.1% UP",
+      "explanation": {
+        "what": "Price changed by 9.1%",
+        "why": "Exceeded 5% daily move threshold",
+        "not": "Not a trend reversal prediction"
+      },
+      "overlay": {
+        "status": "ALLOWED",
+        "reason": "Congruent with NEUTRAL regime.",
+        "regime": "NEUTRAL"
+      }
+    }
+  ]
+}
