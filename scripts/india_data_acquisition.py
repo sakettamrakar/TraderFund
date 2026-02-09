@@ -20,12 +20,40 @@ INDIA_TICKERS = {
 
 def download_ticker(name: str, ticker: str, period: str = "2y") -> bool:
     """
-    Downloads historical data for a ticker.
+    Downloads historical data for a ticker using delta-merge logic.
     Returns True if successful, False otherwise.
     """
-    print(f"Downloading {name} ({ticker})...")
+    print(f"Processing {name} ({ticker})...")
+    output_path = DATA_DIR / f"{name}.csv"
+    
+    # 1. Load Existing History
+    existing_df = pd.DataFrame()
+    start_date = None
+    
+    if output_path.exists():
+        try:
+            existing_df = pd.read_csv(output_path)
+            if not existing_df.empty and 'Date' in existing_df.columns:
+                existing_df['Date'] = pd.to_datetime(existing_df['Date'])
+                existing_df = existing_df.sort_values('Date')
+                last_date = existing_df['Date'].iloc[-1]
+                # Start fetching from the last known date to capture updates/corrections
+                start_date = (last_date - timedelta(days=1)).strftime('%Y-%m-%d')
+                print(f"  Found existing history: {len(existing_df)} rows. Last date: {last_date.date()}")
+        except Exception as e:
+            print(f"  WARNING: Could not read existing file {output_path}: {e}")
+            existing_df = pd.DataFrame()
+    
+    # 2. Fetch Data
     try:
-        data = yf.download(ticker, period=period, progress=False)
+        if start_date:
+            print(f"  Fetching incremental data from {start_date}...")
+            # yfinance download end date is exclusive, so we don't set it to get up to today
+            data = yf.download(ticker, start=start_date, progress=False)
+        else:
+            print(f"  Fetching full history ({period})...")
+            data = yf.download(ticker, period=period, progress=False)
+            
         if data.empty:
             print(f"  WARNING: No data returned for {ticker}")
             return False
@@ -37,11 +65,30 @@ def download_ticker(name: str, ticker: str, period: str = "2y") -> bool:
         # Reset index to have Date as column
         data = data.reset_index()
         
-        # Save to CSV
-        output_path = DATA_DIR / f"{name}.csv"
-        data.to_csv(output_path, index=False)
-        print(f"  Saved {len(data)} rows to {output_path}")
+        # Ensure Date column is datetime
+        if 'Date' in data.columns:
+             data['Date'] = pd.to_datetime(data['Date'])
+        
+        print(f"  Fetched {len(data)} rows.")
+
+        # 3. Merge and Deduplicate
+        if not existing_df.empty:
+            # Concatenate
+            combined_df = pd.concat([existing_df, data])
+            # Deduplicate by Date, keeping the NEWER fetch (last)
+            # This allows corrections to the last candle
+            combined_df = combined_df.drop_duplicates(subset=['Date'], keep='last')
+            combined_df = combined_df.sort_values('Date')
+        else:
+            combined_df = data
+
+        # 4. Save
+        combined_df.to_csv(output_path, index=False)
+        
+        rows_added = len(combined_df) - len(existing_df)
+        print(f"  Saved {len(combined_df)} rows to {output_path} (Delta: {rows_added:+d})")
         return True
+        
     except Exception as e:
         print(f"  ERROR downloading {ticker}: {e}")
         return False

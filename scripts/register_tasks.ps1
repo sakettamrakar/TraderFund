@@ -14,7 +14,8 @@ Unregister-ScheduledTask -TaskName $TaskName1 -Confirm:$false -ErrorAction Silen
 Register-ScheduledTask -Action (New-ScheduledTaskAction -Execute $PythonPath -Argument "-u -m traderfund.run_regime --mode SHADOW" -WorkingDirectory $RepoPath) `
                        -Trigger (New-ScheduledTaskTrigger -Daily -At 08:45) `
                        -TaskName $TaskName1 `
-                       -Description "TraderFund Regime Engine: Pre-Market Warmup (Shadow Mode)"
+                       -Description "TraderFund Regime Engine: Pre-Market Warmup (Shadow Mode)" `
+                       -RunLevel Highest
 
 # 2. Live Trading (09:15 IST)
 # Runs in ENFORCED mode
@@ -23,7 +24,8 @@ Unregister-ScheduledTask -TaskName $TaskName2 -Confirm:$false -ErrorAction Silen
 Register-ScheduledTask -Action (New-ScheduledTaskAction -Execute $PythonPath -Argument "-u -m traderfund.run_regime --mode ENFORCED" -WorkingDirectory $RepoPath) `
                        -Trigger (New-ScheduledTaskTrigger -Daily -At 09:15) `
                        -TaskName $TaskName2 `
-                       -Description "TraderFund Regime Engine: Live Trading (Enforced Mode)"
+                       -Description "TraderFund Regime Engine: Live Trading (Enforced Mode)" `
+                       -RunLevel Highest
 
 # 3. Post-Market Analytics (15:45 IST)
 # Runs offline analytics
@@ -32,7 +34,8 @@ Unregister-ScheduledTask -TaskName $TaskName3 -Confirm:$false -ErrorAction Silen
 Register-ScheduledTask -Action (New-ScheduledTaskAction -Execute $PythonPath -Argument "-u -m traderfund.run_regime --mode ANALYTICS" -WorkingDirectory $RepoPath) `
                        -Trigger (New-ScheduledTaskTrigger -Daily -At 15:45) `
                        -TaskName $TaskName3 `
-                       -Description "TraderFund Regime Engine: Post-Market Regret Analysis"
+                       -Description "TraderFund Regime Engine: Post-Market Regret Analysis" `
+                       -RunLevel Highest
 
 Write-Host "Tasks Registered Successfully."
 Get-ScheduledTask | Where-Object {$_.TaskName -like "TF_Regime_*"} | Format-Table TaskName, State

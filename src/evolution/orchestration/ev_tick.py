@@ -18,8 +18,8 @@ from typing import Dict, Any
 
 # Ensure project root is in path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT / "src"))
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from evolution.factor_context_builder import FactorContextBuilder
 from evolution.watchers.momentum_emergence_watcher import MomentumEmergenceWatcher
