@@ -1,0 +1,16 @@
+{
+    "fragility_policy": {
+        "market": "US",
+        "stress_state": "NORMAL",
+        "signals": {
+            "liquidity": "STABLE",
+            "regime_transition": "IN_SYSTEM",
+            "correlation": "LOW",
+            "volatility": "MODERATE"
+        },
+        "blocked_intents": [],
+        "reason": "Systemic signals within normal ranges. No subtractive constraints applied.",
+        "evaluation_timestamp": "2026-01-30T04:45:00Z",
+        "epoch_id": "TE-2026-01-30"
+    }
+}

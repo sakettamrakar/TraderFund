@@ -1,0 +1,13 @@
+{
+  "request_id": "WIN-US-20260209143327",
+  "market": "US",
+  "window_start": "2026-01-31",
+  "window_end": "2026-02-04",
+  "requested_at": "2026-02-09T14:33:27.801175Z",
+  "status": "REQUESTED",
+  "bounded_by": {
+    "truth_epoch": "2026-01-30",
+    "canonical_truth_time": "2026-02-06"
+  },
+  "notes": "Bounded catch-up requested. No TE advancement performed."
+}

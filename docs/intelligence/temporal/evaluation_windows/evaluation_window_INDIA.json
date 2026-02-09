@@ -1,0 +1,13 @@
+{
+  "request_id": "WIN-INDIA-20260209143328",
+  "market": "INDIA",
+  "window_start": "2026-02-01",
+  "window_end": "2026-02-05",
+  "requested_at": "2026-02-09T14:33:28.424485Z",
+  "status": "REQUESTED",
+  "bounded_by": {
+    "truth_epoch": "2026-01-30",
+    "canonical_truth_time": "2026-02-09"
+  },
+  "notes": "Bounded catch-up requested. No TE advancement performed."
+}

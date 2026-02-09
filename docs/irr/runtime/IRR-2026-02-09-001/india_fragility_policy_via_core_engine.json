@@ -1,0 +1,11 @@
+{
+  "fragility_context": {
+    "market": "UNKNOWN",
+    "computed_at": "2026-02-09T19:14:02.782575",
+    "stress_state": "NOT_EVALUATED",
+    "constraints_applied": [],
+    "final_authorized_intents": [],
+    "reason": "Market UNKNOWN not authorized for fragility evaluation.",
+    "version": "1.0.0-SUBTRACTIVE"
+  }
+}

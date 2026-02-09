@@ -1,14 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { getMarketSnapshot } from '../services/api';
+import { useInspection } from '../context/InspectionContext';
 import './MarketSnapshot.css';
 
 const MarketSnapshot = ({ market }) => {
     const [snapshot, setSnapshot] = useState(null);
     const [showFactorDetail, setShowFactorDetail] = useState(false);
+    const { isInspectionMode } = useInspection();
 
     useEffect(() => {
-        getMarketSnapshot(market).then(setSnapshot).catch(console.error);
-    }, [market]);
+        if (!isInspectionMode) {
+            getMarketSnapshot(market).then(setSnapshot).catch(console.error);
+        }
+    }, [market, isInspectionMode]);
+
+    if (isInspectionMode) {
+        return (
+            <div className="market-snapshot inspection-blocked">
+                <div className="snapshot-header">
+                    <h3>Market Structure Snapshot</h3>
+                    <div className="weather-icon">🚫</div>
+                </div>
+                <div className="inspection-msg">
+                    MARKET DATA UNAVAILABLE IN SCENARIO VISUALIZATION. <br />
+                    LIVE PRICE/VOLUMETRICS ARE SUPPRESSED.
+                </div>
+            </div>
+        );
+    }
 
     if (!snapshot) return <div>Loading...</div>;
 
@@ -19,6 +38,9 @@ const MarketSnapshot = ({ market }) => {
         { label: 'EXPANSION', value: snapshot.Expansion || 'NONE' },
         { label: 'DISPERSION', value: snapshot.Dispersion || 'NONE' },
     ];
+    const regimeDegraded = snapshot.RegimeDegraded || snapshot.CanonicalState !== 'CANONICAL_COMPLETE';
+    const missingRoles = snapshot.MissingRoles || [];
+    const staleRoles = snapshot.StaleRoles || [];
 
     // T-DASH-04: Market Proxy Sets (Explicit Data Declaration)
     const PROXY_MAP = {
@@ -34,6 +56,16 @@ const MarketSnapshot = ({ market }) => {
                 <span className="proxy-value">{activeProxy.name}</span>
                 <span className="proxy-source" title={`Data Source: ${activeProxy.source}`}>[{activeProxy.source}]</span>
             </div>
+            {regimeDegraded && (
+                <div className="partiality-banner">
+                    <div className="partiality-title">REGIME: UNKNOWN (PARTIAL DATA)</div>
+                    <div className="partiality-row">Canonical State: {snapshot.CanonicalState || 'UNKNOWN'}</div>
+                    <div className="partiality-row">Reason: {snapshot.RegimeReason || 'Partial canonical inputs'}</div>
+                    <div className="partiality-row">
+                        Missing Roles: {missingRoles.length ? missingRoles.join(', ') : 'NONE'} | Stale Roles: {staleRoles.length ? staleRoles.join(', ') : 'NONE'}
+                    </div>
+                </div>
+            )}
             {snapshot.Alerts && snapshot.Alerts.length > 0 && (
                 <div className="alerts-section">
                     <h4>Recent Transitions</h4>

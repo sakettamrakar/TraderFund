@@ -17,7 +17,8 @@
 }
 
 .tone-indicator,
-.posture-indicator {
+.posture-indicator,
+.mode-indicator {
     background: rgba(255, 255, 255, 0.05);
     padding: 2px 8px;
     border-radius: 4px;
@@ -35,4 +36,42 @@
     padding: 1rem;
     color: #718096;
     font-style: italic;
+}
+
+.narrative-silenced {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #f6ad55;
+    margin: 0;
+}
+
+.narrative-gating {
+    color: #cbd5e0;
+    font-size: 0.9rem;
+    margin-top: 0.65rem;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+.narrative-provenance {
+    margin-top: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 0.65rem;
+}
+
+.provenance-title {
+    color: #a0aec0;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+}
+
+.provenance-list {
+    margin: 0;
+    padding-left: 1rem;
+    color: #cbd5e0;
+    font-size: 0.78rem;
+    line-height: 1.45;
 }

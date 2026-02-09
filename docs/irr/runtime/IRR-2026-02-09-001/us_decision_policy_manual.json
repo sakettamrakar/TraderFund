@@ -1,0 +1,17 @@
+{
+  "policy_decision": {
+    "market": "US",
+    "computed_at": "2026-02-09T19:14:44.689187",
+    "policy_state": "HALTED",
+    "permissions": [
+      "OBSERVE_ONLY"
+    ],
+    "blocked_actions": [],
+    "reason": "Regime UNKNOWN. System Halted.",
+    "epistemic_health": {
+      "grade": "CANONICAL",
+      "proxy_status": "CANONICAL"
+    },
+    "version": "1.0.0-EVAL_ONLY"
+  }
+}

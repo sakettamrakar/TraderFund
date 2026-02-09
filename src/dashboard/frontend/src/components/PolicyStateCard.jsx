@@ -1,46 +1,80 @@
 import React, { useState, useEffect } from 'react';
+import { getMarketPolicy } from '../services/api';
+import { useInspection } from '../context/InspectionContext';
 import './PolicyStateCard.css';
 
 const PolicyStateCard = ({ market }) => {
     const [policyData, setPolicyData] = useState(null);
     const [error, setError] = useState(null);
+    const { isInspectionMode, activeScenario, meta } = useInspection();
 
     useEffect(() => {
-        // Determine file limit based on market
-        // In production, this would be an API call. 
-        // Here we assume the backend serves these JSONs statically or we fetch directly if possible.
-        // For this environment, we'll try to fetch from the known backend endpoint or assume static mapping.
+        if (!isInspectionMode) {
+            getMarketPolicy(market)
+                .then(data => {
+                    setPolicyData(data.policy);
+                    setError(null);
+                })
+                .catch(err => {
+                    console.error(err);
+                    setError(err.message);
+                    setPolicyData(null);
+                });
+        }
+    }, [market, isInspectionMode]);
 
-        const fetchPolicy = async () => {
-            try {
-                const response = await fetch(`http://localhost:8000/api/intelligence/policy/${market}`);
-                if (!response.ok) {
-                    // Determine if it's 404 (Not Found) or 500
-                    if (response.status === 404) {
-                        throw new Error("Policy not found.");
-                    }
-                    throw new Error("Policy fetch failed");
+    let finalPolicyData = isInspectionMode ? null : policyData;
+    let isSimulated = isInspectionMode;
+
+    if (isInspectionMode) {
+        if (activeScenario) {
+            const outcomes = activeScenario.markets?.[market]?.outcomes;
+            if (outcomes) {
+                // Synthesize Policy Object from Audit Report structure
+                const pState = outcomes.policy_state || 'RESTRICTED';
+                const blocked = outcomes.blocked_actions || (outcomes.constraints ? [] : ['ALL_EXECUTION']);
+
+                let finalPermissions = [];
+                let finalBlocked = [];
+
+                if (outcomes.blocked_actions) {
+                    finalBlocked = outcomes.blocked_actions;
+                    finalPermissions = ['OBSERVE_ONLY'];
+                } else if (outcomes.permissions) {
+                    finalPermissions = outcomes.permissions;
+                } else if (outcomes.constraints) {
+                    // Interpret constraints as blocked actions in stress context
+                    finalBlocked = outcomes.constraints;
+                    finalPermissions = ['OBSERVE_ONLY'];
                 }
-                const data = await response.json();
-                setPolicyData(data.policy_decision);
-                setError(null);
-            } catch (err) {
-                console.error(err);
-                setError(err.message);
-                // Fallback for demo if API not running (Simulation logic)
-                // Ideally we don't simulate, but for UI robustness:
-                setPolicyData(null);
+
+                finalPolicyData = {
+                    policy_state: pState,
+                    permissions: finalPermissions,
+                    blocked_actions: finalBlocked,
+                    reason: `SIMULATION: ${activeScenario.condition_desc} [${outcomes.verdict || 'N/A'}]`,
+                    epistemic_health: {
+                        grade: meta?.epoch || 'SIM',
+                        proxy_status: 'SIMULATED'
+                    }
+                };
+            } else {
+                // Scenario exists but no data for this market -> e.g. S3 only affects US
+                finalPolicyData = {
+                    policy_state: 'NORMAL',
+                    permissions: ['ALL_ACTIONS'],
+                    blocked_actions: [],
+                    reason: `SIMULATION: No stress defined for ${market} in ${activeScenario.name}`,
+                    epistemic_health: { grade: 'SIM', proxy_status: 'SIMULATED' }
+                };
             }
-        };
+        } else {
+            // Loading or selection pending
+            finalPolicyData = null;
+        }
+    }
 
-        fetchPolicy();
-        // Poll every 30s
-        const interval = setInterval(fetchPolicy, 30000);
-        return () => clearInterval(interval);
-
-    }, [market]);
-
-    if (error) {
+    if (error && !isInspectionMode) {
         return (
             <div className="policy-card error">
                 <div className="policy-header">
@@ -55,7 +89,7 @@ const PolicyStateCard = ({ market }) => {
         )
     }
 
-    if (!policyData) {
+    if (!finalPolicyData) {
         return (
             <div className="policy-card loading">
                 <h3>Loading Policy...</h3>
@@ -63,8 +97,8 @@ const PolicyStateCard = ({ market }) => {
         )
     }
 
-    const { policy_state, permissions, blocked_actions, reason, epistemic_health } = policyData;
-    const isHealthy = epistemic_health?.proxy_status === 'CANONICAL';
+    const { policy_state, permissions, blocked_actions, reason, epistemic_health } = finalPolicyData;
+    const isHealthy = epistemic_health?.proxy_status === 'CANONICAL' || isSimulated;
 
     // Status Colors
     let statusClass = 'neutral';

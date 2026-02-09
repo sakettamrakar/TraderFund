@@ -1,0 +1,57 @@
+{
+    "market": "INDIA",
+    "timestamp": "2026-02-09T14:33:28.424988Z",
+    "temporal_state": {
+        "raw_data_time": {
+            "timestamp": "2026-02-09",
+            "source": "data\\india\\NIFTY50.csv",
+            "status": "VALID"
+        },
+        "canonical_truth_time": {
+            "timestamp": "2026-02-09",
+            "source": "canonical_validation_layer",
+            "status": "VALID",
+            "last_validated": "2026-02-09T14:33:27.178340Z"
+        },
+        "truth_epoch": {
+            "timestamp": "2026-01-30",
+            "source": "governance_manifest",
+            "status": "FROZEN",
+            "reason": "Phase 4 Audit Freeze"
+        }
+    },
+    "drift_status": {
+        "ingestion_drift_days": 0,
+        "evaluation_drift_days": 10,
+        "critical_future_leakage": false,
+        "status_code": "DRIFT_LIMIT_EXCEEDED",
+        "message": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.",
+        "max_drift_days": 7,
+        "drift_limit_exceeded": true,
+        "required_operator_action": "REQUEST_EVALUATION_WINDOW(INDIA, window_start, window_end)",
+        "human_explanation": "Evaluation remains blocked because canonical data has moved too far ahead of frozen truth. Operator must submit bounded catch-up windows; TE will not auto-advance."
+    },
+    "holds": {
+        "ingestion_hold": false,
+        "evaluation_hold": true,
+        "reason": "Operator evaluation window requested. Awaiting manual catch-up execution."
+    },
+    "evaluation_window": {
+        "request_id": "WIN-INDIA-20260209143328",
+        "market": "INDIA",
+        "window_start": "2026-02-01",
+        "window_end": "2026-02-05",
+        "requested_at": "2026-02-09T14:33:28.424485Z",
+        "status": "REQUESTED",
+        "bounded_by": {
+            "truth_epoch": "2026-01-30",
+            "canonical_truth_time": "2026-02-09"
+        },
+        "notes": "Bounded catch-up requested. No TE advancement performed."
+    },
+    "governance_pause": {
+        "active": true,
+        "reason": "Awaiting operator-mediated bounded evaluation",
+        "required_operator_action": "APPROVE_AND_RUN_BOUNDED_WINDOW"
+    }
+}

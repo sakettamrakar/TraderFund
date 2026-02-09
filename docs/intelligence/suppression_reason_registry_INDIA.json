@@ -1,0 +1,28 @@
+{
+  "market": "INDIA",
+  "truth_epoch": "TE-2026-01-30",
+  "computed_at": "2026-02-09T17:30:03Z",
+  "suppression_state": "TEMPORAL_DRIFT",
+  "reasons": [
+    {
+      "reason_id": "R-TEMPORAL-DRIFT",
+      "suppression_state": "TEMPORAL_DRIFT",
+      "blocking_layer": "GOVERNANCE",
+      "blocking_condition": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.",
+      "affected_actions": [
+        "ALLOW_LONG_ENTRY",
+        "ALLOW_LONG_ENTRY_SPECIAL",
+        "ALLOW_POSITION_HOLD",
+        "ALLOW_REBALANCING",
+        "ALLOW_SHORT_ENTRY"
+      ],
+      "clearing_condition": "Resolve temporal hold by satisfying bounded drift requirements and completing operator-mediated catch-up evaluation windows without advancing Truth Epoch automatically.",
+      "source_artifacts": [
+        "docs/intelligence/temporal/temporal_state_INDIA.json"
+      ],
+      "since_timestamp": "2026-02-09T15:15:00Z"
+    }
+  ],
+  "reason_count": 1,
+  "version": "1.0.0-F5"
+}

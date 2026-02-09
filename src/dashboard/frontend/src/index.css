@@ -1,11 +1,14 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: 'Geist Mono', 'JetBrains Mono', monospace;
+  /* Geist Mono/JetBrains are premium dev fonts. Falling back to monospace if not available. */
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
+  color-scheme: dark;
+  /* Force Dark Mode for Trading Dashboard */
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #0d0d0d;
+  /* Very Dark Grey/Black */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,21 +16,55 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
 body {
   margin: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
+  flex-direction: column;
+  /* App is column layout */
+  min-width: 100vw;
   min-height: 100vh;
+  background-color: #000;
+  color: #c9d1d9;
+}
+
+/* === Global Inspection Mode Styles === */
+/* When active, the entire app gets bordered or marked */
+.inspection-mode-active body {
+  border: 4px solid #ff4136;
+}
+
+/* Persistent Banner */
+.inspection-banner {
+  background-color: #ff4136;
+  color: #000;
+  font-weight: 800;
+  text-align: center;
+  padding: 4px 0;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  z-index: 9999;
+}
+
+/* Simulation Badges */
+.sim-badge {
+  background: #ff4136;
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 4px;
+  border-radius: 2px;
+  margin-left: 6px;
+  text-transform: uppercase;
+}
+
+/* Striped Background for Simulated Widgets */
+.inspection-mode .posture-widget,
+.inspection-mode .metric-card {
+  background-image: repeating-linear-gradient(45deg,
+      rgba(255, 65, 54, 0.05),
+      rgba(255, 65, 54, 0.05) 10px,
+      transparent 10px,
+      transparent 20px);
+  border-color: #ff4136 !important;
 }
 
 h1 {
@@ -36,33 +73,47 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  border-radius: 4px;
+  border: 1px solid #30363d;
+  padding: 0.5em 1em;
+  font-size: 0.9em;
+  font-weight: 600;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #21262d;
+  color: #c9d1d9;
   cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  transition: all 0.2s;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+button:hover {
+  border-color: #8b949e;
+  background-color: #30363d;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d0d0d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #30363d;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #8b949e;
 }

@@ -1,13 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { getMacroContext } from '../services/api';
+import { useInspection } from '../context/InspectionContext';
 import './MacroContextPanel.css';
 
 const MacroContextPanel = ({ market }) => {
     const [context, setContext] = useState(null);
+    const { isInspectionMode } = useInspection();
 
     useEffect(() => {
-        getMacroContext(market).then(setContext).catch(console.error);
-    }, [market]);
+        if (!isInspectionMode) {
+            getMacroContext(market).then(setContext).catch(console.error);
+        }
+    }, [market, isInspectionMode]);
+
+    if (isInspectionMode) {
+        return (
+            <div className="macro-weather-panel inspection-blocked">
+                <div className="macro-header">
+                    <div className="weather-icon">🚫</div>
+                    <div className="macro-title-block">
+                        <h3>Macro Context Layer</h3>
+                        <div className="macro-timestamp">INSPECTION MODE</div>
+                    </div>
+                </div>
+                <div className="inspection-msg">
+                    MACRO DATA UNAVAILABLE IN SCENARIO VISUALIZATION. <br />
+                    REFER TO POLICY STATE FOR STRESS IMPACTS.
+                </div>
+            </div>
+        );
+    }
 
     if (!context) return <div className="loading-macro">Loading Macro Weather...</div>;
 

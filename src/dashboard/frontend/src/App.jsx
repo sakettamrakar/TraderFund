@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getEvaluationScope } from './services/api';
+import { useInspection } from './context/InspectionContext';
 import SystemStatus from './components/SystemStatus';
 import SystemPosture from './components/SystemPosture';
 import LayerHealth from './components/LayerHealth';
@@ -15,6 +16,7 @@ import CapitalInvariants from './components/CapitalInvariants';
 import MacroContextPanel from './components/MacroContextPanel';
 import IntelligencePanel from './components/IntelligencePanel';
 import DataAnchorPanel from './components/DataAnchorPanel';
+import TemporalTruthBanner from './components/TemporalTruthBanner';
 import './components/GlobalHeader.css';
 import './App.css';
 
@@ -22,6 +24,7 @@ function App() {
   const [lastRefreshed, setLastRefreshed] = useState(new Date());
   const [market, setMarket] = useState('US');
   const [scopeData, setScopeData] = useState(null);
+  const { isInspectionMode } = useInspection();
 
   useEffect(() => {
     getEvaluationScope()
@@ -40,9 +43,16 @@ function App() {
   const inScopeMarkets = scopeData?.scope?.evaluated_markets || [];
 
   return (
-    <div className="dashboard-container">
+    <div className={`dashboard-container ${isInspectionMode ? 'inspection-mode-active' : ''}`}>
+      {isInspectionMode && (
+        <div className="inspection-banner">
+          ⚠️ INSPECTION MODE — SCENARIO VISUALIZATION ONLY — NOT LIVE TRUTH ⚠️
+        </div>
+      )}
+      <TemporalTruthBanner market={market} />
       <SystemStatus market={market} />
       <SystemPosture />
+
 
       <SystemNarrative market={market} />
 
@@ -95,7 +105,9 @@ function App() {
 
       <div className="footer-system-posture">
         <div className="posture-disclaimer">
-          <strong>SYSTEM POSTURE:</strong> Intentional Inactivity. All execution hooks are recorded as DISABLED for Truth Epoch TE-2026-02-07. The system is operating in Observer-Only mode to protect equity. This state does not imply future activation.
+          <strong>SYSTEM POSTURE:</strong> {isInspectionMode ?
+            "SIMULATED: Inspection Mode active. All data shown is hypothetical." :
+            "Intentional Inactivity. All execution hooks are recorded as DISABLED for the current frozen Truth Epoch. The system is operating in Observer-Only mode to protect equity. This state does not imply future activation."}
         </div>
         <div className="footer-meta">
           <span>TraderFund Market Intelligence Dashboard (Observer Only) [{market}]</span>

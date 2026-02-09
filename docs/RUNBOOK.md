@@ -168,6 +168,27 @@ Scheduler logs are written to: `logs/scheduler/` (timestamped).
 
 ---
 
+### 7.3. Market Intelligence Dashboard (Phase 9)
+The new dashboard consists of a FastAPI backend and a Vite/React frontend.
+
+**Start Backend (API):**
+```powershell
+# From project root
+$env:PYTHONPATH="src"
+python -m src.dashboard.backend.app
+```
+*API will be available at: http://localhost:8000*
+
+**Start Frontend (Vite):**
+```powershell
+# From project root
+cd src/dashboard/frontend
+npm run dev
+```
+*Dashboard will be available at: http://localhost:5173*
+
+---
+
 ## 8. Failure Handling & Recovery
 
 ### What happens on task failure?

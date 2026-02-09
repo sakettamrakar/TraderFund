@@ -24,6 +24,11 @@ from evolution.regime_audit.viability_check import StateViabilityCheck, Viabilit
 # Import generic profile types - actual loader used in caller
 from evolution.profile_loader import EvaluationProfile, ModeType, WindowingType
 from ingestion.market_loader import MarketLoader
+from governance.canonical_partiality import (
+    CANONICAL_COMPLETE,
+    detect_and_persist_canonical_partiality,
+    log_regime_degradation,
+)
 
 class RegimeContextError(Exception):
     """Raised when regime context cannot be established or is violated."""
@@ -167,11 +172,34 @@ class RegimeContextBuilder:
             raise RegimeContextError(f"Regime viability check failed: {viability.blocking_reasons}")
 
         regime_label, regime_code, is_counterfactual = self._determine_regime(end)
-        
+        partiality = detect_and_persist_canonical_partiality(market=self.market, truth_epoch="TE-2026-01-30")
+        canonical_state = partiality.get("canonical_state", "UNKNOWN")
+        missing_roles = partiality.get("missing_roles", [])
+        stale_roles = partiality.get("stale_roles", [])
+        regime_confidence: Any = "DECLARED"
+        regime_reason = "Regime evaluated on canonical-complete inputs."
+
+        if canonical_state != CANONICAL_COMPLETE:
+            regime_label = "UNKNOWN (PARTIAL DATA)"
+            regime_code = "UNKNOWN"
+            regime_confidence = "DEGRADED"
+            regime_reason = "Partial canonical inputs"
+            log_regime_degradation(
+                market=self.market,
+                canonical_state=canonical_state,
+                missing_roles=missing_roles,
+                stale_roles=stale_roles,
+                reason=regime_reason,
+                source="src/evolution/regime_context_builder.py",
+            )
+
         context = {
             "regime_context": {
                 "regime_label": regime_label,
                 "regime_code": regime_code,
+                "regime": regime_code,
+                "regime_confidence": regime_confidence,
+                "regime_reason": regime_reason,
                 "computed_at": datetime.now().isoformat(),
                 "market": self.market,
                 "evaluation_window": {
@@ -183,11 +211,14 @@ class RegimeContextBuilder:
                     "viable": True,
                     "reason": "Authentic Data Ingestion"
                 },
+                "canonical_state": canonical_state,
+                "canonical_missing_roles": missing_roles,
+                "canonical_stale_roles": stale_roles,
                 "properties": {
                     "is_counterfactual": is_counterfactual,
                     "profile_id": self.profile.profile_id if self.profile else None
                 },
-                "version": "2.0.0-IGNITION"
+                "version": "2.1.0-IGNITION-F2"
             }
         }
         

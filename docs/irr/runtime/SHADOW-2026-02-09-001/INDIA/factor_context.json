@@ -1,0 +1,36 @@
+{
+  "factor_context": {
+    "market": "INDIA",
+    "computed_at": "2026-02-09T19:14:03.405997",
+    "factors": {
+      "momentum": {
+        "state": "bullish",
+        "confidence": 0.8
+      },
+      "volatility": {
+        "level": 12.1899995803833,
+        "state": "normal"
+      },
+      "liquidity": {
+        "level": 6.83691613931166,
+        "state": "loose"
+      },
+      "breadth": {
+        "state": "neutral",
+        "nifty_20d_ret": 0.0071641881846560285,
+        "bank_20d_ret": 0.023928500816533305
+      }
+    },
+    "regime_input": {
+      "regime_code": "BULLISH",
+      "regime_label": "Bullish Trend"
+    },
+    "sufficiency": {
+      "equity": true,
+      "volatility": true,
+      "rates": true,
+      "sector": true
+    },
+    "version": "1.0.0-INDIA-CANONICAL"
+  }
+}

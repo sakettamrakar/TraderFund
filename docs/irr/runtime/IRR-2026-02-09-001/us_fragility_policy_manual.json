@@ -1,0 +1,13 @@
+{
+  "fragility_context": {
+    "market": "US",
+    "computed_at": "2026-02-09T19:14:44.786024",
+    "stress_state": "NORMAL",
+    "constraints_applied": [],
+    "final_authorized_intents": [
+      "OBSERVE_ONLY"
+    ],
+    "reason": "Nominal Conditions.",
+    "version": "1.0.0-SUBTRACTIVE"
+  }
+}

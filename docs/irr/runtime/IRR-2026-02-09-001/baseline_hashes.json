@@ -1,0 +1,12 @@
+﻿[
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "0949CFC2EDA48572A6E3216E11DEA52DD106C9EA39D784F9917A70048E83E96E",
+        "Path":  "C:\\GIT\\TraderFund\\docs\\epistemic\\truth_epoch.json"
+    },
+    {
+        "Algorithm":  "SHA256",
+        "Hash":  "4047E00B24CFA6F7EE4D4BA5E2AF6BB82F9594CB4631598E1BE81521714014E1",
+        "Path":  "C:\\GIT\\TraderFund\\docs\\intelligence\\execution_gate_status.json"
+    }
+]

@@ -9,6 +9,7 @@ from dashboard.backend.loaders.strategies import load_strategy_eligibility
 from dashboard.backend.loaders.meta_summary import load_meta_summary
 from dashboard.backend.loaders.narrative import load_system_narrative, load_system_blockers
 from dashboard.backend.loaders.capital import load_capital_readiness, load_capital_history
+from dashboard.backend.loaders.suppression import load_suppression_status
 
 app = FastAPI(title="TraderFund Market Intelligence Dashboard", version="1.0.0")
 
@@ -46,12 +47,19 @@ async def get_meta_summary():
     return load_meta_summary()
 
 @app.get("/api/system/narrative")
-async def get_system_narrative():
-    return load_system_narrative()
+async def get_system_narrative(market: str = "US"):
+    return load_system_narrative(market)
 
 @app.get("/api/system/blockers")
-async def get_system_blockers():
-    return load_system_blockers()
+async def get_system_blockers(market: str = "US"):
+    return load_system_blockers(market)
+
+@app.get("/api/intelligence/suppression/{market}")
+async def get_suppression_status(market: str = "US"):
+    """
+    Returns explicit F5 suppression state and reason registry for a market.
+    """
+    return load_suppression_status(market)
 
 @app.get("/api/system/activation_conditions")
 async def get_activation_conditions():
@@ -129,6 +137,24 @@ async def get_data_anchor(market: str = "US"):
     Returns Truth Epoch, Data Provenance, and Confidence for the specified market.
     """
     return load_data_anchor(market)
+
+from dashboard.backend.loaders.inspection import load_stress_scenarios
+
+@app.get("/api/inspection/stress_scenarios")
+async def get_stress_scenarios():
+    """
+    INSPECTION MODE: Returns parsed stress scenarios from the static audit report.
+    Strictly read-only and isolated from live truth.
+    """
+    return load_stress_scenarios()
+
+from dashboard.backend.loaders.temporal import load_temporal_status
+@app.get("/api/intelligence/temporal/status")
+async def get_temporal_status(market: str = "US"):
+    """
+    Returns the Temporal Truth Orchestration status (RDT, CTT, TE, Drift) for a market.
+    """
+    return load_temporal_status(market)
 
 if __name__ == "__main__":
     import uvicorn

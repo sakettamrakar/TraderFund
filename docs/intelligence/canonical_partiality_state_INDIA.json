@@ -1,0 +1,69 @@
+{
+  "market": "INDIA",
+  "computed_at": "2026-02-09T17:30:02Z",
+  "truth_epoch": "TE-2026-01-30",
+  "canonical_truth_time": "2026-02-09",
+  "canonical_state": "CANONICAL_COMPLETE",
+  "required_roles": [
+    "benchmark_equity",
+    "growth_proxy",
+    "volatility_gauge",
+    "rates_anchor"
+  ],
+  "role_states": {
+    "benchmark_equity": {
+      "logical_role": "benchmark_equity",
+      "resolved_role": "equity_core",
+      "status": "ACTIVE",
+      "symbol": null,
+      "path": "C:\\GIT\\TraderFund\\data\\india\\NIFTY50.csv",
+      "last_canonical_timestamp": "2026-02-09",
+      "lag_days_vs_ctt": 0,
+      "stale_relative_to_ctt": false,
+      "missing": false
+    },
+    "growth_proxy": {
+      "logical_role": "growth_proxy",
+      "resolved_role": "sector_proxy",
+      "status": "ACTIVE",
+      "symbol": null,
+      "path": "C:\\GIT\\TraderFund\\data\\india\\BANKNIFTY.csv",
+      "last_canonical_timestamp": "2026-02-09",
+      "lag_days_vs_ctt": 0,
+      "stale_relative_to_ctt": false,
+      "missing": false
+    },
+    "volatility_gauge": {
+      "logical_role": "volatility_gauge",
+      "resolved_role": "volatility_gauge",
+      "status": "ACTIVE",
+      "symbol": "INDIAVIX",
+      "path": "C:\\GIT\\TraderFund\\data\\india\\INDIAVIX.csv",
+      "last_canonical_timestamp": "2026-02-09",
+      "lag_days_vs_ctt": 0,
+      "stale_relative_to_ctt": false,
+      "missing": false
+    },
+    "rates_anchor": {
+      "logical_role": "rates_anchor",
+      "resolved_role": "rates_anchor",
+      "status": "ACTIVE",
+      "symbol": "IN10Y",
+      "path": "C:\\GIT\\TraderFund\\data\\india\\IN10Y.csv",
+      "last_canonical_timestamp": "2026-02-09",
+      "lag_days_vs_ctt": 0,
+      "stale_relative_to_ctt": false,
+      "missing": false
+    }
+  },
+  "missing_roles": [],
+  "stale_roles": [],
+  "freshness_skew_days": 0,
+  "declaration_reason": "All required canonical roles are present and freshness-aligned.",
+  "policy": {
+    "max_role_lag_days": 0,
+    "max_freshness_skew_days": 0,
+    "mode": "DEGRADE_ON_PARTIAL"
+  },
+  "version": "1.0.0-F2-PARTIALITY"
+}

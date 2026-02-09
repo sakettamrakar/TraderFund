@@ -1,0 +1,9 @@
+{
+  "max_drift_days_default": 7,
+  "markets": {
+    "US": 7,
+    "INDIA": 7
+  },
+  "operator_action_name": "REQUEST_EVALUATION_WINDOW",
+  "version": "1.0.0"
+}

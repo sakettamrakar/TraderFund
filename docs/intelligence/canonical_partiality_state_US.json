@@ -1,0 +1,73 @@
+{
+  "market": "US",
+  "computed_at": "2026-02-09T17:30:02Z",
+  "truth_epoch": "TE-2026-01-30",
+  "canonical_truth_time": "2026-02-06",
+  "canonical_state": "CANONICAL_PARTIAL",
+  "required_roles": [
+    "equity_core",
+    "growth_proxy",
+    "volatility_gauge",
+    "rates_anchor"
+  ],
+  "role_states": {
+    "equity_core": {
+      "logical_role": "equity_core",
+      "resolved_role": "equity_core",
+      "status": "ACTIVE",
+      "symbol": "SPY",
+      "path": "c:\\GIT\\TraderFund\\data\\us_market\\SPY_daily.csv",
+      "last_canonical_timestamp": "2026-02-06",
+      "lag_days_vs_ctt": 0,
+      "stale_relative_to_ctt": false,
+      "missing": false
+    },
+    "growth_proxy": {
+      "logical_role": "growth_proxy",
+      "resolved_role": "growth_proxy",
+      "status": "ACTIVE",
+      "symbol": "QQQ",
+      "path": "c:\\GIT\\TraderFund\\data\\us_market\\QQQ_daily.csv",
+      "last_canonical_timestamp": "2026-02-06",
+      "lag_days_vs_ctt": 0,
+      "stale_relative_to_ctt": false,
+      "missing": false
+    },
+    "volatility_gauge": {
+      "logical_role": "volatility_gauge",
+      "resolved_role": "volatility_gauge",
+      "status": "ACTIVE",
+      "symbol": "VIXY",
+      "path": "c:\\GIT\\TraderFund\\data\\us_market\\VIXY_daily.csv",
+      "last_canonical_timestamp": "2026-02-06",
+      "lag_days_vs_ctt": 0,
+      "stale_relative_to_ctt": false,
+      "missing": false
+    },
+    "rates_anchor": {
+      "logical_role": "rates_anchor",
+      "resolved_role": "rates_anchor",
+      "status": "MISSING",
+      "symbol": "TNX",
+      "path": "c:\\GIT\\TraderFund\\data\\regime\\raw\\^TNX.csv",
+      "last_canonical_timestamp": "2026-01-29",
+      "lag_days_vs_ctt": 8,
+      "stale_relative_to_ctt": true,
+      "missing": true
+    }
+  },
+  "missing_roles": [
+    "rates_anchor"
+  ],
+  "stale_roles": [
+    "rates_anchor"
+  ],
+  "freshness_skew_days": 8,
+  "declaration_reason": "Required canonical roles missing or non-active.",
+  "policy": {
+    "max_role_lag_days": 0,
+    "max_freshness_skew_days": 0,
+    "mode": "DEGRADE_ON_PARTIAL"
+  },
+  "version": "1.0.0-F2-PARTIALITY"
+}
