@@ -132,3 +132,10 @@ health_invariants:
 ---
 
 *Authority: Canonical. All components MUST comply.*
+
+## Reference Implementation
+
+For a canonical example of this contract in action, see:
+- **Source**: `src/layers/macro_layer.py` (Class `MacroLayer`, `ComponentHealth`)
+- **Tests**: `tests/test_macro_layer.py`
+

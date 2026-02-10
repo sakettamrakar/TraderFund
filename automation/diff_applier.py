@@ -3,11 +3,11 @@ Diff Applier
 =============
 Applies unified diff text to the git working tree.
 Rejects diffs that touch protected paths.
+Splits LLM output into per-file patches and applies each independently.
 """
 
 import subprocess
 import tempfile
-import re
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -15,100 +15,138 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 PROTECTED_PREFIXES = ["docs/memory/", "docs/epistemic/"]
 
 
-def _extract_diff_blocks(raw: str) -> str:
-    """Extract only unified diff content, stripping markdown fences and prose."""
+def _extract_and_split(raw: str) -> list[tuple[str, str]]:
+    """Extract diff content, strip markdown, and split into per-file patches.
+    Returns list of (filepath, patch_text) tuples."""
     lines = raw.splitlines()
-    result = []
-    in_diff = False
-
+    # Strip markdown fences
+    clean = []
     for line in lines:
-        # Skip markdown fences
         if line.strip().startswith("```"):
-            in_diff = not in_diff
             continue
-        # Detect diff header
-        if line.startswith("diff --git") or line.startswith("--- ") or line.startswith("+++ "):
-            in_diff = True
-        if line.startswith("diff --git"):
-            in_diff = True
-        if in_diff:
-            result.append(line)
+        clean.append(line)
 
-    # If no diff headers found, try treating entire input as a diff
-    if not result:
-        has_diff_markers = any(
-            l.startswith(("diff --git", "--- ", "+++ ", "@@"))
-            for l in lines
+    # Split into per-file segments at "--- a/" boundaries
+    segments: list[list[str]] = []
+    current: list[str] = []
+
+    for line in clean:
+        if line.startswith("--- a/") or line.strip().startswith("--- a/"):
+            if current:
+                segments.append(current)
+            current = []
+            # Inject diff --git header
+            path = line.strip()[6:]
+            current.append(f"diff --git a/{path} b/{path}")
+            current.append(line)
+        elif line.startswith("diff --git"):
+            if current:
+                segments.append(current)
+            current = [line]
+        else:
+            current.append(line)
+
+    if current:
+        segments.append(current)
+
+    # Build per-file patches
+    results = []
+    for seg in segments:
+        text = "\n".join(seg) + "\n"
+        # Extract file path
+        path = ""
+        for l in seg:
+            if l.startswith("+++ b/") or l.strip().startswith("+++ b/"):
+                path = l.strip()[6:]
+                break
+        if path:
+            results.append((path, text))
+
+    return results
+
+
+def _is_protected(path: str) -> bool:
+    """Check if a file path is under protected prefixes."""
+    return any(path.startswith(p) for p in PROTECTED_PREFIXES)
+
+
+def _apply_single_patch(patch_text: str, filepath: str) -> tuple[bool, str]:
+    """Apply a single-file patch to the working tree."""
+    with tempfile.NamedTemporaryFile(
+        mode="w", suffix=".patch", delete=False, encoding="utf-8"
+    ) as f:
+        f.write(patch_text)
+        patch_path = f.name
+
+    try:
+        # Try strict apply first
+        result = subprocess.run(
+            ["git", "apply", "--verbose", patch_path],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT),
         )
-        if has_diff_markers:
-            return raw
+        if result.returncode == 0:
+            return True, f"{filepath}: applied"
 
-    return "\n".join(result) + "\n" if result else ""
+        # Try with whitespace tolerance
+        result2 = subprocess.run(
+            ["git", "apply", "--verbose", "--ignore-whitespace", patch_path],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT),
+        )
+        if result2.returncode == 0:
+            return True, f"{filepath}: applied (whitespace-tolerant)"
 
+        # Try with --3way merge
+        result3 = subprocess.run(
+            ["git", "apply", "--3way", patch_path],
+            capture_output=True, text=True, cwd=str(PROJECT_ROOT),
+        )
+        if result3.returncode == 0:
+            return True, f"{filepath}: applied (3-way merge)"
 
-def _check_protected_paths(diff_text: str) -> str | None:
-    """Return error message if diff touches protected paths."""
-    for line in diff_text.splitlines():
-        if line.startswith("+++ b/") or line.startswith("--- a/"):
-            path = line.split("/", 1)[1] if "/" in line else ""
-            for prefix in PROTECTED_PREFIXES:
-                if path.startswith(prefix):
-                    return f"BLOCKED: Diff touches protected path: {path}"
-    return None
+        return False, f"{filepath}: FAILED — {result.stderr.strip()[:200]}"
+
+    finally:
+        Path(patch_path).unlink(missing_ok=True)
 
 
 def apply(raw_diff: str) -> tuple[bool, str]:
     """
     Apply a unified diff to the working tree.
-
-    Args:
-        raw_diff: Raw text from LLM, potentially containing unified diff.
+    Splits into per-file patches and applies each independently.
 
     Returns:
-        (success, message) tuple.
+        (any_success, message) tuple.
     """
     if not raw_diff or not raw_diff.strip():
         return False, "Empty diff — no-op."
 
-    # Sentinel for no-change responses
     if "NO_CHANGES_REQUIRED" in raw_diff:
         return True, "No changes required."
 
-    # Extract actual diff content
-    diff_text = _extract_diff_blocks(raw_diff)
-    if not diff_text.strip():
+    # Split into per-file patches
+    file_patches = _extract_and_split(raw_diff)
+    if not file_patches:
         return False, "No valid unified diff found in output."
 
-    # Guard: reject diffs touching protected paths
-    blocked = _check_protected_paths(diff_text)
-    if blocked:
-        return False, blocked
+    results = []
+    applied = 0
+    blocked = 0
+    failed = 0
 
-    # Write diff to temp file
-    with tempfile.NamedTemporaryFile(
-        mode="w", suffix=".patch", delete=False, encoding="utf-8"
-    ) as f:
-        f.write(diff_text)
-        patch_path = f.name
+    for filepath, patch_text in file_patches:
+        if _is_protected(filepath):
+            results.append(f"  BLOCKED: {filepath} (protected path)")
+            blocked += 1
+            continue
 
-    try:
-        # Dry run first
-        check = subprocess.run(
-            ["git", "apply", "--check", "--verbose", patch_path],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-        )
-        if check.returncode != 0:
-            return False, f"Patch dry-run failed:\n{check.stderr.strip()}"
+        success, msg = _apply_single_patch(patch_text, filepath)
+        results.append(f"  {'✅' if success else '❌'} {msg}")
+        if success:
+            applied += 1
+        else:
+            failed += 1
 
-        # Apply for real
-        result = subprocess.run(
-            ["git", "apply", "--verbose", patch_path],
-            capture_output=True, text=True, cwd=str(PROJECT_ROOT),
-        )
-        if result.returncode != 0:
-            return False, f"Patch apply failed:\n{result.stderr.strip()}"
-
-        return True, f"Patch applied successfully.\n{result.stderr.strip()}"
-
-    finally:
-        Path(patch_path).unlink(missing_ok=True)
+    summary = f"Applied: {applied}, Failed: {failed}, Blocked: {blocked}"
+    detail = "\n".join(results)
+    any_success = applied > 0
+    return any_success, f"{summary}\n{detail}"

@@ -45,6 +45,8 @@ observability:
   - Confidence Telemetry: Track confidence score variance over time.
   - Latency: Measure time from L0 availability to L1 state publication.
 
+implementation_status: HEALTH_INTERFACE_PENDING
+
 health_contract: docs/memory/05_components/component_health_contract.md
 
 health_fields:
