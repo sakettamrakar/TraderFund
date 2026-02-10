@@ -42,5 +42,27 @@ observability:
   - Page Latency: Time to render full cognitive state (L1-L9 summary).
   - Error Tracking: Logging frontend exceptions and API response failures.
 
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
 success_criteria_refs:
   - docs/memory/02_success/success_criteria.md#5-dashboard--observability-success
