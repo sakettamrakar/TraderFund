@@ -1,0 +1,47 @@
+# Component: Narrative Lens
+# Level: L6 (Opportunity Discovery — Parallel Lens)
+
+name: Narrative Lens
+responsibility: >
+  Scans active NarrativeObjects for theme-driven investment dislocations.
+  Identifies opportunities where narrative momentum creates tradeable setups.
+
+domain_entities_used:
+  - OpportunityCandidate (L6): symbol, source_lenses, horizon, preliminary_scores
+  - NarrativeObject (L2): Active narratives as primary screening input
+
+upstream_inputs:
+  - Source: Narrative Engine (L2)
+    Data: Active NarrativeObjects (Born / Reinforced)
+  - Source: Regime Engine (L1)
+    Data: RegimeState for context weighting
+
+downstream_outputs:
+  - Target: Convergence Engine (L7)
+    Data: OpportunityCandidates (source_lens="Narrative")
+  - Target: Dashboard
+    Data: Narrative-to-Asset association map
+
+invariants:
+  - Operates in parallel with other lenses; zero cross-lens dependencies.
+  - Only scans narratives in Born or Reinforced lifecycle states.
+  - Does not generate trade instructions; emits discovery candidates only.
+
+forbidden:
+  - Using Resolved/Retired narratives for scanning.
+  - Bypassing RegimeState context weighting.
+  - Direct execution or capital allocation.
+  - Modifying the underlying NarrativeObject.
+
+failure_modes:
+  - Zero active narratives: Lens produces empty candidate pool (Valid State).
+  - Ambiguous asset mapping: High-confidence narrative with low-confidence asset link.
+  - Data mismatch: Asset listed in narrative does not exist in Canonical Store.
+
+observability:
+  - Candidate Volume: Metric tracking number of candidates surfaced per narrative.
+  - Association Strength: Log confidence of narrative-to-asset links.
+  - Latency: Time from narrative update to candidate generation.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#2-opportunity-discovery-success-l6-l7

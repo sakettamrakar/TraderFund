@@ -1,0 +1,56 @@
+# Component: Portfolio Intelligence
+# Level: L9 (Portfolio Intelligence)
+
+name: Portfolio Intelligence
+responsibility: >
+  Diagnostic and advisory intelligence layer. Scans the filtered candidate pool
+  and existing portfolio for structural risks, mismatches, and decay signals.
+
+domain_entities_used:
+  - PortfolioDiagnostic (L9): RegimeConflict, NarrativeDecay, FactorMismatch, HorizonMismatch
+  - RegimeState (L1): Required for conflict detection
+  - NarrativeObject (L2): Required for decay detection
+  - FactorState (L4): Required for mismatch checks
+
+upstream_inputs:
+  - Source: Constraint Engine (L8)
+    Data: Filtered candidate pool
+  - Source: Ingestion US/India (L0)
+    Data: Current portfolio holdings
+  - Source: Regime Engine (L1)
+    Data: RegimeState
+  - Source: Narrative Engine (L2)
+    Data: NarrativeObjects
+  - Source: Factor Engine (L4)
+    Data: FactorState
+
+downstream_outputs:
+  - Target: Dashboard
+    Data: FlaggedWatchlist (symbol, severity, flags[], sizing_suggestion)
+  - Target: Human Operator
+    Data: Advisory intelligence and diagnostic reports
+
+invariants:
+  - Output is strictly diagnostic + advisory; zero auto-execution commands.
+  - Human authority is absolute; the system informs but does not decide.
+  - Every flag must trace to a specific cognitive layer conflict (Traceability).
+  - Severity classification (Red/Orange/Yellow/Green) is deterministic.
+
+forbidden:
+  - Executing trades or placing orders independently.
+  - Hiding or auto-suppressing critical diagnostic flags.
+  - Producing trade recommendations using certainty language ("You MUST buy").
+  - Overriding manual human overrides.
+
+failure_modes:
+  - Regime Stale: High uncertainty in conflict detection (Auto-flag as STALE/AMBIGUOUS).
+  - Data starvation: Narratives or Factors missing (Diagnostic Degradation).
+  - Alert Fatigue: 100% of holdings flagged Red (Communication Failure).
+
+observability:
+  - Flag Frequency: Metric tracking the distribution of flags (Regime vs Factor vs Narrative).
+  - Severity Mix: Metric tracking the volume of Red/Orange/Yellow flags.
+  - Diagnostic Latency: Time from candidate arrival to diagnostic output.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#3-portfolio-intelligence-success-l8-l9

@@ -1,0 +1,260 @@
+{
+  "evolution_version": "v1",
+  "evolution_frozen_date": "2026-01-29",
+  "resolved_at": "2026-02-10T06:00:04.971495",
+  "current_regime": "BULLISH",
+  "current_factors": {
+    "momentum": "NONE",
+    "expansion": "NONE",
+    "dispersion": "NONE",
+    "liquidity": "NEUTRAL"
+  },
+  "summary": {
+    "total": 24,
+    "eligible": 0,
+    "conditional": 5,
+    "blocked": 19
+  },
+  "strategies": [
+    {
+      "strategy_id": "STRAT_MOM_TIMESERIES_V1",
+      "strategy_name": "Time-Series Momentum",
+      "family": "momentum",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Market must be expanding with confirmed momentum",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_MOM_CROSSSECTION_V1",
+      "strategy_name": "Cross-Sectional Momentum",
+      "family": "momentum",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Requires dispersion breakout to separate winners from losers",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_MOM_BREAKOUT_V1",
+      "strategy_name": "Breakout / Trend-Following",
+      "family": "momentum",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Only in volatile uptrends with confirmed expansion",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_REVERT_SHORTTERM_V1",
+      "strategy_name": "Short-Term Mean Reversion",
+      "family": "mean_reversion",
+      "eligibility_status": "CONDITIONAL",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Activates in quiet markets when momentum is absent",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_REVERT_STATISTICAL_V1",
+      "strategy_name": "Statistical Reversion",
+      "family": "mean_reversion",
+      "eligibility_status": "CONDITIONAL",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Works when dispersion is low (assets move together)",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_REVERT_VOLADJ_V1",
+      "strategy_name": "Volatility-Adjusted Reversion",
+      "family": "mean_reversion",
+      "eligibility_status": "CONDITIONAL",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Activates when volatility is contracting",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_VALUE_DEEP_V1",
+      "strategy_name": "Deep Value",
+      "family": "value",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Regime-robust: Always eligible when evolution permits",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_VALUE_RELATIVE_V1",
+      "strategy_name": "Relative Value",
+      "family": "value",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Regime-robust: Always eligible when evolution permits",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_VALUE_SPREAD_V1",
+      "strategy_name": "Valuation Spread Trades",
+      "family": "value",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Regime-robust: Always eligible when evolution permits",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_QUALITY_TILT_V1",
+      "strategy_name": "Quality Tilt",
+      "family": "quality",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Regime-robust: Always eligible when evolution permits",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_QUALITY_LOWVOL_V1",
+      "strategy_name": "Low Volatility",
+      "family": "quality",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Regime-robust: Always eligible when evolution permits",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_QUALITY_DEFENSIVE_V1",
+      "strategy_name": "Defensive Carry",
+      "family": "quality",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Regime-robust: Always eligible when evolution permits",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_CARRY_EQUITY_V1",
+      "strategy_name": "Equity Carry",
+      "family": "carry",
+      "eligibility_status": "CONDITIONAL",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Requires calm markets with normal liquidity",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_CARRY_VOL_V1",
+      "strategy_name": "Volatility Carry",
+      "family": "carry",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Only in calm markets when expansion is absent",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_CARRY_RATE_V1",
+      "strategy_name": "Rate / Curve Carry",
+      "family": "carry",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Requires positively sloped yield curve",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_VOL_HARVEST_V1",
+      "strategy_name": "Volatility Harvesting",
+      "family": "volatility",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Only in calm, liquid markets with no expansion",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_VOL_VRP_V1",
+      "strategy_name": "Variance Risk Premium",
+      "family": "volatility",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Requires positive variance risk premium",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_VOL_CONVEXITY_V1",
+      "strategy_name": "Convexity / Tail Hedges",
+      "family": "volatility",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Activates only in stress regimes with liquidity crisis",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_SPREAD_PAIR_V1",
+      "strategy_name": "Pair Trading",
+      "family": "spread",
+      "eligibility_status": "CONDITIONAL",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Works when dispersion is low (pairs stay correlated)",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_SPREAD_SECTOR_V1",
+      "strategy_name": "Sector Spreads",
+      "family": "spread",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Requires dispersion breakout to create spread opportunities",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_SPREAD_FACTOR_V1",
+      "strategy_name": "Factor Spreads",
+      "family": "spread",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Requires dispersion breakout for factor differentiation",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_STRESS_CRISIS_V1",
+      "strategy_name": "Crisis Alpha",
+      "family": "stress",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Only activates during crisis with stressed liquidity",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_STRESS_LIQUIDITY_V1",
+      "strategy_name": "Liquidity Provision",
+      "family": "stress",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Activates when liquidity is compressed or stressed",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    },
+    {
+      "strategy_id": "STRAT_STRESS_RISKOFF_V1",
+      "strategy_name": "Risk-Off Protection",
+      "family": "stress",
+      "eligibility_status": "BLOCKED",
+      "primary_blocker": "REGIME",
+      "blocking_reason": "Regime BULLISH not allowed",
+      "activation_hint": "Activates in risk-off regime with no momentum",
+      "resolved_at": "2026-02-10T06:00:04.971495"
+    }
+  ]
+}

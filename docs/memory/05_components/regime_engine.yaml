@@ -1,0 +1,49 @@
+# Component: Regime Engine
+# Level: L1 (Regime — Market Reality)
+
+name: Regime Engine
+responsibility: >
+  Market regime detection and classification across four dimensions.
+  Supervisory gate for all downstream layers. Characterizes current state, does not predict.
+
+domain_entities_used:
+  - RegimeState (L1): Risk-On / Risk-Off / Transition / Stress
+  - TimeHorizon (L1): Daily/Weekly aggregation windows
+
+upstream_inputs:
+  - Source: Canonical Store (L0)
+    Data: OHLCV (SPY, VIX, TNX for US; NIFTY50, BANKNIFTY, INDIAVIX for India)
+  - Source: External Events (L0)
+    Data: Macro indicators (Rate decisions, GDP releases)
+
+downstream_outputs:
+  - Target: All Cognitive Layers (L2-L9)
+    Data: RegimeState (behavior, bias, confidence, is_stable)
+  - Target: Dashboard
+    Data: Regime transition alerts, confidence metrics
+
+invariants:
+  - Regime evaluation is strictly upstream of all downstream interpretation.
+  - Cognitive Ordering Invariant: Regime → Narrative → Meta → Factor → Strategy.
+  - Regime characterizes current reality; it does not predict future prices.
+  - RegimeState is frozen after creation; downstream receives immutable copies.
+  - Dimensions evaluated: Trend persistence, Volatility amplitude, Liquidity depth, Event pressure.
+
+forbidden:
+  - Regime bypass by any downstream layer (No Layer Skipping).
+  - Downstream layers inferring regime state independently (Authority Violation).
+  - Auto-optimization of classification thresholds without human governance.
+  - Outputting trade signals or capital allocation instructions.
+
+failure_modes:
+  - Partial market data: Degrade to UNKNOWN / INSUFFICIENT_DATA status.
+  - Conflicting indicators: Flag "Consensus Variance" with low confidence score.
+  - Stale input: Mark state as STALE; default to most conservative risk posture (Risk-Off).
+
+observability:
+  - State Transitions: Log every regime change with source data hash.
+  - Confidence Telemetry: Track confidence score variance over time.
+  - Latency: Measure time from L0 availability to L1 state publication.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#1-regime-layer-success-l1

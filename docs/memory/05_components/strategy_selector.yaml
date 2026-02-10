@@ -1,0 +1,53 @@
+# Component: Strategy Selector
+# Level: L5 (Strategy Selection — Playbook)
+
+name: Strategy Selector
+responsibility: >
+  Determines which strategy playbooks are active based on RegimeState and FactorPermissions.
+  Manages strategy lifecycle (DRAFT → ACTIVE → SUSPENDED → RETIRED).
+
+domain_entities_used:
+  - ActiveStrategySet (L5): Permitted playbooks
+  - RegimeState (L1): Compatibility master
+  - FactorPermission (L4): Statistical gating
+
+upstream_inputs:
+  - Source: Regime Engine (L1)
+    Data: RegimeState
+  - Source: Factor Engine (L4)
+    Data: FactorPermissions
+  - Source: Strategy Registry
+    Data: Strategy metadata (compatibility, horizon, limits)
+  - Source: Decision Ledger
+    Data: Human authorization for lifecycle changes
+
+downstream_outputs:
+  - Target: Strategy Lens (L6), Convergence Engine (L7)
+    Data: ActiveStrategySet
+  - Target: Dashboard
+    Data: Strategy lifecycle status, activation alerts
+
+invariants:
+  - Strategies consume beliefs; they do not produce or modify them (STR-1).
+  - Strategies cannot bypass factor permissions (STR-2).
+  - Every activation or suspension requires human authorization in the Decision Ledger.
+  - Logic is version-frozen; no hot-patching of strategy parameters.
+
+forbidden:
+  - Self-activation or self-modification (Autonomous Violation).
+  - Inferring regime or factor state independently (Authority Violation).
+  - Operating with undeclared dependencies.
+  - Generating execution instructions or trade signals.
+
+failure_modes:
+  - Regulatory conflict: Strategy active in incompatible regime (Auto-Suspend).
+  - Staleness: Input data exceeds TTL (Auto-Suspend).
+  - Decision backlog: Activation delayed by pending human review.
+
+observability:
+  - Lifecycle Trace: Log every strategy state change with Decision ID.
+  - Activation Logic: Metric tracking which regimes trigger which playbooks.
+  - Staleness Telemetry: Track age of inputs relative to strategy TTL.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#4-phase-exit-criteria-shadow-mode

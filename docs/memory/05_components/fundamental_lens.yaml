@@ -1,0 +1,46 @@
+# Component: Fundamental Lens
+# Level: L6 (Opportunity Discovery — Parallel Lens)
+
+name: Fundamental Lens
+responsibility: >
+  Scans for valuation and solvency anomalies (dislocations).
+  Uses Balance Sheets and Income Statements to identify structural mispricing.
+
+domain_entities_used:
+  - OpportunityCandidate (L6): symbol, source_lenses, horizon, preliminary_scores
+
+upstream_inputs:
+  - Source: Ingestion Events (L0 — Deferred see RC-4)
+    Data: Fundamental data (AlphaVantage FUNDAMENTAL_DATA)
+  - Source: Canonical Store (L0)
+    Data: Current market valuation, sector benchmarks
+
+downstream_outputs:
+  - Target: Convergence Engine (L7)
+    Data: OpportunityCandidates (source_lens="Fundamental")
+  - Target: Dashboard
+    Data: Valuation rationale, solvency metrics
+
+invariants:
+  - Operates in parallel; zero cross-lens dependencies.
+  - Uses only published financial data (No Projections).
+  - Returns INSUFFICIENT_DATA until RC-4 (Data Ingestion) is implemented and wired.
+
+forbidden:
+  - Inventing estimated or projected earnings.
+  - Bypassing L0 fundamental data source.
+  - Generating trade signals or price targets.
+  - Using price-only data (Fundamental lens requires financial statements).
+
+failure_modes:
+  - Data Source Unavailable (RC-4): Output INSUFFICIENT_DATA.
+  - Reporting Lag: Using stale data before a quarterly update.
+  - Sector Mismatch: Inappropriate benchmarks causing false valuation signals.
+
+observability:
+  - Data Availability: Metric tracking percentage of universe with valid fundamental coverage.
+  - Dislocation Magnitude: Tracking average valuation variance from benchmark.
+  - Signal Latency: Time between earnings release and lens scan.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#2-opportunity-discovery-success-l6-l7

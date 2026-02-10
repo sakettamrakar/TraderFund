@@ -1,0 +1,49 @@
+# Component: Strategy Lens
+# Level: L6 (Opportunity Discovery — Parallel Lens)
+
+name: Strategy Lens
+responsibility: >
+  Screens the market universe using currently active strategy playbooks.
+  Acts as a dedicated lens for playbook-specific criteria that don't fit into generic lenses.
+
+domain_entities_used:
+  - OpportunityCandidate (L6): symbol, source_lenses, horizon, preliminary_scores
+  - ActiveStrategySet (L5): Playbooks defining screening logic
+
+upstream_inputs:
+  - Source: Strategy Selector (L5)
+    Data: ActiveStrategySet
+  - Source: Canonical Store (L0)
+    Data: Price/Volume data
+  - Source: Factor Engine (L4)
+    Data: FactorPermissions (for strategy-specific style alignment)
+
+downstream_outputs:
+  - Target: Convergence Engine (L7)
+    Data: OpportunityCandidates (source_lens="Strategy")
+  - Target: Dashboard
+    Data: Playbook-specific rationale per candidate
+
+invariants:
+  - Only uses strategies in the ACTIVE state for screening.
+  - Respects factor permissions declared within each strategy definition.
+  - Operates in parallel; zero cross-lens dependencies.
+
+forbidden:
+  - Using Suspended or Retired strategies.
+  - Generating trade signals or position sizes.
+  - Bypassing L4 FactorPermissions check.
+  - Cross-lens dependency.
+
+failure_modes:
+  - Zero Active Strategies: Lens produces empty candidate pool (Valid State).
+  - Dependency Failure: Strategy logic requires inaccessible data (Strategy Skip).
+  - Strategy Conflict: Two active strategies producing contradictory candidates for same asset.
+
+observability:
+  - Active Registry Hit: Metric tracking which playbooks are producing candidates.
+  - Filter Effectiveness: Ratio of universe screened vs. candidates surfaced.
+  - Selection Rationale: Traceability from candidate back to strategy rule ID.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#2-opportunity-discovery-success-l6-l7

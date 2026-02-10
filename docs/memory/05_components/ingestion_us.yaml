@@ -1,0 +1,48 @@
+# Component: Data Ingestion (US)
+# Level: L0 (Foundation)
+
+name: Data Ingestion (US)
+responsibility: >
+  Historical and daily market data acquisition for US equities via Alpha Vantage.
+  Manages symbol universe, rate limiting, normalization, and UTC alignment.
+
+domain_entities_used:
+  - TimeHorizon (L0): Daily/Intraday alignment
+  - CanonicalStore (L0): Bronze/Silver layers
+
+upstream_inputs:
+  - Source: Alpha Vantage REST API
+    Data: TIME_SERIES_DAILY_ADJUSTED, TIME_SERIES_INTRADAY
+  - Source: Symbol Registry
+    Data: Active listing status, sector membership
+
+downstream_outputs:
+  - Target: Canonical Store (Silver/Gold)
+    Data: Normalized Parquet (adjusted OHLCV)
+  - Target: Dashboard
+    Data: Pipeline health, rate limit utilization
+
+invariants:
+  - Rate limits strictly enforced via token-bucket mechanism.
+  - Raw data is immutable (Schema versioning used for corrections).
+  - All timestamps normalized to UTC before Silver layer persistence.
+  - Idempotency: Re-running on same API response produces bit-identical Parquet.
+
+forbidden:
+  - Real-time streaming (Restricted to REST/Batch by architecture).
+  - Merging US/India schemas into a single shared file.
+  - Mutating historical Bronze-layer JSON artifacts.
+  - Using black-box/API computed indicators as source of truth.
+
+failure_modes:
+  - API 429: Rate limit exceeded (Retry with exponential backoff).
+  - Zero-Length Response: API returns empty set (Reject update, maintain T-1).
+  - Schema Drift: Unexpected change in Alpha Vantage response keys.
+
+observability:
+  - Throughput: Records per hour processed.
+  - Quality Score: Percentage of rows passing OHLC integrity checks (High >= Low).
+  - Latency: Delta between market close and Gold-layer availability.
+
+success_criteria_refs:
+  - docs/memory/11_deployment/evolution.md#81-gate-1-raw--canonical-ingestion-gate

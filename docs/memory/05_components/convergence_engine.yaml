@@ -1,0 +1,52 @@
+# Component: Convergence Engine
+# Level: L7 (Convergence & Scoring)
+
+name: Convergence Engine
+responsibility: >
+  Unifies OpportunityCandidates from all parallel lenses into a scored pool.
+  Applies regime-dependent weighting to lens scores and produces HighConvictionIdeas.
+
+domain_entities_used:
+  - CandidateAssessment (L7): narrative, factor, fundamental, technical scores
+  - HighConvictionIdeas (L7): Ideas with multi-lens convergence (≥3 lenses)
+  - Watchlist (L7): Initial/Single-lens discovery pool
+  - RegimeState (L1): Weights assigned based on current market reality
+
+upstream_inputs:
+  - Source: All Parallel Lenses (L6)
+    Data: OpportunityCandidates
+  - Source: Regime Engine (L1)
+    Data: RegimeState (for weighting logic)
+  - Source: Strategy Selector (L5)
+    Data: ActiveStrategySet
+
+downstream_outputs:
+  - Target: Constraint Engine (L8)
+    Data: Ranked pool of CandidateAssessments
+  - Target: Dashboard
+    Data: HighConvictionIdeas and Watchlist displays
+
+invariants:
+  - Scoring is deterministic and reproducible for a given input set.
+  - Regime-dependent weighting applied to lens contributions (L1 Authority).
+  - HighConvictionIdeas strictly requires ≥3 independent contributing lenses.
+  - Zero lens candidates equals zero output (No Invention).
+
+forbidden:
+  - Inventing candidates not found by at least one L6 lens.
+  - Bypassing regime weighting logic.
+  - Generating execution instructions or capital allocation.
+  - Cross-candidate influence (candidates evaluated independently).
+
+failure_modes:
+  - Data starvation: All lenses return empty sets (Valid state - empty output).
+  - Weighting drift: Weights out of sync with current regime definition.
+  - Concentration: Single lens dominating all candidates (Warning condition).
+
+observability:
+  - Convergence Distribution: Metric tracking count of candidates with 1, 2, 3, 4, 5 lenses.
+  - Lens Contribution Map: Tracking which lenses are the most active in convergence.
+  - Scoring Logic Trace: Documenting the weight calculation per assessment.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#2-opportunity-discovery-success-l6-l7

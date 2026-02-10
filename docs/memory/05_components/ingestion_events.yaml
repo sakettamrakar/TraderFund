@@ -1,0 +1,48 @@
+# Component: Event Ingestion
+# Level: L0 (Foundation — Event Sub-Pipeline)
+
+name: Event Ingestion
+responsibility: >
+  Ingests non-market events (news, macro, earnings, geopolitics).
+  Manages semantic tagging and source validation for Narrative Engine inputs.
+
+domain_entities_used:
+  - NarrativeObject (L2): Events are raw ingredients for L2 narrative genesis.
+
+upstream_inputs:
+  - Source: Financial News APIs
+    Data: Headlines, body text, sentiment tags
+  - Source: Economic Calendars
+    Data: Scheduled macro releases (Rate decisions, CPI)
+  - Source: Alpha Vantage (Earnings)
+    Data: Corporate earnings dates and results
+
+downstream_outputs:
+  - Target: Narrative Engine (L2)
+    Data: Structured Event objects (Source, Text, Timestamp, Severity)
+  - Target: Dashboard
+    Data: News ticker feed, event volume metrics
+
+invariants:
+  - Source-Time Integrity: All events use publisher timestamp, not receipt time.
+  - Severity Threshold: Events below score < 60 are discarded/suppressed.
+  - Immutability: Raw event text is never modified after entry.
+
+forbidden:
+  - Generating trade signals directly from news (Must flow through L2 → L3).
+  - Merging news stream with market data OHLC streams.
+  - Interpreting news sentiment as "Fact" (Sentiment is a subjective tag).
+  - Using future dates for historical event ingestion.
+
+failure_modes:
+  - API Outage: News pipeline halts; Narrative Engine lacks external context.
+  - Event Flood: High-frequency bursts (e.g., FOMC day) exceeding processing buffer.
+  - Duplicate Ingestion: Multiple sources reporting same headline with offset times.
+
+observability:
+  - Event Velocity: Number of ingested news items per hour.
+  - Sentiment Skew: Aggregate sentiment tracker (Bullish/Bearish) per sector.
+  - Source Reliability: Match rate between scheduled events and actual receipt.
+
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#3-portfolio-intelligence-success-l8-l9
