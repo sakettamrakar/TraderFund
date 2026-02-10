@@ -74,6 +74,11 @@ docs/evolution/**/shadow_*
 !docs/**/task_graph.md
 !docs/**/registry*.md
 
+# ---- AUTONOMOUS LOOP ARTIFACTS ----
+artifacts/
+generated/
+reports/
+
 # ---- TEMP / JUNK ----
 temp_debug/
 synthesis_output.txt

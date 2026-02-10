@@ -1,22 +1,19 @@
 """
 Autonomous Build Loop — Orchestrator
 ======================================
-Runs the full autonomous development loop:
+Execution mode: agents produce unified diffs and apply them to the working tree.
 
   spec_watcher → component_agent → test_agent → integration_agent →
   validation_agent → diff_summarizer → approval_gate
 
-If no spec changes are detected, exits cleanly.
-Aborts on validation violations or empty Gemini output.
+If any stage fails, the loop aborts immediately.
 """
 
 import sys
-import os
 import time
 import subprocess
 from pathlib import Path
 
-# Ensure automation/ is on the path
 AUTOMATION_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = AUTOMATION_DIR.parent
 sys.path.insert(0, str(AUTOMATION_DIR))
@@ -49,7 +46,7 @@ def _get_protected_dirty_files() -> set[str]:
 
 
 def _check_invariant_violation(baseline: set[str]) -> str | None:
-    """Check if an agent introduced NEW modifications to protected paths beyond the baseline."""
+    """Check if an agent introduced NEW modifications to protected paths."""
     current = _get_protected_dirty_files()
     new_violations = current - baseline
     if new_violations:
@@ -65,41 +62,46 @@ def _stage_separator(label: str):
     print("─" * 60)
 
 
-def _run_agent(name: str, func, *args):
-    """Run an agent function with timing and empty-output guard."""
+def _abort(reason: str):
+    """Print abort reason and exit."""
+    print(f"\n  ❌ ABORTING LOOP: {reason}")
+    print("=" * 60)
+    sys.exit(1)
+
+
+def _run_modifying_agent(name: str, func, *args) -> str:
+    """Run a modifying agent (component/test/integration) with guards."""
     _stage_separator(f"▶ {name}")
     baseline = _get_protected_dirty_files()
     t0 = time.time()
+
     try:
         output = func(*args)
-        elapsed = time.time() - t0
-        print(f"  ⏱  {name} completed in {elapsed:.1f}s")
-
-        if output and output.strip():
-            print(f"  📄 {len(output)} chars of output.")
-        else:
-            print(f"  ⚪ {name}: no output generated.")
-            output = ""
-
-        # Invariant check after each agent — only flag NEW violations
-        violation = _check_invariant_violation(baseline)
-        if violation:
-            print(f"\n  ❌ {violation}")
-            print("  ABORTING LOOP.")
-            sys.exit(1)
-
-        return output
-
     except RuntimeError as e:
         elapsed = time.time() - t0
         print(f"  ⏱  {name} failed after {elapsed:.1f}s")
-        print(f"  ❌ {name} ERROR: {e}")
-        return ""
+        _abort(f"{name} ERROR: {e}")
+
+    elapsed = time.time() - t0
+    print(f"  ⏱  {name} completed in {elapsed:.1f}s")
+
+    if output and output.strip():
+        print(f"  📄 {len(output)} chars of output.")
+    else:
+        print(f"  ⚪ {name}: no output generated.")
+        output = ""
+
+    # Invariant check — did the agent touch protected paths?
+    violation = _check_invariant_violation(baseline)
+    if violation:
+        _abort(violation)
+
+    return output
 
 
 def main():
     print("=" * 60)
-    print("  AUTONOMOUS BUILD LOOP")
+    print("  AUTONOMOUS BUILD LOOP — EXECUTION MODE")
     print(f"  Started: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print("=" * 60)
 
@@ -116,56 +118,54 @@ def main():
         print(f"    → {s}")
 
     # ── Stage 2: Component Code Generation ──────────────────────
-    component_output = _run_agent("ComponentAgent", component_agent.run, specs)
+    component_output = _run_modifying_agent("ComponentAgent", component_agent.run, specs)
 
     # ── Stage 3: Test Code Generation ───────────────────────────
-    test_output = _run_agent("TestAgent", test_agent.run)
+    test_output = _run_modifying_agent("TestAgent", test_agent.run)
 
     # ── Stage 4: Integration Verification ───────────────────────
-    integration_output = _run_agent("IntegrationAgent", integration_agent.run)
-    if integration_output and "NO_CHANGES_REQUIRED" in integration_output:
-        print("  DAG is consistent. No wiring changes needed.")
-        integration_output = ""
+    integration_output = _run_modifying_agent("IntegrationAgent", integration_agent.run)
 
-    # ── Stage 5: Validation ─────────────────────────────────────
-    validation_output = _run_agent("ValidationAgent", validation_agent.run)
+    # ── Stage 5: Validation (hard stop) ─────────────────────────
+    _stage_separator("▶ ValidationAgent")
+    t0 = time.time()
+    try:
+        passed, validation_report = validation_agent.run()
+    except Exception as e:
+        _abort(f"ValidationAgent crashed: {e}")
 
-    if validation_output:
-        has_violations = any(
-            keyword in validation_output
-            for keyword in ["FAIL", "VIOLATION", "ERROR"]
+    elapsed = time.time() - t0
+    print(f"  ⏱  ValidationAgent completed in {elapsed:.1f}s")
+
+    # Write validation report for audit
+    artifacts_dir = PROJECT_ROOT / "artifacts"
+    artifacts_dir.mkdir(exist_ok=True)
+
+    if validation_report:
+        (artifacts_dir / "validation_report.txt").write_text(
+            validation_report, encoding="utf-8"
         )
-        if has_violations:
-            print("\n  ⚠  ValidationAgent found violations:")
-            for line in validation_output.splitlines()[:20]:
-                print(f"    {line}")
-            print("\n  ❌ ABORTING LOOP — validation failed.")
 
-            # Still write report for audit
-            artifacts_dir = PROJECT_ROOT / "artifacts"
-            artifacts_dir.mkdir(exist_ok=True)
-            (artifacts_dir / "validation_report.txt").write_text(
-                validation_output, encoding="utf-8"
-            )
-            sys.exit(1)
+    if not passed:
+        print("\n  ⚠  ValidationAgent found violations:")
+        for line in validation_report.splitlines()[:20]:
+            print(f"    {line}")
+        _abort("Validation failed — changes NOT approved.")
+
+    print("  ✅ ValidationAgent: all checks passed.")
 
     # ── Stage 6: Diff Summary + Approval Gate ───────────────────
     _stage_separator("[6/6] Diff Summary + Approval Gate")
     summary = summarize()
     print(summary)
 
-    # Write outputs to artifacts/ for audit trail
-    artifacts_dir = PROJECT_ROOT / "artifacts"
-    artifacts_dir.mkdir(exist_ok=True)
-
+    # Write agent outputs for audit trail
     if component_output:
         (artifacts_dir / "component_diff.txt").write_text(component_output, encoding="utf-8")
     if test_output:
         (artifacts_dir / "test_diff.txt").write_text(test_output, encoding="utf-8")
     if integration_output:
         (artifacts_dir / "integration_diff.txt").write_text(integration_output, encoding="utf-8")
-    if validation_output:
-        (artifacts_dir / "validation_report.txt").write_text(validation_output, encoding="utf-8")
 
     # Approval gate — human decides
     approved = approve()
