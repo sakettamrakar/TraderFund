@@ -65,3 +65,4 @@
 | **D** | Failure | Stop-loss hit or significant adverse excursion |
 
 *Source: `README.md`*
+<!-- shadow-run-test: 2026-02-11 -->

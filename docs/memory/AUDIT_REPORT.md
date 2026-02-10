@@ -1,6 +1,6 @@
 # Memory Quality Audit Report
 
-**Generated**: 2026-02-10 21:47:51
+**Generated**: 2026-02-11 00:07:08
 **Script**: `scripts/memory_audit.py`
 **Status**: READ-ONLY ANALYSIS — no files were modified
 
@@ -14,7 +14,7 @@
 ## Authority Invariant
 
 - ✅ **PASS**: `vision` is defined in docs\memory\00_vision\vision.md
-- ✅ **PASS**: `scope` is defined in docs\memory\01_scope\boundaries.md
+- ⚠️ **WARN**: `scope` headings found in 2 files: docs\memory\01_scope\boundaries.md, docs\memory\12_orchestration\shadow_mode.md. Verify only one is authoritative.
 - ✅ **PASS**: `decisions` is defined in docs\memory\decisions\README.md
 ## Explicit Non-Goals
 
@@ -34,6 +34,7 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\01_scope\boundaries.md` and `docs\memory\07_execution\runtime.md`: criteria, intelligence, mode, shadow
 - ⚠️ **WARN**: Heading overlap between `docs\memory\01_scope\boundaries.md` and `docs\memory\08_reliability\failure_model.md`: mode, shadow, validation
 - ⚠️ **WARN**: Heading overlap between `docs\memory\01_scope\boundaries.md` and `docs\memory\11_deployment\evolution.md`: criteria, exit, intelligence, research, three
+- ⚠️ **WARN**: Heading overlap between `docs\memory\01_scope\boundaries.md` and `docs\memory\12_orchestration\shadow_mode.md`: criteria, mode, scope, shadow
 - ⚠️ **WARN**: Heading overlap between `docs\memory\01_scope\boundaries.md` and `docs\memory\decisions\ADR-0004.md`: mode, shadow, validation
 - ⚠️ **WARN**: Heading overlap between `docs\memory\02_success\success_criteria.md` and `docs\memory\03_domain\domain_model.md`: discovery, intelligence, opportunity, portfolio, regime
 - ⚠️ **WARN**: Heading overlap between `docs\memory\02_success\success_criteria.md` and `docs\memory\04_architecture\macro.md`: dashboard, discovery, intelligence, layer, opportunity
@@ -43,6 +44,8 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\02_success\success_criteria.md` and `docs\memory\08_reliability\failure_model.md`: dashboard, layer, mode, regime, shadow
 - ⚠️ **WARN**: Heading overlap between `docs\memory\02_success\success_criteria.md` and `docs\memory\10_observability\metrics.md`: criteria, dashboard, observability, regime, signal
 - ⚠️ **WARN**: Heading overlap between `docs\memory\02_success\success_criteria.md` and `docs\memory\11_deployment\evolution.md`: criteria, exit, intelligence, layer
+- ⚠️ **WARN**: Heading overlap between `docs\memory\02_success\success_criteria.md` and `docs\memory\12_orchestration\execution_phases.md`: dashboard, discovery, portfolio, regime
+- ⚠️ **WARN**: Heading overlap between `docs\memory\02_success\success_criteria.md` and `docs\memory\12_orchestration\shadow_mode.md`: criteria, mode, shadow
 - ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\04_architecture\macro.md`: cognitive, constraints, convergence, discovery, intelligence
 - ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\05_components\constraint_engine.yaml`: constraints, execution, level
 - ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\05_components\convergence_engine.yaml`: convergence, level, scoring
@@ -61,6 +64,7 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\08_reliability\failure_model.md`: analysis, convergence, execution, factor, meta
 - ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\09_security\trust.md`: execution, hierarchy, strategy, trust
 - ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\10_observability\metrics.md`: constraints, execution, narrative, regime, strategy
+- ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\12_orchestration\execution_phases.md`: constraints, convergence, discovery, execution, factor
 - ⚠️ **WARN**: Heading overlap between `docs\memory\03_domain\domain_model.md` and `docs\memory\ledger.md`: constraints, hierarchy, level
 - ⚠️ **WARN**: Heading overlap between `docs\memory\04_architecture\data_flow.md` and `docs\memory\04_architecture\macro.md`: architecture, cognitive, conflicts, ingestion, opportunity
 - ⚠️ **WARN**: Heading overlap between `docs\memory\04_architecture\data_flow.md` and `docs\memory\05_components\component_validation_report.md`: conflicts, questions, resolved
@@ -94,6 +98,7 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\04_architecture\macro.md` and `docs\memory\09_security\trust.md`: core, governance, layer, legacy, mapping
 - ⚠️ **WARN**: Heading overlap between `docs\memory\04_architecture\macro.md` and `docs\memory\10_observability\metrics.md`: architecture, constraints, core, dashboard, definitions
 - ⚠️ **WARN**: Heading overlap between `docs\memory\04_architecture\macro.md` and `docs\memory\11_deployment\evolution.md`: engine, foundation, global, governance, ingestion
+- ⚠️ **WARN**: Heading overlap between `docs\memory\04_architecture\macro.md` and `docs\memory\12_orchestration\execution_phases.md`: constraints, convergence, dashboard, discovery, ingestion
 - ⚠️ **WARN**: Heading overlap between `docs\memory\04_architecture\macro.md` and `docs\memory\governance.md`: constraints, core, governance
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\component_validation_report.md` and `docs\memory\08_reliability\failure_model.md`: component, mapping, summary, validation
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\component_validation_report.md` and `docs\memory\10_observability\metrics.md`: criteria, integrity, mapping, observability, success
@@ -113,6 +118,7 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\convergence_engine.yaml` and `docs\memory\08_reliability\failure_model.md`: component, convergence, engine
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\dashboard.yaml` and `docs\memory\05_components\governance.yaml`: component, cross, cutting, layer, level
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\dashboard.yaml` and `docs\memory\08_reliability\failure_model.md`: component, dashboard, layer
+- ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\dashboard.yaml` and `docs\memory\12_orchestration\execution_phases.md`: cross, cutting, dashboard
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\factor_engine.yaml` and `docs\memory\05_components\factor_lens.yaml`: component, factor, level
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\factor_engine.yaml` and `docs\memory\05_components\meta_engine.yaml`: analysis, component, engine, level
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\factor_engine.yaml` and `docs\memory\05_components\momentum_engine.yaml`: component, engine, level
@@ -130,6 +136,7 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\fundamental_lens.yaml` and `docs\memory\08_reliability\failure_model.md`: component, fundamental, lens
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\governance.yaml` and `docs\memory\05_components\meta_engine.yaml`: component, level, meta
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\governance.yaml` and `docs\memory\08_reliability\failure_model.md`: component, governance, layer, meta
+- ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\governance.yaml` and `docs\memory\12_orchestration\execution_phases.md`: cross, cutting, meta
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\ingestion_events.yaml` and `docs\memory\05_components\ingestion_india.yaml`: component, foundation, ingestion, level
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\ingestion_events.yaml` and `docs\memory\05_components\ingestion_us.yaml`: component, foundation, ingestion, level
 - ⚠️ **WARN**: Heading overlap between `docs\memory\05_components\ingestion_events.yaml` and `docs\memory\06_data\data_contracts.md`: event, ingestion, pipeline
@@ -157,18 +164,22 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\06_data\data_contracts.md` and `docs\memory\09_security\trust.md`: contract, isolation, legacy, mapping, retention
 - ⚠️ **WARN**: Heading overlap between `docs\memory\06_data\data_contracts.md` and `docs\memory\10_observability\metrics.md`: binding, dashboard, ingestion, legacy, mapping
 - ⚠️ **WARN**: Heading overlap between `docs\memory\06_data\data_contracts.md` and `docs\memory\11_deployment\evolution.md`: canonical, contracts, evaluation, ingestion, layers
+- ⚠️ **WARN**: Heading overlap between `docs\memory\06_data\data_contracts.md` and `docs\memory\12_orchestration\execution_phases.md`: cross, dashboard, factor, ingestion, portfolio
 - ⚠️ **WARN**: Heading overlap between `docs\memory\06_data\data_contracts.md` and `docs\memory\governance.md`: contract, policy, truth
 - ⚠️ **WARN**: Heading overlap between `docs\memory\06_data\data_contracts.md` and `docs\memory\ledger.md`: immutability, only, policy, registry, retention
 - ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\08_reliability\failure_model.md`: active, batch, dashboard, execution, gate
 - ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\09_security\trust.md`: contract, execution, handling, legacy, mapping
 - ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\10_observability\metrics.md`: criteria, dashboard, execution, harness, ingestion
 - ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\11_deployment\evolution.md`: advancement, canonical, criteria, emergency, evaluation
+- ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\12_orchestration\execution_phases.md`: cross, dashboard, execution, ingestion
+- ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\12_orchestration\shadow_mode.md`: criteria, global, mode, shadow
 - ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\DECISION_PROTOCOL.md`: escalation, override, protocol
 - ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\governance.md`: advancement, automation, contract, escalation, principles
 - ⚠️ **WARN**: Heading overlap between `docs\memory\07_execution\runtime.md` and `docs\memory\ledger.md`: automation, limits, only, truth
 - ⚠️ **WARN**: Heading overlap between `docs\memory\08_reliability\failure_model.md` and `docs\memory\09_security\trust.md`: execution, governance, handling, layer, legacy
 - ⚠️ **WARN**: Heading overlap between `docs\memory\08_reliability\failure_model.md` and `docs\memory\10_observability\metrics.md`: dashboard, execution, governance, harness, ingestion
 - ⚠️ **WARN**: Heading overlap between `docs\memory\08_reliability\failure_model.md` and `docs\memory\11_deployment\evolution.md`: drift, engine, epistemic, gate, governance
+- ⚠️ **WARN**: Heading overlap between `docs\memory\08_reliability\failure_model.md` and `docs\memory\12_orchestration\execution_phases.md`: convergence, dashboard, execution, factor, ingestion
 - ⚠️ **WARN**: Heading overlap between `docs\memory\08_reliability\failure_model.md` and `docs\memory\decisions\ADR-0004.md`: decision, mode, shadow, validation
 - ⚠️ **WARN**: Heading overlap between `docs\memory\08_reliability\failure_model.md` and `docs\memory\ledger.md`: epistemic, policy, registry, temporal
 - ⚠️ **WARN**: Heading overlap between `docs\memory\08_reliability\failure_model.md` and `docs\memory\QUALITY.md`: decision, detection, drift
@@ -179,7 +190,9 @@
 - ⚠️ **WARN**: Heading overlap between `docs\memory\09_security\trust.md` and `docs\memory\ledger.md`: authority, hierarchy, retention
 - ⚠️ **WARN**: Heading overlap between `docs\memory\09_security\trust.md` and `docs\memory\QUALITY.md`: authority, contract, safety, separation
 - ⚠️ **WARN**: Heading overlap between `docs\memory\10_observability\metrics.md` and `docs\memory\11_deployment\evolution.md`: criteria, forbidden, governance, ingestion, legacy
+- ⚠️ **WARN**: Heading overlap between `docs\memory\10_observability\metrics.md` and `docs\memory\12_orchestration\execution_phases.md`: constraints, dashboard, execution, ingestion, narrative
 - ⚠️ **WARN**: Heading overlap between `docs\memory\10_observability\metrics.md` and `docs\memory\governance.md`: constraints, core, forbidden, governance
+- ⚠️ **WARN**: Heading overlap between `docs\memory\11_deployment\evolution.md` and `docs\memory\12_orchestration\shadow_mode.md`: criteria, gates, global, promotion
 - ⚠️ **WARN**: Heading overlap between `docs\memory\11_deployment\evolution.md` and `docs\memory\DECISION_PROTOCOL.md`: override, protocol, structural
 - ⚠️ **WARN**: Heading overlap between `docs\memory\11_deployment\evolution.md` and `docs\memory\decisions\ADR-0005.md`: epistemic, freeze, protocol
 - ⚠️ **WARN**: Heading overlap between `docs\memory\11_deployment\evolution.md` and `docs\memory\governance.md`: actions, advancement, forbidden, governance, module
@@ -313,6 +326,7 @@
 - ✅ **PASS**: No [TBD] markers found — all sections appear populated
 ## Regeneration Safety
 
+- ⚠️ **WARN**: Directory `12_orchestration/` exists but is not referenced in index.md
 - ⚠️ **WARN**: Directory `_appendix/` exists but is not referenced in index.md
 
 ---
@@ -321,6 +335,6 @@
 
 | Status | Count |
 | :--- | :--- |
-| ✅ PASS | 11 |
-| ⚠️ WARN | 279 |
+| ✅ PASS | 10 |
+| ⚠️ WARN | 294 |
 | ❌ FAIL | 0 |
