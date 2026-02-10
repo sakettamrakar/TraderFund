@@ -1,0 +1,87 @@
+name: Autonomous Development Loop
+version: 1.0.0
+
+triggers:
+  - source: "docs/memory/05_components/*.yaml"
+    event: "modify"
+    action: "trigger_pipeline"
+  - source: "docs/memory/03_domain/domain_model.md"
+    event: "modify"
+    action: "trigger_pipeline_full_rebuild"
+
+pipeline:
+  - stage: "spec_change"
+    description: "Detects and validates specification changes."
+    agent: "SpecAgent"
+    inputs:
+      - "docs/memory/05_components/"
+      - "docs/memory/03_domain/"
+    outputs:
+      - "artifacts/spec_diff.json"
+
+  - stage: "component_codegen"
+    description: "Generates component implementation strings from specs."
+    agent: "ComponentAgent"
+    inputs:
+      - "artifacts/spec_diff.json"
+      - "docs/memory/05_components/"
+    outputs:
+      - "src/components/"
+    dependencies: ["spec_change"]
+
+  - stage: "test_codegen"
+    description: "Generates unit and integration tests for new components."
+    agent: "TestAgent"
+    inputs:
+      - "src/components/"
+      - "docs/memory/05_components/"
+    outputs:
+      - "tests/units/"
+      - "tests/integration/"
+    dependencies: ["component_codegen"]
+
+  - stage: "integration"
+    description: "Wires components into the orchestration DAG."
+    agent: "IntegrationAgent"
+    inputs:
+      - "src/components/"
+      - "docs/memory/12_orchestration/pipeline_graph.yaml"
+    outputs:
+      - "src/orchestration/pipeline_config.json"
+    dependencies: ["test_codegen"]
+
+  - stage: "validation"
+    description: "Runs tests and success criteria verification in Shadow Mode."
+    agent: "ValidationAgent"
+    inputs:
+      - "src/"
+      - "tests/"
+      - "docs/memory/02_success/success_criteria.md"
+    outputs:
+      - "artifacts/validation_report.md"
+      - "artifacts/success_criteria_check.json"
+    behavior:
+      on_failure: "rollback"
+      mode: "SHADOW_MODE"
+    dependencies: ["integration"]
+
+  - stage: "human_gate"
+    description: "Manual approval for critical changes or domain model updates."
+    condition: "requires_approval(artifacts/spec_diff.json)"
+    inputs:
+      - "artifacts/validation_report.md"
+    action: "wait_for_approval"
+    dependencies: ["validation"]
+
+artifacts:
+  - path: "artifacts/spec_diff.json"
+    retention: "7d"
+  - path: "artifacts/validation_report.md"
+    retention: "eternal"
+  - path: "src/"
+    retention: "git_history"
+
+rollback:
+  strategy: "git_revert"
+  target: "HEAD@{1}"
+  trigger: "validation_failure"

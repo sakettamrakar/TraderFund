@@ -1,7 +1,7 @@
 {
   "evolution_version": "v1",
   "evolution_frozen_date": "2026-01-29",
-  "resolved_at": "2026-02-10T06:00:04.793237",
+  "resolved_at": "2026-02-10T23:00:03.533414",
   "current_regime": "UNKNOWN",
   "current_factors": {
     "momentum": "NONE",
@@ -24,7 +24,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Market must be expanding with confirmed momentum",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_MOM_CROSSSECTION_V1",
@@ -34,7 +34,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Requires dispersion breakout to separate winners from losers",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_MOM_BREAKOUT_V1",
@@ -44,7 +44,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Only in volatile uptrends with confirmed expansion",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_REVERT_SHORTTERM_V1",
@@ -54,7 +54,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Activates in quiet markets when momentum is absent",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_REVERT_STATISTICAL_V1",
@@ -64,7 +64,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Works when dispersion is low (assets move together)",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_REVERT_VOLADJ_V1",
@@ -74,7 +74,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Activates when volatility is contracting",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_VALUE_DEEP_V1",
@@ -84,7 +84,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Regime-robust: Always eligible when evolution permits",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_VALUE_RELATIVE_V1",
@@ -94,7 +94,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Regime-robust: Always eligible when evolution permits",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_VALUE_SPREAD_V1",
@@ -104,7 +104,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Regime-robust: Always eligible when evolution permits",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_QUALITY_TILT_V1",
@@ -114,7 +114,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Regime-robust: Always eligible when evolution permits",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_QUALITY_LOWVOL_V1",
@@ -124,7 +124,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Regime-robust: Always eligible when evolution permits",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_QUALITY_DEFENSIVE_V1",
@@ -134,7 +134,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Regime-robust: Always eligible when evolution permits",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_CARRY_EQUITY_V1",
@@ -144,7 +144,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Requires calm markets with normal liquidity",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_CARRY_VOL_V1",
@@ -154,7 +154,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Only in calm markets when expansion is absent",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_CARRY_RATE_V1",
@@ -164,7 +164,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Requires positively sloped yield curve",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_VOL_HARVEST_V1",
@@ -174,7 +174,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Only in calm, liquid markets with no expansion",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_VOL_VRP_V1",
@@ -184,7 +184,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Requires positive variance risk premium",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_VOL_CONVEXITY_V1",
@@ -194,7 +194,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Activates only in stress regimes with liquidity crisis",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_SPREAD_PAIR_V1",
@@ -204,7 +204,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Works when dispersion is low (pairs stay correlated)",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_SPREAD_SECTOR_V1",
@@ -214,7 +214,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Requires dispersion breakout to create spread opportunities",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_SPREAD_FACTOR_V1",
@@ -224,7 +224,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Requires dispersion breakout for factor differentiation",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_STRESS_CRISIS_V1",
@@ -234,7 +234,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Only activates during crisis with stressed liquidity",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_STRESS_LIQUIDITY_V1",
@@ -244,7 +244,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Activates when liquidity is compressed or stressed",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     },
     {
       "strategy_id": "STRAT_STRESS_RISKOFF_V1",
@@ -254,7 +254,7 @@
       "primary_blocker": "REGIME",
       "blocking_reason": "Regime UNKNOWN not allowed",
       "activation_hint": "Activates in risk-off regime with no momentum",
-      "resolved_at": "2026-02-10T06:00:04.793237"
+      "resolved_at": "2026-02-10T23:00:03.533414"
     }
   ]
 }
