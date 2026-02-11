@@ -94,6 +94,27 @@ def _format_duration(delta: datetime.timedelta) -> str:
         return "< 1m"
     return " ".join(parts)
 
+
+def _derive_regime_display(regime_ctx: Dict[str, Any]) -> Dict[str, Any]:
+    canonical_state = regime_ctx.get("canonical_state", "UNKNOWN")
+    missing_roles = regime_ctx.get("canonical_missing_roles", [])
+    stale_roles = regime_ctx.get("canonical_stale_roles", [])
+    regime_reason = regime_ctx.get("regime_reason", "")
+    degraded = canonical_state != "CANONICAL_COMPLETE"
+    regime_value = (
+        "UNKNOWN (PARTIAL DATA)"
+        if degraded
+        else regime_ctx.get("regime", regime_ctx.get("regime_code", "UNKNOWN"))
+    )
+    return {
+        "regime_value": regime_value,
+        "canonical_state": canonical_state,
+        "degraded": degraded,
+        "missing_roles": missing_roles,
+        "stale_roles": stale_roles,
+        "regime_reason": regime_reason or ("Partial canonical inputs" if degraded else "Canonical-complete regime evaluation."),
+    }
+
 def _calculate_state_durations(target_states: Dict[str, str], latest_ts: datetime.datetime, market: str) -> Dict[str, Any]:
     """
     Scans backwards to find how long the system has been in the current state.
@@ -119,13 +140,15 @@ def _calculate_state_durations(target_states: Dict[str, str], latest_ts: datetim
         exp = _read_json_safe(md / "expansion_transition.json").get("expansion_transition", {}).get("state", "UNKNOWN")
         dis = _read_json_safe(md / "dispersion_breakout.json").get("dispersion_breakout", {}).get("state", "UNKNOWN")
         liq = _read_json_safe(md / "liquidity_compression.json").get("liquidity_compression", {}).get("state", "UNKNOWN")
+        reg_ctx = _read_json_safe(md / "regime_context.json").get("regime_context", {})
+        reg_display = _derive_regime_display(reg_ctx).get("regime_value", "UNKNOWN")
         
         current_tick_states = {
             "Momentum": mom,
             "Expansion": exp,
             "Dispersion": dis,
             "Liquidity": liq,
-            "Regime": _read_json_safe(md / "regime_context.json").get("regime_context", {}).get("regime", "UNKNOWN") # Support regime duration
+            "Regime": reg_display,
         }
         
         for metric, data in trackers.items():
@@ -225,10 +248,12 @@ async def get_market_snapshot(market: str):
     mom = _read_json_safe(market_dir / "momentum_emergence.json")
     dis = _read_json_safe(market_dir / "dispersion_breakout.json")
     exp = _read_json_safe(market_dir / "expansion_transition.json")
+    regime_ctx = regime.get("regime_context", {})
+    regime_meta = _derive_regime_display(regime_ctx)
     
     # Extract current states
     current_states = {
-        "Regime": regime.get("regime_context", {}).get("regime", "UNKNOWN"),
+        "Regime": regime_meta["regime_value"],
         "Liquidity": liq.get("liquidity_compression", {}).get("state", "UNKNOWN"),
         "Momentum": mom.get("momentum_emergence", {}).get("state", "UNKNOWN"),
         "Dispersion": dis.get("dispersion_breakout", {}).get("state", "UNKNOWN"),
@@ -265,6 +290,11 @@ async def get_market_snapshot(market: str):
         "Momentum": current_states["Momentum"],
         "Dispersion": current_states["Dispersion"],
         "Expansion": current_states["Expansion"],
+        "CanonicalState": regime_meta["canonical_state"],
+        "RegimeDegraded": regime_meta["degraded"],
+        "MissingRoles": regime_meta["missing_roles"],
+        "StaleRoles": regime_meta["stale_roles"],
+        "RegimeReason": regime_meta["regime_reason"],
         "Durations": durations,
         "Alerts": alerts,
         "Details": {

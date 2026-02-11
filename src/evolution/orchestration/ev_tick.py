@@ -18,8 +18,8 @@ from typing import Dict, Any
 
 # Ensure project root is in path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT / "src"))
 sys.path.insert(0, str(PROJECT_ROOT))
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from evolution.factor_context_builder import FactorContextBuilder
 from evolution.watchers.momentum_emergence_watcher import MomentumEmergenceWatcher
@@ -51,6 +51,13 @@ from macro.macro_context_builder import MacroContextBuilder
 from intelligence.engine import IntelligenceEngine
 
 from ingestion.api_ingestion.alpha_vantage.market_data_ingestor import USMarketIngestor
+from governance.canonical_partiality import (
+    CANONICAL_COMPLETE,
+    detect_and_persist_canonical_partiality,
+    log_regime_degradation,
+)
+from governance.suppression_state import compute_suppression_for_market
+from governance.narrative_guard import compute_narrative_for_market
 
 class EvTickOrchestrator:
     def __init__(self, output_dir: Path):
@@ -101,14 +108,20 @@ class EvTickOrchestrator:
             print(f"  [Step 4] Resolving Strategy Eligibility ({market})")
             resolution = self._resolve_strategy_eligibility(market, watcher_results, market_dir)
             
-            # 5. Governance & Logging (Global Ledger, Locally scoped content)
-            self._log_execution(market, watcher_results, resolution)
+            # 5. F5 Suppression State (Per Market, first-class governance event)
+            suppression = self._record_suppression_state(market, market_dir)
+
+            # 6. F3 Narrative State (Per Market, first-class governance event)
+            narrative = self._record_narrative_state(market, market_dir)
+
+            # 7. Governance & Logging (Global Ledger, Locally scoped content)
+            self._log_execution(market, watcher_results, resolution, suppression, narrative)
     
-            # 6. Capital Readiness Check (Per Market)
-            print(f"  [Step 6] Verifying Capital Readiness ({market})")
+            # 8. Capital Readiness Check (Per Market)
+            print(f"  [Step 8] Verifying Capital Readiness ({market})")
             readiness = self._check_capital_readiness(resolution, market_dir)
             
-            # 7. Update Capital History (Narrative) (Per Market)
+            # 9. Update Capital History (Narrative) (Per Market)
             # Note: Capital Logic might need review if it assumes single global history.
             # For now, we write a HISTORY file inside the market dir to ensure isolation.
             self._record_capital_history_step(readiness, resolution, market_dir)
@@ -181,8 +194,8 @@ class EvTickOrchestrator:
                 
             # Compute Trend (SMA 50)
             if len(prices) < 50:
-                short_avg = sum(prices) / len(prices)
-                long_avg = short_avg # Not enough data
+                current_price = prices[-1]
+                sma_50 = sum(prices) / len(prices)
             else:
                 current_price = prices[-1]
                 sma_50 = sum(prices[-50:]) / 50
@@ -203,17 +216,52 @@ class EvTickOrchestrator:
         
         # authentic calculation
         regime, conf, details = self._get_authentic_regime(market)
+        partiality = detect_and_persist_canonical_partiality(market=market, truth_epoch="TE-2026-01-30")
+        canonical_state = partiality.get("canonical_state", "UNKNOWN")
+        missing_roles = partiality.get("missing_roles", [])
+        stale_roles = partiality.get("stale_roles", [])
+
+        regime_code = regime
+        regime_confidence: Any = conf
+        regime_reason = "Regime evaluated on canonical-complete inputs."
+        if canonical_state != CANONICAL_COMPLETE:
+            regime_code = "UNKNOWN"
+            regime_confidence = "DEGRADED"
+            regime_reason = "Partial canonical inputs"
+            details = (
+                f"{details} | Degraded due to partial canonical inputs. "
+                f"Missing roles: {missing_roles or ['NONE']}. "
+                f"Stale roles: {stale_roles or ['NONE']}."
+            )
+            log_regime_degradation(
+                market=market,
+                canonical_state=canonical_state,
+                missing_roles=missing_roles,
+                stale_roles=stale_roles,
+                reason=regime_reason,
+                source="src/evolution/orchestration/ev_tick.py",
+            )
         
         regime_data = {
             "regime_context": {
+                "market": market,
                 "evaluation_window": {
                     "window_id": f"TICK-{self.timestamp}",
+                    "start": self.timestamp,
+                    "end": self.timestamp,
                     "start_date": self.timestamp,
                     "end_date": self.timestamp
                 },
-                "regime": regime,
-                "confidence": conf,
-                "details": details
+                "regime": regime_code,
+                "regime_code": regime_code,
+                "confidence": regime_confidence,
+                "regime_confidence": regime_confidence,
+                "regime_reason": regime_reason,
+                "canonical_state": canonical_state,
+                "canonical_missing_roles": missing_roles,
+                "canonical_stale_roles": stale_roles,
+                "details": details,
+                "version": "1.1.0-TICK-F2",
             }
         }
         with open(tick_regime_path, "w") as f:
@@ -394,7 +442,7 @@ class EvTickOrchestrator:
         return readiness
 
     def _record_capital_history_step(self, readiness: Dict[str, Any], resolution: Dict[str, Any], market_dir: Path):
-        print("  [Step 7] Recording Capital Narrative History")
+        print("  [Step 9] Recording Capital Narrative History")
         
         # Get Regime
         regime_path = market_dir / "regime_context.json"
@@ -408,8 +456,45 @@ class EvTickOrchestrator:
         record = record_capital_history(market_dir, readiness, resolution, current_regime)
         print(f"    -> History Updated: {record['state']} ({record['reason']})")
 
-    def _log_execution(self, market: str, watcher_results: Dict[str, Any], resolution: Dict[str, Any]):
-        print("  [Step 5] Logging Governance Evidence")
+    def _record_suppression_state(self, market: str, market_dir: Path) -> Dict[str, Any]:
+        print(f"  [Step 5] Computing Suppression State ({market})")
+        payload = compute_suppression_for_market(market)
+        summary = payload.get("summary", {})
+
+        tick_path = market_dir / "suppression_state.json"
+        with open(tick_path, "w", encoding="utf-8") as f:
+            json.dump(summary, f, indent=2)
+
+        print(
+            f"    -> Suppression: {summary.get('suppression_state')} "
+            f"(reasons={len(payload.get('registry', {}).get('reasons', []))})"
+        )
+        return payload
+
+    def _record_narrative_state(self, market: str, market_dir: Path) -> Dict[str, Any]:
+        print(f"  [Step 6] Computing Narrative Guard State ({market})")
+        payload = compute_narrative_for_market(market)
+        narrative = payload.get("narrative", {})
+
+        tick_path = market_dir / "narrative_state.json"
+        with open(tick_path, "w", encoding="utf-8") as f:
+            json.dump(narrative, f, indent=2)
+
+        print(
+            f"    -> Narrative Mode: {narrative.get('narrative_mode')} "
+            f"(diff={narrative.get('narrative_diff', {}).get('status', 'UNKNOWN')})"
+        )
+        return payload
+
+    def _log_execution(
+        self,
+        market: str,
+        watcher_results: Dict[str, Any],
+        resolution: Dict[str, Any],
+        suppression: Dict[str, Any],
+        narrative: Dict[str, Any],
+    ):
+        print("  [Step 7] Logging Governance Evidence")
         ledger_path = PROJECT_ROOT / "docs" / "epistemic" / "ledger" / "evolution_log.md"
         
         # Extract watcher states
@@ -422,6 +507,13 @@ class EvTickOrchestrator:
         summary = resolution.get('summary', {})
         eligible = summary.get('eligible', 0)
         total = summary.get('total', 0)
+
+        suppression_summary = suppression.get("summary", {})
+        suppression_state = suppression_summary.get("suppression_state", "UNKNOWN")
+        suppression_reason = (suppression_summary.get("primary_reason") or {}).get("blocking_condition", "N/A")
+        narrative_summary = narrative.get("narrative", {})
+        narrative_mode = narrative_summary.get("narrative_mode", "UNKNOWN")
+        narrative_gate = narrative_summary.get("gating_reason", "N/A")
         
         entry = f"""
 ### [{self.timestamp}] EV-TICK Passive Trace [{market}]
@@ -431,6 +523,10 @@ class EvTickOrchestrator:
 - **Expansion**: `{exp_state}`
 - **Dispersion**: `{dis_state}`
 - **Strategies**: {eligible}/{total} eligible (Evolution v1)
+- **Suppression State**: `{suppression_state}`
+- **Suppression Reason**: {suppression_reason}
+- **Narrative Mode**: `{narrative_mode}`
+- **Narrative Gate**: {narrative_gate}
 - **Action**: NONE (Passive Diagnosis)
 """
         with open(ledger_path, "a") as f:

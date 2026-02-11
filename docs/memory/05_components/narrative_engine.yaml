@@ -1,0 +1,71 @@
+# Component: Narrative Engine
+# Level: L2 (Narrative — Change Explanation)
+
+name: Narrative Engine
+responsibility: >
+  Converts market and news events into structured NarrativeObjects.
+  Clusters events by semantic similarity and causal chains to explain "Why" the market is moving.
+
+domain_entities_used:
+  - NarrativeObject (L2): stage (Born/Reinforced/Resolved), confidence, scope, horizon
+  - RegimeState (L1): Required for narrative confidence weighting
+
+upstream_inputs:
+  - Source: Regime Engine (L1)
+    Data: RegimeState context (MANDATORY - See Conflict RC-3)
+  - Source: Ingestion Events (L0)
+    Data: News, macro data, earnings, geopolitical events
+  - Source: Canonical Store (L0)
+    Data: Price spikes, volume anomalies
+
+downstream_outputs:
+  - Target: Meta-Analysis (L3), Portfolio Intelligence (L9)
+    Data: NarrativeObjects
+  - Target: Dashboard
+    Data: Active narratives, lifecycle transitions
+
+invariants:
+  - Narratives are built only on data available at Time T (No Lookahead).
+  - Single events must exceed severity threshold (≥60) to spawn a narrative.
+  - Narratives must carry regime context for valid confidence scoring.
+
+forbidden:
+  - Generating trade signals or price targets.
+  - Executing without RegimeState context (Architecture Violation).
+  - Clustering events using future information (Hindsight Bias).
+  - Bypassing L0 raw event data sources.
+
+failure_modes:
+  - Regime adapter NOT_WIRED: Confidence remains static/unweighted (Conflict RC-3).
+  - News API outage: Narratives become stale; inability to explain new moves.
+  - Spurious clustering: Creating "Phantom Narratives" from market noise.
+
+observability:
+  - Narrative Lifecycle: Log all transitions (Born → Reinforced → Resolved).
+  - Source Attribution: Every narrative must point to supporting event IDs.
+  - Entropy: Track number of active narratives to detect "Narrative Overload".
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#1-regime-layer-success-l1

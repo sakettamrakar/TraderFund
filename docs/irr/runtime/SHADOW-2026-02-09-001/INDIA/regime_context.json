@@ -1,0 +1,13 @@
+{
+  "regime_context": {
+    "market": "INDIA",
+    "computed_at": "2026-02-09T19:14:03.405997",
+    "regime_code": "BULLISH",
+    "regime_label": "Bullish Trend",
+    "inputs": [
+      "NIFTY50"
+    ],
+    "viability": "CANONICAL",
+    "version": "1.0.0-INDIA"
+  }
+}

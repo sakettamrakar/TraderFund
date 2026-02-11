@@ -1,0 +1,21 @@
+{
+    "fragility_policy": {
+        "market": "INDIA",
+        "stress_state": "NOT_EVALUATED",
+        "signals": {
+            "liquidity": "DEGRADED",
+            "regime_transition": "DEGRADED",
+            "correlation": "DEGRADED",
+            "volatility": "DEGRADED"
+        },
+        "blocked_intents": [
+            "ALLOW_LONG_ENTRY",
+            "ALLOW_SHORT_ENTRY",
+            "ALLOW_REBALANCING",
+            "ALLOW_LONG_ENTRY_SPECIAL"
+        ],
+        "reason": "DEGRADED_PROXY_STATE: Fragility cannot be evaluated for India market. Mandatory Observe-Only mode enabled.",
+        "evaluation_timestamp": "2026-01-30T04:45:00Z",
+        "epoch_id": "TE-2026-01-30"
+    }
+}

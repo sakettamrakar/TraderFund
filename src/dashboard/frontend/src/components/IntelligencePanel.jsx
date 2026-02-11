@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { getIntelligenceSnapshot } from '../services/api';
+import { useInspection } from '../context/InspectionContext';
 import './IntelligencePanel.css';
 import PolicyStateCard from './PolicyStateCard';
 import FragilityStateCard from './FragilityStateCard';
@@ -8,19 +9,22 @@ const IntelligencePanel = ({ market }) => {
     // Market is now passed as prop
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const { isInspectionMode } = useInspection();
 
     useEffect(() => {
-        setLoading(true);
-        getIntelligenceSnapshot(market)
-            .then(res => {
-                setData(res);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
-    }, [market]);
+        if (!isInspectionMode) {
+            setLoading(true);
+            getIntelligenceSnapshot(market)
+                .then(res => {
+                    setData(res);
+                    setLoading(false);
+                })
+                .catch(err => {
+                    console.error(err);
+                    setLoading(false);
+                });
+        }
+    }, [market, isInspectionMode]);
 
     const SignalCard = ({ signal }) => (
         <div className={`signal-card ${signal.overlay?.status?.toLowerCase()}`}>
@@ -56,7 +60,7 @@ const IntelligencePanel = ({ market }) => {
     const blockedSignals = signals.filter(s => s.overlay?.status === 'BLOCKED');
 
     return (
-        <div className="intelligence-panel">
+        <div className={`intelligence-panel ${isInspectionMode ? 'inspection' : ''}`}>
             <div className="intel-header">
                 <div className="intel-title-block">
                     <h3>👁️ Intelligence Layer</h3>
@@ -71,25 +75,34 @@ const IntelligencePanel = ({ market }) => {
             <FragilityStateCard market={market} />
 
             <div className="intel-content">
-                <div className="intel-column">
-                    <h4>Attention ({attentionSignals.length})</h4>
-                    {loading ? <div>Loading signals...</div> : (
-                        <div className="signal-list">
-                            {attentionSignals.length === 0 ? <div className="empty-msg">No active signals</div> :
-                                attentionSignals.map((s, i) => <SignalCard key={i} signal={s} />)}
+                {isInspectionMode ? (
+                    <div className="inspection-blocker">
+                        <h4>SIGNALS UNAVAILABLE IN INSPECTION MODE</h4>
+                        <p>Simulated signal generation is not supported in this view. Refer to Policy and Fragility cards for stress verdicts derived from Phase 3 Audit Artifacts.</p>
+                    </div>
+                ) : (
+                    <>
+                        <div className="intel-column">
+                            <h4>Attention ({attentionSignals.length})</h4>
+                            {loading ? <div>Loading signals...</div> : (
+                                <div className="signal-list">
+                                    {attentionSignals.length === 0 ? <div className="empty-msg">No active signals</div> :
+                                        attentionSignals.map((s, i) => <SignalCard key={i} signal={s} />)}
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
 
-                <div className="intel-column blocked">
-                    <h4>Blocked by Research ({blockedSignals.length})</h4>
-                    {loading ? <div>Loading...</div> : (
-                        <div className="signal-list">
-                            {blockedSignals.length === 0 ? <div className="empty-msg">None blocked</div> :
-                                blockedSignals.map((s, i) => <SignalCard key={i} signal={s} />)}
+                        <div className="intel-column blocked">
+                            <h4>Blocked by Research ({blockedSignals.length})</h4>
+                            {loading ? <div>Loading...</div> : (
+                                <div className="signal-list">
+                                    {blockedSignals.length === 0 ? <div className="empty-msg">None blocked</div> :
+                                        blockedSignals.map((s, i) => <SignalCard key={i} signal={s} />)}
+                                </div>
+                            )}
                         </div>
-                    )}
-                </div>
+                    </>
+                )}
             </div>
 
             <div className="intel-footer">

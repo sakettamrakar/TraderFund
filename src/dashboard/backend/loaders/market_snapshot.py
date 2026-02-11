@@ -10,6 +10,29 @@ def _parse_timestamp(tick_name: str) -> datetime.datetime:
     except:
         return datetime.datetime.now()
 
+
+def _derive_regime_display(regime_ctx: Dict[str, Any]) -> Dict[str, Any]:
+    canonical_state = regime_ctx.get("canonical_state", "UNKNOWN")
+    missing_roles = regime_ctx.get("canonical_missing_roles", [])
+    stale_roles = regime_ctx.get("canonical_stale_roles", [])
+    regime_reason = regime_ctx.get("regime_reason", "")
+
+    degraded = canonical_state != "CANONICAL_COMPLETE"
+    regime_value = (
+        "UNKNOWN (PARTIAL DATA)"
+        if degraded
+        else regime_ctx.get("regime", regime_ctx.get("regime_code", "UNKNOWN"))
+    )
+
+    return {
+        "regime_value": regime_value,
+        "canonical_state": canonical_state,
+        "degraded": degraded,
+        "missing_roles": missing_roles,
+        "stale_roles": stale_roles,
+        "regime_reason": regime_reason or ("Partial canonical inputs" if degraded else "Canonical-complete regime evaluation."),
+    }
+
 def _calculate_state_durations(current_states: Dict[str, str], latest_ts: datetime.datetime, market: str) -> Dict[str, Any]:
     """
     Scans history to see how long each factor has been in its current state.
@@ -56,7 +79,10 @@ def _calculate_state_durations(current_states: Dict[str, str], latest_ts: dateti
             # FIX: Ensure we read from market specific path in history too
             market_d = d / market
             data = read_json_safe(market_d / filename).get(json_key, {})
-            state = data.get(state_key, "UNKNOWN")
+            if factor == "Regime":
+                state = _derive_regime_display(data).get("regime_value", "UNKNOWN")
+            else:
+                state = data.get(state_key, "UNKNOWN")
             
             if state == current_state:
                 count += 1
@@ -85,9 +111,10 @@ def load_market_snapshot(market: str = "US") -> Dict[str, Any]:
     mom = read_json_safe(market_dir / "momentum_emergence.json").get("momentum_emergence", {})
     dis = read_json_safe(market_dir / "dispersion_breakout.json").get("dispersion_breakout", {})
     exp = read_json_safe(market_dir / "expansion_transition.json").get("expansion_transition", {})
-    
+    regime_meta = _derive_regime_display(regime)
+
     current_states = {
-        "Regime": regime.get("regime", "UNKNOWN"),
+        "Regime": regime_meta["regime_value"],
         "Liquidity": liq.get("state", "UNKNOWN"),
         "Momentum": mom.get("state", "UNKNOWN"),
         "Dispersion": dis.get("state", "UNKNOWN"),
@@ -117,6 +144,11 @@ def load_market_snapshot(market: str = "US") -> Dict[str, Any]:
         "Momentum": current_states["Momentum"],
         "Expansion": current_states["Expansion"],
         "Dispersion": current_states["Dispersion"],
+        "CanonicalState": regime_meta["canonical_state"],
+        "RegimeDegraded": regime_meta["degraded"],
+        "MissingRoles": regime_meta["missing_roles"],
+        "StaleRoles": regime_meta["stale_roles"],
+        "RegimeReason": regime_meta["regime_reason"],
         "Durations": durations,
         "Alerts": alerts,
         "Details": {

@@ -1,0 +1,94 @@
+{
+  "market": "US",
+  "computed_at": "2026-02-10T17:30:03Z",
+  "truth_epoch": "TE-2026-01-30",
+  "narrative_mode": "SILENCED",
+  "posture": "NARRATIVE_GATED",
+  "tone": "NO_OUTPUT",
+  "summary": "",
+  "silence_reason": "No material factual change versus last Truth Epoch narrative snapshot.",
+  "gating_reason": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).",
+  "gating_reasons": [
+    {
+      "code": "SUPPRESSION_STATE_ACTIVE",
+      "detail": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT)."
+    },
+    {
+      "code": "CANONICAL_STATE_INCOMPLETE",
+      "detail": "Canonical state is CANONICAL_PARTIAL; explanatory narrative is disallowed."
+    },
+    {
+      "code": "REGIME_DEGRADED_OR_UNKNOWN",
+      "detail": "Regime state is UNKNOWN with confidence DEGRADED; directional or confidence language is disallowed."
+    },
+    {
+      "code": "NO_MATERIAL_FACT_CHANGE",
+      "detail": "No material factual change versus last Truth Epoch narrative snapshot."
+    }
+  ],
+  "regime_state": "UNKNOWN",
+  "regime_confidence": "DEGRADED",
+  "regime_reason": "Partial canonical inputs",
+  "canonical_state": "CANONICAL_PARTIAL",
+  "suppression_state": "MULTI_CAUSAL",
+  "provenance_references": [
+    "docs/evolution/context/regime_context_US.json",
+    "docs/intelligence/canonical_partiality_state_US.json",
+    "docs/intelligence/decision_policy_US.json",
+    "docs/intelligence/fragility_context_US.json",
+    "docs/intelligence/suppression_reason_registry_US.json",
+    "docs/intelligence/suppression_state_US.json",
+    "docs/intelligence/temporal/temporal_state_US.json"
+  ],
+  "citations": [
+    "docs/evolution/context/regime_context_US.json",
+    "docs/intelligence/canonical_partiality_state_US.json",
+    "docs/intelligence/decision_policy_US.json",
+    "docs/intelligence/fragility_context_US.json",
+    "docs/intelligence/suppression_reason_registry_US.json",
+    "docs/intelligence/suppression_state_US.json",
+    "docs/intelligence/temporal/temporal_state_US.json"
+  ],
+  "language_policy": {
+    "violations": [],
+    "violations_count": 0,
+    "banned_terms_count": 17
+  },
+  "narrative_diff": {
+    "status": "UNCHANGED",
+    "changed_fields": [],
+    "baseline_truth_epoch": "TE-2026-01-30",
+    "baseline_artifact": "docs\\intelligence\\narrative_state_US.json"
+  },
+  "material_facts_hash": "30d32b05dd4b9e2fcb1523b35b482a6d7a4fa70cfc23bebbfa3b7ee1ef1ea191",
+  "material_facts": {
+    "market": "US",
+    "truth_epoch": "TE-2026-01-30",
+    "suppression_state": "MULTI_CAUSAL",
+    "suppression_reason_ids": [
+      "R-TEMPORAL-DRIFT",
+      "R-DATA-PARTIAL",
+      "R-REGIME-DEGRADED",
+      "R-POLICY-BLOCKED",
+      "R-FRAGILITY-CONSTRAINT"
+    ],
+    "canonical_state": "CANONICAL_PARTIAL",
+    "canonical_missing_roles": [
+      "rates_anchor"
+    ],
+    "canonical_stale_roles": [
+      "rates_anchor"
+    ],
+    "regime_state": "UNKNOWN",
+    "regime_confidence": "DEGRADED",
+    "regime_reason": "Partial canonical inputs",
+    "policy_state": "HALTED",
+    "policy_permissions": [
+      "OBSERVE_ONLY"
+    ],
+    "drift_status_code": "EVALUATION_PENDING",
+    "evaluation_drift_days": 7,
+    "drift_limit_exceeded": false
+  },
+  "version": "1.0.0-F3"
+}

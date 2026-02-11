@@ -1,0 +1,69 @@
+# Component: Momentum Engine
+# Level: Scanner (Support Service)
+
+name: Momentum Engine
+responsibility: >
+  Heuristic intraday scanner for relative volume and momentum setups (VWAP, HOD).
+  NOT a cognitive layer; acts as an attention-director for Technical Lens (L6).
+
+domain_entities_used:
+  - Technical Lens (L6): Acts as signal source for technical discovery
+  - TimeHorizon (UltraShort): 1m - 5m intraday windows
+
+upstream_inputs:
+  - Source: Ingestion India (L0)
+    Data: 1-minute candles
+  - Source: India Watchlist
+    Data: Active symbol set
+
+downstream_outputs:
+  - Target: Technical Lens (L6)
+    Data: Raw intraday momentum signals
+  - Target: Dashboard
+    Data: Real-time HOD/VWAP alerts for human observation
+
+invariants:
+  - Scanner logic is idempotent (Same candles → Same signals).
+  - Strictly read-only relative to market data (No mutations).
+  - Operates as a "View" logic; does not allocate risk or capital.
+
+forbidden:
+  - Producing "OpportunityCandidates" or "Ideas" (L6 responsibility).
+  - Executing trades or orders directly from alerts.
+  - Modifying regime or factor state.
+  - Bypassing the L0 canonical candle source.
+
+failure_modes:
+  - History starvation: New symbol added without sufficient lead-in for VWAP.
+  - Clock skew: Local machine clock deviation from exchange time causing stale alerts.
+  - Data Gap: WebSocket drop causing VWAP values to stay frozen (NaN).
+
+observability:
+  - Signal Rate: Intraday alerts per minute.
+  - Logic Health: Tracking symbols with valid vs. invalid VWAP computations.
+  - Notification Latency: Time from tick receipt to alert generation.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#5-dashboard--observability-success

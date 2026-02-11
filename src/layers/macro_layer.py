@@ -14,6 +14,17 @@ from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
 
+class HealthStatus(str, Enum):
+    OK = "OK"
+    DEGRADED = "DEGRADED"
+    FAILED = "FAILED"
+
+class ComponentHealth(BaseModel):
+    health_status: HealthStatus = HealthStatus.OK
+    last_success_timestamp: Optional[datetime] = None
+    failure_count: int = 0
+    degraded_reason: Optional[str] = None
+
 
 class RegimeState(str, Enum):
     """Macro regime classification (READ-ONLY)."""
@@ -69,16 +80,28 @@ class MacroLayer:
     def __init__(self):
         self._current_snapshot: Optional[MacroSnapshot] = None
         self._history: list = []
-    
+        self._health = ComponentHealth()
+
+    def get_health(self) -> ComponentHealth:
+        return self._health
+
     def update_snapshot(self, snapshot: MacroSnapshot) -> None:
         """
         Update the current macro snapshot.
         This is a STATE UPDATE, not a DECISION.
         """
-        if self._current_snapshot is not None:
-            self._history.append(self._current_snapshot)
-        self._current_snapshot = snapshot
-    
+        try:
+            if self._current_snapshot is not None:
+                self._history.append(self._current_snapshot)
+            self._current_snapshot = snapshot
+            self._health.health_status = HealthStatus.OK
+            self._health.last_success_timestamp = datetime.now()
+            self._health.degraded_reason = None
+        except Exception as e:
+            self._health.health_status = HealthStatus.FAILED
+            self._health.failure_count += 1
+            self._health.degraded_reason = str(e)
+
     def get_current(self) -> Optional[MacroSnapshot]:
         """Get current macro state (READ-ONLY)."""
         return self._current_snapshot

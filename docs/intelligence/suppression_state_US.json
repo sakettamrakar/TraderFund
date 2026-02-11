@@ -1,0 +1,108 @@
+{
+  "market": "US",
+  "truth_epoch": "TE-2026-01-30",
+  "computed_at": "2026-02-10T17:30:03Z",
+  "suppression_state": "MULTI_CAUSAL",
+  "since_timestamp": "2026-02-09T15:15:00Z",
+  "affected_actions": [
+    "ALLOW_LONG_ENTRY",
+    "ALLOW_LONG_ENTRY_SPECIAL",
+    "ALLOW_POSITION_HOLD",
+    "ALLOW_REBALANCING",
+    "ALLOW_SHORT_ENTRY"
+  ],
+  "primary_reason": {
+    "reason_id": "R-TEMPORAL-DRIFT",
+    "suppression_state": "TEMPORAL_DRIFT",
+    "blocking_layer": "GOVERNANCE",
+    "blocking_condition": "Canonical data (2026-02-06) is ahead of Truth Epoch (2026-01-30). Drift=7d.",
+    "affected_actions": [
+      "ALLOW_LONG_ENTRY",
+      "ALLOW_LONG_ENTRY_SPECIAL",
+      "ALLOW_POSITION_HOLD",
+      "ALLOW_REBALANCING",
+      "ALLOW_SHORT_ENTRY"
+    ],
+    "clearing_condition": "Resolve temporal hold by satisfying bounded drift requirements and completing operator-mediated catch-up evaluation windows without advancing Truth Epoch automatically.",
+    "source_artifacts": [
+      "docs/intelligence/temporal/temporal_state_US.json"
+    ],
+    "since_timestamp": "2026-02-09T15:15:00Z"
+  },
+  "secondary_reasons": [
+    {
+      "reason_id": "R-DATA-PARTIAL",
+      "suppression_state": "DATA_PARTIAL",
+      "blocking_layer": "DATA",
+      "blocking_condition": "Canonical state CANONICAL_PARTIAL. Missing roles: ['rates_anchor']. Stale roles: ['rates_anchor'].",
+      "affected_actions": [
+        "ALLOW_LONG_ENTRY",
+        "ALLOW_LONG_ENTRY_SPECIAL",
+        "ALLOW_POSITION_HOLD",
+        "ALLOW_REBALANCING",
+        "ALLOW_SHORT_ENTRY"
+      ],
+      "clearing_condition": "Restore canonical completeness and freshness alignment for required roles before allowing regime or policy expansion.",
+      "source_artifacts": [
+        "docs/intelligence/canonical_partiality_state_US.json"
+      ],
+      "since_timestamp": "2026-02-09T15:15:00Z"
+    },
+    {
+      "reason_id": "R-REGIME-DEGRADED",
+      "suppression_state": "REGIME_DEGRADED",
+      "blocking_layer": "INTELLIGENCE",
+      "blocking_condition": "Regime degraded to UNKNOWN. Partial canonical inputs",
+      "affected_actions": [
+        "ALLOW_LONG_ENTRY",
+        "ALLOW_LONG_ENTRY_SPECIAL",
+        "ALLOW_POSITION_HOLD",
+        "ALLOW_REBALANCING",
+        "ALLOW_SHORT_ENTRY"
+      ],
+      "clearing_condition": "Regime must be recomputed on canonical-complete inputs and declared non-degraded.",
+      "source_artifacts": [
+        "docs/intelligence/decision_policy_US.json",
+        "docs/evolution/context/regime_context_US.json"
+      ],
+      "since_timestamp": "2026-02-09T15:15:00Z"
+    },
+    {
+      "reason_id": "R-POLICY-BLOCKED",
+      "suppression_state": "POLICY_BLOCKED",
+      "blocking_layer": "INTELLIGENCE",
+      "blocking_condition": "Partial canonical inputs (CANONICAL_PARTIAL). Missing roles: ['rates_anchor']. Stale roles: ['rates_anchor']. Regime inference disabled.",
+      "affected_actions": [
+        "ALLOW_LONG_ENTRY",
+        "ALLOW_LONG_ENTRY_SPECIAL",
+        "ALLOW_POSITION_HOLD",
+        "ALLOW_REBALANCING",
+        "ALLOW_SHORT_ENTRY"
+      ],
+      "clearing_condition": "Policy must evaluate with non-observe-only permissions under declared TE scope while preserving no-execution invariants.",
+      "source_artifacts": [
+        "docs/intelligence/decision_policy_US.json"
+      ],
+      "since_timestamp": "2026-02-09T15:15:00Z"
+    },
+    {
+      "reason_id": "R-FRAGILITY-CONSTRAINT",
+      "suppression_state": "FRAGILITY_CONSTRAINT",
+      "blocking_layer": "INTELLIGENCE",
+      "blocking_condition": "CRITICAL VOLATILITY (101.58 > 35). | Blocking ALL entries due to Systemic Stress.",
+      "affected_actions": [
+        "ALLOW_LONG_ENTRY",
+        "ALLOW_LONG_ENTRY_SPECIAL",
+        "ALLOW_REBALANCING",
+        "ALLOW_SHORT_ENTRY"
+      ],
+      "clearing_condition": "Fragility constraints must be removed with stress posture explicitly normalized.",
+      "source_artifacts": [
+        "docs/intelligence/fragility_context_US.json"
+      ],
+      "since_timestamp": "2026-02-09T15:15:00Z"
+    }
+  ],
+  "clearance_statement": "ACTION UNBLOCKING REQUIRES ALL ACTIVE SUPPRESSION REASONS TO CLEAR. No automatic execution or truth advancement is permitted.",
+  "version": "1.0.0-F5"
+}

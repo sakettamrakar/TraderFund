@@ -1,0 +1,63 @@
+agents:
+  - name: "SpecAgent"
+    responsibility: "Refine and validate high-level requirements into component specifications."
+    inputs:
+      - "docs/memory/03_domain/"
+      - "docs/memory/05_components/"
+    outputs:
+      - "docs/memory/05_components/*.yaml" (Drafts)
+      - "artifacts/spec_diff.json"
+    forbidden_actions:
+      - "Directly modifying src/ without spec change."
+      - "Inventing new domain entities not in domain_model.md."
+
+  - name: "ComponentAgent"
+    responsibility: "Generate implementation code that strictly adheres to component YAML specs."
+    inputs:
+      - "docs/memory/05_components/*.yaml"
+      - "docs/memory/03_domain/"
+    outputs:
+      - "src/components/"
+    forbidden_actions:
+      - "Adding public API methods not defined in YAML."
+      - "Hardcoding configuration values (must use config injection)."
+      - "Bypassing Governance layer checks."
+
+  - name: "TestAgent"
+    responsibility: "Generate comprehensive unit and integration tests to verify component behavior."
+    inputs:
+      - "src/components/"
+      - "docs/memory/05_components/"
+      - "docs/memory/02_success/success_criteria.md"
+    outputs:
+      - "tests/units/"
+      - "tests/integration/"
+    forbidden_actions:
+      - "Modifying implementation code to make tests pass."
+      - "Reducing test coverage thresholds."
+
+  - name: "IntegrationAgent"
+    responsibility: "Update orchestration configurations to include new or modified components in the DAG."
+    inputs:
+      - "src/components/"
+      - "docs/memory/12_orchestration/pipeline_graph.yaml"
+    outputs:
+      - "src/orchestration/"
+      - "config/pipeline/"
+    forbidden_actions:
+      - "Creating cycles in the DAG."
+      - "Connecting incompatible phase components (e.g., L1 -> L9 directly)."
+
+  - name: "ValidationAgent"
+    responsibility: "Execute verification suite and enforce Success Criteria in Shadow Mode."
+    inputs:
+      - "tests/"
+      - "docs/memory/02_success/success_criteria.md"
+      - "docs/memory/12_orchestration/shadow_mode.md"
+    outputs:
+      - "artifacts/validation_report.md"
+      - "artifacts/success_criteria_check.json"
+    forbidden_actions:
+      - "Approving a build with failing critical tests."
+      - "Overriding Shadow Mode constraints."
+      - "Self-signing success criteria without evidence."

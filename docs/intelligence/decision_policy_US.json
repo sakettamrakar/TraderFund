@@ -1,19 +1,27 @@
 {
   "policy_decision": {
     "market": "US",
-    "computed_at": "2026-01-30T04:37:51.295036",
-    "policy_state": "ACTIVE",
+    "computed_at": "2026-02-09T20:30:05.202887",
+    "policy_state": "HALTED",
     "permissions": [
-      "ALLOW_SHORT_ENTRY",
-      "ALLOW_POSITION_HOLD",
-      "ALLOW_LONG_ENTRY_SPECIAL"
+      "OBSERVE_ONLY"
     ],
     "blocked_actions": [],
-    "reason": "Regime BEARISH but Tech Lead detected. Specialized Longs permitted.",
+    "reason": "Partial canonical inputs (CANONICAL_PARTIAL). Missing roles: ['rates_anchor']. Stale roles: ['rates_anchor']. Regime inference disabled.",
+    "regime_state": "UNKNOWN",
+    "regime_confidence": "DEGRADED",
+    "regime_reason": "Partial canonical inputs",
+    "canonical_state": "CANONICAL_PARTIAL",
+    "canonical_missing_roles": [
+      "rates_anchor"
+    ],
+    "canonical_stale_roles": [
+      "rates_anchor"
+    ],
     "epistemic_health": {
-      "grade": "CANONICAL",
-      "proxy_status": "CANONICAL"
+      "grade": "DEGRADED",
+      "proxy_status": "DEGRADED"
     },
-    "version": "1.0.0-EVAL_ONLY"
+    "version": "1.1.0-F2-DEGRADE"
   }
 }

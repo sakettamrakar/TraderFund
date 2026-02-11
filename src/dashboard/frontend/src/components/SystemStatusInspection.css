@@ -1,0 +1,72 @@
+.system-status_wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 24px;
+}
+
+.system-status_wrapper.inspection-root {
+    border-bottom: 2px solid #ff4136;
+    padding-bottom: 12px;
+}
+
+/* Inspection Controls */
+.inspection-controls {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    background: #1a1a1a;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 1px solid #333;
+}
+
+.inspection-toggle {
+    font-size: 0.8em;
+    font-weight: 700;
+    color: #ff4136;
+    border-color: #ff4136;
+}
+
+.inspection-toggle.active {
+    background-color: #ff4136;
+    color: #000;
+}
+
+.scenario-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.scen-label {
+    font-size: 0.75rem;
+    color: #888;
+    font-weight: 600;
+}
+
+.scen-btn {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border: 1px solid #444;
+}
+
+.scen-btn.active {
+    background-color: #ff4136;
+    color: #000;
+    border-color: #ff4136;
+}
+
+/* Alerts */
+.alert-banner.inspection {
+    background-color: rgba(255, 65, 54, 0.15);
+    color: #ff4136;
+    border-left: 4px solid #ff4136;
+}
+
+/* Existing Styles (overrides) */
+.disallowance-notice {
+    white-space: pre-wrap;
+    /* allow wrapping */
+}

@@ -1,0 +1,393 @@
+📘 Part 0 — Absolute Foundations (Before Anything Else)
+0.1 Computing Basics
+
+What is data?
+
+Structured vs semi-structured vs unstructured data
+
+Files vs databases
+
+Rows, columns, records, fields
+
+Data types (numeric, string, date, boolean)
+
+0.2 Relational Database Basics
+
+Tables
+
+Primary key
+
+Foreign key
+
+Constraints
+
+Indexes (basic idea)
+
+NULL values
+
+Referential integrity
+
+📘 Part 1 — SQL Core (Mandatory Interview Foundation)
+1.1 Basic SQL
+
+SELECT
+
+WHERE
+
+ORDER BY
+
+DISTINCT
+
+LIMIT / TOP
+
+Aliases
+
+1.2 Filtering & Conditions
+
+AND / OR
+
+IN
+
+BETWEEN
+
+LIKE
+
+IS NULL
+
+1.3 Aggregations
+
+COUNT
+
+SUM
+
+AVG
+
+MIN / MAX
+
+GROUP BY
+
+HAVING
+
+1.4 Joins (Very Important)
+
+INNER JOIN
+
+LEFT JOIN
+
+RIGHT JOIN
+
+FULL JOIN
+
+CROSS JOIN
+
+Self Join
+
+1.5 Subqueries
+
+Scalar subqueries
+
+Correlated subqueries
+
+EXISTS vs IN
+
+1.6 Window Functions
+
+OVER()
+
+PARTITION BY
+
+ORDER BY
+
+ROW_NUMBER
+
+RANK
+
+DENSE_RANK
+
+LAG / LEAD
+
+1.7 Set Operations
+
+UNION
+
+UNION ALL
+
+INTERSECT
+
+EXCEPT / MINUS
+
+📘 Part 2 — Transaction Systems (OLTP)
+2.1 OLTP Concepts
+
+What is OLTP
+
+Characteristics of transactional systems
+
+Insert / Update / Delete patterns
+
+Row-level operations
+
+Normalization
+
+2.2 ACID Properties
+
+Atomicity
+
+Consistency
+
+Isolation
+
+Durability
+
+2.3 Transactions
+
+BEGIN / COMMIT / ROLLBACK
+
+Locks
+
+Deadlocks
+
+Isolation levels
+
+📘 Part 3 — Analytics Systems (OLAP)
+3.1 OLAP Concepts
+
+What is OLAP
+
+Read-heavy systems
+
+Aggregation workloads
+
+Analytical queries
+
+3.2 OLTP vs OLAP
+
+Workload differences
+
+Schema differences
+
+Query patterns
+
+Performance expectations
+
+📘 Part 4 — Data Warehousing Fundamentals
+4.1 What is Data Warehousing
+
+Purpose
+
+Historical data
+
+Decision support
+
+4.2 Core Components
+
+Source systems
+
+Staging layer
+
+Data warehouse
+
+Data marts
+
+Reporting layer
+
+4.3 Characteristics of Data Warehouse
+
+Subject-oriented
+
+Integrated
+
+Time-variant
+
+Non-volatile
+
+📘 Part 5 — Dimensional Modeling (VERY IMPORTANT)
+5.1 Fact Tables
+
+Measures
+
+Additive / Semi-additive / Non-additive facts
+
+Fact grain
+
+5.2 Dimension Tables
+
+Attributes
+
+Surrogate keys
+
+Natural keys
+
+5.3 Schemas
+
+Star schema
+
+Snowflake schema
+
+Galaxy / Fact constellation schema
+
+5.4 Slowly Changing Dimensions (SCD)
+
+Type 0
+
+Type 1
+
+Type 2
+
+Type 3
+
+Hybrid approaches
+
+5.5 Degenerate Dimensions
+5.6 Junk Dimensions
+5.7 Role-playing Dimensions
+📘 Part 6 — ETL / ELT Concepts
+6.1 ETL vs ELT
+6.2 ETL Stages
+
+Extract
+
+Transform
+
+Load
+
+6.3 Data Ingestion
+
+Batch ingestion
+
+Incremental loads
+
+CDC (Change Data Capture)
+
+6.4 Transformations
+
+Cleansing
+
+Standardization
+
+Deduplication
+
+Enrichment
+
+6.5 Load Strategies
+
+Full load
+
+Incremental load
+
+Upserts
+
+Merge operations
+
+📘 Part 7 — Data Quality & Governance
+Data Quality
+
+Accuracy
+
+Completeness
+
+Consistency
+
+Timeliness
+
+Validity
+
+Data Validation Rules
+Data Lineage
+Metadata
+Master Data vs Reference Data
+📘 Part 8 — Data Modeling (Conceptual → Physical)
+Conceptual Model
+
+Entities
+
+Relationships
+
+Logical Model
+
+Attributes
+
+Normalization
+
+Physical Model
+
+Tables
+
+Indexes
+
+Partitions
+
+📘 Part 9 — Performance Concepts
+Indexing
+Partitioning
+Clustering
+Query Optimization Basics
+Materialized Views
+Aggregation Tables
+📘 Part 10 — Modern Data Warehouse Architecture
+Traditional DW vs Cloud DW
+Columnar Storage
+MPP Architecture
+Compute vs Storage Separation
+Lakehouse Concepts
+📘 Part 11 — Data Pipelines
+Pipeline Architecture
+Batch Pipelines
+Streaming Pipelines
+Orchestration
+Scheduling
+Dependency Management
+📘 Part 12 — Slowly Growing Interview Topics
+CDC
+Idempotency
+Backfills
+Late arriving data
+Schema evolution
+Data versioning
+📘 Part 13 — Reporting & BI Layer
+Semantic layer
+Metrics vs Dimensions
+KPIs
+Dashboards
+Ad-hoc Analysis
+📘 Part 14 — Practical Interview Topics
+
+Difference between fact & dimension
+
+Grain definition
+
+Why surrogate keys
+
+Star vs Snowflake
+
+OLTP vs OLAP
+
+ETL vs ELT
+
+SCD Types
+
+Incremental loading
+
+Handling duplicates
+
+Handling NULLs
+
+Slowly changing attributes
+
+Primary key vs surrogate key
+
+📘 Part 15 — Optional Advanced (Later Stage)
+
+Data vault modeling
+
+Event-driven architecture
+
+Streaming analytics
+
+Medallion architecture (Bronze/Silver/Gold)
+
+Lakehouse vs Warehouse
+
+Reverse ETL
+
+Feature stores

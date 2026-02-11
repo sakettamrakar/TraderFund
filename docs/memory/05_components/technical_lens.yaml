@@ -1,0 +1,72 @@
+# Component: Technical Lens
+# Level: L6 (Opportunity Discovery — Parallel Lens)
+
+name: Technical Lens
+responsibility: >
+  Scans for price action setups and momentum signals using technical indicators.
+  Identifies breakouts, support/resistance, and trend strength.
+  Indicator computation (RSI, SMA, etc.) is an internal detail, not a separate layer.
+
+domain_entities_used:
+  - OpportunityCandidate (L6): symbol, source_lenses, horizon, preliminary_scores
+  - RegimeState (L1): Used for regime-based signal filtering
+
+upstream_inputs:
+  - Source: Canonical Store (L0)
+    Data: OHLCV (Daily + Intraday)
+  - Source: Regime Engine (L1)
+    Data: RegimeState context
+  - Source: Momentum Engine (Scanner Feed)
+    Data: Intraday alerts (VWAP, HOD, RVOL)
+
+downstream_outputs:
+  - Target: Convergence Engine (L7)
+    Data: OpportunityCandidates (source_lens="Technical")
+  - Target: Dashboard
+    Data: Technical rationale (indicators, pattern names)
+
+invariants:
+  - Operates in parallel; zero cross-lens dependencies.
+  - Indicator computation is local (determinism check via hash).
+  - Indicators return NaN/Reset on data gaps beyond MAX_GAP threshold.
+
+forbidden:
+  - Bypassing local computation (Relying on external/API computed indicators).
+  - Bypassing RegimeState filter context.
+  - Generating execution instructions or price targets.
+  - Using future price data (Lookahead Bias).
+
+failure_modes:
+  - Lookback Window Insufficiency: Insufficient trailing data for long indicators (e.g. 200 SMA).
+  - Data Gap reset: Excessive gaps causing indicator "blindness".
+  - Noise: High-volatility sideways action producing false breakout signals.
+
+observability:
+  - Signal Density: Tracking number of technical setups per regime type.
+  - Indicator Health: Logging number of symbols with NaN/Reset indicator states.
+  - Setup Frequency: Metric per pattern type (e.g., "Breakout", "Mean Reversion").
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#2-opportunity-discovery-success-l6-l7

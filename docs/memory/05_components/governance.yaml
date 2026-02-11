@@ -1,0 +1,70 @@
+# Component: Governance
+# Level: Cross-Cutting (Meta-Layer)
+
+name: Governance
+responsibility: >
+  Enforcement of architectural rules, epistemic contracts, policy obligations, and Decision Ledger integrity.
+  Ensures the system operates within defined "Success Criteria" and "Boundaries".
+
+domain_entities_used:
+  - All Domain Entities: Governance validates consistency across every cognitive level.
+
+upstream_inputs:
+  - Source: Decision Ledger
+    Data: Human-authorized decisions (ADRs)
+  - Source: System Logs/Telemetry
+    Data: Execution flow, diagnostic outputs, drift metrics
+  - Source: Success Criteria
+    Data: Behavioral benchmarks
+
+downstream_outputs:
+  - Target: All Components
+    Data: Policy holds, suppression states, violation alerts
+  - Target: Human Operator
+    Data: Audit reports, compliance dashboard, drift alerts
+
+invariants:
+  - Governance is constitutional; violations reflect code failure, not policy failure.
+  - No component may self-authorize state mutations (Human is the only authority).
+  - Bounded automation rules are strictly enforced (Suggestions only).
+
+forbidden:
+  - Self-modifying governance logic without explicit Decision Ledger entry.
+  - Silent degradation of constraints (Violation MUST be visible).
+  - Autonomous execution of capital-affecting decisions.
+  - Bypassing Truth Advancement Gates.
+
+failure_modes:
+  - Ledger Unavailability: System enters Lockdown Mode (Read-only, no updates).
+  - False Positives: Drift detection flagging valid market noise as violation.
+  - Policy Lag: Governance rules out of sync with new architectural deployments.
+
+observability:
+  - Violation Count: Metric tracking daily breaches of invariants.
+  - Hold Duration: Tracking time between violation detection and human resolution.
+  - Policy Coverage: Percentage of components with active governance monitoring.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md

@@ -1,0 +1,71 @@
+# Component: Factor Lens
+# Level: L6 (Opportunity Discovery — Parallel Lens)
+
+name: Factor Lens
+responsibility: >
+  Scans for assets aligned with FactorPermissions and rewarded style exposures.
+  Identifies statistical reward patterns including cross-market lead-lag alpha.
+
+domain_entities_used:
+  - OpportunityCandidate (L6): symbol, source_lenses, horizon, preliminary_scores
+  - FactorSignal (L4): Strength, direction, and stability as screening criteria
+
+upstream_inputs:
+  - Source: Factor Engine (L4)
+    Data: FactorState, FactorPermissions
+  - Source: Canonical Store (L0)
+    Data: Prices, volumes, sector returns
+  - Source: Cross-Market Data
+    Data: Lead-lag correlation (US/India)
+
+downstream_outputs:
+  - Target: Convergence Engine (L7)
+    Data: OpportunityCandidates (source_lens="Factor")
+  - Target: Dashboard
+    Data: Factor alignment rationales, pattern alerts
+
+invariants:
+  - Operates in parallel; zero cross-lens dependencies.
+  - Respects FactorPermission grants (denied factors produce zero candidates).
+  - Cross-market patterns are treated as statistical rewards, not narrative causes (RC-6).
+
+forbidden:
+  - Generating candidates for denied factor styles (Permission Violation).
+  - Bypassing L4 FactorPermissions check.
+  - Generating execution instructions.
+  - Using future data for statistical correlation (Lookahead Bias).
+
+failure_modes:
+  - FactorPermissions denied across all styles: Lens produces zero candidates (Valid State).
+  - Data corruption: Statistical anomaly producing false factor signals.
+  - Cross-market lag: Delay in cross-market data sync causing stale signals.
+
+observability:
+  - Permission Hit Rate: Proportion of permitted factors producing candidates.
+  - Statistical Confidence: Log p-values for lead-lag correlation patterns.
+  - Asset Overlap: Monitor overlap with other lenses within same factor styles.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#2-opportunity-discovery-success-l6-l7

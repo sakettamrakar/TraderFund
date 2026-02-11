@@ -32,6 +32,9 @@ class TaskSpec(BaseModel):
     blocking: bool = Field(default=True, description="If TRUE, failure halts execution")
     purpose: str = Field(..., description="Human-readable intent")
     
+    # Action
+    command: List[str] = Field(default_factory=list, description="Command to execute")
+    
     # Dependencies
     inputs: List[str] = Field(default_factory=list, description="Required input files/states")
     depends_on: List[str] = Field(default_factory=list, description="Predecessor task IDs")

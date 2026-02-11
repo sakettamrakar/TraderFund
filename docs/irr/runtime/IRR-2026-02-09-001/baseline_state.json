@@ -1,0 +1,128 @@
+﻿{
+    "captured_at":  "2026-02-09T19:11:21.0633911+05:30",
+    "truth_epoch":  {
+                        "epoch":  {
+                                      "epoch_id":  "TRUTH_EPOCH_2026-02-07_01",
+                                      "activation_time":  "2026-02-07T21:50:00+05:30",
+                                      "frozen_by":  "ANTIGRAVITY_AGENT",
+                                      "mode":  "CANONICAL_OBSERVATION",
+                                      "immutable":  true
+                                  },
+                        "markets_enabled":  [
+                                                "US",
+                                                "INDIA"
+                                            ],
+                        "mock_data_status":  {
+                                                 "US":  "PURGED",
+                                                 "INDIA":  "PURGED"
+                                             },
+                        "backfill_status":  {
+                                                "US":  "COMPLETE",
+                                                "INDIA":  "COMPLETE"
+                                            },
+                        "data_sufficiency":  {
+                                                 "US":  {
+                                                            "regime_detection":  "SUFFICIENT",
+                                                            "factor_context":  "SUFFICIENT",
+                                                            "liquidity_analysis":  "SUFFICIENT",
+                                                            "overall":  "SUFFICIENT"
+                                                        },
+                                                 "INDIA":  {
+                                                               "regime_detection":  "SUFFICIENT",
+                                                               "factor_context":  "SUFFICIENT",
+                                                               "liquidity_analysis":  "SUFFICIENT",
+                                                               "overall":  "SUFFICIENT"
+                                                           }
+                                             },
+                        "confidence_levels":  {
+                                                  "US":  "HIGH",
+                                                  "INDIA":  "HIGH"
+                                              },
+                        "verification_checklist":  {
+                                                       "all_mocks_purged":  true,
+                                                       "regime_requires_sufficiency":  true,
+                                                       "dashboard_shows_known_vs_unknown":  true,
+                                                       "truth_epoch_visible":  true
+                                                   },
+                        "notes":  "Truth epoch updated to 2026-02-07 post-ingestion. All market parity canonical."
+                    },
+    "temporal_us":  {
+                        "market":  "US",
+                        "timestamp":  "2026-02-09T18:47:00Z",
+                        "temporal_state":  {
+                                               "raw_data_time":  {
+                                                                     "timestamp":  "2026-02-06",
+                                                                     "source":  "data/us_market/SPY_daily.csv",
+                                                                     "status":  "VALID"
+                                                                 },
+                                               "canonical_truth_time":  {
+                                                                            "timestamp":  "2026-02-06",
+                                                                            "source":  "canonical_validation_layer",
+                                                                            "status":  "VALID",
+                                                                            "last_validated":  "2026-02-09T18:47:00Z"
+                                                                        },
+                                               "truth_epoch":  {
+                                                                   "timestamp":  "2026-01-30",
+                                                                   "source":  "governance_manifest",
+                                                                   "status":  "FROZEN",
+                                                                   "reason":  "Phase 4 Audit Freeze"
+                                                               }
+                                           },
+                        "drift_status":  {
+                                             "ingestion_drift_days":  0,
+                                             "evaluation_drift_days":  7,
+                                             "critical_future_leakage":  false,
+                                             "status_code":  "EVALUATION_PENDING",
+                                             "message":  "Canonical data (FEB-06) ahead of Truth Epoch (JAN-30). Evaluation Required."
+                                         },
+                        "holds":  {
+                                      "ingestion_hold":  false,
+                                      "evaluation_hold":  true,
+                                      "reason":  "Phase 4 Audit"
+                                  }
+                    },
+    "temporal_india":  {
+                           "market":  "INDIA",
+                           "timestamp":  "2026-02-09T13:18:13.845852Z",
+                           "temporal_state":  {
+                                                  "raw_data_time":  {
+                                                                        "timestamp":  "2026-02-09",
+                                                                        "source":  "data/india/NIFTY50.csv",
+                                                                        "status":  "VALID"
+                                                                    },
+                                                  "canonical_truth_time":  {
+                                                                               "timestamp":  "2026-02-09",
+                                                                               "source":  "canonical_validation_layer",
+                                                                               "status":  "VALID",
+                                                                               "last_validated":  "2026-02-09T13:18:13.845852Z"
+                                                                           },
+                                                  "truth_epoch":  {
+                                                                      "timestamp":  "2026-01-30",
+                                                                      "source":  "governance_manifest",
+                                                                      "status":  "FROZEN",
+                                                                      "reason":  "Phase 4 Audit Freeze"
+                                                                  }
+                                              },
+                           "drift_status":  {
+                                                "ingestion_drift_days":  0,
+                                                "evaluation_drift_days":  10,
+                                                "critical_future_leakage":  false,
+                                                "status_code":  "EVALUATION_PENDING",
+                                                "message":  "Canonical data (2026-02-09) ahead of Truth Epoch (2026-01-30). Delta: 10 days."
+                                            },
+                           "holds":  {
+                                         "ingestion_hold":  false,
+                                         "evaluation_hold":  true,
+                                         "reason":  "Phase 4 Audit"
+                                     }
+                       },
+    "execution_gate":  {
+                           "execution_gate":  "CLOSED",
+                           "reasons":  [
+                                           "INV-NO-EXECUTION",
+                                           "CAPITAL_NOT_CONNECTED",
+                                           "STRATEGY_DISABLED"
+                                       ],
+                           "truth_epoch":  "TE-2026-01-30"
+                       }
+}

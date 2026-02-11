@@ -1,0 +1,31 @@
+watch_rules:
+  - directory: "docs/memory/03_domain/"
+    pattern: "*.md"
+    debounce_ms: 2000
+    action: "trigger_full_rebuild"
+    description: "Domain model changes require full system re-verification."
+
+  - directory: "docs/memory/05_components/"
+    pattern: "*.yaml"
+    debounce_ms: 1000
+    action: "trigger_component_update"
+    description: "Component spec changes trigger targeted code regeneration."
+
+  - directory: "docs/memory/02_success/"
+    pattern: "success_criteria.md"
+    debounce_ms: 1000
+    action: "trigger_validation_only"
+    description: "Changes to success criteria trigger re-validation of existing build."
+
+  - directory: "docs/memory/12_orchestration/"
+    pattern: "*.yaml"
+    debounce_ms: 1000
+    action: "trigger_orchestration_update"
+    description: "Pipeline graph changes trigger integration update."
+
+global_settings:
+  ignore_patterns:
+    - "*.tmp"
+    - "*.bak"
+    - ".git*"
+  quiescence_strategy: "strict" # Wait for no file events for debounce duration

@@ -1,4 +1,4 @@
-# Truth Epoch & Proxy Scoping
+# Truth Epoch & Proxy Definition
 
 ## 1. Problem Definition
 A `Truth Epoch` (snapshot of reality) is meaningless without knowing *which* Proxy Set generated it.
@@ -7,7 +7,7 @@ Therefore, Truth is relative to the Definition (Proxy Set).
 
 ---
 
-## 2. Scoping Rules
+## 2. Definition Rules
 
 ### Rule 1: Version Lock
 Every `truth_epoch.json` MUST include the version hash or ID of the `MarketProxySet` used to generate it.

@@ -1,0 +1,27 @@
+{
+    "market": "US",
+    "generated_at": "2026-02-09T18:55:00Z",
+    "drift_analysis": {
+        "raw_data_time": "2026-02-06",
+        "canonical_truth_time": "2026-02-06",
+        "truth_epoch": "2026-01-30",
+        "ingestion_drift_days": 0,
+        "evaluation_drift_days": 7,
+        "critical_future_leakage": false
+    },
+    "status": {
+        "code": "EVALUATION_PENDING",
+        "severity": "WARNING",
+        "message": "System is 7 business days behind canonical data. Evaluation required to advance Truth Epoch."
+    },
+    "holds": {
+        "ingestion_hold": false,
+        "evaluation_hold": true,
+        "hold_reason": "Phase 4 Audit"
+    },
+    "resolution_required": [
+        "Release evaluation hold",
+        "Run decision engine on TE>=CTT",
+        "Validate factor computations"
+    ]
+}

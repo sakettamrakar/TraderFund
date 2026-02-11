@@ -1,0 +1,71 @@
+# Component: Meta-Analysis Engine
+# Level: L3 (Trust Filter)
+
+name: Meta-Analysis Engine
+responsibility: >
+  Evaluates signal and narrative reliability within the current regime context.
+  Acts as a truth filter, producing validity scores and confidence modifiers for all downstream consumers.
+
+domain_entities_used:
+  - Meta-Analysis (L3): validity_scores, confidence_modifiers
+  - RegimeState (L1): Base context for trust evaluation
+  - NarrativeObject (L2): Support/Conflict context for trust filter
+
+upstream_inputs:
+  - Source: Regime Engine (L1)
+    Data: RegimeState
+  - Source: Narrative Engine (L2)
+    Data: NarrativeObjects
+  - Source: Scanners/Lenses (L6)
+    Data: Raw signals for reliability check
+
+downstream_outputs:
+  - Target: Factor Engine (L4), Strategy Selector (L5), Convergence Engine (L7)
+    Data: TrustScores (validity, confidence_modifiers)
+  - Target: Dashboard
+    Data: Conflicting signal alerts, reliability telemetry
+
+invariants:
+  - Trust evaluation is downstream of Regime (L1) and Narrative (L2).
+  - Every score must include a "Staleness" factor based on observation time.
+  - Scoring logic is fully glass-box (no hidden weights).
+
+forbidden:
+  - Generating trade signals (Meta evaluates, it does not suggest assets).
+  - Bypassing regime context in confidence calculations.
+  - Hiding or suppressing conflicting evidence between signals.
+
+failure_modes:
+  - Missing historical data: Default to lowest reliability score (Fail-Closed).
+  - Regime instability: Conflicting trust scores causing downstream paralysis.
+  - Meta-drift: Trust scores becoming disconnected from actual signal performance.
+
+observability:
+  - Trust Distribution: Metric tracking average confidence scores across signal types.
+  - Conflict Events: Log instances where multiple high-quality signals conflict.
+  - Decision Path: Trace every TrustScore to specific regime/narrative inputs.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#1-regime-layer-success-l1

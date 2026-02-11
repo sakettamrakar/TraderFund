@@ -1,0 +1,68 @@
+# Component: Dashboard (Observer UI)
+# Level: Observation Layer (Cross-Cutting)
+
+name: Dashboard (Observer UI)
+responsibility: >
+  Read-only operator interface. Visualizes system state across all cognitive layers (L1-L9).
+  Enforces "Diagnostics Over Commands" and ensures glass-box observability.
+
+domain_entities_used:
+  - All Domain Entities: RegimeState, NarrativeObject, CandidateAssessment, PortfolioDiagnostic, etc.
+
+upstream_inputs:
+  - Source: All Backend APIs
+    Data: Current system state, temporal artifacts, governance status
+  - Source: Epistemic Documents
+    Data: Invariants, success criteria metrics
+
+downstream_outputs:
+  - Target: Human Operator
+    Data: Interactive visualizations, Briefing reports, Inspection Mode views
+
+invariants:
+  - Strictly read-only; zero mutation or write operations permitted.
+  - Every displayed metric or flag must trace to its source layer/file.
+  - No hidden states; all logic must be observable (Glass-Box Principle).
+  - Multi-market states (US/India) must be visually distinct and temporally aligned.
+
+forbidden:
+  - Any write/update operation to backend state.
+  - Hiding governance holds or failure states.
+  - Displaying certainty language, advice, or trade recommendations.
+  - Bypassing backend validation for display logic.
+  - Allowing execution or capital control from the UI surface.
+
+failure_modes:
+  - API Connection Failure: Display explicit "DISCONNECTED" state with retry link.
+  - Stale Data: State displayed without visible TTL/Staleness indicator (Violation).
+  - Inspection Mode persistence: View stuck in simulation mode (Requires Reset).
+
+observability:
+  - Session Analytics: Tracking user interaction with diagnostic flags.
+  - Page Latency: Time to render full cognitive state (L1-L9 summary).
+  - Error Tracking: Logging frontend exceptions and API response failures.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#5-dashboard--observability-success

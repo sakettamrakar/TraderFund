@@ -10,15 +10,34 @@ import pandas as pd
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
+import sys
 
 PROJECT_ROOT = Path(__file__).parent.parent
 DOCS_DIR = PROJECT_ROOT / "docs"
 INTEL_DIR = DOCS_DIR / "intelligence"
 CONTEXT_DIR = DOCS_DIR / "evolution" / "context"
 
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+if str(PROJECT_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT / "src"))
+
 # Ensure directories exist
 INTEL_DIR.mkdir(parents=True, exist_ok=True)
 CONTEXT_DIR.mkdir(parents=True, exist_ok=True)
+
+try:
+    from governance.canonical_partiality import (
+        CANONICAL_COMPLETE,
+        detect_and_persist_canonical_partiality,
+        log_regime_degradation,
+    )
+except Exception:
+    from src.governance.canonical_partiality import (  # type: ignore
+        CANONICAL_COMPLETE,
+        detect_and_persist_canonical_partiality,
+        log_regime_degradation,
+    )
 
 
 def load_india_data() -> Dict[str, pd.DataFrame]:
@@ -133,7 +152,7 @@ def compute_breadth(nifty: pd.DataFrame, banknifty: pd.DataFrame) -> Dict[str, A
     return {"state": state, "nifty_20d_ret": float(nifty_ret), "bank_20d_ret": float(bank_ret)}
 
 
-def build_factor_context(data: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
+def build_factor_context(data: Dict[str, pd.DataFrame], partiality: Dict[str, Any]) -> Dict[str, Any]:
     """
     Builds the complete factor context for India.
     """
@@ -162,26 +181,59 @@ def build_factor_context(data: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
                 "rates": True,
                 "sector": True
             },
+            "canonical_state": partiality.get("canonical_state", "UNKNOWN"),
+            "canonical_missing_roles": partiality.get("missing_roles", []),
+            "canonical_stale_roles": partiality.get("stale_roles", []),
             "version": "1.0.0-INDIA-CANONICAL"
         }
     }
 
 
-def build_regime_context(data: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
+def build_regime_context(data: Dict[str, pd.DataFrame], partiality: Dict[str, Any]) -> Dict[str, Any]:
     """
     Builds the regime context for India.
     """
     regime = compute_regime(data.get("NIFTY50"))
-    
+    canonical_state = partiality.get("canonical_state", "UNKNOWN")
+    missing_roles = partiality.get("missing_roles", [])
+    stale_roles = partiality.get("stale_roles", [])
+
+    regime_code = regime["regime_code"]
+    regime_label = regime["regime_label"]
+    regime_confidence: Any = 0.8
+    regime_reason = "Regime evaluated on canonical-complete inputs."
+    viability = "CANONICAL"
+
+    if canonical_state != CANONICAL_COMPLETE:
+        regime_code = "UNKNOWN"
+        regime_label = "UNKNOWN (PARTIAL DATA)"
+        regime_confidence = "DEGRADED"
+        regime_reason = "Partial canonical inputs"
+        viability = "DEGRADED"
+        log_regime_degradation(
+            market="INDIA",
+            canonical_state=canonical_state,
+            missing_roles=missing_roles,
+            stale_roles=stale_roles,
+            reason="Partial canonical inputs",
+            source="scripts/india_policy_evaluation.py",
+        )
+
     return {
         "regime_context": {
             "market": "INDIA",
             "computed_at": datetime.now().isoformat(),
-            "regime_code": regime["regime_code"],
-            "regime_label": regime["regime_label"],
+            "regime_code": regime_code,
+            "regime_label": regime_label,
+            "regime": regime_code,
+            "regime_confidence": regime_confidence,
+            "regime_reason": regime_reason,
+            "canonical_state": canonical_state,
+            "canonical_missing_roles": missing_roles,
+            "canonical_stale_roles": stale_roles,
             "inputs": ["NIFTY50"],
-            "viability": "CANONICAL",
-            "version": "1.0.0-INDIA"
+            "viability": viability,
+            "version": "1.1.0-INDIA-F2"
         }
     }
 
@@ -194,6 +246,9 @@ def evaluate_decision_policy(factor_context: Dict[str, Any]) -> Dict[str, Any]:
     regime = factor_context.get("factor_context", {}).get("regime_input", {})
     
     regime_code = regime.get("regime_code", "UNKNOWN")
+    canonical_state = factor_context.get("factor_context", {}).get("canonical_state", "UNKNOWN")
+    missing_roles = factor_context.get("factor_context", {}).get("canonical_missing_roles", [])
+    stale_roles = factor_context.get("factor_context", {}).get("canonical_stale_roles", [])
     liq_state = factors.get("liquidity", {}).get("state", "unknown")
     vol_state = factors.get("volatility", {}).get("state", "unknown")
     
@@ -202,6 +257,36 @@ def evaluate_decision_policy(factor_context: Dict[str, Any]) -> Dict[str, Any]:
     reasons = []
     status = "ACTIVE"
     
+    # Canonical Partiality Gate (F2 DEGRADE-ON-PARTIAL)
+    if canonical_state != CANONICAL_COMPLETE:
+        status = "HALTED"
+        permissions = ["OBSERVE_ONLY"]
+        reasons.append(
+            f"Partial canonical inputs ({canonical_state}). Missing roles: {missing_roles or ['NONE']}. "
+            f"Stale roles: {stale_roles or ['NONE']}. Regime degraded."
+        )
+        return {
+            "policy_decision": {
+                "market": "INDIA",
+                "computed_at": datetime.now().isoformat(),
+                "policy_state": status,
+                "permissions": permissions,
+                "blocked_actions": blocks,
+                "reason": " | ".join(reasons),
+                "regime_state": "UNKNOWN",
+                "regime_confidence": "DEGRADED",
+                "regime_reason": "Partial canonical inputs",
+                "canonical_state": canonical_state,
+                "canonical_missing_roles": missing_roles,
+                "canonical_stale_roles": stale_roles,
+                "epistemic_health": {
+                    "grade": "DEGRADED",
+                    "proxy_status": "DEGRADED"
+                },
+                "version": "1.1.0-INDIA-F2"
+            }
+        }
+
     # Liquidity Gate
     if liq_state == "tight":
         blocks.extend(["ALLOW_LONG_ENTRY", "ALLOW_SHORT_ENTRY"])
@@ -237,11 +322,17 @@ def evaluate_decision_policy(factor_context: Dict[str, Any]) -> Dict[str, Any]:
             "permissions": permissions,
             "blocked_actions": blocks,
             "reason": " | ".join(reasons) if reasons else "Default policy.",
+            "regime_state": regime_code,
+            "regime_confidence": 0.8,
+            "regime_reason": "Regime evaluated on canonical-complete inputs.",
+            "canonical_state": canonical_state,
+            "canonical_missing_roles": missing_roles,
+            "canonical_stale_roles": stale_roles,
             "epistemic_health": {
                 "grade": "CANONICAL",
                 "proxy_status": "CANONICAL"
             },
-            "version": "1.0.0-INDIA"
+            "version": "1.1.0-INDIA-F2"
         }
     }
 
@@ -303,10 +394,14 @@ def main():
     print("[1/5] Loading India canonical data...")
     data = load_india_data()
     print()
-    
+
+    partiality = detect_and_persist_canonical_partiality(market="INDIA", truth_epoch="TE-2026-01-30")
+    print(f"  Canonical State: {partiality.get('canonical_state')}")
+    print()
+
     # 2. Build Factor Context
     print("[2/5] Building Factor Context...")
-    factor_context = build_factor_context(data)
+    factor_context = build_factor_context(data, partiality)
     factor_path = CONTEXT_DIR / "factor_context_INDIA.json"
     with open(factor_path, 'w', encoding='utf-8') as f:
         json.dump(factor_context, f, indent=2)
@@ -315,7 +410,7 @@ def main():
     
     # 3. Build Regime Context
     print("[3/5] Building Regime Context...")
-    regime_context = build_regime_context(data)
+    regime_context = build_regime_context(data, partiality)
     regime_path = CONTEXT_DIR / "regime_context_INDIA.json"
     with open(regime_path, 'w', encoding='utf-8') as f:
         json.dump(regime_context, f, indent=2)

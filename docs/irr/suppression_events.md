@@ -1,97 +1,38 @@
-# Integration Reality Run — Suppression Events
+﻿# Integration Reality Run - Suppression Events
 
-## 1. Purpose
-This document logs all signals, permissions, or actions that were **suppressed** by governance layers.
-Suppression is a safety feature, not a failure.
+## Scope
+Suppression observations from policy and fragility outputs generated during IRR runtime.
 
----
+## US (Manual Context Path)
+- Context: `regime=UNKNOWN`, factor sufficiency `INSUFFICIENT`
+- Decision output: `OBSERVE_ONLY`
+- Fragility output: `OBSERVE_ONLY` retained, no additional revocations
 
-## 2. Suppression Sources
+| Permission Family | Status | Suppression Source | Evidence |
+|---|---|---|---|
+| Entry intents (`ALLOW_LONG_ENTRY`, `ALLOW_SHORT_ENTRY`, `ALLOW_LONG_ENTRY_SPECIAL`) | Suppressed | Decision policy fail-closed on unknown regime | `docs/irr/runtime/IRR-2026-02-09-001/us_decision_policy_manual.json` |
+| Rebalancing intent (`ALLOW_REBALANCING`) | Suppressed | Not granted by decision policy | `docs/irr/runtime/IRR-2026-02-09-001/us_decision_policy_manual.json` |
+| Observation intent (`OBSERVE_ONLY`) | Allowed | Decision policy | `docs/irr/runtime/IRR-2026-02-09-001/us_fragility_policy_manual.json` |
 
-| Layer | Suppression Type |
-| :--- | :--- |
-| Decision Policy | Permission denial |
-| Fragility Policy | Permission subtraction |
-| Regime Gate | Signal invalidation |
-| Parity Check | Market lockout |
+## INDIA (Canonical India Policy Pipeline)
+- Context: `regime=BULLISH`
+- Decision output: `ALLOW_LONG_ENTRY`, `ALLOW_POSITION_HOLD`
+- Fragility output: no revocations
 
----
+| Permission Family | Status | Suppression Source | Evidence |
+|---|---|---|---|
+| Long entry | Allowed | Decision policy | `docs/intelligence/decision_policy_INDIA.json` |
+| Short entry | Suppressed | Regime gate (BULLISH path does not grant short) | `docs/intelligence/decision_policy_INDIA.json` |
+| Hold | Allowed | Decision + fragility | `docs/intelligence/fragility_context_INDIA.json` |
+| Rebalancing | Suppressed | Not granted in current regime path | `docs/intelligence/decision_policy_INDIA.json` |
 
-## 3. US Market Suppression Events
+## Schema-Leakage Policy Path (Tick Contexts)
+Both US and INDIA policy runs against tick-generated contexts resolved to `market=UNKNOWN`, yielding full operational suppression.
 
-### 3.1. Decision Policy Suppressions
+| Market | Policy State | Final Authorized Intents | Evidence |
+|---|---|---|---|
+| US | HALTED | none | `docs/irr/runtime/IRR-2026-02-09-001/us_decision_policy.json` |
+| INDIA | HALTED | none | `docs/irr/runtime/IRR-2026-02-09-001/india_decision_policy_via_core_engine.json` |
 
-| Event ID | Suppressed Permission | Reason | Computed At |
-| :--- | :--- | :--- | :--- |
-| `SUP-US-D-001` | ALLOW_LONG_ENTRY | Regime BEARISH | 2026-01-30 04:46 |
-| `SUP-US-D-002` | ALLOW_LONG_ENTRY_SPECIAL | Regime does not favor longs | 2026-01-30 04:46 |
-
-### 3.2. Fragility Policy Suppressions
-
-| Event ID | Suppressed Permission | Reason | Computed At |
-| :--- | :--- | :--- | :--- |
-| `SUP-US-F-001` | ALLOW_LONG_ENTRY | SYSTEMIC_STRESS (VIX > 35) | 2026-01-30 04:50 |
-| `SUP-US-F-002` | ALLOW_SHORT_ENTRY | SYSTEMIC_STRESS (VIX > 35) | 2026-01-30 04:50 |
-| `SUP-US-F-003` | ALLOW_LONG_ENTRY_SPECIAL | SYSTEMIC_STRESS | 2026-01-30 04:50 |
-| `SUP-US-F-004` | ALLOW_REBALANCING | SYSTEMIC_STRESS | 2026-01-30 04:50 |
-
-### 3.3. Net Effect (US)
-
-| Permission | Decision Grants? | Fragility Allows? | Final Status |
-| :--- | :--- | :--- | :--- |
-| ALLOW_LONG_ENTRY | ❌ | ❌ | BLOCKED |
-| ALLOW_SHORT_ENTRY | ✅ | ❌ | BLOCKED |
-| ALLOW_LONG_ENTRY_SPECIAL | ✅ | ❌ | BLOCKED |
-| ALLOW_POSITION_HOLD | ✅ | ✅ | **ALLOWED** |
-| ALLOW_REBALANCING | — | ❌ | BLOCKED |
-
-**Final US Authorized**: `ALLOW_POSITION_HOLD` only.
-
----
-
-## 4. India Market Suppression Events
-
-### 4.1. Decision Policy Suppressions
-
-| Event ID | Suppressed Permission | Reason | Computed At |
-| :--- | :--- | :--- | :--- |
-| `SUP-IND-D-001` | ALLOW_LONG_ENTRY | Regime NEUTRAL | 2026-01-30 05:23 |
-| `SUP-IND-D-002` | ALLOW_SHORT_ENTRY | Regime NEUTRAL | 2026-01-30 05:23 |
-
-### 4.2. Fragility Policy Suppressions
-
-| Event ID | Suppressed Permission | Reason | Computed At |
-| :--- | :--- | :--- | :--- |
-| (None) | — | Stress state NORMAL | 2026-01-30 05:23 |
-
-### 4.3. Net Effect (India)
-
-| Permission | Decision Grants? | Fragility Allows? | Final Status |
-| :--- | :--- | :--- | :--- |
-| ALLOW_LONG_ENTRY | ❌ | ✅ | BLOCKED (Decision) |
-| ALLOW_SHORT_ENTRY | ❌ | ✅ | BLOCKED (Decision) |
-| ALLOW_POSITION_HOLD | ✅ | ✅ | **ALLOWED** |
-| ALLOW_REBALANCING | ✅ | ✅ | **ALLOWED** |
-
-**Final India Authorized**: `ALLOW_POSITION_HOLD`, `ALLOW_REBALANCING`.
-
----
-
-## 5. Suppression Summary
-
-| Market | Suppressions by Decision | Suppressions by Fragility | Final Permissions |
-| :--- | :--- | :--- | :--- |
-| US | 2 | 4 | 1 |
-| India | 2 | 0 | 2 |
-
----
-
-## 6. Suppression Integrity Check
-
-**Invariant**: Suppression is monotonic. Once suppressed, a permission cannot be restored by a downstream layer.
-
-| Check | Result |
-| :--- | :--- |
-| Decision → Fragility monotonicity | ✅ PASSED |
-| Fragility never grants | ✅ PASSED |
-| Final ⊆ Decision permissions | ✅ PASSED |
+## Suppression Integrity Note
+Suppression remained monotonic in all observed paths: downstream fragility did not restore any upstream-denied intent.

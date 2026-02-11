@@ -1,0 +1,15 @@
+{
+  "policy_decision": {
+    "market": "UNKNOWN",
+    "computed_at": "2026-02-09T19:14:02.513645",
+    "policy_state": "HALTED",
+    "permissions": [],
+    "blocked_actions": [],
+    "reason": "Market UNKNOWN not authorized for policy evaluation.",
+    "epistemic_health": {
+      "grade": "UNKNOWN",
+      "proxy_status": "DEGRADED"
+    },
+    "version": "1.0.0-EVAL_ONLY"
+  }
+}

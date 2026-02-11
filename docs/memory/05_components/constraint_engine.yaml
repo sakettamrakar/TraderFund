@@ -1,0 +1,71 @@
+# Component: Constraint Engine
+# Level: L8 (Execution Constraints)
+
+name: Constraint Engine
+responsibility: >
+  Applies hard risk limits and execution envelopes to candidates.
+  Enforces position sizing, exposure caps, and risk budget limits before portfolio analysis.
+
+domain_entities_used:
+  - ExecutionEnvelope (L8): max_position_size, exposure_caps, drawdown_limits, risk_budget
+  - CandidateAssessment (L7): Candidate pool awaiting filtering
+
+upstream_inputs:
+  - Source: Convergence Engine (L7)
+    Data: Ranked pool of CandidateAssessments
+  - Source: Ingestion US/India (L0)
+    Data: Current portfolio state, cash levels, existing exposures
+  - Source: Governance Engine
+    Data: Policy constraints (Position limits, Sector caps)
+
+downstream_outputs:
+  - Target: Portfolio Intelligence (L9)
+    Data: Filtered candidate pool (passing all hard constraints)
+  - Target: Dashboard
+    Data: Blocked candidates and explicit rejection reasons
+
+invariants:
+  - Constraints are hard limits (Gatekeeper model), not advisory suggestions.
+  - Rejection reasons are recorded and traceable for every blocked candidate.
+  - Filtering logic does not modify the underlying candidate scores.
+
+forbidden:
+  - Overriding risk limits without governance authorization.
+  - Modifying candidate scores (L7 responsibility).
+  - Approving any candidate that breaches the hard MAX_POSITION_SIZE (Limit Breach).
+  - Bypassing current portfolio state in limit calculation.
+
+failure_modes:
+  - State unavailability: Portfolio state cannot be fetched (Fail-Closed: Block All).
+  - Budget exhaustion: All candidates blocked due to risk budget caps (Valid State).
+  - Limit overflow: Floating point error in exposure calculation.
+
+observability:
+  - Rejection Rate: Metric tracking percentage of candidates blocked per constraint type.
+  - Budget Tracking: Metric tracking daily utilization of the defined risk budget.
+  - Traceability: Every pass/fail decision linked to a specific code rule/policy ID.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#3-portfolio-intelligence-success-l8-l9

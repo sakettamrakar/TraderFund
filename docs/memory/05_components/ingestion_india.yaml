@@ -1,0 +1,71 @@
+# Component: Data Ingestion (India)
+# Level: L0 (Foundation)
+
+name: Data Ingestion (India)
+responsibility: >
+  Live tick and historical market data acquisition for India equities via SmartAPI.
+  Aggregates raw ticks into 1-minute candles and manages IST temporal alignment.
+
+domain_entities_used:
+  - TimeHorizon (L0): Tick-to-minute aggregation
+  - CanonicalStore (L0): Bronze/Silver layers
+
+upstream_inputs:
+  - Source: SmartAPI WebSocket v2
+    Data: Live ticks (LTP/Full), orderbook events
+  - Source: SmartAPI REST
+    Data: Historical 1m backfill
+  - Source: India Watchlist
+    Data: ~200 symbols (NIFTY 50 + Mid/Smallcap)
+
+downstream_outputs:
+  - Target: Canonical Store (Silver/Gold)
+    Data: 1-minute candles (Parquet)
+  - Target: Dashboard
+    Data: WebSocket status, drop rate, IST temporal truth
+
+invariants:
+  - IST-First: All India data persists in IST to avoid clock-drift in aggregation.
+  - WebSocket auto-reconnect with cumulative backoff.
+  - Tick-to-Candle determinism: Replay of same tick stream produces identical candles.
+  - Physical Separation: Zero shared code/state with US ingestion.
+
+forbidden:
+  - REST polling for live price updates during market hours (WebSocket mandatory).
+  - Cross-market state sharing (US context in India pipeline).
+  - Modifying IST timestamps to UTC during raw persistence.
+
+failure_modes:
+  - Feed Gap: WebSocket disconnected silently (Requires heart-beat check).
+  - High Latency: Processing backlog during high-volatility tick bursts.
+  - Token Expiry: SmartAPI session timeout (Auto-refresh required).
+
+observability:
+  - Tick Rate: Incoming messages per second.
+  - Drop Rate: Percentage of ticks missed during reconnection.
+  - Aggregation Health: Candle count vs Expected count based on IST market hours.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/11_deployment/evolution.md#81-gate-1-raw--canonical-ingestion-gate

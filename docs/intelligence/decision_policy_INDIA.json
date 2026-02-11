@@ -1,18 +1,24 @@
 {
   "policy_decision": {
     "market": "INDIA",
-    "computed_at": "2026-02-07T21:50:43.622114",
+    "computed_at": "2026-02-09T20:27:40.106392",
     "policy_state": "ACTIVE",
     "permissions": [
-      "ALLOW_POSITION_HOLD",
-      "ALLOW_REBALANCING"
+      "ALLOW_LONG_ENTRY",
+      "ALLOW_POSITION_HOLD"
     ],
     "blocked_actions": [],
-    "reason": "Regime NEUTRAL. Hold/Rebalance only.",
+    "reason": "Regime BULLISH. Longs permitted.",
+    "regime_state": "BULLISH",
+    "regime_confidence": 0.8,
+    "regime_reason": "Regime evaluated on canonical-complete inputs.",
+    "canonical_state": "CANONICAL_COMPLETE",
+    "canonical_missing_roles": [],
+    "canonical_stale_roles": [],
     "epistemic_health": {
       "grade": "CANONICAL",
       "proxy_status": "CANONICAL"
     },
-    "version": "1.0.0-INDIA"
+    "version": "1.1.0-INDIA-F2"
   }
 }

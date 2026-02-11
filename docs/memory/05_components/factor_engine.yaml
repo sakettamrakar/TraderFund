@@ -1,0 +1,71 @@
+# Component: Factor Engine
+# Level: L4 (Factor Analysis — Reward Map)
+
+name: Factor Engine
+responsibility: >
+  Determines current market style rewards (Momentum, Value, Quality, Size).
+  Issues FactorPermissions that gate downstream discovery and strategy activation.
+
+domain_entities_used:
+  - FactorSignal (L4): strength, direction, stability, horizon
+  - FactorPermission (L4): binary grant/denial per style
+  - RegimeState (L1): Context for factor-regime alignment
+
+upstream_inputs:
+  - Source: Regime Engine (L1)
+    Data: RegimeState
+  - Source: Meta-Analysis Engine (L3)
+    Data: TrustScores
+  - Source: Canonical Store (L0)
+    Data: Returns, volatility, sector performance
+
+downstream_outputs:
+  - Target: Strategy Selector (L5), Factor Lens (L6)
+    Data: FactorState, FactorPermissions
+  - Target: Portfolio Intelligence (L9)
+    Data: Factor alignment reports (reward map)
+
+invariants:
+  - Factors describe styles/categories, not individual assets.
+  - Factor permissions are binary grants; absence equals denial (Fail-Closed).
+  - No signal may bypass factor permissions (Layer Integrity).
+
+forbidden:
+  - Selecting individual stock tickers (Asset selection belongs to L6).
+  - Operating without active RegimeState.
+  - Modifying FactorPermissions manually without recorded governance authorization.
+
+failure_modes:
+  - Numerical instability in factor computation: Output INSUFFICIENT_DATA.
+  - Permission Lag: Permissions out of sync with rapid regime transitions.
+  - Factor Confusion: High strength signals in conflicting directions (Trend vs Value).
+
+observability:
+  - Permission Logs: Record all changes to factor grants/denials.
+  - Factor Strength Heatmap: Daily metric of factor returns vs baseline.
+  - Decision Trace: Link every FactorPermission to specific L1 and L3 inputs.
+
+
+health_contract: docs/memory/05_components/component_health_contract.md
+
+health_fields:
+  - health_status
+  - last_success_timestamp
+  - failure_count
+  - degraded_reason
+
+health_observability:
+  - health.status
+  - health.last_success
+  - health.failure_count
+  - health.degraded_reason
+  - health.recovery
+  - health.latency_ms
+
+health_invariants:
+  - Health status must be evaluated every execution cycle.
+  - FAILED status must trigger Fail-Closed behavior.
+  - Recovery must be logged with equal visibility to failure.
+  - degraded_reason must be non-null when status is DEGRADED.
+success_criteria_refs:
+  - docs/memory/02_success/success_criteria.md#1-regime-layer-success-l1

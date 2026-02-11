@@ -57,6 +57,9 @@
 | 4 | **Narratives** | Evolution | `research_modules/narrative_evolution` | ✅ | State transitions tracked |
 | 11| **Audit** | Diff Engine | `research_modules/narrative_diff` | ✅ | Daily change detection |
 | 9 | **Reports** | Research Output | `research_modules/research_output` | 🟡 | Daily brief done, Weekly pending |
+| 10| **Governance** | Decision Policy | `src/intelligence/` | ✅ | US (Active), India (Restricted) |
+| 10| **Governance** | Fragility Policy | `src/intelligence/` | 🟡 | Design Complete, Initial Artifacts |
+
 
 ---
 
