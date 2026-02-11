@@ -37,6 +37,21 @@ def _check_factor_contract(contract: dict, current_factors: dict) -> tuple:
         return True, None
     
     for factor_name, requirements in contract.items():
+        # Check for min_variance first, as it's a numeric check
+        if "min_variance" in requirements:
+            factor_value = current_factors.get(factor_name)
+            if factor_value is None:
+                return False, f"Factor value for {factor_name} not available"
+            
+            required_min = requirements["min_variance"]
+            if not isinstance(factor_value, (int, float)):
+                 return False, f"Factor {factor_name} has non-numeric value '{factor_value}'"
+
+            if factor_value < required_min:
+                return False, f"{factor_name}: {factor_value:.3f} < required min {required_min}"
+            
+            continue # Move to the next factor in the contract
+
         # Skip external factors not in our watcher set
         if factor_name in ["yield_curve", "vrp"]:
             # External factors default to blocked until wired

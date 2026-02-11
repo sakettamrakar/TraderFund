@@ -36,14 +36,14 @@ forbidden:
   - Bypassing current portfolio state in limit calculation.
 
 failure_modes:
-  - State unavailability: Portfolio state cannot be fetched (Fail-Closed: Block All).
-  - Budget exhaustion: All candidates blocked due to risk budget caps (Valid State).
-  - Limit overflow: Floating point error in exposure calculation.
+  - "State unavailability: Portfolio state cannot be fetched (Fail-Closed: Block All)."
+  - "Budget exhaustion: All candidates blocked due to risk budget caps (Valid State)."
+  - "Limit overflow: Floating point error in exposure calculation."
 
 observability:
-  - Rejection Rate: Metric tracking percentage of candidates blocked per constraint type.
-  - Budget Tracking: Metric tracking daily utilization of the defined risk budget.
-  - Traceability: Every pass/fail decision linked to a specific code rule/policy ID.
+  - "Rejection Rate: Metric tracking percentage of candidates blocked per constraint type."
+  - "Budget Tracking: Metric tracking daily utilization of the defined risk budget."
+  - "Traceability: Every pass/fail decision linked to a specific code rule/policy ID."
 
 
 health_contract: docs/memory/05_components/component_health_contract.md

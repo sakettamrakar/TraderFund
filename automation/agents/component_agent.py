@@ -10,6 +10,7 @@ code in the prompt for Gemini to produce real, applicable diffs.
 """
 
 import sys
+import json
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -84,28 +85,87 @@ def run(spec_files: list[str]) -> str:
     """
     Generate and apply component code updates based on changed spec files.
     """
-    if not spec_files:
-        return ""
+    # Load Action Plan
+    action_plan_path = PROJECT_ROOT / "automation/tasks/action_plan.json"
+    action_plan = {}
+    if action_plan_path.exists():
+        try:
+            action_plan = json.loads(action_plan_path.read_text(encoding="utf-8"))
+        except:
+            pass
 
-    # Filter to only YAML specs (not .md contracts)
-    yaml_specs = [f for f in spec_files if f.endswith(".yaml")]
-    if not yaml_specs:
-        return ""
+    # Determine mode: Plan-based or Legacy Spec-based
+    use_plan = action_plan.get("status") == "ACTION_REQUIRED"
+    
+    prompt = ""
+    
+    if use_plan:
+        print(f"  ComponentAgent: Executing Phase M Action Plan...")
+        instructions = action_plan.get("detailed_instructions", [])
+        target_files = action_plan.get("target_files", [])
+        
+        # Read target source files
+        source_blocks = []
+        for tf in target_files:
+            fp = PROJECT_ROOT / tf
+            if not fp.exists():
+                continue
+                
+            if fp.is_file():
+                content = fp.read_text(encoding="utf-8", errors="replace")
+                source_blocks.append(f"### FILE: {tf}\n```python\n{content}\n```")
+            elif fp.is_dir():
+                # If directory, grab top 5 python files to avoid context overflow
+                # (Same logic as _gather_source_files)
+                for py in sorted(fp.rglob("*.py"))[:5]:
+                    content = py.read_text(encoding="utf-8", errors="replace")
+                    rel_path = py.relative_to(PROJECT_ROOT).as_posix()
+                    source_blocks.append(f"### FILE: {rel_path}\n```python\n{content}\n```")
+        
+        source_text = "\n\n".join(source_blocks)
+        instruction_text = "\n".join([f"- {i}" for i in instructions])
+        
+        prompt = f"""You are the ComponentAgent.
+Your job: Implement the specific engineering actions below.
 
-    # Read spec contents
-    spec_blocks = []
-    for sf in yaml_specs[:5]:  # Limit to avoid huge prompts
-        fp = PROJECT_ROOT / sf
-        if fp.exists():
-            content = fp.read_text(encoding="utf-8", errors="replace")
-            spec_blocks.append(f"### SPEC: {sf}\n```yaml\n{content}\n```")
+PLAN OBJECTIVE: {action_plan.get('objective')}
 
-    spec_text = "\n\n".join(spec_blocks)
+INSTRUCTIONS:
+{instruction_text}
 
-    # Read existing source files that these specs map to
-    source_text = _gather_source_files(yaml_specs)
+TARGET FILES (You must modify these):
+{source_text}
 
-    prompt = f"""You are a ComponentAgent in an autonomous code generation system.
+RULES:
+1. Output ONLY a valid unified git diff.
+2. Follow the INSTRUCTIONS exactly.
+3. Use the exact file paths shown above.
+4. Minimal context diff (-U0).
+5. If no changes needed, output: NO_CHANGES_REQUIRED
+"""
+        print(f"  Debug: Prompt length {len(prompt)} chars. Sending to Gemini...")
+
+    else:
+        # LEGACY MODE (Fallback)
+        # Filter to only YAML specs (not .md contracts)
+        yaml_specs = [f for f in spec_files if f.endswith(".yaml")]
+        if not yaml_specs:
+            return ""
+
+        # Read spec contents
+        spec_blocks = []
+        for sf in yaml_specs[:5]:  # Limit to avoid huge prompts
+            fp = PROJECT_ROOT / sf
+            if fp.exists():
+                content = fp.read_text(encoding="utf-8", errors="replace")
+                spec_blocks.append(f"### SPEC: {sf}\n```yaml\n{content}\n```")
+
+        spec_text = "\n\n".join(spec_blocks)
+
+        # Read existing source files that these specs map to
+        source_text = _gather_source_files(yaml_specs)
+
+        prompt = f"""You are a ComponentAgent in an autonomous code generation system.
 Your job: read the SPEC contracts below, read the EXISTING SOURCE CODE below,
 and produce a unified git diff that adds the Component Health Interface to the source code.
 
@@ -135,11 +195,14 @@ RULES:
     response = ask(prompt)
 
     if not response or not response.strip():
+        print("  Debug: Empty response from Gemini.")
         return ""
 
     if "NO_CHANGES_REQUIRED" in response:
         print("  ComponentAgent: no code changes needed.")
         return response
+    
+    print(f"  Debug: Response received. Applying diff... (First 50 chars: {response[:50]}...)")
 
     # Apply the diff to the working tree
     success, message = apply(response)

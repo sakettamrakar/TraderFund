@@ -1,0 +1,8 @@
+[
+  {
+    "file": "docs/memory/02_success/success_criteria.md",
+    "change_type": "INVARIANT_ADDED/MODIFIED",
+    "section": "2. Opportunity Discovery Success (L6-L7)",
+    "content": "- **Score Dispersion**: High-Conviction Ideas must exhibit a minimum score variance of 0.15 across candidates. Flat score distributions are invalid."
+  }
+]

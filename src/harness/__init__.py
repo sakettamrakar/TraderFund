@@ -6,6 +6,7 @@ Provides task abstraction, graph model, and execution binding.
 from .task_spec import TaskSpec, TaskStatus, validate_task_spec
 from .task_graph import TaskGraph
 from .harness import ExecutionHarness, ExecutionMode, ExecutionResult
+from .revocation import RevocationHandler, RevocationReason, RevocationEvent
 
 __all__ = [
     "TaskSpec",
@@ -13,6 +14,8 @@ __all__ = [
     "validate_task_spec",
     "TaskGraph",
     "ExecutionHarness",
-    "ExecutionMode",
     "ExecutionResult",
+    "RevocationHandler",
+    "RevocationReason",
+    "RevocationEvent",
 ]

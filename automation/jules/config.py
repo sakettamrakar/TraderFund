@@ -6,8 +6,8 @@ Configuration for the Jules execution backend.
 
 import os
 
-# Jules API Endpoint (Placeholder - will be replaced with actual URL)
-JULES_API_URL = os.environ.get("JULES_API_URL", "https://api.jules.internal/v1")
+# Jules API Endpoint
+JULES_API_URL = os.environ.get("JULES_API_URL", "https://jules.googleapis.com/v1alpha")
 
 # Jules API Key
 JULES_API_KEY = os.environ.get("JULES_API_KEY", "")

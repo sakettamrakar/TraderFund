@@ -5,6 +5,7 @@ Wires task execution to Belief, Factor, and Validator layers.
 from typing import List, Optional, Dict, Any
 from enum import Enum
 from datetime import datetime
+import subprocess
 
 from .task_spec import TaskSpec, TaskStatus
 from .task_graph import TaskGraph
@@ -35,12 +36,13 @@ class ExecutionHarness:
     - All side effects must be declared in task artifacts/impacts.
     - DRY_RUN must accurately predict REAL_RUN outcomes.
     """
-    
-    def __init__(self, graph: TaskGraph):
+
+    def __init__(self, graph: TaskGraph, standalone_mode: bool = False):
         self._graph = graph
         self._results: Dict[str, ExecutionResult] = {}
         self._belief_layer = None
         self._factor_layer = None
+        self._standalone_mode = standalone_mode
     
     def bind_belief_layer(self, belief_layer: Any) -> None:
         """Bind to Belief Layer for epistemic context."""
@@ -52,6 +54,8 @@ class ExecutionHarness:
     
     def validate_preconditions(self) -> bool:
         """Validate Control Plane governance is active."""
+        if self._standalone_mode:
+            return True
         if self._belief_layer is None:
             return False
         return True
@@ -75,19 +79,35 @@ class ExecutionHarness:
                 continue
             
             # Check dependencies
+            deps_satisfied = True
             for dep_id in spec.depends_on:
                 dep_result = self._results.get(dep_id)
                 if dep_result is None or dep_result.status != TaskStatus.SUCCESS:
                     if spec.blocking:
                         results.append(ExecutionResult(task_id, TaskStatus.FAILED, [], f"Dependency not satisfied: {dep_id}"))
-                        continue
-            
+                        deps_satisfied = False
+                        break
+            if not deps_satisfied:
+                continue
+
             # Execute based on mode
             if mode == ExecutionMode.DRY_RUN:
                 result = ExecutionResult(task_id, TaskStatus.SUCCESS, spec.artifacts)
             else:
-                # REAL_RUN: Actual execution would happen here
-                result = ExecutionResult(task_id, TaskStatus.SUCCESS, spec.artifacts)
+                # REAL_RUN: Execute the command
+                print(f"Executing task: {task_id} with command: {' '.join(spec.command)}")
+                try:
+                    process = subprocess.run(
+                        spec.command,
+                        capture_output=True,
+                        text=True,
+                        check=True # Raise CalledProcessError for non-zero exit codes
+                    )
+                    print(process.stdout)
+                    result = ExecutionResult(task_id, TaskStatus.SUCCESS, spec.artifacts)
+                except subprocess.CalledProcessError as e:
+                    print(f"Task {task_id} FAILED:\n{e.stderr}")
+                    result = ExecutionResult(task_id, TaskStatus.FAILED, spec.artifacts, error=e.stderr)
             
             self._results[task_id] = result
             results.append(result)

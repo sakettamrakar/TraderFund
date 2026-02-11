@@ -23,6 +23,7 @@
 - **Confluence Requirement**: High-Conviction status REQUIRES confirmation from ≥3 independent lenses.
 - **Lens Isolation**: Candidates surfaced by a single lens are strictly labeled "Watchlist" or "Low Confidence".
 - **Sizing Safety**: No candidate is recommended for entry without a corresponding stop-loss or invalidation level.
+- **Score Dispersion**: High-Conviction Ideas must exhibit a minimum score variance of 0.22 across candidates. Flat score distributions are invalid.
 
 ## 3. Portfolio Intelligence Success (L8-L9)
 

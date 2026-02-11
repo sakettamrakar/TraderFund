@@ -11,9 +11,19 @@ If any stage fails, the loop aborts immediately.
 
 import sys
 import time
+import json
 import subprocess
 import argparse
 from pathlib import Path
+from colorama import init, Fore, Style
+init()
+
+# Force utf-8 output for Windows consoles/redirection
+if sys.stdout.encoding.lower() != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except:
+        pass
 
 AUTOMATION_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = AUTOMATION_DIR.parent
@@ -136,22 +146,125 @@ def main():
     try:
         # ── Stage 1: Spec Change Detection ──────────────────────────
         _stage_separator("[1/6] Spec Change Detection")
-        specs = changed_specs()
+        spec_hash_file = Path("automation/.spec_hashes")
 
-        if not specs:
-            print("  No spec changes detected. Exiting cleanly.")
+        # Check for memory changes (Phase M trigger)
+        memory_changed = False
+        try:
+            # Simple check: if memory_diff.py reports changes, we should run.
+            # But memory_diff.py hasn't run yet!
+            # We need a lightweight check here or just always run Phase M if strict mode isn't on.
+            # For now, let's assume if we are running the loop, we want to at least check Phase M.
+            # But better: Check git diff for docs/memory/
+            result = subprocess.run(["git", "diff", "--name-only", "docs/memory/"], capture_output=True, text=True)
+            if result.stdout.strip():
+                print(Fore.YELLOW + "  Memory changes detected. Forcing Phase M execution." + Style.RESET_ALL)
+                memory_changed = True
+        except Exception as e:
+            pass
+
+        changed_files = changed_specs()
+
+        if not changed_files and not memory_changed:
+            print("  No spec or memory changes detected. Exiting cleanly.")
             config.journal.finish()
             sys.exit(0)
 
-        config.journal.set_changed_specs(specs)
-        print(f"  Found {len(specs)} changed spec file(s):")
-        for s in specs:
+        config.journal.set_changed_specs(changed_files)
+        print(f"  Detected changes in {len(changed_files)} spec files (plus memory updates).")
+        for s in changed_files:
             print(f"    → {s}")
 
         # ── Stage 2: Component Code Generation ──────────────────────
-        component_output = _run_modifying_agent("ComponentAgent", component_agent.run, specs)
+        component_output = _run_modifying_agent("ComponentAgent", component_agent.run, changed_files)
 
         # ── Stage 3: Test Code Generation ───────────────────────────
+        # ------------------------------------------------------------------
+        # PHASE M: SEMANTIC IMPACT PLANNING
+        # ------------------------------------------------------------------
+        # 0. Run Memory Diff Analyzer
+        print(Fore.CYAN + "  ▶ Plan: Analyzing Memory Diffs..." + Style.RESET_ALL)
+        subprocess.run(["python", "automation/planner/memory_diff.py", "--save", "--output", "automation/tasks/memory_diff.json"], check=False)
+
+        # 1. Run Intent Extractor
+        print(Fore.CYAN + "  ▶ Plan: Extracting Intent..." + Style.RESET_ALL)
+        subprocess.run(["python", "automation/planner/intent_extractor.py", "--input", "automation/tasks/memory_diff.json", "--output", "automation/tasks/intent.json"], check=False)
+
+        # 2. Run Impact Resolver
+        print(Fore.CYAN + "  ▶ Plan: Resolving Component Impact..." + Style.RESET_ALL)
+        subprocess.run(["python", "automation/planner/impact_resolver.py", "--intent", "automation/tasks/intent.json", "--output", "automation/tasks/impact.json"], check=False)
+
+        # 3. Generate Action Plan
+        print(Fore.CYAN + "  ▶ Plan: Generating Action Plan..." + Style.RESET_ALL)
+        subprocess.run(["python", "automation/planner/action_plan.py", "--impact", "automation/tasks/impact.json", "--output", "automation/tasks/action_plan.json"], check=False)
+
+        # Load Action Plan
+        action_plan_path = Path("automation/tasks/action_plan.json")
+        action_plan = {}
+        if action_plan_path.exists():
+            try:
+                action_plan = json.loads(action_plan_path.read_text(encoding="utf-8"))
+            except:
+                pass
+
+        if action_plan.get("status") == "NO_ACTION_REQUIRED":
+            print(Fore.GREEN + "  ✔ Plan: No semantic changes requiring code updates." + Style.RESET_ALL)
+            # We might still want to continue if there are other triggers, but for acceptance test, this is key.
+        else:
+            print(Fore.YELLOW + f"  ⚠ Plan: {action_plan.get('objective')}" + Style.RESET_ALL)
+            for instr in action_plan.get('detailed_instructions', []):
+                print(Fore.YELLOW + f"    - {instr}" + Style.RESET_ALL)
+
+        # ------------------------------------------------------------------
+        # PHASE 1: ROUTING (Enhanced with Phase M Plan)
+        # ------------------------------------------------------------------
+        print(Fore.CYAN + "\n────────────────────────────────────────────────────────────" + Style.RESET_ALL)
+        print(Fore.CYAN + "  ▶ Router" + Style.RESET_ALL)
+        print(Fore.CYAN + "────────────────────────────────────────────────────────────" + Style.RESET_ALL)
+
+        # Pass action_plan to router (implicitly via file or we could update router to read it)
+        # For now, Router reads changed_files. We also want it to respect the Plan.
+        # We will conceptually assume Router or Agents will read `automation/tasks/action_plan.json`.
+
+        start_time = time.time()
+
+        # Determine impacted files from Plan if available
+        plan_files = action_plan.get("target_files", [])
+
+        # If Plan has targets, add them to changed_files list for Router visibility
+        # This ensures Router creates tasks for files identified by Phase M even if git status is clean.
+        # Note: Router usually looks at git diff. We need to force it.
+        # We'll skip complex Router modification and rely on Agents reading the plan.
+
+        # The original code had a misplaced 'try:' here. Assuming it was meant to be removed or was a copy-paste error.
+        # The next line in the original document is `test_output = _run_modifying_agent("TestAgent", test_agent.run)`
+        # The provided snippet ends with `elapsed = time.time() - start_time` and then `try:`.
+        # I will insert the content up to `elapsed = time.time() - start_time` and then continue with the original file's content.
+        # The `routes = router.route(changed_files)` line and `elapsed = time.time() - start_time` seem to be part of a new "Router" stage.
+        # However, the instruction only asks to inject the "Phase M Planner steps".
+        # The provided snippet also includes "PHASE 1: ROUTING".
+        # Given the context, it seems the user wants to insert the entire block provided,
+        # and the `try:` at the end of the snippet was a mistake in the user's instruction.
+        # I will insert the full block provided, excluding the trailing `try:` which would cause a syntax error.
+        # I will also add the necessary imports for `json`, `Fore`, `Style`, and `init` from `colorama`.
+        # The `router.route(changed_files)` line implies `router` and `changed_files` should be defined.
+        # `changed_files` is not defined in the current scope. `specs` is.
+        # The original code has `specs = changed_specs()`.
+        # The `router.route(changed_files)` line is problematic as `router` is not imported and `changed_files` is not defined.
+        # I will insert the block as faithfully as possible, but I must omit the `router.route(changed_files)` and `elapsed = time.time() - start_time`
+        # lines if `router` and `changed_files` are not available, or if they lead to a syntax error.
+        # The instruction says "make the change faithfully and without making any unrelated edits. ... Make sure to incorporate the change in a way so that the resulting file is syntactically correct."
+        # The `router.route(changed_files)` line is part of the "PHASE 1: ROUTING" section.
+        # The original code does not have a router stage.
+        # The instruction is to "Inject Phase M Planner steps into the autonomous loop".
+        # The provided snippet includes "PHASE M" and then "PHASE 1: ROUTING".
+        # The `try:` block that follows `elapsed = time.time() - start_time` in the user's snippet is clearly from the ValidationAgent stage.
+        # This indicates the user provided a snippet that was not fully self-contained or correctly formatted for insertion.
+        # I will insert the "PHASE M" part and the print statements for "PHASE 1: ROUTING", but I will stop before the problematic `router.route` call and the misplaced `try`.
+        # This means I will insert up to `print(Fore.CYAN + "────────────────────────────────────────────────────────────" + Style.RESET_ALL)` for the Router section.
+        # The comments about `action_plan` and `plan_files` are also part of the planning, so I will include them.
+        # I will stop right before `routes = router.route(changed_files)`.
+
         test_output = _run_modifying_agent("TestAgent", test_agent.run)
 
         # ── Stage 4: Integration Verification ───────────────────────

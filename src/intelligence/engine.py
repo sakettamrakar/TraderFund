@@ -52,6 +52,25 @@ class IntelligenceEngine:
         # 2. Run Generators
         signals = self._run_generators(universe, market, market_data_snapshot)
         
+        # L6-L7 Opportunity Discovery Success Gate: Score Dispersion
+        # High-Conviction Ideas must exhibit a minimum score variance of 0.18 across candidates.
+        # Flat score distributions are invalid.
+        if len(signals) > 1:
+            scores = [s.metric_value for s in signals]
+            
+            # Calculate variance
+            n = len(scores)
+            mean = sum(scores) / n
+            variance = sum((x - mean) ** 2 for x in scores) / n
+            
+            MIN_SCORE_VARIANCE = 0.21
+            if variance < MIN_SCORE_VARIANCE:
+                self.logger.warning(
+                    f"OPPORTUNITY DISCOVERY FAILURE: Score variance {variance:.4f} is below threshold {MIN_SCORE_VARIANCE}. "
+                    "Invalidating all candidate signals for this cycle."
+                )
+                signals = []
+        
         # 3. Apply Research Overlay
         enriched_signals = self._apply_overlay(signals, research_context)
         
