@@ -5,12 +5,18 @@ from pathlib import Path
 from dataclasses import dataclass, field
 from typing import List, Dict
 
+# Import Phase Q Validators
+from automation.quality.semantic import SemanticValidator
+from automation.quality.visual import VisualValidator
+from automation.quality.report import QualityReporter
+
 logger = logging.getLogger(__name__)
 
 @dataclass
 class ValidationPlan:
     unit_tests: bool = True
     domain_contracts: bool = True
+    semantic_validation: bool = True  # Phase Q: REQUIRED
     visual_validation: bool = False
     observability_validation: bool = False
 
@@ -18,6 +24,7 @@ class ValidationPlan:
         return {
             "unit_tests": self.unit_tests,
             "domain_contracts": self.domain_contracts,
+            "semantic_validation": self.semantic_validation,
             "visual_validation": self.visual_validation,
             "observability_validation": self.observability_validation
         }
@@ -93,15 +100,67 @@ class ValidationRunner:
             return False, "\n".join(errors)
         return True, "All domain contracts passed."
 
+    def run_semantic_validators(self, run_dir: Path, plan: ValidationPlan) -> (bool, str):
+        """
+        Runs Phase Q semantic validators.
+        """
+        if not plan.semantic_validation:
+            return True, "Semantic validation skipped."
+
+        logger.info("Running Semantic Validators...")
+        semantic_validator = SemanticValidator(self.project_root)
+        visual_validator = VisualValidator(self.project_root)
+        reporter = QualityReporter(run_dir)
+
+        # 1. Semantic Check (Distribution)
+        dist_results = semantic_validator.check_distributions(run_dir)
+        with open(run_dir / "semantic_checks.json", "w") as f:
+            json.dump(dist_results, f, indent=2)
+
+        # 2. Stability Check
+        stability_results = semantic_validator.check_stability(run_dir)
+        with open(run_dir / "stability_report.json", "w") as f:
+            json.dump(stability_results, f, indent=2)
+
+        # 3. Coherence Check
+        coherence_results = semantic_validator.check_coherence(run_dir)
+        with open(run_dir / "coherence_report.json", "w") as f:
+            json.dump(coherence_results, f, indent=2)
+
+        # 4. Visual Check (if planned)
+        visual_results = {}
+        if plan.visual_validation:
+            visual_results = visual_validator.validate(run_dir)
+            with open(run_dir / "visual_report.json", "w") as f:
+                json.dump(visual_results, f, indent=2)
+
+        # 5. Generate Report
+        summary = reporter.generate_report(
+            dist_results,
+            stability_results,
+            coherence_results,
+            visual_results
+        )
+
+        # Check for REQUIRED failures
+        # Semantic, Stability, Coherence are REQUIRED if enabled
+        failures = []
+        if dist_results["status"] == "FAIL":
+            failures.append("Semantic Distribution Check Failed")
+        if stability_results["status"] == "FAIL":
+            failures.append("Stability Check Failed")
+        if coherence_results["status"] == "FAIL":
+            failures.append("Coherence Check Failed")
+
+        if failures:
+            return False, "\n".join(failures)
+
+        return True, "All semantic validators passed."
+
     def run_optional_validators(self, plan: ValidationPlan) -> (bool, str):
         """Runs optional validators based on plan."""
         report = []
         success = True
-
-        if plan.visual_validation:
-            logger.info("Running Visual Validator (Stub)...")
-            # In Phase 3, this is a placeholder or basic check
-            report.append("Visual Validation: SKIPPED (Not implemented)")
 
         if plan.observability_validation:
             logger.info("Running Observability Validator (Stub)...")

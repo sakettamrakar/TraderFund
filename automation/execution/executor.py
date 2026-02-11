@@ -106,7 +106,15 @@ class TaskExecutor:
             if not success:
                 raise RuntimeError(f"Domain contract violation: {output}")
 
-            # C. Optional Validators
+            # C. Phase Q Semantic Validators (REQUIRED)
+            success, output = self.validation_runner.run_semantic_validators(run_dir, plan)
+            with open(run_dir / "semantic_validation_log.txt", "w") as f:
+                f.write(output)
+
+            if not success:
+                raise RuntimeError(f"Semantic validation failed: {output}")
+
+            # D. Optional Validators
             success, output = self.validation_runner.run_optional_validators(plan)
             with open(run_dir / "optional_validation.txt", "w") as f:
                 f.write(output)

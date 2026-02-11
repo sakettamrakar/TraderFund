@@ -1,0 +1,55 @@
+# Semantic Invariants Registry for Phase Q
+# Defines data-driven rules for system behavior
+
+macro_context:
+  required_files: ["macro_context.json"]
+  fields:
+    monetary.curve_shape:
+      type: "categorical"
+      values: ["INVERTED", "FLAT", "NORMAL", "STEEP"]
+      required: true
+    risk.volatility:
+      type: "categorical"
+      values: ["SUPPRESSED", "NORMAL", "ELEVATED"]
+      required: true
+    monetary.rate_level:
+      type: "categorical"
+      values: ["LOW", "MID", "HIGH"]
+    liquidity.credit_spreads:
+      type: "categorical"
+      values: ["NORMAL", "WIDE", "TIGHT"]
+
+decision:
+  required_files: ["decision.json"]
+  fields:
+    confidence:
+      type: "range"
+      min: 0.0
+      max: 1.0
+      required: true
+    action:
+      type: "categorical"
+      values: ["ENTER", "EXIT", "HOLD", "DO_NOTHING"]
+      required: true
+
+stability:
+  macro_context:
+    max_flips:
+      monetary.curve_shape: 2
+      risk.volatility: 3
+    max_delta:
+      # Placeholder for numerical stability
+      # monetary.ten_year: 0.5
+    window_size: 5
+
+coherence:
+  rules:
+    - name: "Volatile_Safety"
+      condition: "risk.volatility == 'ELEVATED'"
+      forbidden_action: "ENTER"
+      rationale: "Cannot enter new positions when volatility is elevated."
+
+    - name: "Inverted_Curve_Caution"
+      condition: "monetary.curve_shape == 'INVERTED'"
+      max_confidence: 0.8
+      rationale: "Confidence capped during inverted yield curve."
