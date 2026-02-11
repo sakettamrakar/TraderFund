@@ -84,3 +84,7 @@ temp_debug/
 synthesis_output.txt
 *.patch
 regime_shadow.jsonl
+
+# ---- AUTOMATION WORKERS ----
+automation/profiles/
+automation/workers/router_state.json
