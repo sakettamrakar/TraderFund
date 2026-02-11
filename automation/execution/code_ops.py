@@ -136,6 +136,26 @@ def test_{path.stem}_stub():
             logger.error(f"Failed to generate diffs: {e}")
             return ""
 
+    def get_changed_files(self) -> list[str]:
+        """
+        Returns a list of files changed (including deletions).
+        Runs `git diff --name-only`.
+        """
+        try:
+            result = subprocess.run(
+                ["git", "diff", "--name-only"],
+                cwd=str(self.project_root),
+                capture_output=True,
+                text=True
+            )
+            if result.returncode != 0:
+                logger.error(f"Failed to get changed files: {result.stderr}")
+                return []
+            return [f for f in result.stdout.splitlines() if f.strip()]
+        except Exception as e:
+            logger.error(f"Failed to get changed files: {e}")
+            return []
+
     def reset_changes(self):
         """
         Resets changes (useful for cleanup or failure rollback).
@@ -145,3 +165,38 @@ def test_{path.stem}_stub():
             subprocess.run(["git", "clean", "-fd"], cwd=str(self.project_root))
         except Exception as e:
             logger.error(f"Failed to reset changes: {e}")
+
+    def apply_diff(self, diff_content: str) -> bool:
+        """
+        Applies a unified diff to the codebase.
+        """
+        if not diff_content.strip():
+            logger.warning("Empty diff provided.")
+            return False
+
+        diff_file = self.project_root / "jules_changes.diff"
+        try:
+            diff_file.write_text(diff_content)
+
+            # Try git apply
+            result = subprocess.run(
+                ["git", "apply", str(diff_file)],
+                cwd=str(self.project_root),
+                capture_output=True,
+                text=True
+            )
+
+            if result.returncode != 0:
+                logger.error(f"git apply failed: {result.stderr}")
+                # Optional: try 'patch' if git apply fails (sometimes formatting issues)
+                return False
+
+            logger.info("Successfully applied diff.")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to apply diff: {e}")
+            return False
+        finally:
+            if diff_file.exists():
+                diff_file.unlink()

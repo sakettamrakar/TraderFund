@@ -2,7 +2,7 @@ import json
 import logging
 import traceback
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional, Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -10,7 +10,7 @@ class FailureAnalyzer:
     def __init__(self, run_dir: Path):
         self.run_dir = run_dir
 
-    def generate_failure_tree(self, error: Exception, task: Dict, stage: str, evidence: str = ""):
+    def generate_failure_tree(self, error: Exception, task: Dict, stage: str, evidence: str = "", extra_context: Dict[str, Any] = None):
         """
         Generates a failure tree JSON file in the run directory.
         """
@@ -21,8 +21,15 @@ class FailureAnalyzer:
             "memory_files_involved": task.get("changed_memory_files", []),
             "component_involved": self._infer_component(task.get("changed_memory_files", [])),
             "validation_stage_failed": stage,
-            "evidence_excerpt": evidence[:2000] if evidence else traceback.format_exc()[:2000]
+            "evidence_excerpt": evidence[:5000] if evidence else traceback.format_exc()[:5000]
         }
+
+        if extra_context:
+            failure_tree.update(extra_context)
+
+        # Add recommended fallback if Jules failed
+        if "Jules" in stage and "fallback_recommendation" not in failure_tree:
+            failure_tree["fallback_recommendation"] = "Human intervention required. Consider forcing AG execution or refining memory instructions."
 
         try:
             with open(self.run_dir / "failure_tree.json", "w") as f:
