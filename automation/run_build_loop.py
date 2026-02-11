@@ -27,7 +27,9 @@ if sys.stdout.encoding.lower() != 'utf-8':
 
 AUTOMATION_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = AUTOMATION_DIR.parent
+# Ensure both automation directory and project root are in path
 sys.path.insert(0, str(AUTOMATION_DIR))
+sys.path.insert(0, str(PROJECT_ROOT))
 
 # New Imports
 from automation_config import config, SecurityViolation
