@@ -8,7 +8,7 @@ from automation.jules.config import JULES_MIN_FILES
 
 class TaskRouter:
     """
-    Routes tasks to either Antigravity (AG) or Jules execution planes.
+    Routes tasks to either Antigravity (AG), Jules execution planes, or Gemini (Fallback).
     """
 
     def __init__(self, project_root: Path):
@@ -17,13 +17,13 @@ class TaskRouter:
     def route(self, task: Dict[str, Any]) -> Tuple[str, str]:
         """
         Determines the execution plane for a given task.
-        Returns: ("AG" or "JULES", reason)
+        Returns: ("AG" | "JULES" | "GEMINI", reason)
         """
         task_id = task.get("task_id", "unknown")
 
         # 1. Check for Human Override
         force_executor = task.get("force_executor")
-        if force_executor in ["AG", "JULES"]:
+        if force_executor in ["AG", "JULES", "GEMINI"]:
             reason = f"Forced by user via force_executor={force_executor}"
             logger.info(f"Task {task_id} {reason}")
             return force_executor, reason

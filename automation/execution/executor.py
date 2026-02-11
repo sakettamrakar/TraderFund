@@ -9,30 +9,36 @@ import sys
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from automation.workers.manager import WorkerManager
-from automation.workers.router import AccountRouter
 from automation.execution.code_ops import CodeOps
 from automation.execution.validation import ValidationPlanner, ValidationRunner
 from automation.execution.failure import FailureAnalyzer
 from automation.router import TaskRouter
-from automation.jules.adapter import JulesAdapter
+
+# New Executors
+from automation.executors.antigravity_worker import AntigravityExecutor
+from automation.executors.jules_adapter import JulesExecutor
+from automation.executors.gemini_fallback import GeminiExecutor
 
 logger = logging.getLogger(__name__)
 
 class TaskExecutor:
     def __init__(self):
         self.project_root = PROJECT_ROOT
-        self.worker_manager = WorkerManager()
-        self.account_router = AccountRouter()
         self.code_ops = CodeOps(self.project_root)
         self.validation_planner = ValidationPlanner(self.project_root)
         self.validation_runner = ValidationRunner(self.project_root)
         self.router = TaskRouter(self.project_root)
-        self.jules_adapter = JulesAdapter()
 
         self.tasks_dir = self.project_root / "automation" / "tasks"
         self.runs_dir = self.project_root / "automation" / "runs"
         self.runs_dir.mkdir(parents=True, exist_ok=True)
+
+        # Initialize Executor Instances
+        self.executors = {
+            "AG": AntigravityExecutor(self.project_root),
+            "JULES": JulesExecutor(self.project_root),
+            "GEMINI": GeminiExecutor(self.project_root)
+        }
 
     def process_task(self, task_file: Path):
         """
@@ -69,13 +75,32 @@ class TaskExecutor:
             with open(run_dir / "routing.json", "w") as f:
                 json.dump({"executor": executor_type, "reason": reason, "timestamp": time.time()}, f)
 
-            modified_files = []
-
             # 3. Execution
-            if executor_type == "JULES":
-                modified_files = self._execute_jules(task, run_dir)
-            else:
-                modified_files = self._execute_ag(task, run_dir)
+            if executor_type not in self.executors:
+                raise ValueError(f"Unknown executor type: {executor_type}")
+
+            executor = self.executors[executor_type]
+            diff, logs = executor.execute(task, run_dir)
+
+            # Save Execution Logs
+            with open(run_dir / "execution_log.txt", "w") as f:
+                f.write(logs)
+
+            # Save Diff
+            (run_dir / "diffs").mkdir(exist_ok=True)
+            with open(run_dir / "diffs" / "changes.diff", "w") as f:
+                f.write(diff)
+
+            # Determine modified files
+            # Since executors apply changes or return a patch that has been applied (hopefully),
+            # we check git diff --name-only relative to before execution?
+            # Or just check what changed now.
+            # CodeOps.get_changed_files() returns `git diff --name-only`.
+            # This shows uncommitted changes.
+            modified_files = self.code_ops.get_changed_files()
+
+            if not modified_files and not diff.strip():
+                 logger.warning(f"No files modified by {executor_type}.")
 
             # 4. Validation & Finalization
             self._validate_and_finalize(task, task_file, run_dir, modified_files, executor_type)
@@ -88,98 +113,6 @@ class TaskExecutor:
 
             extra_context = {"classification_reason": reason}
             failure_analyzer.generate_failure_tree(e, task, f"Execution ({executor_type})", str(e), extra_context=extra_context)
-
-            # Optional: Revert changes on failure?
-            # self.code_ops.reset_changes()
-
-    def _execute_ag(self, task, run_dir) -> list:
-        """
-        Executes task using Antigravity (Local Worker + CodeOps).
-        """
-        worker = None
-        try:
-            # Allocate Worker
-            profile_path = self.account_router.get_next_profile_path()
-            logger.info(f"Allocating worker with profile {profile_path}")
-            worker = self.worker_manager.launch_worker(profile_path, headless=True)
-
-            # Code Ops
-            memory_files = task.get("changed_memory_files", [])
-            changes = self.code_ops.infer_changes(memory_files)
-
-            if not changes:
-                logger.warning("No code changes inferred from memory files.")
-
-            modified_files = self.code_ops.apply_changes(changes)
-
-            # Generate Tests if missing
-            for f in modified_files:
-                 if f.endswith(".py"):
-                     self.code_ops.generate_test_if_missing(f)
-
-            # Generate Diffs
-            diff_output = self.code_ops.generate_diffs()
-            (run_dir / "diffs").mkdir(exist_ok=True)
-            with open(run_dir / "diffs" / "changes.diff", "w") as f:
-                f.write(diff_output)
-
-            return modified_files
-
-        finally:
-            if worker:
-                worker.close()
-
-    def _execute_jules(self, task, run_dir) -> list:
-        """
-        Executes task using Jules Batch Backend.
-        """
-        # Prepare instructions
-        changed_files = task.get("changed_memory_files", [])
-        instructions = ""
-        for f in changed_files:
-            path = self.project_root / f
-            if path.exists():
-                instructions += f"### FILE: {f}\n{path.read_text()}\n"
-
-        # Submit Job
-        payload = self.jules_adapter.create_job(task, instructions)
-        job_id = self.jules_adapter.submit_job(payload)
-
-        # Poll Job
-        status = self.jules_adapter.poll_job(job_id)
-
-        # Get Results (even if failed, to get logs)
-        results = {}
-        try:
-            results = self.jules_adapter.get_results(job_id)
-        except Exception as e:
-            logger.warning(f"Failed to fetch results for job {job_id}: {e}")
-
-        if status == "FAILED":
-            error_msg = results.get("logs", "No logs provided")
-            raise RuntimeError(f"Jules job {job_id} failed. Logs: {error_msg}")
-
-        # Save Results
-        with open(run_dir / "jules_result.json", "w") as f:
-            json.dump(results, f, indent=2)
-
-        # Apply Diff
-        diff_content = results.get("diff", "")
-        success = self.code_ops.apply_diff(diff_content)
-
-        if not success:
-            raise RuntimeError("Failed to apply Jules diff.")
-
-        # Determine modified files using git diff --name-only
-        modified_files = self.code_ops.get_changed_files()
-
-        # Save the applied diff to run_dir/diffs
-        current_diff = self.code_ops.generate_diffs()
-        (run_dir / "diffs").mkdir(exist_ok=True)
-        with open(run_dir / "diffs" / "changes.diff", "w") as f:
-            f.write(current_diff)
-
-        return modified_files
 
     def _validate_and_finalize(self, task, task_file, run_dir, modified_files, executor_type):
         """
