@@ -1,0 +1,14 @@
+#!/bin/sh
+# Guard against committing changes to docs/memory/
+
+echo "🛡️  Running memory guard..."
+FORBIDDEN="docs/memory/"
+
+# Check staged files
+if git diff --cached --name-only | grep -q "^$FORBIDDEN"; then
+    echo "❌ SAFETY VIOLATION: You are attempting to commit changes to '$FORBIDDEN'."
+    echo "   Memory is immutable. Do not touch."
+    exit 1
+fi
+
+exit 0

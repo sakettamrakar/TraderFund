@@ -10,6 +10,9 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+# New Imports
+from automation_config import config, SecurityViolation
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 PROTECTED_PREFIXES = ["docs/memory/", "docs/epistemic/"]
@@ -67,11 +70,37 @@ def _extract_and_split(raw: str) -> list[tuple[str, str]]:
 
 def _is_protected(path: str) -> bool:
     """Check if a file path is under protected prefixes."""
+    # Normalize path and check
+    if ".." in path:
+        return True # Suspicious
     return any(path.startswith(p) for p in PROTECTED_PREFIXES)
 
 
 def _apply_single_patch(patch_text: str, filepath: str) -> tuple[bool, str]:
     """Apply a single-file patch to the working tree."""
+
+    # DRY RUN CHECK
+    if config.dry_run:
+        # In dry run, we simulate success by checking if it applies cleanly
+        with tempfile.NamedTemporaryFile(
+            mode="w", suffix=".patch", delete=False, encoding="utf-8"
+        ) as f:
+            f.write(patch_text)
+            patch_path = f.name
+
+        try:
+            result = subprocess.run(
+                ["git", "apply", "--check", patch_path],
+                capture_output=True, text=True, cwd=str(PROJECT_ROOT),
+            )
+            if result.returncode == 0:
+                return True, f"{filepath}: (DRY RUN) validated"
+            else:
+                return False, f"{filepath}: (DRY RUN) validation failed — {result.stderr.strip()[:200]}"
+        finally:
+            Path(patch_path).unlink(missing_ok=True)
+
+    # REAL RUN
     with tempfile.NamedTemporaryFile(
         mode="w", suffix=".patch", delete=False, encoding="utf-8"
     ) as f:
@@ -134,19 +163,29 @@ def apply(raw_diff: str) -> tuple[bool, str]:
     failed = 0
 
     for filepath, patch_text in file_patches:
+        # RUNTIME GUARD: Check for protected path violation
         if _is_protected(filepath):
-            results.append(f"  BLOCKED: {filepath} (protected path)")
-            blocked += 1
-            continue
+            violation_msg = f"Attempted to modify protected path: {filepath}"
+            if config.journal:
+                config.journal.log_violation(violation_msg)
+
+            # Raise SecurityViolation to abort the run immediately
+            raise SecurityViolation(violation_msg)
 
         success, msg = _apply_single_patch(patch_text, filepath)
         results.append(f"  {'✅' if success else '❌'} {msg}")
+
         if success:
             applied += 1
+            if config.journal:
+                config.journal.log_change(filepath)
         else:
             failed += 1
 
     summary = f"Applied: {applied}, Failed: {failed}, Blocked: {blocked}"
+    if config.dry_run:
+        summary += " (DRY RUN)"
+
     detail = "\n".join(results)
     any_success = applied > 0
     return any_success, f"{summary}\n{detail}"

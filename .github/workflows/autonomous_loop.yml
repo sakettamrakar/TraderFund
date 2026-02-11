@@ -14,14 +14,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run Autonomous Loop
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
         run: |
-          run automation/build_loop.yaml
+          pip install -r requirements.txt
+
+      - name: Run Autonomous Loop (Dry Run)
+        run: |
+          python automation/run_build_loop.py --dry-run
 
       - name: Upload Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: autonomous-output
+          name: autonomous-logs
           path: |
-            generated/**
-            reports/**
+            automation/logs/
+            artifacts/

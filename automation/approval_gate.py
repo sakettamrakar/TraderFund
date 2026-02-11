@@ -8,6 +8,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+# New Imports
+from automation_config import config
+
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -18,6 +21,15 @@ def approve() -> bool:
     Returns:
         True if changes were committed, False if user aborted.
     """
+    # DRY RUN CHECK
+    if config.dry_run:
+        print("\n" + "=" * 60)
+        print("  APPROVAL GATE — (DRY RUN MODE)")
+        print("=" * 60)
+        print("  Simulating approval and commit.")
+        print("  DRY RUN: No changes committed.")
+        return True
+
     # Get git status
     try:
         result = subprocess.run(
