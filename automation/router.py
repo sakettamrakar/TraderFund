@@ -5,6 +5,7 @@ from typing import Dict, Any, List, Tuple
 logger = logging.getLogger(__name__)
 
 from automation.jules.config import JULES_MIN_FILES
+from automation.automation_config import config
 
 class TaskRouter:
     """
@@ -21,17 +22,23 @@ class TaskRouter:
         """
         task_id = task.get("task_id", "unknown")
 
+        # Check for Test Invariant
+        test_suffix = ""
+        if getattr(config, "test_router", False):
+            test_suffix = " [TEST_ROUTER active]"
+            logger.info(f"Task {task_id} routing with TEST_ROUTER active")
+
         # 1. Check for Human Override
         force_executor = task.get("force_executor")
         if force_executor in ["AG", "JULES", "GEMINI"]:
-            reason = f"Forced by user via force_executor={force_executor}"
+            reason = f"Forced by user via force_executor={force_executor}{test_suffix}"
             logger.info(f"Task {task_id} {reason}")
             return force_executor, reason
 
         # 2. Inspect changed memory files
         changed_files = task.get("changed_memory_files", [])
         if not changed_files:
-            reason = "No memory files changed"
+            reason = f"No memory files changed{test_suffix}"
             logger.info(f"Task {task_id} routed to AG. Reason: {reason}")
             return "AG", reason
 
@@ -63,7 +70,7 @@ class TaskRouter:
             not requires_visual and
             not requires_arch):
 
-            reason = "Mechanical batch job (Unambiguous, Large Scope, No Visual/Arch constraints)"
+            reason = f"Mechanical batch job (Unambiguous, Large Scope, No Visual/Arch constraints){test_suffix}"
             logger.info(f"Task {task_id} routed to JULES. Reason: {reason}")
             return "JULES", reason
 
@@ -74,7 +81,7 @@ class TaskRouter:
         if requires_visual: reasons.append("Requires visual inspection")
         if requires_arch: reasons.append("Requires architectural reasoning")
 
-        reason = f"Cognitive/Interactive task: {', '.join(reasons)}"
+        reason = f"Cognitive/Interactive task: {', '.join(reasons)}{test_suffix}"
         logger.info(f"Task {task_id} routed to AG. Reason: {reason}")
         return "AG", reason
 
