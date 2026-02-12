@@ -23,5 +23,10 @@ class AutomationConfig:
             cls._instance = cls()
         return cls._instance
 
-# Global instance for easy import
+# Global instance for easy import os
+from dotenv import load_dotenv, find_dotenv
+
+# Load .env explicitly
+load_dotenv(find_dotenv(usecwd=True))
+
 config = AutomationConfig.get()

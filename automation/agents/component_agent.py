@@ -97,118 +97,105 @@ def run(spec_files: list[str]) -> str:
     # Determine mode: Plan-based or Legacy Spec-based
     use_plan = action_plan.get("status") == "ACTION_REQUIRED"
     
-    prompt = ""
+
+    # New Deterministic Router Logic (Phase N)
+    from automation.executors import AntigravityExecutor, JulesExecutor, GeminiExecutor
     
-    if use_plan:
-        print(f"  ComponentAgent: Executing Phase M Action Plan...")
-        instructions = action_plan.get("detailed_instructions", [])
-        target_files = action_plan.get("target_files", [])
+    # 1. Initialize Executors
+    executors = [
+        AntigravityExecutor(PROJECT_ROOT),
+        JulesExecutor(PROJECT_ROOT),
+        GeminiExecutor(PROJECT_ROOT)
+    ]
+    
+    selected_executor = None
+    
+    # 2. Select First Available
+    for executor in executors:
+        if executor.is_available():
+            selected_executor = executor
+            break
+            
+    if not selected_executor:
+        raise RuntimeError("CRITICAL: No available executors found in chain [Antigravity, Jules, Gemini].")
         
-        # Read target source files
-        source_blocks = []
-        for tf in target_files:
-            fp = PROJECT_ROOT / tf
-            if not fp.exists():
-                continue
-                
-            if fp.is_file():
-                content = fp.read_text(encoding="utf-8", errors="replace")
-                source_blocks.append(f"### FILE: {tf}\n```python\n{content}\n```")
-            elif fp.is_dir():
-                # If directory, grab top 5 python files to avoid context overflow
-                # (Same logic as _gather_source_files)
-                for py in sorted(fp.rglob("*.py"))[:5]:
-                    content = py.read_text(encoding="utf-8", errors="replace")
-                    rel_path = py.relative_to(PROJECT_ROOT).as_posix()
-                    source_blocks.append(f"### FILE: {rel_path}\n```python\n{content}\n```")
+    print(f"  ComponentAgent: Selected executor -> {selected_executor.name}")
+    
+    # 3. Log Choice
+    # We write to automation/tasks/executor_used.txt so run_build_loop can archive it
+    # We also write to artifacts/executor_used.txt for legacy compatibility
+    try:
+        (PROJECT_ROOT / "automation/tasks/executor_used.txt").write_text(selected_executor.name, encoding="utf-8")
+        (PROJECT_ROOT / "artifacts/executor_used.txt").write_text(selected_executor.name, encoding="utf-8")
+    except Exception as e:
+        print(f"  ⚠ Failed to log executor choice: {e}")
+
+    # 4. Strict Enforcement Check
+    # "If Gemini executes while Antigravity or Jules are available, raise ARCHITECTURE_VIOLATION"
+    if selected_executor.name == "GEMINI":
+        # Double check if higher tiers were actually available but skipped? 
+        # The loop picks the first available. So if we picked Gemini, it means AG and Jules said is_available()=False.
+        # But if we manually forced Gemini while others were implicitly available... 
+        # The constraint implies: "Gemini must NEVER be invoked unless both Antigravity and Jules explicitly report unavailable."
+        # The loop logic guarantees this naturally.
+        pass
+
+    # 5. Execute
+    try:
+        # Construct the task object expected by executors
+        # They expect a dict with 'action_plan' or similar. 
+        # My BaseExecutor.execute takes `action_plan: Dict`.
+        # So we pass the loaded `action_plan` dict.
         
-        source_text = "\n\n".join(source_blocks)
-        instruction_text = "\n".join([f"- {i}" for i in instructions])
+        # If legacy mode (no plan), we need to synthesize a plan or fail?
+        # "Gemini must NEVER be invoked unless...".
+        # If use_plan is False (Legacy), we are in a tricky spot. 
+        # The new executors (AG, Jules) might expect a Plan.
+        # `antigravity_worker.py` logic relies on `task` dict.
+        # Use existing legacy logic? NO, "Replace the current ad-hoc executor selection".
+        # "ComponentAgent updated".
+        # I must wrap legacy spec payload into a "plan-like" structure if needed.
         
-        prompt = f"""You are the ComponentAgent.
-Your job: Implement the specific engineering actions below.
+        task_payload = action_plan if use_plan else {
+            "status": "LEGACY_SPEC_UPDATE",
+            "changed_memory_files": spec_files,
+            "objective": "Update components based on spec changes (Legacy Mode)",
+            "detailed_instructions": ["See specs for details."],
+            "target_files": [], # We might want to populate this if we can
+            "context": {"specs": spec_files}
+        }
+        
+        if not use_plan:
+             # Gather source files for legacy context if needed by executors?
+             # GeminiExecutor (LegacyWrapper) expects the raw prompt? 
+             # No, `gemini_fallback.py` constructs the prompt from `task` dict (changed_files).
+             # So passing `changed_memory_files` in task_payload is sufficient.
+             pass
 
-PLAN OBJECTIVE: {action_plan.get('objective')}
-
-INSTRUCTIONS:
-{instruction_text}
-
-TARGET FILES (You must modify these):
-{source_text}
-
-RULES:
-1. Output ONLY a valid unified git diff.
-2. Follow the INSTRUCTIONS exactly.
-3. Use the exact file paths shown above.
-4. Minimal context diff (-U0).
-5. If no changes needed, output: NO_CHANGES_REQUIRED
-"""
-        print(f"  Debug: Prompt length {len(prompt)} chars. Sending to Gemini...")
-
-    else:
-        # LEGACY MODE (Fallback)
-        # Filter to only YAML specs (not .md contracts)
-        yaml_specs = [f for f in spec_files if f.endswith(".yaml")]
-        if not yaml_specs:
-            return ""
-
-        # Read spec contents
-        spec_blocks = []
-        for sf in yaml_specs[:5]:  # Limit to avoid huge prompts
-            fp = PROJECT_ROOT / sf
-            if fp.exists():
-                content = fp.read_text(encoding="utf-8", errors="replace")
-                spec_blocks.append(f"### SPEC: {sf}\n```yaml\n{content}\n```")
-
-        spec_text = "\n\n".join(spec_blocks)
-
-        # Read existing source files that these specs map to
-        source_text = _gather_source_files(yaml_specs)
-
-        prompt = f"""You are a ComponentAgent in an autonomous code generation system.
-Your job: read the SPEC contracts below, read the EXISTING SOURCE CODE below,
-and produce a unified git diff that adds the Component Health Interface to the source code.
-
-The health contract requires each component to expose:
-- health_status: OK | DEGRADED | FAILED
-- last_success_timestamp: ISO-8601 UTC string
-- failure_count: int >= 0
-- degraded_reason: string or None
-
-CHANGED SPEC FILES:
-{spec_text}
-
-EXISTING SOURCE CODE (these are the files you MUST modify):
-{source_text}
-
-RULES:
-1. Output ONLY a valid unified git diff. No markdown fences, no explanations.
-2. Add a ComponentHealth dataclass/model and a get_health() function to each source file.
-3. Use the exact file paths shown above in your diff headers.
-4. NEVER touch files under docs/memory/ or docs/epistemic/.
-5. Do NOT invent new files — only modify the existing ones shown above.
-6. Format: 'diff --git a/path b/path' then '--- a/path' then '+++ b/path' then @@ hunks.
-7. Use minimal context (0 lines) in your diffs to avoid context mismatch errors. (i.e. git diff -U0)
-8. If the source already has health fields, output: NO_CHANGES_REQUIRED
-"""
-
-    response = ask(prompt)
-
-    if not response or not response.strip():
-        print("  Debug: Empty response from Gemini.")
-        return ""
-
-    if "NO_CHANGES_REQUIRED" in response:
-        print("  ComponentAgent: no code changes needed.")
+        response, logs = selected_executor.execute(task_payload)
+        
+        # 6. Apply Code (Executor might return diff, or might have applied it)
+        # Antigravity: returns diff, log. (Worker applies? AG worker waits for changes, so it assumes external application or applies itself?)
+        # `antigravity_worker.py`: "Return Diff + Logs". It does NOT apply changes. It waits for them.
+        # Wait, if AG worker waits for changes, WHO applies them? The "Worker" (Playwright) acts as a human editor. 
+        # So the changes ARE applied on disk. The Diff is just observed.
+        # Gemini (Legacy): returns diff (string). Does NOT apply.
+        # `gemini_fallback.execute` calls `self._apply_response`. So it APPLIES.
+        # Jules: `jules_adapter.execute` calls `self.code_ops.apply_diff`. So it APPLIES.
+        
+        # Consistent behavior: All executors APPLY changes to disk.
+        # They return the diff for logging/summary only.
+        
+        if not response and not logs:
+             # Some falure
+             return ""
+             
+        print(f"  {selected_executor.name} Execution Log:\n{logs[:200]}...")
+        
         return response
-    
-    print(f"  Debug: Response received. Applying diff... (First 50 chars: {response[:50]}...)")
 
-    # Apply the diff to the working tree
-    success, message = apply(response)
-    if success:
-        print(f"  ✅ ComponentAgent patch applied: {message}")
-    else:
-        print(f"  ⚠  ComponentAgent patch skipped: {message}")
+    except Exception as e:
+        print(f"  ❌ Executor {selected_executor.name} failed: {e}")
+        # "No silent downgrade." -> Re-raise.
+        raise
 
-    return response

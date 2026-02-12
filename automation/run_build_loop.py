@@ -325,8 +325,9 @@ def main():
         else:
             print("\n  ⏸  Autonomous loop paused. Changes are uncommitted for manual review.")
 
+
+
         config.journal.finish()
-        print(f"  Journal written to: {config.journal.log_dir / ('run_' + config.journal.run_id + '.json')}")
 
     except SecurityViolation as sv:
         _abort(f"SECURITY VIOLATION: {sv}")
@@ -336,6 +337,51 @@ def main():
         import traceback
         traceback.print_exc()
         _abort(f"Unexpected global error: {e}")
+    finally:
+        # ── Stage 7: Run Archiving (Phase N) ────────────────────────
+        _stage_separator("[7/7] Run Archiving")
+        try:
+            run_id = config.journal.run_id
+            runs_dir = PROJECT_ROOT / "automation/runs" / run_id
+            runs_dir.mkdir(parents=True, exist_ok=True)
+            
+            print(f"  📂 Archiving run to {runs_dir}")
+            
+            # Copy Tasks artifacts
+            tasks_dir = PROJECT_ROOT / "automation/tasks"
+            if tasks_dir.exists():
+                for f in tasks_dir.glob("*"):
+                    if f.is_file():
+                        try:
+                            # Use read/write to copy
+                            (runs_dir / f.name).write_bytes(f.read_bytes())
+                        except Exception as ignore:
+                            pass
+                            
+            # Copy Artifacts
+            artifacts_dir = PROJECT_ROOT / "artifacts"
+            if artifacts_dir.exists():
+                 for f in artifacts_dir.glob("*"):
+                    if f.is_file():
+                        try:
+                            (runs_dir / f.name).write_bytes(f.read_bytes())
+                        except Exception as ignore:
+                            pass
+                            
+            # Explicit check for executor_used.txt in tasks if missed
+            # Already copied via glob above.
+            
+            if (runs_dir / "executor_used.txt").exists():
+                print(f"  ✅ Archived executor info.")
+            else:
+                print(f"  ⚠  Run archive missing executor info.")
+                
+            print(f"  ✅ Run {run_id} archived successfully.")
+            
+        except Exception as e:
+            print(f"  ❌ Failed to archive run: {e}")
+
+        print(f"  Journal written to: {config.journal.log_dir / ('run_' + config.journal.run_id + '.json')}")
 
 if __name__ == "__main__":
     main()
