@@ -99,11 +99,10 @@ def run(spec_files: list[str]) -> str:
     
 
     # New Deterministic Router Logic (Phase N)
-    from automation.executors import AntigravityExecutor, JulesExecutor, GeminiExecutor
+    from automation.executors import JulesExecutor, GeminiExecutor
     
     # 1. Initialize Executors
     executors = [
-        AntigravityExecutor(PROJECT_ROOT),
         JulesExecutor(PROJECT_ROOT),
         GeminiExecutor(PROJECT_ROOT)
     ]
@@ -117,7 +116,7 @@ def run(spec_files: list[str]) -> str:
             break
             
     if not selected_executor:
-        raise RuntimeError("CRITICAL: No available executors found in chain [Antigravity, Jules, Gemini].")
+        raise RuntimeError("CRITICAL: No available executors found in chain [Jules, Gemini].")
         
     print(f"  ComponentAgent: Selected executor -> {selected_executor.name}")
     
@@ -131,12 +130,8 @@ def run(spec_files: list[str]) -> str:
         print(f"  ⚠ Failed to log executor choice: {e}")
 
     # 4. Strict Enforcement Check
-    # "If Gemini executes while Antigravity or Jules are available, raise ARCHITECTURE_VIOLATION"
+    # "If Gemini executes while Jules is available, raise ARCHITECTURE_VIOLATION"
     if selected_executor.name == "GEMINI":
-        # Double check if higher tiers were actually available but skipped? 
-        # The loop picks the first available. So if we picked Gemini, it means AG and Jules said is_available()=False.
-        # But if we manually forced Gemini while others were implicitly available... 
-        # The constraint implies: "Gemini must NEVER be invoked unless both Antigravity and Jules explicitly report unavailable."
         # The loop logic guarantees this naturally.
         pass
 
