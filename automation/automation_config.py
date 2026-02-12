@@ -16,6 +16,7 @@ class AutomationConfig:
     def __init__(self):
         self.dry_run = False
         self.journal = None
+        self.test_router = False
 
     @classmethod
     def get(cls):
