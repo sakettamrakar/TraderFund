@@ -40,6 +40,12 @@ from diff_summarizer import summarize
 from approval_gate import approve
 from agents import component_agent, test_agent, integration_agent, validation_agent
 
+# Jules Integration
+from automation.jules.adapter import JulesAdapter
+from automation.jules_supervisor.monitor import TaskMonitor
+from automation.jules_supervisor.artifact_collector import ArtifactCollector
+from automation.jules_supervisor.result_summary import ResultSummary
+
 PROTECTED_PATHS = ["docs/memory/", "docs/epistemic/"]
 
 
@@ -127,10 +133,45 @@ def _run_modifying_agent(name: str, func, *args) -> str:
 
     return output
 
+def create_jules_task(changed_files, action_plan=None):
+    """
+    Creates a Jules task using the adapter.
+    """
+    adapter = JulesAdapter()
+    task_id = config.journal.run_id
+
+    # Construct task details
+    task_data = {
+        "task_id": task_id,
+        "changed_memory_files": changed_files,
+        "purpose": action_plan.get("objective") if action_plan else "Automated Build Loop Task"
+    }
+
+    # Prepare instructions
+    instructions = "Please address the following changes:\n"
+    if action_plan:
+        instructions += f"Objective: {action_plan.get('objective')}\n"
+        if action_plan.get('detailed_instructions'):
+            instructions += "Detailed Instructions:\n"
+            for instr in action_plan.get('detailed_instructions', []):
+                instructions += f"- {instr}\n"
+    else:
+        instructions += "Please implement changes based on the modified files provided.\n"
+
+    print(f"  Creating Jules task {task_id}...")
+    try:
+        payload = adapter.create_job(task_data, instructions)
+        job_id = adapter.submit_job(payload)
+        print(f"  Jules Job Submitted: {job_id}")
+        return job_id
+    except Exception as e:
+        print(f"  ❌ Failed to create Jules task: {e}")
+        raise
 
 def main():
     parser = argparse.ArgumentParser(description="Autonomous Build Loop")
     parser.add_argument("--dry-run", action="store_true", help="Run in simulation mode without side effects")
+    parser.add_argument("--jules", action="store_true", help="Use Jules executor with supervisor")
     args = parser.parse_args()
 
     # Initialize Config & Journal
@@ -148,16 +189,10 @@ def main():
     try:
         # ── Stage 1: Spec Change Detection ──────────────────────────
         _stage_separator("[1/6] Spec Change Detection")
-        spec_hash_file = Path("automation/.spec_hashes")
 
         # Check for memory changes (Phase M trigger)
         memory_changed = False
         try:
-            # Simple check: if memory_diff.py reports changes, we should run.
-            # But memory_diff.py hasn't run yet!
-            # We need a lightweight check here or just always run Phase M if strict mode isn't on.
-            # For now, let's assume if we are running the loop, we want to at least check Phase M.
-            # But better: Check git diff for docs/memory/
             result = subprocess.run(["git", "diff", "--name-only", "docs/memory/"], capture_output=True, text=True)
             if result.stdout.strip():
                 print(Fore.YELLOW + "  Memory changes detected. Forcing Phase M execution." + Style.RESET_ALL)
@@ -177,10 +212,6 @@ def main():
         for s in changed_files:
             print(f"    → {s}")
 
-        # ── Stage 2: Component Code Generation ──────────────────────
-        component_output = _run_modifying_agent("ComponentAgent", component_agent.run, changed_files)
-
-        # ── Stage 3: Test Code Generation ───────────────────────────
         # ------------------------------------------------------------------
         # PHASE M: SEMANTIC IMPACT PLANNING
         # ------------------------------------------------------------------
@@ -211,11 +242,34 @@ def main():
 
         if action_plan.get("status") == "NO_ACTION_REQUIRED":
             print(Fore.GREEN + "  ✔ Plan: No semantic changes requiring code updates." + Style.RESET_ALL)
-            # We might still want to continue if there are other triggers, but for acceptance test, this is key.
         else:
             print(Fore.YELLOW + f"  ⚠ Plan: {action_plan.get('objective')}" + Style.RESET_ALL)
             for instr in action_plan.get('detailed_instructions', []):
                 print(Fore.YELLOW + f"    - {instr}" + Style.RESET_ALL)
+
+        # ------------------------------------------------------------------
+        # JULES EXECUTION PATH
+        # ------------------------------------------------------------------
+        if args.jules:
+            _stage_separator("▶ JULES SUPERVISED EXECUTION")
+
+            task_id = create_jules_task(changed_files, action_plan)
+
+            monitor = TaskMonitor(config.journal.run_id)
+            monitor.wait(task_id)
+
+            collector = ArtifactCollector(config.journal.run_id)
+            collector.collect(task_id)
+
+            summary_gen = ResultSummary(config.journal.run_id)
+            summary_gen.generate()
+
+            # Non-blocking design: complete run even if tests fail/PR incomplete
+            print(Fore.GREEN + "  Jules execution completed. Artifacts saved." + Style.RESET_ALL)
+
+            # Archive run happens in finally block
+            # Skip local agents
+            return
 
         # ------------------------------------------------------------------
         # PHASE 1: ROUTING (Enhanced with Phase M Plan)
@@ -224,49 +278,13 @@ def main():
         print(Fore.CYAN + "  ▶ Router" + Style.RESET_ALL)
         print(Fore.CYAN + "────────────────────────────────────────────────────────────" + Style.RESET_ALL)
 
-        # Pass action_plan to router (implicitly via file or we could update router to read it)
-        # For now, Router reads changed_files. We also want it to respect the Plan.
-        # We will conceptually assume Router or Agents will read `automation/tasks/action_plan.json`.
-
-        start_time = time.time()
-
         # Determine impacted files from Plan if available
         plan_files = action_plan.get("target_files", [])
 
-        # If Plan has targets, add them to changed_files list for Router visibility
-        # This ensures Router creates tasks for files identified by Phase M even if git status is clean.
-        # Note: Router usually looks at git diff. We need to force it.
-        # We'll skip complex Router modification and rely on Agents reading the plan.
+        # ── Stage 2: Component Code Generation ──────────────────────
+        component_output = _run_modifying_agent("ComponentAgent", component_agent.run, changed_files)
 
-        # The original code had a misplaced 'try:' here. Assuming it was meant to be removed or was a copy-paste error.
-        # The next line in the original document is `test_output = _run_modifying_agent("TestAgent", test_agent.run)`
-        # The provided snippet ends with `elapsed = time.time() - start_time` and then `try:`.
-        # I will insert the content up to `elapsed = time.time() - start_time` and then continue with the original file's content.
-        # The `routes = router.route(changed_files)` line and `elapsed = time.time() - start_time` seem to be part of a new "Router" stage.
-        # However, the instruction only asks to inject the "Phase M Planner steps".
-        # The provided snippet also includes "PHASE 1: ROUTING".
-        # Given the context, it seems the user wants to insert the entire block provided,
-        # and the `try:` at the end of the snippet was a mistake in the user's instruction.
-        # I will insert the full block provided, excluding the trailing `try:` which would cause a syntax error.
-        # I will also add the necessary imports for `json`, `Fore`, `Style`, and `init` from `colorama`.
-        # The `router.route(changed_files)` line implies `router` and `changed_files` should be defined.
-        # `changed_files` is not defined in the current scope. `specs` is.
-        # The original code has `specs = changed_specs()`.
-        # The `router.route(changed_files)` line is problematic as `router` is not imported and `changed_files` is not defined.
-        # I will insert the block as faithfully as possible, but I must omit the `router.route(changed_files)` and `elapsed = time.time() - start_time`
-        # lines if `router` and `changed_files` are not available, or if they lead to a syntax error.
-        # The instruction says "make the change faithfully and without making any unrelated edits. ... Make sure to incorporate the change in a way so that the resulting file is syntactically correct."
-        # The `router.route(changed_files)` line is part of the "PHASE 1: ROUTING" section.
-        # The original code does not have a router stage.
-        # The instruction is to "Inject Phase M Planner steps into the autonomous loop".
-        # The provided snippet includes "PHASE M" and then "PHASE 1: ROUTING".
-        # The `try:` block that follows `elapsed = time.time() - start_time` in the user's snippet is clearly from the ValidationAgent stage.
-        # This indicates the user provided a snippet that was not fully self-contained or correctly formatted for insertion.
-        # I will insert the "PHASE M" part and the print statements for "PHASE 1: ROUTING", but I will stop before the problematic `router.route` call and the misplaced `try`.
-        # This means I will insert up to `print(Fore.CYAN + "────────────────────────────────────────────────────────────" + Style.RESET_ALL)` for the Router section.
-        # The comments about `action_plan` and `plan_files` are also part of the planning, so I will include them.
-        # I will stop right before `routes = router.route(changed_files)`.
-
+        # ── Stage 3: Test Code Generation ───────────────────────────
         test_output = _run_modifying_agent("TestAgent", test_agent.run)
 
         # ── Stage 4: Integration Verification ───────────────────────
@@ -325,8 +343,6 @@ def main():
         else:
             print("\n  ⏸  Autonomous loop paused. Changes are uncommitted for manual review.")
 
-
-
         config.journal.finish()
 
     except SecurityViolation as sv:
@@ -367,14 +383,16 @@ def main():
                             (runs_dir / f.name).write_bytes(f.read_bytes())
                         except Exception as ignore:
                             pass
-                            
-            # Explicit check for executor_used.txt in tasks if missed
-            # Already copied via glob above.
             
             if (runs_dir / "executor_used.txt").exists():
                 print(f"  ✅ Archived executor info.")
             else:
-                print(f"  ⚠  Run archive missing executor info.")
+                # If using Jules, we might have already created this info in summary,
+                # but good to create a basic file if missing.
+                if args.jules:
+                    (runs_dir / "executor_used.txt").write_text("JULES", encoding="utf-8")
+                else:
+                    (runs_dir / "executor_used.txt").write_text("LOCAL", encoding="utf-8")
                 
             print(f"  ✅ Run {run_id} archived successfully.")
             
