@@ -3,6 +3,8 @@ import tempfile
 import time
 import logging
 import re
+import os
+import shutil
 from pathlib import Path
 from typing import Tuple, Dict, Any, List
 
@@ -10,12 +12,16 @@ from automation.executors.base import BaseExecutor
 
 logger = logging.getLogger(__name__)
 
-GEMINI_PATH = r"C:\Users\Sakethfjm\AppData\Roaming\npm\gemini.cmd"
+GEMINI_PATH = os.environ.get("GEMINI_CLI_PATH") or shutil.which("gemini") or "gemini"
 MAX_RETRIES = 2
 TIMEOUT_SECONDS = 180
 MAX_INLINE_PROMPT_LEN = 6000
 
 def ask(prompt: str) -> str:
+    if os.environ.get("MOCK_GEMINI"):
+        logger.info("MOCK_GEMINI active: returning mock response.")
+        return "MOCK_RESPONSE: " + prompt[:50] + "..."
+
     last_error = None
 
     for attempt in range(1, MAX_RETRIES + 1):

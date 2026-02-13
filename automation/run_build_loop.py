@@ -133,6 +133,32 @@ def _run_modifying_agent(name: str, func, *args) -> str:
 
     return output
 
+def _run_semantic_validation(run_id, intent_path, action_plan, changed_files, strict_mode):
+    """
+    Runs the semantic validation pipeline.
+    """
+    _stage_separator("▶ Phase S: Semantic Validation")
+    try:
+        from automation.semantic.semantic_validator import SemanticValidator
+
+        # Get current diff
+        try:
+            diff_proc = subprocess.run(["git", "diff"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+            diff = diff_proc.stdout
+        except:
+            diff = ""
+
+        validator = SemanticValidator(run_id, str(PROJECT_ROOT))
+        report = validator.validate(intent_path, action_plan, changed_files, diff)
+
+        if strict_mode and report.get("recommendation") != "ACCEPT":
+            _abort(f"Semantic Validation Failed (Strict Mode): {report.get('recommendation')}")
+    except Exception as e:
+        print(Fore.RED + f"  ❌ Semantic Validation crashed: {e}" + Style.RESET_ALL)
+        if strict_mode:
+            _abort("Semantic Validation crashed in strict mode.")
+
+
 def create_jules_task(changed_files, action_plan=None):
     """
     Creates a Jules task using the adapter.
@@ -173,6 +199,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="Run in simulation mode without side effects")
     parser.add_argument("--jules", action="store_true", help="Use Jules executor with supervisor")
     parser.add_argument("--retrigger-from-intent", action="store_true", help="Skip memory diff and use existing human intent")
+    parser.add_argument("--strict-semantic", action="store_true", help="Fail run if semantic validation does not ACCEPT")
     args = parser.parse_args()
 
     # Initialize Config & Journal
@@ -299,6 +326,9 @@ def main():
             # Non-blocking design: complete run even if tests fail/PR incomplete
             print(Fore.GREEN + "  Jules execution completed. Artifacts saved." + Style.RESET_ALL)
 
+            # --- SEMANTIC VALIDATION ---
+            _run_semantic_validation(config.journal.run_id, human_intent_path, action_plan, changed_files, args.strict_semantic)
+
             # Archive run happens in finally block
             # Skip local agents
             return
@@ -356,6 +386,9 @@ def main():
         _stage_separator("[6/6] Diff Summary + Approval Gate")
         summary = summarize()
         print(summary)
+
+        # --- SEMANTIC VALIDATION ---
+        _run_semantic_validation(config.journal.run_id, human_intent_path, action_plan, changed_files, args.strict_semantic)
 
         # Write agent outputs for audit trail
         if component_output:
