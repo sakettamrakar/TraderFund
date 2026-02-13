@@ -88,3 +88,4 @@ regime_shadow.jsonl
 # ---- AUTOMATION WORKERS ----
 automation/profiles/
 automation/workers/router_state.json
+automation/runs/
