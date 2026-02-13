@@ -172,6 +172,7 @@ def main():
     parser = argparse.ArgumentParser(description="Autonomous Build Loop")
     parser.add_argument("--dry-run", action="store_true", help="Run in simulation mode without side effects")
     parser.add_argument("--jules", action="store_true", help="Use Jules executor with supervisor")
+    parser.add_argument("--retrigger-from-intent", action="store_true", help="Skip memory diff and use existing human intent")
     args = parser.parse_args()
 
     # Initialize Config & Journal
@@ -215,21 +216,52 @@ def main():
         # ------------------------------------------------------------------
         # PHASE M: SEMANTIC IMPACT PLANNING
         # ------------------------------------------------------------------
-        # 0. Run Memory Diff Analyzer
-        print(Fore.CYAN + "  ▶ Plan: Analyzing Memory Diffs..." + Style.RESET_ALL)
-        subprocess.run(["python", "automation/planner/memory_diff.py", "--save", "--output", "automation/tasks/memory_diff.json"], check=False)
 
-        # 1. Run Intent Extractor
-        print(Fore.CYAN + "  ▶ Plan: Extracting Intent..." + Style.RESET_ALL)
-        subprocess.run(["python", "automation/planner/intent_extractor.py", "--input", "automation/tasks/memory_diff.json", "--output", "automation/tasks/intent.json"], check=False)
+        human_intent_path = None
+
+        if args.retrigger_from_intent:
+            print(Fore.MAGENTA + "  ▶ Plan: Retriggering from existing intent..." + Style.RESET_ALL)
+            # Find latest intent
+            cmd = ["python", "automation/intent/intent_loader.py", "--find-latest"]
+            res = subprocess.run(cmd, capture_output=True, text=True)
+            if res.stdout.strip():
+                human_intent_path = res.stdout.strip()
+                print(f"    Found intent: {human_intent_path}")
+            else:
+                _abort("No existing intent found for retriggering.")
+        else:
+            # 0. Run Memory Diff Analyzer
+            print(Fore.CYAN + "  ▶ Plan: Analyzing Memory Diffs..." + Style.RESET_ALL)
+            subprocess.run(["python", "automation/planner/memory_diff.py", "--save", "--output", "automation/tasks/memory_diff.json"], check=False)
+
+            # 1. Run Intent Extractor
+            print(Fore.CYAN + "  ▶ Plan: Extracting Intent..." + Style.RESET_ALL)
+            subprocess.run(["python", "automation/planner/intent_extractor.py", "--input", "automation/tasks/memory_diff.json", "--output", "automation/tasks/intent.json"], check=False)
+
+            # 1.5 Run Human Intent Translator
+            print(Fore.CYAN + "  ▶ Plan: Translating to Human Intent..." + Style.RESET_ALL)
+            human_intent_path = f"automation/runs/{config.journal.run_id}/human_intent.json"
+            subprocess.run([
+                "python", "automation/intent/translator.py",
+                "--intent", "automation/tasks/intent.json",
+                "--diff", "automation/tasks/memory_diff.json",
+                "--run-id", config.journal.run_id,
+                "--output", human_intent_path
+            ], check=False)
 
         # 2. Run Impact Resolver
         print(Fore.CYAN + "  ▶ Plan: Resolving Component Impact..." + Style.RESET_ALL)
-        subprocess.run(["python", "automation/planner/impact_resolver.py", "--intent", "automation/tasks/intent.json", "--output", "automation/tasks/impact.json"], check=False)
+        cmd_impact = ["python", "automation/planner/impact_resolver.py", "--intent", "automation/tasks/intent.json", "--output", "automation/tasks/impact.json"]
+        if human_intent_path:
+            cmd_impact.extend(["--human-intent", human_intent_path])
+        subprocess.run(cmd_impact, check=False)
 
         # 3. Generate Action Plan
         print(Fore.CYAN + "  ▶ Plan: Generating Action Plan..." + Style.RESET_ALL)
-        subprocess.run(["python", "automation/planner/action_plan.py", "--impact", "automation/tasks/impact.json", "--output", "automation/tasks/action_plan.json"], check=False)
+        cmd_plan = ["python", "automation/planner/action_plan.py", "--impact", "automation/tasks/impact.json", "--output", "automation/tasks/action_plan.json"]
+        if human_intent_path:
+            cmd_plan.extend(["--human-intent", human_intent_path])
+        subprocess.run(cmd_plan, check=False)
 
         # Load Action Plan
         action_plan_path = Path("automation/tasks/action_plan.json")

@@ -56,6 +56,29 @@ SPEC_TO_SOURCE_MAP = {
     "technical_lens": ["src/layers/"],
 }
 
+def parse_human_intent(human_intent: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Converts human_intent.json structure into list of intent objects."""
+    intents = []
+    user_intent = human_intent.get("user_intent", {})
+
+    goal = user_intent.get("goal", "Unknown Goal")
+    behavior = user_intent.get("expected_behavior_change", "")
+    layers = user_intent.get("affected_layers", [])
+
+    # If no layers specified, try to infer from goal
+    if not layers:
+        layers = ["Unknown"]
+
+    for layer in layers:
+        intents.append({
+            "concept": goal,
+            "domain_level": layer,
+            "intent": behavior,
+            "source": "human_intent"
+        })
+
+    return intents
+
 def resolve_impact(intents: List[Dict[str, Any]], components: List[Dict[str, Any]]) -> Dict[str, Any]:
     impact_plan = {
         "impacted_components": [],
@@ -107,15 +130,49 @@ def resolve_impact(intents: List[Dict[str, Any]], components: List[Dict[str, Any
 def main():
     parser = argparse.ArgumentParser(description="Component Impact Resolver")
     parser.add_argument("--intent", default="automation/tasks/current_intent.json", help="Input intent JSON")
+    parser.add_argument("--human-intent", help="Input human intent JSON (optional, overrides intent)")
     parser.add_argument("--output", default="automation/tasks/current_impact.json", help="Output impact JSON")
     args = parser.parse_args()
     
-    intent_path = Path(args.intent)
-    if not intent_path.exists():
-        logger.warning("No intent file found.")
-        return
+    intents = []
+    human_intent = {}
 
-    intents = json.loads(intent_path.read_text(encoding="utf-8"))
+    # 1. Try Human Intent (Highest Priority if Modified)
+    if args.human_intent:
+        hi_path = Path(args.human_intent)
+        if hi_path.exists():
+            human_intent = json.loads(hi_path.read_text(encoding="utf-8"))
+            if human_intent.get("manually_modified", False):
+                intents = parse_human_intent(human_intent)
+                logger.info(f"Loaded {len(intents)} intents from Human Intent file (Modified).")
+        else:
+            logger.warning(f"Human intent file {hi_path} not found.")
+
+    # 2. Try Original Intents in Human Intent (Highest Fidelity / Versioned)
+    if not intents and human_intent:
+        original = human_intent.get("original_intents", [])
+        if original:
+            intents = original
+            logger.info(f"Loaded {len(intents)} intents from Human Intent (Original Fidelity).")
+
+    # 3. Try Granular Intent File (Standard Path - Fallback if original missing)
+    if not intents:
+        intent_path = Path(args.intent)
+        if intent_path.exists():
+            loaded_intents = json.loads(intent_path.read_text(encoding="utf-8"))
+            if loaded_intents:
+                intents = loaded_intents
+                logger.info(f"Loaded {len(intents)} intents from granular intent file.")
+
+    # 4. Fallback to Synthetic Human Intent (Low Fidelity)
+    if not intents and human_intent:
+        intents = parse_human_intent(human_intent)
+        logger.info(f"Fallback: Loaded {len(intents)} intents from auto-generated Human Intent file (Low Fidelity).")
+
+    if not intents:
+         logger.warning("No intent source found.")
+         return
+
     components = load_components()
     impact = resolve_impact(intents, components)
     
