@@ -14,6 +14,7 @@ class AlphaVantageClient:
         self.static_key = api_key
         self.manager = ApiKeyManager()
         self.base_url = config.BASE_URL
+        self.session = requests.Session()
 
     def _make_request(self, params: Dict[str, Any]) -> requests.Response:
         """
@@ -28,7 +29,7 @@ class AlphaVantageClient:
         params['apikey'] = key
         
         try:
-            response = requests.get(self.base_url, params=params, timeout=30)
+            response = self.session.get(self.base_url, params=params, timeout=30)
             response.raise_for_status()
             
             # Record usage only if using the pool
