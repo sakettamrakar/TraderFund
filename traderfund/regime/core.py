@@ -97,7 +97,7 @@ class StateManager:
         return RegimeState(
             behavior=self.current_behavior,
             bias=self.current_bias,
-            id=1, # Todo: map behavior to ID
+            id=self.current_behavior.id,
             confidence_components=confidence,
             total_confidence=(confidence.confluence_score * 0.4 + confidence.persistence_score * 0.4 + confidence.intensity_score * 0.2), # Simple weighted
             is_stable=(self.persistence_counter > 5)
