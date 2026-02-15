@@ -15,6 +15,19 @@ class MarketBehavior(str, Enum):
     EVENT_LOCK = "EVENT_LOCK"
     UNDEFINED = "UNDEFINED"
 
+    @property
+    def id(self) -> int:
+        """Returns the numeric ID associated with the behavior state."""
+        return {
+            MarketBehavior.TRENDING_NORMAL_VOL: 1,
+            MarketBehavior.TRENDING_HIGH_VOL: 2,
+            MarketBehavior.MEAN_REVERTING_LOW_VOL: 3,
+            MarketBehavior.MEAN_REVERTING_HIGH_VOL: 4,
+            MarketBehavior.EVENT_DOMINANT: 5,
+            MarketBehavior.EVENT_LOCK: 6,
+            MarketBehavior.UNDEFINED: 7,
+        }[self]
+
 class DirectionalBias(str, Enum):
     """
     Directional overlay for the behavioral state.

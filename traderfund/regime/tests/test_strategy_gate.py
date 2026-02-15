@@ -10,7 +10,7 @@ def dummy_regime():
     return RegimeState(
         behavior=MarketBehavior.TRENDING_NORMAL_VOL,
         bias=DirectionalBias.BULLISH,
-        id=1,
+        id=MarketBehavior.TRENDING_NORMAL_VOL.id,
         confidence_components=ConfidenceComponents(
             confluence_score=0.8, persistence_score=0.8, intensity_score=0.8
         ),
