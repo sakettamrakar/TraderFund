@@ -46,6 +46,12 @@ from automation.jules_supervisor.monitor import TaskMonitor
 from automation.jules_supervisor.artifact_collector import ArtifactCollector
 from automation.jules_supervisor.result_summary import ResultSummary
 
+# Intent Translation (Phase X)
+from automation.intent.intent_translation import (
+    save_intent_translation,
+    load_intent_override,
+)
+
 PROTECTED_PATHS = ["docs/memory/", "docs/epistemic/"]
 
 
@@ -151,12 +157,127 @@ def _run_semantic_validation(run_id, intent_path, action_plan, changed_files, st
         validator = SemanticValidator(run_id, str(PROJECT_ROOT))
         report = validator.validate(intent_path, action_plan, changed_files, diff)
 
+        # Phase AB: Visual validation integration
+        _run_visual_validation_phase(run_id, action_plan, report)
+
         if strict_mode and report.get("recommendation") != "ACCEPT":
             _abort(f"Semantic Validation Failed (Strict Mode): {report.get('recommendation')}")
     except Exception as e:
         print(Fore.RED + f"  ❌ Semantic Validation crashed: {e}" + Style.RESET_ALL)
         if strict_mode:
             _abort("Semantic Validation crashed in strict mode.")
+
+
+def _run_stability_check(run_id, action_plan):
+    """
+    Phase AB: Evaluate component stability and write decision artifact.
+    """
+    try:
+        from automation.history.drift_tracker import compute_stability_index
+
+        target_components = action_plan.get("target_components", [])
+        if not target_components:
+            print(Fore.GREEN + "  ✔ Stability: No target components — skipping." + Style.RESET_ALL)
+            return
+
+        component_indices = {}
+        for comp in target_components:
+            idx = compute_stability_index(comp)
+            component_indices[comp] = idx
+
+        worst_stability = min(component_indices.values()) if component_indices else 1.0
+
+        if worst_stability < 0.60:
+            execution_mode = "risk_controlled"
+        elif worst_stability < 0.85:
+            execution_mode = "guarded_autonomy"
+        else:
+            execution_mode = "normal"
+
+        decision = {
+            "worst_stability": round(worst_stability, 6),
+            "components": target_components,
+            "execution_mode": execution_mode,
+        }
+
+        run_dir = PROJECT_ROOT / "automation" / "runs" / run_id
+        run_dir.mkdir(parents=True, exist_ok=True)
+        decision_path = run_dir / "stability_decision.json"
+        decision_path.write_text(json.dumps(decision, indent=2), encoding="utf-8")
+
+        color = Fore.RED if execution_mode == "risk_controlled" else (
+            Fore.YELLOW if execution_mode == "guarded_autonomy" else Fore.GREEN
+        )
+        print(color + f"  ✔ Stability: worst={worst_stability:.4f}, mode={execution_mode}" + Style.RESET_ALL)
+    except Exception as e:
+        print(Fore.YELLOW + f"  ⚠ Stability check failed (non-blocking): {e}" + Style.RESET_ALL)
+
+
+def _run_visual_validation_phase(run_id, action_plan, semantic_report):
+    """
+    Phase AB: Run visual validation if UI components are touched.
+    Applies penalty to semantic report if visual drift is detected.
+    """
+    try:
+        from automation.visual.visual_validator import run_visual_validation
+
+        visual_report = run_visual_validation(run_id, action_plan)
+        if visual_report is None:
+            return
+
+        # Apply visual penalty to semantic report if needed
+        visual_drift = visual_report.get("visual_drift", False)
+        dom_passed = visual_report.get("dom_passed", True)
+
+        if visual_drift or not dom_passed:
+            original_score = semantic_report.get("final_score", 0.0)
+            original_rec = semantic_report.get("recommendation", "REVIEW")
+
+            total_penalty = 0.0
+            semantic_report["explanation_tree"] = semantic_report.get("explanation_tree", [])
+            if visual_drift:
+                total_penalty += 0.15
+                semantic_report["explanation_tree"].append(
+                    "⚠ Visual drift detected (penalty=-0.15)"
+                )
+            if not dom_passed:
+                total_penalty += 0.10
+                semantic_report["explanation_tree"].append(
+                    "⚠ DOM assertions failed (penalty=-0.10)"
+                )
+
+            adjusted_score = max(0.0, round(original_score - total_penalty, 4))
+            semantic_report["final_score"] = adjusted_score
+            semantic_report["visual_penalty_applied"] = round(total_penalty, 4)
+
+            # Downgrade-only recommendation — never upgrade, never override hard REJECT
+            if adjusted_score >= 0.85:
+                new_rec = "ACCEPT"
+            elif adjusted_score >= 0.60:
+                new_rec = "REVIEW"
+            else:
+                new_rec = "REJECT"
+
+            REC_RANK = {"ACCEPT": 0, "REVIEW": 1, "REJECT": 2}
+            if REC_RANK.get(new_rec, 0) > REC_RANK.get(original_rec, 0):
+                semantic_report["recommendation"] = new_rec
+
+            # Rewrite updated semantic report
+            run_dir = PROJECT_ROOT / "automation" / "runs" / run_id
+            report_path = run_dir / "semantic_report.json"
+            if report_path.exists():
+                report_path.write_text(
+                    json.dumps(semantic_report, indent=2, default=str),
+                    encoding="utf-8",
+                )
+
+            print(Fore.YELLOW + f"  ⚠ Visual penalty applied: -{total_penalty} → score={adjusted_score:.4f}" + Style.RESET_ALL)
+        else:
+            print(Fore.GREEN + "  ✔ Visual validation passed — no penalty." + Style.RESET_ALL)
+    except ImportError:
+        print(Fore.YELLOW + "  ⚠ Visual validator not available — skipping." + Style.RESET_ALL)
+    except Exception as e:
+        print(Fore.YELLOW + f"  ⚠ Visual validation failed (non-blocking): {e}" + Style.RESET_ALL)
 
 
 def create_jules_task(changed_files, action_plan=None):
@@ -307,10 +428,90 @@ def main():
                 print(Fore.YELLOW + f"    - {instr}" + Style.RESET_ALL)
 
         # ------------------------------------------------------------------
+        # PHASE X: INTENT TRANSLATION + OVERRIDE DETECTION
+        # ------------------------------------------------------------------
+        # Save intent translation BEFORE execution begins
+        print(Fore.CYAN + "  ▶ Phase X: Saving Intent Translation..." + Style.RESET_ALL)
+        try:
+            # Load memory diffs and intents for translation
+            _memory_diffs = []
+            _intents = []
+            _diff_file = Path("automation/tasks/memory_diff.json")
+            _intent_file = Path("automation/tasks/intent.json")
+            if _diff_file.exists():
+                try:
+                    _memory_diffs = json.loads(_diff_file.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
+                    pass
+            if _intent_file.exists():
+                try:
+                    _intents = json.loads(_intent_file.read_text(encoding="utf-8"))
+                except (json.JSONDecodeError, OSError):
+                    pass
+
+            _target_components = action_plan.get("target_components", [])
+
+            _human_intent_data = None
+            if human_intent_path and Path(human_intent_path).exists():
+                try:
+                    _human_intent_data = json.loads(
+                        Path(human_intent_path).read_text(encoding="utf-8")
+                    )
+                except (json.JSONDecodeError, OSError):
+                    pass
+
+            save_intent_translation(
+                run_id=config.journal.run_id,
+                memory_changes=_memory_diffs if isinstance(_memory_diffs, list) else [],
+                intents=_intents if isinstance(_intents, list) else [],
+                target_components=_target_components,
+                human_intent=_human_intent_data,
+            )
+            print(Fore.GREEN + "  ✔ Intent translation saved." + Style.RESET_ALL)
+        except Exception as e:
+            # Non-blocking — do not abort on translation failure
+            print(Fore.YELLOW + f"  ⚠ Intent translation save failed (non-blocking): {e}" + Style.RESET_ALL)
+
+        # Check for human intent override
+        intent_override = load_intent_override(config.journal.run_id)
+        if intent_override:
+            print(Fore.MAGENTA + "  ▶ Intent Override Detected — applying corrected intent." + Style.RESET_ALL)
+
+            # Rebuild action plan with override content
+            corrected = intent_override.get("corrected_intent", "")
+            clarifications = intent_override.get("clarifications", "")
+            scope_limits = intent_override.get("scope_limits", "")
+
+            override_instructions = []
+            if corrected:
+                override_instructions.append(f"Corrected Intent: {corrected}")
+            if clarifications:
+                override_instructions.append(f"Clarifications: {clarifications}")
+            if scope_limits:
+                override_instructions.append(f"Scope Limits: {scope_limits}")
+
+            if override_instructions:
+                action_plan["detailed_instructions"] = override_instructions
+                action_plan["objective"] = corrected or action_plan.get("objective", "")
+                action_plan["context"] = action_plan.get("context", {})
+                action_plan["context"]["intent_override"] = intent_override
+
+                # Persist the corrected action plan
+                action_plan_path.write_text(
+                    json.dumps(action_plan, indent=2), encoding="utf-8"
+                )
+                print(Fore.MAGENTA + f"  ✔ Action plan updated with override content." + Style.RESET_ALL)
+        else:
+            print(Fore.GREEN + "  ✔ No intent override — proceeding with auto-extracted intent." + Style.RESET_ALL)
+
+        # ------------------------------------------------------------------
         # JULES EXECUTION PATH
         # ------------------------------------------------------------------
         if args.jules:
             _stage_separator("▶ JULES SUPERVISED EXECUTION")
+
+            # Phase AB: Stability check before Jules dispatch
+            _run_stability_check(config.journal.run_id, action_plan)
 
             task_id = create_jules_task(changed_files, action_plan)
 
@@ -342,6 +543,9 @@ def main():
 
         # Determine impacted files from Plan if available
         plan_files = action_plan.get("target_files", [])
+
+        # Phase AB: Stability check for local execution path
+        _run_stability_check(config.journal.run_id, action_plan)
 
         # ── Stage 2: Component Code Generation ──────────────────────
         component_output = _run_modifying_agent("ComponentAgent", component_agent.run, changed_files)

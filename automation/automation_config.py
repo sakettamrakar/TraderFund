@@ -17,6 +17,10 @@ class AutomationConfig:
         self.dry_run = False
         self.journal = None
         self.test_router = False
+        # Phase AB: Visual Validation
+        self.visual_validation_enabled = True
+        self.base_url = "http://localhost:3000"
+        self.screenshot_baseline_path = "automation/visual/baseline.png"
 
     @classmethod
     def get(cls):

@@ -69,3 +69,7 @@
 <!-- shadow-run-test: 2026-02-11T03:33 -->
 
 - **Test Invariant**: `TEST_ROUTER = true`
+
+## 6. Convergence Computation Observability
+
+- **Latency Logging**: All convergence scores must log computation latency.

@@ -85,7 +85,31 @@ synthesis_output.txt
 *.patch
 regime_shadow.jsonl
 
+# ---- DEBUG SCRIPTS & OUTPUT ----
+debug_*.py
+debug_output.txt
+intention_violation_test.py
+course.txt
+vantage_api copy.md
+
+# ---- DATABASE FILES ----
+*.db
+*.sqlite
+*.sqlite3
+
+# ---- BURN-IN TEST WORKSPACE ----
+automation/tests/_burn_in_workspace/
+
+# ---- AUTOMATION LOGS & SNAPSHOTS ----
+automation/logs/
+automation/memory_snapshots/
+
 # ---- AUTOMATION WORKERS ----
 automation/profiles/
 automation/workers/router_state.json
 automation/runs/
+
+# ---- OPERATIONAL INTELLIGENCE (Phase X) ----
+automation/history/
+automation/intent/*_intent_translation.json
+automation/intent/*_intent_override.json

@@ -1041,3 +1041,81 @@ Verified authorization gating, dependency resolution, and zero side effects.
 - **Narrative Mode**: `SILENCED`
 - **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
 - **Action**: NONE (Passive Diagnosis)
+
+### [2026-02-13T23:00:04.073850] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical data (2026-02-06) is ahead of Truth Epoch (2026-01-30). Drift=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-02-13T23:00:04.073850] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-02-16T06:00:02.597117] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical data (2026-02-06) is ahead of Truth Epoch (2026-01-30). Drift=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-02-16T06:00:02.597117] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-02-16T23:00:03.080758] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical data (2026-02-06) is ahead of Truth Epoch (2026-01-30). Drift=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-02-16T23:00:03.080758] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
