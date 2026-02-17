@@ -107,3 +107,5 @@ Invariant 6 — Stability Check Trust score variance for identical inputs across
 This forces deterministic math. Prevents random LLM drift.
 
 - **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
+
+- **Test Invariant (Commit Trigger T4)**: No-op invariant for forced planner failure validation only.
