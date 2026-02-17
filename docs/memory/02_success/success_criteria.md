@@ -75,7 +75,7 @@
 - **Latency Logging**: All convergence scores must log computation latency.
 
 ## 7. L3 — Meta-Analysis Success
-Invariant 1 — Regime Dependency
+Invariant 01 — Regime Dependency
 
 Meta-Analysis MUST consume the current RegimeState (L1).
 
