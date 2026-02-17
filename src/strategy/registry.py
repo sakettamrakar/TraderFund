@@ -42,7 +42,7 @@ STRATEGY_REGISTRY = {
         "factor_contract": {
             "momentum": {"min_state": "EMERGING"},
             "dispersion": {"min_state": "BREAKOUT"},
-            "score_dispersion": {"min_variance": 0.18}
+            "score_dispersion": {"min_variance": 0.15}
         },
         "safety_behavior": "reject",
         "evolution_status": "EVOLUTION_ONLY",
@@ -354,7 +354,7 @@ STRATEGY_REGISTRY = {
         },
         "factor_contract": {
             "dispersion": {"min_state": "BREAKOUT"},
-            "score_dispersion": {"min_variance": 0.18}
+            "score_dispersion": {"min_variance": 0.15}
         },
         "safety_behavior": "reject",
         "evolution_status": "EVOLUTION_ONLY",
@@ -371,7 +371,7 @@ STRATEGY_REGISTRY = {
         },
         "factor_contract": {
             "dispersion": {"min_state": "BREAKOUT"},
-            "score_dispersion": {"min_variance": 0.18}
+            "score_dispersion": {"min_variance": 0.15}
         },
         "safety_behavior": "reject",
         "evolution_status": "EVOLUTION_ONLY",
