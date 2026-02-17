@@ -105,3 +105,5 @@ Step 2 — Add One Measurable Constraint
 Add:
 Invariant 6 — Stability Check Trust score variance for identical inputs across 10 replays must be < 0.01.
 This forces deterministic math. Prevents random LLM drift.
+
+- **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
