@@ -23,6 +23,10 @@ class AutomationConfig:
         self.JULES_POLL_TIMEOUT_SECONDS = 1200
         self.JULES_POLL_INTERVAL_SECONDS = 20
         self.JULES_POLL_ERROR_THRESHOLD = 3
+        self.SEMANTIC_REGRESSION_TOLERANCE = 0.03
+        self.REGRESSION_PENALTY_WEIGHT = 0.15
+        self.CLEAN_RECOVERY_THRESHOLD = 3
+        self.RECOVERY_WEIGHT = 0.05
         # Phase AB: Visual Validation
         self.visual_validation_enabled = True
         self.base_url = "http://localhost:3000"

@@ -116,6 +116,36 @@ class TaskExecutor:
             if not result.success:
                 raise RuntimeError(result.error_message or f"{executor_type} execution failed")
 
+            if executor_type == "JULES" and str(result.lifecycle_state or "").upper() == "PR_CREATED":
+                gate_result = self._handle_jules_pr_control(
+                    run_id=run_id,
+                    run_dir=run_dir,
+                    task=task,
+                    result=result,
+                )
+                if not gate_result.get("success"):
+                    raise RuntimeError(gate_result.get("reason") or "Pre-merge semantic gate failed.")
+
+                task["status"] = "COMPLETE"
+                task["run_id"] = run_id
+                self._update_task_file(task_file, task)
+
+                summary = {
+                    "status": "SUCCESS",
+                    "run_id": run_id,
+                    "task_id": task.get("task_id"),
+                    "executor": executor_type,
+                    "lifecycle_state": result.lifecycle_state,
+                    "jules_task_id": result.jules_task_id,
+                    "pr_url": result.pr_url,
+                    "merge_control": gate_result,
+                }
+                with open(run_dir / "summary.json", "w", encoding="utf-8") as handle:
+                    json.dump(summary, handle, indent=2)
+
+                logger.info("Task %s completed via Jules merge-control flow.", task_id)
+                return
+
             # Capture diff for audit.
             diff = ""
             try:
@@ -148,6 +178,52 @@ class TaskExecutor:
                 str(exc),
                 extra_context=extra_context,
             )
+
+    def _handle_jules_pr_control(self, run_id, run_dir, task, result):
+        from automation.merge_controller import handle_pr_with_semantic
+
+        pr_meta = self._load_json_file(run_dir / "jules_pr.json")
+        test_summary = self._load_json_file(run_dir / "jules_test_summary.json")
+
+        action_plan = task.get("action_plan", {})
+        if not isinstance(action_plan, dict):
+            action_plan = {}
+
+        pr_info = {
+            "pr_url": result.pr_url or pr_meta.get("pr_url"),
+            "branch": pr_meta.get("branch"),
+            "commit_sha": pr_meta.get("commit_sha"),
+            "task_id": result.jules_task_id or pr_meta.get("task_id"),
+            "action_plan": action_plan,
+            "changed_files": task.get("changed_memory_files", []),
+            "intent_source": (
+                task.get("intent_file")
+                or action_plan.get("objective")
+                or task.get("purpose")
+                or "Jules pre-merge semantic gate"
+            ),
+            "jules_context": {
+                "jules_pr": pr_meta if isinstance(pr_meta, dict) else {},
+                "jules_test_summary": test_summary if isinstance(test_summary, dict) else {},
+            },
+        }
+
+        gate_result = handle_pr_with_semantic(run_id=run_id, pr_info=pr_info)
+        with open(run_dir / "merge_control_result.json", "w", encoding="utf-8") as handle:
+            json.dump(gate_result, handle, indent=2)
+        return gate_result
+
+    def _load_json_file(self, path: Path):
+        if not path.exists():
+            return {}
+        try:
+            with open(path, "r", encoding="utf-8") as handle:
+                value = json.load(handle)
+            if isinstance(value, dict):
+                return value
+        except Exception:
+            pass
+        return {}
 
     def _validate_and_finalize(self, task, task_file, run_dir, modified_files, executor_type):
         """

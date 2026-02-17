@@ -1,5 +1,5 @@
-"""
-Semantic Validator — Active Skeptic
+﻿"""
+Semantic Validator â€” Active Skeptic
 =====================================
 Orchestrates dual-pass adversarial validation:
   1. Contract enforcement (deterministic)
@@ -56,6 +56,7 @@ class SemanticValidator:
         diff: str,
         success_criteria: str = "",
         jules_context: Optional[Dict[str, Any]] = None,
+        append_drift_ledger: bool = True,
     ) -> Dict[str, Any]:
         """
         Execute full semantic validation pipeline.
@@ -66,20 +67,20 @@ class SemanticValidator:
 
         validation_start = time.monotonic()
 
-        # ── 1. Load Intent ───────────────────────────────────
+        # â”€â”€ 1. Load Intent â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         intent = self._load_intent(intent_file)
 
-        # ── 2. Load Success Criteria ─────────────────────────
+        # â”€â”€ 2. Load Success Criteria â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         if not success_criteria:
             success_criteria = self._load_success_criteria()
 
-        # ── 3. Contract Enforcement (Deterministic) ──────────
+        # â”€â”€ 3. Contract Enforcement (Deterministic) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         logger.info("Phase S.1: Contract enforcement...")
         violations = self.contract_enforcer.check_violations(diff, changed_files)
         if violations:
             logger.warning(f"Contract enforcement found {len(violations)} violations.")
 
-        # ── 4. Dual-Pass Adversarial Analysis ────────────────
+        # â”€â”€ 4. Dual-Pass Adversarial Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         logger.info("Phase S.2: Dual-pass adversarial analysis...")
         target_files = plan.get("target_files", [])
         dual_result = self.drift_analyzer.run_dual_pass(
@@ -96,16 +97,16 @@ class SemanticValidator:
         explanation_tree = dual_result["explanation_tree"]
         passes_completed = dual_result["passes_completed"]
 
-        # ── 5. Deterministic Scoring ─────────────────────────
+        # â”€â”€ 5. Deterministic Scoring â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         logger.info("Phase S.3: Deterministic scoring...")
         scoring = compute_score(alignment, drift, violations)
 
-        # ── 6. Semantic Coverage Check ───────────────────────
+        # â”€â”€ 6. Semantic Coverage Check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         coverage_flags = self._check_semantic_coverage(diff, plan, changed_files)
         if coverage_flags:
             explanation_tree.extend(coverage_flags)
 
-        # ── 7. Build Report ──────────────────────────────────
+        # â”€â”€ 7. Build Report â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         report = {
             "run_id": self.run_id,
             "timestamp": datetime.now().isoformat(),
@@ -135,7 +136,7 @@ class SemanticValidator:
         # Optional Jules lifecycle context enrichment (advisory by default).
         self._apply_jules_context(report, jules_context)
 
-        # ── 8. Write Artifacts ───────────────────────────────
+        # â”€â”€ 8. Write Artifacts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         run_dir = self.project_root / "automation" / "runs" / self.run_id
         run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -147,11 +148,12 @@ class SemanticValidator:
         tree_path = run_dir / "semantic_alignment.md"
         self._write_alignment_tree(tree_path, report, scoring)
 
-        # ── 9. Cross-Run Drift Ledger ────────────────────────
-        validation_latency_ms = (time.monotonic() - validation_start) * 1000.0
-        self._append_drift_record(report, plan, validation_latency_ms)
+        # â”€â”€ 9. Cross-Run Drift Ledger â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+        if append_drift_ledger:
+            validation_latency_ms = (time.monotonic() - validation_start) * 1000.0
+            self._append_drift_record(report, plan, validation_latency_ms)
 
-        # ── 10. Visual Drift Penalty (Phase AB) ──────────────
+        # â”€â”€ 10. Visual Drift Penalty (Phase AB) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
         self._apply_visual_penalty(report, run_dir)
 
         logger.info(f"Semantic Validation complete. Recommendation: {report.get('recommendation')}")
@@ -201,7 +203,7 @@ class SemanticValidator:
         if advisories:
             report.setdefault("explanation_tree", [])
             for note in advisories:
-                report["explanation_tree"].append(f"⚠ Jules advisory: {note}")
+                report["explanation_tree"].append(f"âš  Jules advisory: {note}")
 
             original_score = float(report.get("final_score", 0.0))
             adjusted_score = max(0.0, round(original_score - advisory_penalty, 4))
@@ -221,7 +223,7 @@ class SemanticValidator:
         report["jules_test_summary"] = test_summary
         report["strict_failure"] = bool(mandatory_tests_missing or critical_tests_failed)
 
-    # ── Drift Ledger Integration ───────────────────────────
+    # â”€â”€ Drift Ledger Integration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def _append_drift_record(
         self,
@@ -258,19 +260,26 @@ class SemanticValidator:
                 run_id=self.run_id,
                 component=component_name,
                 alignment_score=report.get("final_score", 0.0),
+                semantic_score=report.get("final_score", 0.0),
                 overreach_detected=drift.get("overreach_detected", False),
                 missing_steps=len(drift.get("missing_requirements", [])),
                 drift_flags=drift_flags,
                 plan_hash=plan_hash,
                 memory_hash=memory_hash,
                 latency_ms=latency_ms,
+                recommendation=report.get("recommendation"),
+                regression_detected=False,
+                target_components=target_components,
+                regression_score_drop=0.0,
+                clean_run=False,
+                event_type="SEMANTIC_VALIDATION",
             )
 
             # Regenerate stability report after each run
             generate_stability_report()
 
         except Exception as e:
-            # Drift tracking is observational — never block the pipeline
+            # Drift tracking is observational â€” never block the pipeline
             logger.warning(f"Failed to update drift ledger: {e}")
 
     def _apply_visual_penalty(self, report: Dict[str, Any], run_dir: Path):
@@ -278,12 +287,12 @@ class SemanticValidator:
         Apply visual drift penalty if visual_report.json exists.
 
         Penalties (additive):
-          - visual_drift == true  → -0.15
-          - dom_passed == false   → -0.10
+          - visual_drift == true  â†’ -0.15
+          - dom_passed == false   â†’ -0.10
 
         Recommendation rules (downgrade only, never upgrade):
-          - Can downgrade ACCEPT → REVIEW
-          - Can downgrade REVIEW → REJECT
+          - Can downgrade ACCEPT â†’ REVIEW
+          - Can downgrade REVIEW â†’ REJECT
           - Never overrides a semantic hard REJECT
         """
         try:
@@ -306,12 +315,12 @@ class SemanticValidator:
             if visual_drift:
                 total_penalty += 0.15
                 report.setdefault("explanation_tree", []).append(
-                    "⚠ Visual drift detected (penalty=-0.15)"
+                    "âš  Visual drift detected (penalty=-0.15)"
                 )
             if not dom_passed:
                 total_penalty += 0.10
                 report.setdefault("explanation_tree", []).append(
-                    "⚠ DOM assertions failed (penalty=-0.10)"
+                    "âš  DOM assertions failed (penalty=-0.10)"
                 )
 
             adjusted_score = max(0.0, round(original_score - total_penalty, 4))
@@ -338,14 +347,14 @@ class SemanticValidator:
             self.report_generator.generate(report, report_path)
 
             logger.info(
-                f"Visual penalty applied: -{total_penalty} → "
+                f"Visual penalty applied: -{total_penalty} â†’ "
                 f"score={adjusted_score:.4f}, "
                 f"recommendation={report['recommendation']}"
             )
         except Exception as e:
             logger.warning(f"Failed to apply visual penalty: {e}")
 
-    # ── Intent Loading ───────────────────────────────────────
+    # â”€â”€ Intent Loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def _load_intent(self, intent_file: str) -> str:
         """Load intent from file or return raw string."""
@@ -368,7 +377,7 @@ class SemanticValidator:
             pass
         return ""
 
-    # ── Semantic Coverage Check ──────────────────────────────
+    # â”€â”€ Semantic Coverage Check â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def _check_semantic_coverage(
         self,
@@ -380,9 +389,9 @@ class SemanticValidator:
         Check semantic coverage beyond what the LLM evaluates.
 
         Rules:
-        1. If success criteria changed → tests must be updated too.
-        2. If invariant referenced → runtime enforcement must exist.
-        3. If plan has target_files → all must appear in changed_files.
+        1. If success criteria changed â†’ tests must be updated too.
+        2. If invariant referenced â†’ runtime enforcement must exist.
+        3. If plan has target_files â†’ all must appear in changed_files.
         """
         flags = []
 
@@ -390,7 +399,7 @@ class SemanticValidator:
         memory_changed = any("docs/memory/" in f or "docs/epistemic/" in f for f in changed_files)
         test_changed = any("test" in f.lower() for f in changed_files)
         if memory_changed and not test_changed:
-            flags.append("⚠ Coverage gap: Memory/epistemic changed but no test file updated.")
+            flags.append("âš  Coverage gap: Memory/epistemic changed but no test file updated.")
 
         # Rule 2: Plan target files vs actually changed files
         target_files = plan.get("target_files", [])
@@ -398,11 +407,11 @@ class SemanticValidator:
             for target in target_files:
                 matched = any(target in f or f in target for f in changed_files)
                 if not matched:
-                    flags.append(f"⚠ Coverage gap: Plan targets '{target}' but it was not modified.")
+                    flags.append(f"âš  Coverage gap: Plan targets '{target}' but it was not modified.")
 
         return flags
 
-    # ── Alignment Tree Artifact ──────────────────────────────
+    # â”€â”€ Alignment Tree Artifact â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def _write_alignment_tree(
         self,
@@ -413,7 +422,7 @@ class SemanticValidator:
         """Generate human-readable alignment tree markdown artifact."""
         try:
             lines = [
-                f"# Semantic Alignment Tree — {self.run_id}",
+                f"# Semantic Alignment Tree â€” {self.run_id}",
                 f"",
                 f"**Generated**: {report.get('timestamp', 'N/A')}",
                 f"**Recommendation**: {scoring.recommendation}",
@@ -439,7 +448,7 @@ class SemanticValidator:
             lines.append(f"|--------|-------|")
             lines.append(f"| Intent Match | {alignment.get('intent_match', 0):.2f} |")
             lines.append(f"| Plan Match | {alignment.get('plan_match', 0):.2f} |")
-            lines.append(f"| Scope Respected | {'✅' if alignment.get('component_scope_respected') else '❌'} |")
+            lines.append(f"| Scope Respected | {'âœ…' if alignment.get('component_scope_respected') else 'âŒ'} |")
 
             lines.extend([
                 f"",
@@ -449,28 +458,28 @@ class SemanticValidator:
                 f"",
             ])
             drift = report.get("drift", {})
-            lines.append(f"- **Overreach Detected**: {'🚨 YES' if drift.get('overreach_detected') else '✅ No'}")
+            lines.append(f"- **Overreach Detected**: {'ðŸš¨ YES' if drift.get('overreach_detected') else 'âœ… No'}")
 
             missing = drift.get("missing_requirements", [])
             if missing:
                 lines.append(f"")
                 lines.append(f"### Missing Requirements ({len(missing)})")
                 for m in missing:
-                    lines.append(f"- ❌ {m}")
+                    lines.append(f"- âŒ {m}")
 
             unintended = drift.get("unintended_modifications", [])
             if unintended:
                 lines.append(f"")
                 lines.append(f"### Unintended Modifications ({len(unintended)})")
                 for u in unintended:
-                    lines.append(f"- ⚠ {u}")
+                    lines.append(f"- âš  {u}")
 
             mismatch = drift.get("semantic_mismatch", [])
             if mismatch:
                 lines.append(f"")
                 lines.append(f"### Semantic Mismatch ({len(mismatch)})")
                 for s in mismatch:
-                    lines.append(f"- 🔴 {s}")
+                    lines.append(f"- ðŸ”´ {s}")
 
             lines.extend([
                 f"",
@@ -511,3 +520,5 @@ class SemanticValidator:
             logger.info(f"Alignment tree written to {path}")
         except Exception as e:
             logger.error(f"Failed to write alignment tree: {e}")
+
+

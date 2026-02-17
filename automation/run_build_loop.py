@@ -55,6 +55,7 @@ from automation.jules_supervisor.pr_handler import (
     persist_jules_pr,
 )
 from automation.jules_supervisor.result_summary import ResultSummary
+from automation.merge_controller import handle_pr_with_semantic
 
 # Intent Translation (Phase X)
 from automation.intent.intent_translation import (
@@ -616,18 +617,45 @@ def main():
             summary_gen = ResultSummary(config.journal.run_id)
             summary_gen.generate()
 
-            # Non-blocking design: complete run even if tests fail/PR incomplete
-            print(Fore.GREEN + "  Jules execution completed. Artifacts saved." + Style.RESET_ALL)
+            merge_control_result = None
+            if pr_metadata and pr_metadata.get("pr_url"):
+                print(Fore.CYAN + "  ▶ Pre-merge semantic gate..." + Style.RESET_ALL)
+                merge_control_result = handle_pr_with_semantic(
+                    run_id=config.journal.run_id,
+                    pr_info={
+                        "pr_url": pr_metadata.get("pr_url"),
+                        "branch": pr_metadata.get("branch"),
+                        "commit_sha": pr_metadata.get("commit_sha"),
+                        "task_id": task_id,
+                        "action_plan": action_plan,
+                        "changed_files": changed_files,
+                        "intent_source": human_intent_path or action_plan.get("objective", ""),
+                        "jules_context": jules_context,
+                    },
+                )
+                if not merge_control_result.get("success"):
+                    _abort(
+                        "Pre-merge semantic gate failed: "
+                        f"{merge_control_result.get('reason', 'unknown')}"
+                    )
+                followup_run_id = merge_control_result.get("followup_run_id")
+                print(
+                    Fore.GREEN
+                    + f"  ✔ PR merged; follow-up run created: {followup_run_id}"
+                    + Style.RESET_ALL
+                )
+            else:
+                # No PR to gate; preserve existing semantic flow.
+                _run_semantic_validation(
+                    config.journal.run_id,
+                    human_intent_path,
+                    action_plan,
+                    changed_files,
+                    args.strict_semantic,
+                    jules_context=jules_context,
+                )
 
-            # --- SEMANTIC VALIDATION ---
-            _run_semantic_validation(
-                config.journal.run_id,
-                human_intent_path,
-                action_plan,
-                changed_files,
-                args.strict_semantic,
-                jules_context=jules_context,
-            )
+            print(Fore.GREEN + "  Jules execution completed. Artifacts saved." + Style.RESET_ALL)
 
             # Archive run happens in finally block
             # Skip local agents
