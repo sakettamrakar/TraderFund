@@ -55,6 +55,7 @@ class SemanticValidator:
         changed_files: List[str],
         diff: str,
         success_criteria: str = "",
+        jules_context: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Execute full semantic validation pipeline.
@@ -131,6 +132,9 @@ class SemanticValidator:
             "drift_reasoning": "; ".join(explanation_tree[:3]),
         }
 
+        # Optional Jules lifecycle context enrichment (advisory by default).
+        self._apply_jules_context(report, jules_context)
+
         # ── 8. Write Artifacts ───────────────────────────────
         run_dir = self.project_root / "automation" / "runs" / self.run_id
         run_dir.mkdir(parents=True, exist_ok=True)
@@ -150,8 +154,72 @@ class SemanticValidator:
         # ── 10. Visual Drift Penalty (Phase AB) ──────────────
         self._apply_visual_penalty(report, run_dir)
 
-        logger.info(f"Semantic Validation complete. Recommendation: {scoring.recommendation}")
+        logger.info(f"Semantic Validation complete. Recommendation: {report.get('recommendation')}")
         return report
+
+    def _apply_jules_context(
+        self,
+        report: Dict[str, Any],
+        jules_context: Optional[Dict[str, Any]],
+    ) -> None:
+        """
+        Enrich report with Jules PR and test metadata.
+        Applies advisory score penalties for missing/failed tests.
+        """
+        context = jules_context or {}
+        pr_meta = context.get("jules_pr", {}) if isinstance(context, dict) else {}
+        if not isinstance(pr_meta, dict):
+            pr_meta = {}
+
+        test_summary = context.get("jules_test_summary", {}) if isinstance(context, dict) else {}
+        if not isinstance(test_summary, dict):
+            test_summary = {}
+
+        did_pr_exist = bool(pr_meta.get("pr_url"))
+        tests_total = int(test_summary.get("tests_total") or 0)
+        tests_passed = int(test_summary.get("tests_passed") or 0)
+        tests_failed = int(test_summary.get("tests_failed") or 0)
+
+        test_failure_rate = 0.0
+        if tests_total > 0:
+            test_failure_rate = round(tests_failed / tests_total, 4)
+
+        advisory_penalty = 0.0
+        advisories: List[str] = []
+
+        mandatory_tests_missing = did_pr_exist and tests_total == 0
+        critical_tests_failed = tests_failed > 0
+
+        if mandatory_tests_missing:
+            advisory_penalty += 0.08
+            advisories.append("Jules PR exists but test summary is missing.")
+
+        if critical_tests_failed:
+            advisory_penalty += 0.12
+            advisories.append(f"Jules reported {tests_failed} failed tests.")
+
+        if advisories:
+            report.setdefault("explanation_tree", [])
+            for note in advisories:
+                report["explanation_tree"].append(f"⚠ Jules advisory: {note}")
+
+            original_score = float(report.get("final_score", 0.0))
+            adjusted_score = max(0.0, round(original_score - advisory_penalty, 4))
+            report["final_score"] = adjusted_score
+            report["intent_alignment_score"] = adjusted_score
+            report["jules_advisory_penalty"] = round(advisory_penalty, 4)
+
+            # Advisory downgrade only.
+            if report.get("recommendation") == "ACCEPT":
+                report["recommendation"] = "REVIEW"
+
+        report["did_pr_exist"] = did_pr_exist
+        report["tests_passed"] = tests_passed
+        report["tests_failed"] = tests_failed
+        report["test_failure_rate"] = test_failure_rate
+        report["jules_pr"] = pr_meta
+        report["jules_test_summary"] = test_summary
+        report["strict_failure"] = bool(mandatory_tests_missing or critical_tests_failed)
 
     # ── Drift Ledger Integration ───────────────────────────
 

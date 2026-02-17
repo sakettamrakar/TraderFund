@@ -35,7 +35,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from automation_config import config, SecurityViolation
 from journal import RunJournal
 
-from spec_watcher import changed_specs
+from planner.memory_diff import detect_commit_memory_changes, mark_commit_processed
 from diff_summarizer import summarize
 from approval_gate import approve
 from agents import component_agent, test_agent, integration_agent, validation_agent
@@ -44,6 +44,16 @@ from agents import component_agent, test_agent, integration_agent, validation_ag
 from automation.jules.adapter import JulesAdapter
 from automation.jules_supervisor.monitor import TaskMonitor
 from automation.jules_supervisor.artifact_collector import ArtifactCollector
+from automation.jules_supervisor.cli_api import (
+    jules_cli_available,
+    parse_cli_output,
+    run_cli_command,
+)
+from automation.jules_supervisor.pr_handler import (
+    detect_jules_pr,
+    fetch_pr_diff,
+    persist_jules_pr,
+)
 from automation.jules_supervisor.result_summary import ResultSummary
 
 # Intent Translation (Phase X)
@@ -93,7 +103,7 @@ def _stage_separator(label: str):
 
 def _abort(reason: str):
     """Print abort reason and exit. Also logs to journal."""
-    print(f"\n  ❌ ABORTING LOOP: {reason}")
+    print(f"\n  [ABORT] ABORTING LOOP: {reason}")
     print("=" * 60)
 
     if config.journal:
@@ -114,13 +124,13 @@ def _run_modifying_agent(name: str, func, *args) -> str:
         _abort(f"SECURITY VIOLATION in {name}: {sv}")
     except RuntimeError as e:
         elapsed = time.time() - t0
-        print(f"  ⏱  {name} failed after {elapsed:.1f}s")
+        print(f"  [TIME] {name} failed after {elapsed:.1f}s")
         _abort(f"{name} ERROR: {e}")
     except Exception as e:
         _abort(f"Unexpected error in {name}: {e}")
 
     elapsed = time.time() - t0
-    print(f"  ⏱  {name} completed in {elapsed:.1f}s")
+    print(f"  [TIME] {name} completed in {elapsed:.1f}s")
 
     if output and output.strip():
         print(f"  📄 {len(output)} chars of output.")
@@ -139,7 +149,7 @@ def _run_modifying_agent(name: str, func, *args) -> str:
 
     return output
 
-def _run_semantic_validation(run_id, intent_path, action_plan, changed_files, strict_mode):
+def _run_semantic_validation(run_id, intent_path, action_plan, changed_files, strict_mode, jules_context=None):
     """
     Runs the semantic validation pipeline.
     """
@@ -155,15 +165,24 @@ def _run_semantic_validation(run_id, intent_path, action_plan, changed_files, st
             diff = ""
 
         validator = SemanticValidator(run_id, str(PROJECT_ROOT))
-        report = validator.validate(intent_path, action_plan, changed_files, diff)
+        report = validator.validate(
+            intent_path,
+            action_plan,
+            changed_files,
+            diff,
+            jules_context=jules_context,
+        )
 
         # Phase AB: Visual validation integration
         _run_visual_validation_phase(run_id, action_plan, report)
 
-        if strict_mode and report.get("recommendation") != "ACCEPT":
+        if strict_mode and (
+            report.get("recommendation") != "ACCEPT"
+            or report.get("strict_failure", False)
+        ):
             _abort(f"Semantic Validation Failed (Strict Mode): {report.get('recommendation')}")
     except Exception as e:
-        print(Fore.RED + f"  ❌ Semantic Validation crashed: {e}" + Style.RESET_ALL)
+        print(Fore.RED + f"  [FAIL] Semantic Validation crashed: {e}" + Style.RESET_ALL)
         if strict_mode:
             _abort("Semantic Validation crashed in strict mode.")
 
@@ -282,25 +301,24 @@ def _run_visual_validation_phase(run_id, action_plan, semantic_report):
 
 def create_jules_task(changed_files, action_plan=None):
     """
-    Creates a Jules task using the adapter.
+    Creates a Jules task.
+    API path is preferred; CLI path is used as fallback.
     """
     adapter = JulesAdapter()
     task_id = config.journal.run_id
 
-    # Construct task details
     task_data = {
         "task_id": task_id,
         "changed_memory_files": changed_files,
-        "purpose": action_plan.get("objective") if action_plan else "Automated Build Loop Task"
+        "purpose": action_plan.get("objective") if action_plan else "Automated Build Loop Task",
     }
 
-    # Prepare instructions
     instructions = "Please address the following changes:\n"
     if action_plan:
         instructions += f"Objective: {action_plan.get('objective')}\n"
-        if action_plan.get('detailed_instructions'):
+        if action_plan.get("detailed_instructions"):
             instructions += "Detailed Instructions:\n"
-            for instr in action_plan.get('detailed_instructions', []):
+            for instr in action_plan.get("detailed_instructions", []):
                 instructions += f"- {instr}\n"
     else:
         instructions += "Please implement changes based on the modified files provided.\n"
@@ -311,9 +329,46 @@ def create_jules_task(changed_files, action_plan=None):
         job_id = adapter.submit_job(payload)
         print(f"  Jules Job Submitted: {job_id}")
         return job_id
-    except Exception as e:
-        print(f"  ❌ Failed to create Jules task: {e}")
-        raise
+    except Exception as exc:
+        print(f"  Jules API submission failed: {exc}")
+
+    if not jules_cli_available():
+        raise RuntimeError("Jules API submission failed and Jules CLI is unavailable.")
+
+    cli_attempts = [
+        ["jules", "create-task", "--task-id", task_id, "--prompt", instructions, "--json"],
+        ["jules", "submit", "--task-id", task_id, "--prompt", instructions, "--json"],
+        ["jules", "submit", "--task-id", task_id, "--prompt", instructions],
+    ]
+
+    for command in cli_attempts:
+        result = run_cli_command(command, timeout=120)
+        if not result.get("ok"):
+            continue
+
+        parsed = parse_cli_output(result.get("stdout", ""))
+        cli_job_id = None
+        if isinstance(parsed, dict):
+            cli_job_id = (
+                parsed.get("task_id")
+                or parsed.get("id")
+                or parsed.get("name")
+                or parsed.get("session")
+            )
+
+        if not cli_job_id:
+            stdout = (result.get("stdout") or "").strip()
+            for token in stdout.replace("\n", " ").split():
+                if "/" in token and ("sessions/" in token or "tasks/" in token):
+                    cli_job_id = token.strip()
+                    break
+
+        if cli_job_id:
+            print(f"  Jules Job Submitted via CLI: {cli_job_id}")
+            return str(cli_job_id)
+
+    raise RuntimeError("Jules CLI fallback submission failed.")
+
 
 def main():
     parser = argparse.ArgumentParser(description="Autonomous Build Loop")
@@ -339,25 +394,28 @@ def main():
         # ── Stage 1: Spec Change Detection ──────────────────────────
         _stage_separator("[1/6] Spec Change Detection")
 
-        # Check for memory changes (Phase M trigger)
-        memory_changed = False
-        try:
-            result = subprocess.run(["git", "diff", "--name-only", "docs/memory/"], capture_output=True, text=True)
-            if result.stdout.strip():
-                print(Fore.YELLOW + "  Memory changes detected. Forcing Phase M execution." + Style.RESET_ALL)
-                memory_changed = True
-        except Exception as e:
-            pass
+        trigger_state = detect_commit_memory_changes()
+        memory_changed = bool(trigger_state.get("changed"))
+        changed_files = list(trigger_state.get("changed_files", []))
+        pending_commit_for_update = trigger_state.get("pending_commit")
+        fallback_to_snapshot = bool(trigger_state.get("fallback_to_snapshot"))
 
-        changed_files = changed_specs()
+        if memory_changed and not fallback_to_snapshot:
+            print(Fore.YELLOW + "  Commit-based memory change detected" + Style.RESET_ALL)
+            print(Fore.YELLOW + f"  Changed files: {changed_files}" + Style.RESET_ALL)
+        elif fallback_to_snapshot:
+            trigger_error = trigger_state.get("error", "unknown git error")
+            print(Fore.YELLOW + f"  Commit trigger unavailable; using snapshot fallback ({trigger_error})." + Style.RESET_ALL)
+        elif args.retrigger_from_intent:
+            print(Fore.MAGENTA + "  Retrigger requested; bypassing commit trigger gate." + Style.RESET_ALL)
 
-        if not changed_files and not memory_changed:
-            print("  No spec or memory changes detected. Exiting cleanly.")
+        if not memory_changed and not args.retrigger_from_intent:
+            print("  No new memory commits detected. Exiting cleanly.")
             config.journal.finish()
             sys.exit(0)
 
         config.journal.set_changed_specs(changed_files)
-        print(f"  Detected changes in {len(changed_files)} spec files (plus memory updates).")
+        print(f"  Detected changes in {len(changed_files)} memory files.")
         for s in changed_files:
             print(f"    → {s}")
 
@@ -409,16 +467,25 @@ def main():
         cmd_plan = ["python", "automation/planner/action_plan.py", "--impact", "automation/tasks/impact.json", "--output", "automation/tasks/action_plan.json"]
         if human_intent_path:
             cmd_plan.extend(["--human-intent", human_intent_path])
-        subprocess.run(cmd_plan, check=False)
+        plan_result = subprocess.run(cmd_plan, check=False)
+        if plan_result.returncode != 0:
+            _abort("Action Plan generation failed.")
 
         # Load Action Plan
         action_plan_path = Path("automation/tasks/action_plan.json")
-        action_plan = {}
-        if action_plan_path.exists():
+        if not action_plan_path.exists():
+            _abort("Action Plan generation failed: output file missing.")
+        try:
+            action_plan = json.loads(action_plan_path.read_text(encoding="utf-8"))
+        except Exception as e:
+            _abort(f"Action Plan generation failed: invalid JSON ({e})")
+
+        # Commit baseline advances only after action plan generation succeeds.
+        if pending_commit_for_update:
             try:
-                action_plan = json.loads(action_plan_path.read_text(encoding="utf-8"))
-            except:
-                pass
+                mark_commit_processed(pending_commit_for_update)
+            except Exception as e:
+                _abort(f"Failed to persist commit trigger state: {e}")
 
         if action_plan.get("status") == "NO_ACTION_REQUIRED":
             print(Fore.GREEN + "  ✔ Plan: No semantic changes requiring code updates." + Style.RESET_ALL)
@@ -516,10 +583,35 @@ def main():
             task_id = create_jules_task(changed_files, action_plan)
 
             monitor = TaskMonitor(config.journal.run_id)
-            monitor.wait(task_id)
+            monitor_result = monitor.wait(task_id)
+            task_status = monitor_result.get("status", "UNKNOWN")
+            print(Fore.CYAN + f"  Jules monitor status: {task_status}" + Style.RESET_ALL)
 
             collector = ArtifactCollector(config.journal.run_id)
-            collector.collect(task_id)
+            artifacts = collector.collect(task_id, task_status=task_status)
+
+            # PR detection (API first, CLI fallback)
+            pr_metadata = detect_jules_pr(task_id)
+            persist_jules_pr(config.journal.run_id, pr_metadata)
+
+            run_dir = PROJECT_ROOT / "automation" / "runs" / config.journal.run_id
+            diff_path = run_dir / "jules_diff.patch"
+            if pr_metadata and pr_metadata.get("pr_url"):
+                # If diff artifact is empty, fetch directly from PR URL.
+                if not diff_path.exists() or not diff_path.read_text(encoding="utf-8", errors="replace").strip():
+                    pr_diff = fetch_pr_diff(pr_metadata["pr_url"])
+                    if pr_diff:
+                        diff_path.write_text(pr_diff, encoding="utf-8")
+
+            jules_context = {
+                "task_id": task_id,
+                "task_status": task_status,
+                "monitor_result": monitor_result,
+                "did_pr_exist": bool(pr_metadata),
+                "jules_pr": pr_metadata or {},
+                "jules_test_summary": artifacts.get("test_summary", {}),
+                "jules_artifacts": artifacts,
+            }
 
             summary_gen = ResultSummary(config.journal.run_id)
             summary_gen.generate()
@@ -528,7 +620,14 @@ def main():
             print(Fore.GREEN + "  Jules execution completed. Artifacts saved." + Style.RESET_ALL)
 
             # --- SEMANTIC VALIDATION ---
-            _run_semantic_validation(config.journal.run_id, human_intent_path, action_plan, changed_files, args.strict_semantic)
+            _run_semantic_validation(
+                config.journal.run_id,
+                human_intent_path,
+                action_plan,
+                changed_files,
+                args.strict_semantic,
+                jules_context=jules_context,
+            )
 
             # Archive run happens in finally block
             # Skip local agents
@@ -565,7 +664,7 @@ def main():
             _abort(f"ValidationAgent crashed: {e}")
 
         elapsed = time.time() - t0
-        print(f"  ⏱  ValidationAgent completed in {elapsed:.1f}s")
+        print(f"  [TIME] ValidationAgent completed in {elapsed:.1f}s")
 
         config.journal.set_test_status("PASS" if passed else "FAIL")
 
@@ -610,7 +709,7 @@ def main():
             if not config.dry_run:
                 print("  Changes committed.")
         else:
-            print("\n  ⏸  Autonomous loop paused. Changes are uncommitted for manual review.")
+            print("\n  [PAUSED] Autonomous loop paused. Changes are uncommitted for manual review.")
 
         config.journal.finish()
 
@@ -666,7 +765,7 @@ def main():
             print(f"  ✅ Run {run_id} archived successfully.")
             
         except Exception as e:
-            print(f"  ❌ Failed to archive run: {e}")
+            print(f"  [WARN] Failed to archive run: {e}")
 
         print(f"  Journal written to: {config.journal.log_dir / ('run_' + config.journal.run_id + '.json')}")
 

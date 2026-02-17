@@ -4,14 +4,35 @@ Memory Diff Analyzer
 Detects semantic changes in memory documents.
 """
 
-import os
+import argparse
+import difflib
 import json
 import logging
-import argparse
 from pathlib import Path
-from typing import Dict, List, Any, Optional
-import difflib
-import re
+from typing import Any, Dict, List, Optional
+
+try:
+    from .git_utils import (
+        get_current_head,
+        get_last_processed_commit,
+        get_memory_diff_commits,
+        save_last_processed_commit,
+    )
+except ImportError:
+    try:
+        from planner.git_utils import (
+            get_current_head,
+            get_last_processed_commit,
+            get_memory_diff_commits,
+            save_last_processed_commit,
+        )
+    except ImportError:
+        from git_utils import (  # type: ignore
+            get_current_head,
+            get_last_processed_commit,
+            get_memory_diff_commits,
+            save_last_processed_commit,
+        )
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,6 +40,9 @@ logger = logging.getLogger("memory_diff")
 
 MEMORY_ROOT = Path("docs/memory")
 SNAPSHOT_DIR = Path("automation/memory_snapshots")
+NO_CHANGE = False
+CHANGE_DETECTED = True
+
 
 def get_current_memory_state() -> Dict[str, str]:
     """Reads all markdown files in docs/memory into a dict {path: content}."""
@@ -146,38 +170,129 @@ def analyze_diff(old_state: Dict[str, str], new_state: Dict[str, str]) -> List[D
     # For now, simple list.
     return changes
 
-def main():
+
+def _write_no_change_output(output_path: Path) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text("[]", encoding="utf-8")
+
+
+def detect_commit_memory_changes() -> Dict[str, Any]:
+    """
+    Commit-aware trigger gate for memory planning.
+    Returns a structured result:
+      changed: bool
+      changed_files: list[str]
+      current_head: Optional[str]
+      last_processed: Optional[str]
+      pending_commit: Optional[str] (set only when planning should run)
+      fallback_to_snapshot: bool
+      error: Optional[str]
+    """
+    result: Dict[str, Any] = {
+        "changed": NO_CHANGE,
+        "changed_files": [],
+        "current_head": None,
+        "last_processed": None,
+        "pending_commit": None,
+        "fallback_to_snapshot": False,
+        "error": None,
+    }
+
+    try:
+        current_head = get_current_head()
+        last_processed = get_last_processed_commit()
+        result["current_head"] = current_head
+        result["last_processed"] = last_processed
+
+        logger.info("[CommitTrigger] Current HEAD: %s", current_head)
+        logger.info("[CommitTrigger] Last Processed: %s", last_processed)
+
+        # Case 1 — First run
+        if last_processed is None:
+            save_last_processed_commit(current_head)
+            logger.info("First run — initializing commit baseline")
+            logger.info("[CommitTrigger] Changed Memory Files: []")
+            return result
+
+        # Case 2 — No new commit
+        if current_head == last_processed:
+            logger.info("[CommitTrigger] Changed Memory Files: []")
+            return result
+
+        # Case 3 — New commit(s)
+        changed_files = get_memory_diff_commits(last_processed, current_head)
+        logger.info("[CommitTrigger] Changed Memory Files: %s", changed_files)
+
+        if not changed_files:
+            # Advance baseline for non-memory commits to avoid re-processing.
+            save_last_processed_commit(current_head)
+            return result
+
+        result["changed"] = CHANGE_DETECTED
+        result["changed_files"] = changed_files
+        result["pending_commit"] = current_head
+        return result
+    except Exception as exc:
+        # Safety: if git path fails, keep snapshot diff behavior alive.
+        result["changed"] = CHANGE_DETECTED
+        result["fallback_to_snapshot"] = True
+        result["error"] = str(exc)
+        logger.warning(
+            "[CommitTrigger] Git command failed (%s). Falling back to snapshot diff.",
+            exc,
+        )
+        logger.info("[CommitTrigger] Changed Memory Files: []")
+        return result
+
+
+def mark_commit_processed(commit_hash: Optional[str]) -> None:
+    """
+    Persist a commit as processed only after planner success.
+    """
+    if not commit_hash:
+        return
+    save_last_processed_commit(commit_hash)
+    logger.info("[CommitTrigger] Saved last processed commit: %s", commit_hash)
+
+
+def main() -> int:
     parser = argparse.ArgumentParser(description="Memory Diff Analyzer")
     parser.add_argument("--snapshot", default="last_known_good", help="Snapshot ID to compare against")
     parser.add_argument("--save", action="store_true", help="Update snapshot after analysis")
     parser.add_argument("--output", default="memory_diff.json", help="Output JSON file")
     args = parser.parse_args()
-    
+
+    output_path = Path(args.output)
+
+    trigger_state = detect_commit_memory_changes()
+    if not trigger_state.get("changed", NO_CHANGE):
+        _write_no_change_output(output_path)
+        return 0
+
     current_state = get_current_memory_state()
     previous_state = load_snapshot(args.snapshot)
-    
+
     if not previous_state:
         logger.info("No previous snapshot found. Assuming initial state or full re-scan needed.")
-        # If no snapshot, maybe we treat everything as new? 
-        # For now, let's just save the current state and exit if it's the first run
+        _write_no_change_output(output_path)
         if args.save:
             save_snapshot(current_state, args.snapshot)
-        return
+        return 0
 
     diffs = analyze_diff(previous_state, current_state)
-    
+
     if diffs:
         logger.info(f"Detected {len(diffs)} semantic changes.")
-        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(json.dumps(diffs, indent=2), encoding="utf-8")
         logger.info(f"Wrote semantic diffs to {output_path}")
     else:
         logger.info("No memory changes detected.")
-        # Create empty list file
-        Path(args.output).write_text("[]", encoding="utf-8")
+        _write_no_change_output(output_path)
 
     if args.save:
         save_snapshot(current_state, args.snapshot)
+    return 0
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

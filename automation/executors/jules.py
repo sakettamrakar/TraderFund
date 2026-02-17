@@ -9,6 +9,7 @@ from .base import Executor
 # I will create a new class here that uses the adapter.
 
 from .jules_adapter import JulesExecutor as LegacyJulesExecutor
+from automation.jules_supervisor.cli_api import jules_cli_available
 
 logger = logging.getLogger(__name__)
 
@@ -37,12 +38,8 @@ class JulesExecutor(Executor):
         if os.environ.get("JULES_API_KEY"):
             return True
             
-        # Check 2: CLI fallback (if we were using CLI, but we are using adapter)
-        # Verify CLI exists just in case adapter uses it for some ops?
-        # Adapter uses `requests` but might use `git` commands.
-        # But core session creation is API.
-        
-        return False
+        # Check 2: CLI fallback availability
+        return jules_cli_available()
 
     def execute(self, action_plan: Dict[str, Any]) -> Tuple[str, str]:
         # Delegate to legacy
