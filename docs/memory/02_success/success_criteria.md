@@ -76,35 +76,6 @@
 
 ## 7. L3 — Meta-Analysis Success
 
-Invariant 1 — Regime Dependency Meta-Analysis MUST consume current RegimeState (L1).
-It MUST NOT execute if RegimeState is undefined.
-Why: Prevent level skipping.
-Invariant 2 — Trust Score Boundaries Every signal trust score MUST be:
-Between 0.0 and 1.0
-Deterministic for identical inputs
-Why: Prevent unstable scoring drift.
-Invariant 3 — Regime-Aware Trust Adjustment In CHOP/Transition regime:
-Technical breakout trust ≤ 0.50
-In Trending regime:
-Momentum trust ≥ 0.60 if factor alignment present
-Why: Encode “don’t trust breakouts in chop.”
-Invariant 4 — Explainability Requirement Each trust decision MUST log:
-Signal type
-Regime context
-Adjustment reason
-Final trust score
-Latency
-Why: Glass-box enforcement.
-Invariant 5 — Fail-Safe Behavior If required upstream inputs are missing: Meta-Analysis MUST return:
-Copy code
-
-trust_score = 0.0
-status = "INSUFFICIENT_CONTEXT"
-No silent fallback.
-Step 2 — Add One Measurable Constraint
-Add:
-Invariant 6 — Stability Check Trust score variance for identical inputs across 10 replays must be < 0.01.
-This forces deterministic math. Prevents random LLM drift.
 
 - **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
 
