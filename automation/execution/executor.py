@@ -95,6 +95,11 @@ class TaskExecutor:
                             "success": result.success,
                             "artifacts_path": result.artifacts_path,
                             "error_message": result.error_message,
+                            "lifecycle_state": result.lifecycle_state,
+                            "jules_task_id": result.jules_task_id,
+                            "pr_url": result.pr_url,
+                            "failure_reason": result.failure_reason,
+                            "duration_seconds": result.duration_seconds,
                         },
                         indent=2,
                     )

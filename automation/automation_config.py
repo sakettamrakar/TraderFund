@@ -19,6 +19,10 @@ class AutomationConfig:
         self.test_router = False
         self.EXECUTOR_PRIORITY = ["JULES", "GEMINI"]
         self.HUMAN_SUPERVISED = False
+        self.JULES_PR_POLICY = "WAIT_FOR_SEMANTIC"
+        self.JULES_POLL_TIMEOUT_SECONDS = 1200
+        self.JULES_POLL_INTERVAL_SECONDS = 20
+        self.JULES_POLL_ERROR_THRESHOLD = 3
         # Phase AB: Visual Validation
         self.visual_validation_enabled = True
         self.base_url = "http://localhost:3000"

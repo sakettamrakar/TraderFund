@@ -16,6 +16,11 @@ class ExecutionResult:
     executor_name: str
     artifacts_path: Optional[str] = None
     error_message: Optional[str] = None
+    lifecycle_state: Optional[str] = None
+    jules_task_id: Optional[str] = None
+    pr_url: Optional[str] = None
+    failure_reason: Optional[str] = None
+    duration_seconds: Optional[float] = None
 
 
 class BaseExecutor(ABC):
