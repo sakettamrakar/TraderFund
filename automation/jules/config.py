@@ -5,6 +5,16 @@ Configuration for the Jules execution backend.
 """
 
 import os
+from pathlib import Path
+
+# Load .env from project root
+try:
+    from dotenv import load_dotenv
+    _env_path = Path(__file__).resolve().parents[2] / ".env"
+    if _env_path.exists():
+        load_dotenv(_env_path)
+except ImportError:
+    pass
 
 # Jules API Endpoint
 JULES_API_URL = os.environ.get("JULES_API_URL", "https://jules.googleapis.com/v1alpha")

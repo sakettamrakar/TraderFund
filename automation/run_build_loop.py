@@ -581,8 +581,19 @@ def main():
 
         # ------------------------------------------------------------------
         # JULES EXECUTION PATH
+        # Auto-detect: if JULES_API_KEY is available, use Jules path
         # ------------------------------------------------------------------
-        if args.jules:
+        use_jules = args.jules
+        if not use_jules:
+            try:
+                from automation.jules.config import JULES_API_KEY
+                if JULES_API_KEY and JULES_API_KEY != "MOCK":
+                    use_jules = True
+                    print(Fore.CYAN + "  ▶ Jules API key detected — auto-activating Jules execution path." + Style.RESET_ALL)
+            except ImportError:
+                pass
+
+        if use_jules:
             _stage_separator("▶ JULES SUPERVISED EXECUTION")
 
             # Phase AB: Stability check before Jules dispatch

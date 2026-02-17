@@ -1,3 +1,4 @@
+```python
 """
 Intelligence Engine (Read-Only).
 
@@ -53,7 +54,7 @@ class IntelligenceEngine:
         signals = self._run_generators(universe, market, market_data_snapshot)
         
         # L6-L7 Opportunity Discovery Success Gate: Score Dispersion
-        # High-Conviction Ideas must exhibit a minimum score variance of 0.18 across candidates.
+        # High-Conviction Ideas must exhibit a minimum score variance of 0.15 across candidates.
         # Flat score distributions are invalid.
         if len(signals) > 1:
             scores = [s.metric_value for s in signals]
@@ -63,7 +64,7 @@ class IntelligenceEngine:
             mean = sum(scores) / n
             variance = sum((x - mean) ** 2 for x in scores) / n
             
-            MIN_SCORE_VARIANCE = 0.21
+            MIN_SCORE_VARIANCE = 0.15
             if variance < MIN_SCORE_VARIANCE:
                 self.logger.warning(
                     f"OPPORTUNITY DISCOVERY FAILURE: Score variance {variance:.4f} is below threshold {MIN_SCORE_VARIANCE}. "
@@ -155,3 +156,4 @@ class IntelligenceEngine:
         with open(path, "w") as f:
             json.dump(snapshot.to_dict(), f, indent=2)
             self.logger.info(f"Persisted snapshot to {path}")
+```

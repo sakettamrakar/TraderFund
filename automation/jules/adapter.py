@@ -65,28 +65,38 @@ class JulesAdapter:
     def create_job(self, task: Dict[str, Any], instructions: str) -> Dict[str, Any]:
         """
         Creates the payload for creating a Jules session.
+        Only includes fields documented in the Jules API spec.
         """
         task_id = task.get("task_id", "unknown-task")
-        title = f"Task {task_id}: {task.get('purpose', 'Automated Task')}"
-        
-        # Construct prompt from instructions plus explicit changes context if available
+
+        # Construct prompt from instructions plus explicit changes context
         prompt = instructions
         files = task.get("changed_memory_files", [])
         if files:
             prompt += "\n\nRelevant files:\n" + "\n".join(files)
 
+        # Detect current branch
+        starting_branch = "main"
+        try:
+            branch_result = subprocess.run(
+                ["git", "branch", "--show-current"],
+                capture_output=True, text=True
+            )
+            if branch_result.stdout.strip():
+                starting_branch = branch_result.stdout.strip()
+        except Exception:
+            pass
+
         return {
-            "title": title,
             "prompt": prompt,
             "sourceContext": {
                 "source": self.source_name,
                 "githubRepoContext": {
-                    "startingBranch": "main"  # Or current branch? Ideally detect current branch.
+                    "startingBranch": starting_branch
                 }
             },
-            "automationMode": "AUTO_CREATE_PR",
-            # internal tracking
-            "task_id": task_id 
+            # internal tracking — popped before submission
+            "task_id": task_id
         }
 
     def submit_job(self, payload: Dict[str, Any]) -> str:
@@ -107,13 +117,7 @@ class JulesAdapter:
                 logger.info("MOCK mode: Returning fake session ID")
                 return f"sessions/mock-{int(time.time())}"
 
-            # Detect current branch to avoid working on stale 'main'
-            try:
-                branch = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True).stdout.strip()
-                if branch:
-                    payload["sourceContext"]["githubRepoContext"]["startingBranch"] = branch
-            except:
-                pass
+            logger.info(f"Jules payload: {json.dumps(payload, indent=2)[:500]}")
 
             response = requests.post(
                 f"{self.api_url}/sessions",
@@ -121,21 +125,21 @@ class JulesAdapter:
                 headers=headers,
                 timeout=30
             )
-            response.raise_for_status()
+
+            if response.status_code != 200:
+                error_body = response.text[:500]
+                print(f"  ❌ Jules API {response.status_code}: {error_body}")
+                logger.error(f"Jules API {response.status_code}: {error_body}")
+                response.raise_for_status()
+
             data = response.json()
-            session_name = data.get("name") # e.g. sessions/123456
-            
-            # The API returns 'name' as the unique ID resource string
-            # We return just the ID part or the full resource name depending on what poll expects
-            # Let's keep the full resource name as the ID
-            job_id = session_name
-            
+            job_id = data.get("name")  # e.g. sessions/123456
             logger.info(f"Jules session created successfully. Session: {job_id}")
             return job_id
 
+        except requests.exceptions.HTTPError:
+            raise RuntimeError(f"Jules submission failed: HTTP {response.status_code}")
         except Exception as e:
-            if hasattr(e, 'response') and e.response:
-                print(f"  ❌ Jules API Error: {e.response.text}") # Print to stdout
             logger.error(f"Failed to create Jules session: {e}", exc_info=True)
             raise RuntimeError(f"Jules submission failed: {e}")
 

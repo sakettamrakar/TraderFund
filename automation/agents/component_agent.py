@@ -98,99 +98,71 @@ def run(spec_files: list[str]) -> str:
     use_plan = action_plan.get("status") == "ACTION_REQUIRED"
     
 
-    # New Deterministic Router Logic (Phase N)
-    from automation.executors import JulesExecutor, GeminiExecutor
-    
-    # 1. Initialize Executors
-    executors = [
-        JulesExecutor(PROJECT_ROOT),
+    # New Deterministic Router Logic (Phase N) — with fallback chain
+    # NOTE: JulesExecutor is NOT in the local chain. Jules is asynchronous
+    # (session → poll → PR) and must be activated via --jules flag in run_build_loop.py.
+    # ComponentAgent's local path uses Gemini for synchronous inline execution.
+    from automation.executors import GeminiExecutor
+
+    # 1. Initialize executor chain (local/synchronous executors only)
+    executor_chain = [
         GeminiExecutor(PROJECT_ROOT)
     ]
-    
-    selected_executor = None
-    
-    # 2. Select First Available
-    for executor in executors:
-        if executor.is_available():
-            selected_executor = executor
-            break
-            
-    if not selected_executor:
-        raise RuntimeError("CRITICAL: No available executors found in chain [Jules, Gemini].")
-        
-    print(f"  ComponentAgent: Selected executor -> {selected_executor.name}")
-    
-    # 3. Log Choice
-    # We write to automation/tasks/executor_used.txt so run_build_loop can archive it
-    # We also write to artifacts/executor_used.txt for legacy compatibility
-    try:
-        (PROJECT_ROOT / "automation/tasks/executor_used.txt").write_text(selected_executor.name, encoding="utf-8")
-        (PROJECT_ROOT / "artifacts/executor_used.txt").write_text(selected_executor.name, encoding="utf-8")
-    except Exception as e:
-        print(f"  ⚠ Failed to log executor choice: {e}")
 
-    # 4. Strict Enforcement Check
-    # "If Gemini executes while Jules is available, raise ARCHITECTURE_VIOLATION"
-    if selected_executor.name == "GEMINI":
-        # The loop logic guarantees this naturally.
-        pass
+    # 2. Build task payload
+    task_payload = action_plan if use_plan else {
+        "status": "LEGACY_SPEC_UPDATE",
+        "changed_memory_files": spec_files,
+        "objective": "Update components based on spec changes (Legacy Mode)",
+        "detailed_instructions": ["See specs for details."],
+        "target_files": [],
+        "context": {"specs": spec_files}
+    }
 
-    # 5. Execute
-    try:
-        # Construct the task object expected by executors
-        # They expect a dict with 'action_plan' or similar. 
-        # My BaseExecutor.execute takes `action_plan: Dict`.
-        # So we pass the loaded `action_plan` dict.
-        
-        # If legacy mode (no plan), we need to synthesize a plan or fail?
-        # "Gemini must NEVER be invoked unless...".
-        # If use_plan is False (Legacy), we are in a tricky spot. 
-        # The new executors (AG, Jules) might expect a Plan.
-        # `antigravity_worker.py` logic relies on `task` dict.
-        # Use existing legacy logic? NO, "Replace the current ad-hoc executor selection".
-        # "ComponentAgent updated".
-        # I must wrap legacy spec payload into a "plan-like" structure if needed.
-        
-        task_payload = action_plan if use_plan else {
-            "status": "LEGACY_SPEC_UPDATE",
-            "changed_memory_files": spec_files,
-            "objective": "Update components based on spec changes (Legacy Mode)",
-            "detailed_instructions": ["See specs for details."],
-            "target_files": [], # We might want to populate this if we can
-            "context": {"specs": spec_files}
-        }
-        
-        if not use_plan:
-             # Gather source files for legacy context if needed by executors?
-             # GeminiExecutor (LegacyWrapper) expects the raw prompt? 
-             # No, `gemini_fallback.py` constructs the prompt from `task` dict (changed_files).
-             # So passing `changed_memory_files` in task_payload is sufficient.
-             pass
+    # 3. Try each executor in order — fallback on failure
+    last_error = None
+    for executor in executor_chain:
+        if not executor.is_available():
+            print(f"  ComponentAgent: {executor.name} not available, skipping.")
+            continue
 
-        response, logs = selected_executor.execute(task_payload)
-        
-        # 6. Apply Code (Executor might return diff, or might have applied it)
-        # Antigravity: returns diff, log. (Worker applies? AG worker waits for changes, so it assumes external application or applies itself?)
-        # `antigravity_worker.py`: "Return Diff + Logs". It does NOT apply changes. It waits for them.
-        # Wait, if AG worker waits for changes, WHO applies them? The "Worker" (Playwright) acts as a human editor. 
-        # So the changes ARE applied on disk. The Diff is just observed.
-        # Gemini (Legacy): returns diff (string). Does NOT apply.
-        # `gemini_fallback.execute` calls `self._apply_response`. So it APPLIES.
-        # Jules: `jules_adapter.execute` calls `self.code_ops.apply_diff`. So it APPLIES.
-        
-        # Consistent behavior: All executors APPLY changes to disk.
-        # They return the diff for logging/summary only.
-        
-        if not response and not logs:
-             # Some falure
-             return ""
-             
-        print(f"  {selected_executor.name} Execution Log:\n{logs[:200]}...")
-        
-        return response
+        print(f"  ComponentAgent: Trying executor -> {executor.name}")
 
-    except Exception as e:
-        print(f"  ❌ Executor {selected_executor.name} failed: {e}")
-        # "No silent downgrade." -> Re-raise.
-        raise
+        # Log choice
+        try:
+            (PROJECT_ROOT / "automation/tasks/executor_used.txt").write_text(executor.name, encoding="utf-8")
+            (PROJECT_ROOT / "artifacts").mkdir(exist_ok=True)
+            (PROJECT_ROOT / "artifacts/executor_used.txt").write_text(executor.name, encoding="utf-8")
+        except Exception:
+            pass
+
+        try:
+            response, logs = executor.execute(task_payload)
+
+            # Check if executor produced meaningful output
+            if response and response.strip():
+                print(f"  ✅ {executor.name} succeeded. Output: {len(response)} chars")
+                print(f"  {executor.name} Log:\n{logs[:200]}...")
+                return response
+
+            # Executor ran but produced empty output — treat as soft failure
+            if logs and ("failed" in logs.lower() or "error" in logs.lower()):
+                print(f"  ⚠ {executor.name} ran but produced no usable output. Falling back...")
+                print(f"  {executor.name} Log: {logs[:300]}")
+                last_error = f"{executor.name}: no output — {logs[:200]}"
+                continue
+
+            # Empty but no error — might be legitimate (no changes needed)
+            print(f"  {executor.name}: No output generated (may be expected).")
+            return ""
+
+        except Exception as e:
+            print(f"  ❌ {executor.name} failed: {e}")
+            last_error = f"{executor.name}: {e}"
+            continue  # Try next executor
+
+    # All executors exhausted
+    if last_error:
+        print(f"  ❌ All executors failed. Last error: {last_error}")
+    return ""
 

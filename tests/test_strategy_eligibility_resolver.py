@@ -220,8 +220,8 @@ MOCK_REGISTRY = {
 }
 
 @patch('src.evolution.strategy_eligibility_resolver.STRATEGY_REGISTRY', MOCK_REGISTRY)
-@patch('src.evolution.strategy_eligibility_resolver.get_evolution_version', return_value="1.2.3")
-@patch('src.evolution.strategy_eligibility_resolver.get_frozen_date', return_value="2026-01-01")
+@patch('evolution.strategy_evolution_guard.get_frozen_date', return_value="2026-01-01")
+@patch('evolution.strategy_evolution_guard.get_evolution_version', return_value="1.2.3")
 def test_resolve_all_strategies(mock_version, mock_frozen_date):
     result = resolve_all_strategies("BULL_VOL", CURRENT_FACTORS)
 

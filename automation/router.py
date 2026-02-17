@@ -74,6 +74,10 @@ class TaskRouter:
                 execution_mode = "AUTONOMOUS"
                 reason = f"Selected by priority order: {selected.name}"
 
+        # Append test_router invariant suffix when active
+        if getattr(config, "test_router", False):
+            reason = f"{reason} [TEST_ROUTER active]"
+
         self._write_router_audit(
             run_id=run_id,
             available_executors=available_names,
