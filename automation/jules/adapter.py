@@ -134,9 +134,9 @@ class JulesAdapter:
             return job_id
 
         except Exception as e:
-            logger.error(f"Failed to create Jules session: {e}")
             if hasattr(e, 'response') and e.response:
-                logger.error(f"Response: {e.response.text}")
+                print(f"  ❌ Jules API Error: {e.response.text}") # Print to stdout
+            logger.error(f"Failed to create Jules session: {e}", exc_info=True)
             raise RuntimeError(f"Jules submission failed: {e}")
 
     def poll_job(self, job_id: str) -> str:

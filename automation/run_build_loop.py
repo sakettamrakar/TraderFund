@@ -564,6 +564,8 @@ def main():
                 action_plan["context"] = action_plan.get("context", {})
                 action_plan["context"]["intent_override"] = intent_override
 
+                action_plan["status"] = "ACTION_REQUIRED"  # Force action on override
+
                 # Persist the corrected action plan
                 action_plan_path.write_text(
                     json.dumps(action_plan, indent=2), encoding="utf-8"
@@ -571,6 +573,11 @@ def main():
                 print(Fore.MAGENTA + f"  ✔ Action plan updated with override content." + Style.RESET_ALL)
         else:
             print(Fore.GREEN + "  ✔ No intent override — proceeding with auto-extracted intent." + Style.RESET_ALL)
+
+        if action_plan.get("status") == "NO_ACTION_REQUIRED":
+            print(Fore.GREEN + "  ✔ No semantic changes or overrides. Exiting build loop." + Style.RESET_ALL)
+            config.journal.finish()
+            sys.exit(0)
 
         # ------------------------------------------------------------------
         # JULES EXECUTION PATH
