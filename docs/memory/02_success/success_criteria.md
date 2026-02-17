@@ -75,7 +75,18 @@
 - **Latency Logging**: All convergence scores must log computation latency.
 
 ## 7. L3 — Meta-Analysis Success
+Invariant 1 — Regime Dependency
 
+Meta-Analysis MUST consume the current RegimeState (L1).
+
+If RegimeState is undefined:
+
+trust_score = 0.0
+status = "INSUFFICIENT_CONTEXT"
+
+Meta-Analysis MUST NOT execute without L1 context.
+
+Purpose: Prevent level skipping.
 
 - **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
 
