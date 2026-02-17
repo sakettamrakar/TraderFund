@@ -1,25 +1,22 @@
+import datetime
 import json
 import logging
-import time
-import datetime
-from pathlib import Path
 import sys
+import time
+from pathlib import Path
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from automation.execution.code_ops import CodeOps
-from automation.execution.validation import ValidationPlanner, ValidationRunner
 from automation.execution.failure import FailureAnalyzer
+from automation.execution.validation import ValidationPlanner, ValidationRunner
+from automation.executors.registry import get_executor_by_name
 from automation.router import TaskRouter
 
-# New Executors
-from automation.executors.antigravity_worker import AntigravityExecutor
-from automation.executors.jules_adapter import JulesExecutor
-from automation.executors.gemini_fallback import GeminiExecutor
-
 logger = logging.getLogger(__name__)
+
 
 class TaskExecutor:
     def __init__(self):
@@ -33,33 +30,25 @@ class TaskExecutor:
         self.runs_dir = self.project_root / "automation" / "runs"
         self.runs_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize Executor Instances
-        self.executors = {
-            "AG": AntigravityExecutor(self.project_root),
-            "JULES": JulesExecutor(self.project_root),
-            "GEMINI": GeminiExecutor(self.project_root)
-        }
-
     def process_task(self, task_file: Path):
         """
         Executes a single task.
         """
         task_id = task_file.stem.replace("task_", "")
-        logger.info(f"Processing task {task_id} from {task_file.name}")
+        logger.info("Processing task %s from %s", task_id, task_file.name)
 
         try:
-            with open(task_file, 'r') as f:
-                task = json.load(f)
-        except Exception as e:
-            logger.error(f"Failed to load task file: {e}")
+            with open(task_file, "r", encoding="utf-8") as handle:
+                task = json.load(handle)
+        except Exception as exc:
+            logger.error("Failed to load task file: %s", exc)
             return
 
-        # 1. Assign Task
         task["status"] = "ASSIGNED"
         self._update_task_file(task_file, task)
 
-        # Create Run Directory
         run_id = f"{task_id}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}"
+        task["run_id"] = run_id
         run_dir = self.runs_dir / run_id
         run_dir.mkdir(parents=True, exist_ok=True)
 
@@ -68,116 +57,145 @@ class TaskExecutor:
         reason = "Routing not performed"
 
         try:
-            # 2. Routing
+            # 1. Routing
             executor_type, reason = self.router.route(task)
-            logger.info(f"Routing decision for {task_id}: {executor_type} ({reason})")
+            logger.info("Routing decision for %s: %s (%s)", task_id, executor_type, reason)
 
-            with open(run_dir / "routing.json", "w") as f:
-                json.dump({"executor": executor_type, "reason": reason, "timestamp": time.time()}, f)
+            with open(run_dir / "routing.json", "w", encoding="utf-8") as handle:
+                json.dump(
+                    {"executor": executor_type, "reason": reason, "timestamp": time.time()},
+                    handle,
+                    indent=2,
+                )
 
-            # 3. Execution
-            if executor_type not in self.executors:
-                raise ValueError(f"Unknown executor type: {executor_type}")
+            # 2. Deterministic executor lookup (no fallback chain)
+            executor = get_executor_by_name(
+                executor_type,
+                project_root=self.project_root,
+                include_unavailable=True,
+            )
+            if executor is None:
+                raise RuntimeError(f"Unknown executor type: {executor_type}")
 
-            executor = self.executors[executor_type]
-            diff, logs = executor.execute(task, run_dir)
+            run_context = {
+                "run_id": run_id,
+                "run_dir": str(run_dir),
+                "task_id": task_id,
+                "project_root": str(self.project_root),
+                "escalation_reason": reason,
+            }
 
-            # Save Execution Logs
-            with open(run_dir / "execution_log.txt", "w") as f:
-                f.write(logs)
+            result = executor.execute(task, run_context)
 
-            # Save Diff
+            with open(run_dir / "execution_log.txt", "w", encoding="utf-8") as handle:
+                handle.write(
+                    json.dumps(
+                        {
+                            "executor_name": result.executor_name,
+                            "success": result.success,
+                            "artifacts_path": result.artifacts_path,
+                            "error_message": result.error_message,
+                        },
+                        indent=2,
+                    )
+                )
+
+            # HUMAN_SUPERVISED is a controlled non-autonomous handoff, not a silent fallback.
+            if executor.mode == "HUMAN":
+                task["status"] = "HUMAN_REQUIRED"
+                task["run_id"] = run_id
+                self._update_task_file(task_file, task)
+                logger.info("Task %s escalated to HUMAN_SUPERVISED.", task_id)
+                return
+
+            if not result.success:
+                raise RuntimeError(result.error_message or f"{executor_type} execution failed")
+
+            # Capture diff for audit.
+            diff = ""
+            try:
+                diff_proc = self.code_ops.generate_diffs()
+                diff = diff_proc if isinstance(diff_proc, str) else ""
+            except Exception:
+                pass
+
             (run_dir / "diffs").mkdir(exist_ok=True)
-            with open(run_dir / "diffs" / "changes.diff", "w") as f:
-                f.write(diff)
+            with open(run_dir / "diffs" / "changes.diff", "w", encoding="utf-8") as handle:
+                handle.write(diff)
 
-            # Determine modified files
-            # Since executors apply changes or return a patch that has been applied (hopefully),
-            # we check git diff --name-only relative to before execution?
-            # Or just check what changed now.
-            # CodeOps.get_changed_files() returns `git diff --name-only`.
-            # This shows uncommitted changes.
             modified_files = self.code_ops.get_changed_files()
-
             if not modified_files and not diff.strip():
-                 logger.warning(f"No files modified by {executor_type}.")
+                logger.warning("No files modified by %s.", executor_type)
 
-            # 4. Validation & Finalization
             self._validate_and_finalize(task, task_file, run_dir, modified_files, executor_type)
 
-        except Exception as e:
-            logger.error(f"Task {task_id} FAILED: {e}")
+        except Exception as exc:
+            logger.error("Task %s FAILED: %s", task_id, exc)
             task["status"] = "FAILED"
             task["run_id"] = run_id
             self._update_task_file(task_file, task)
 
             extra_context = {"classification_reason": reason}
-            failure_analyzer.generate_failure_tree(e, task, f"Execution ({executor_type})", str(e), extra_context=extra_context)
+            failure_analyzer.generate_failure_tree(
+                exc,
+                task,
+                f"Execution ({executor_type})",
+                str(exc),
+                extra_context=extra_context,
+            )
 
     def _validate_and_finalize(self, task, task_file, run_dir, modified_files, executor_type):
         """
         Runs validation and updates task status.
         """
-        # Validation Planning
         plan = self.validation_planner.create_plan(modified_files)
-        with open(run_dir / "validation_plan.json", "w") as f:
-            json.dump(plan.to_dict(), f, indent=2)
+        with open(run_dir / "validation_plan.json", "w", encoding="utf-8") as handle:
+            json.dump(plan.to_dict(), handle, indent=2)
 
-        # Validation Execution
-        # A. Unit Tests (Mandatory)
         success, output = self.validation_runner.run_unit_tests()
-        with open(run_dir / "test_output.txt", "w") as f:
-            f.write(output)
-
+        with open(run_dir / "test_output.txt", "w", encoding="utf-8") as handle:
+            handle.write(output)
         if not success:
             raise RuntimeError("Unit tests failed")
 
-        # B. Domain Contracts (Mandatory)
         success, output = self.validation_runner.check_domain_contracts(modified_files)
-        with open(run_dir / "domain_validation.txt", "w") as f:
-            f.write(output)
-
+        with open(run_dir / "domain_validation.txt", "w", encoding="utf-8") as handle:
+            handle.write(output)
         if not success:
             raise RuntimeError(f"Domain contract violation: {output}")
 
-        # C. Phase Q Semantic Validators (REQUIRED)
         success, output = self.validation_runner.run_semantic_validators(run_dir, plan)
-        with open(run_dir / "semantic_validation_log.txt", "w") as f:
-            f.write(output)
-
+        with open(run_dir / "semantic_validation_log.txt", "w", encoding="utf-8") as handle:
+            handle.write(output)
         if not success:
             raise RuntimeError(f"Semantic validation failed: {output}")
 
-        # D. Optional Validators
         success, output = self.validation_runner.run_optional_validators(plan)
-        with open(run_dir / "optional_validation.txt", "w") as f:
-            f.write(output)
-
+        with open(run_dir / "optional_validation.txt", "w", encoding="utf-8") as handle:
+            handle.write(output)
         if not success:
-             raise RuntimeError(f"Optional validation failed: {output}")
+            raise RuntimeError(f"Optional validation failed: {output}")
 
-        # Success
         task["status"] = "COMPLETE"
         task["run_id"] = run_id = run_dir.name
         self._update_task_file(task_file, task)
 
-        # Summary
         summary = {
             "status": "SUCCESS",
             "run_id": run_id,
             "task_id": task.get("task_id"),
             "executor": executor_type,
             "modified_files": modified_files,
-            "validations": plan.to_dict()
+            "validations": plan.to_dict(),
         }
-        with open(run_dir / "summary.json", "w") as f:
-            json.dump(summary, f, indent=2)
+        with open(run_dir / "summary.json", "w", encoding="utf-8") as handle:
+            json.dump(summary, handle, indent=2)
 
-        logger.info(f"Task {task.get('task_id')} COMPLETED successfully via {executor_type}.")
+        logger.info("Task %s COMPLETED successfully via %s.", task.get("task_id"), executor_type)
 
     def _update_task_file(self, task_file, task_data):
         try:
-            with open(task_file, 'w') as f:
-                json.dump(task_data, f, indent=2)
-        except Exception as e:
-            logger.error(f"Failed to update task file {task_file}: {e}")
+            with open(task_file, "w", encoding="utf-8") as handle:
+                json.dump(task_data, handle, indent=2)
+        except Exception as exc:
+            logger.error("Failed to update task file %s: %s", task_file, exc)

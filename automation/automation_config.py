@@ -17,6 +17,8 @@ class AutomationConfig:
         self.dry_run = False
         self.journal = None
         self.test_router = False
+        self.EXECUTOR_PRIORITY = ["JULES", "GEMINI"]
+        self.HUMAN_SUPERVISED = False
         # Phase AB: Visual Validation
         self.visual_validation_enabled = True
         self.base_url = "http://localhost:3000"
