@@ -95,6 +95,34 @@ def extract_section(content: str, line_no: int) -> str:
             return line.lstrip("#").strip()
     return "Global"
 
+def _extract_sections_from_content(content: str) -> List[tuple]:
+    """Extract (section_name, section_summary) pairs from markdown content."""
+    sections = []
+    lines = content.splitlines()
+    current_section = None
+    current_lines = []
+
+    for line in lines:
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            # Save previous section
+            if current_section and current_lines:
+                summary = "\n".join(l for l in current_lines if l.strip())[:500]
+                if summary:
+                    sections.append((current_section, summary))
+            current_section = stripped.lstrip("#").strip()
+            current_lines = []
+        elif current_section:
+            current_lines.append(stripped)
+
+    # Final section
+    if current_section and current_lines:
+        summary = "\n".join(l for l in current_lines if l.strip())[:500]
+        if summary:
+            sections.append((current_section, summary))
+
+    return sections
+
 def analyze_diff(old_state: Dict[str, str], new_state: Dict[str, str]) -> List[Dict[str, Any]]:
     """Compares two states and returns structured semantic changes."""
     changes = []
@@ -108,14 +136,26 @@ def analyze_diff(old_state: Dict[str, str], new_state: Dict[str, str]) -> List[D
         if old_content == new_content:
             continue
             
-        # If file added
+        # If file added — parse sections for rich intent
         if not old_content:
-            changes.append({
-                "file": f"docs/memory/{filename}",
-                "change_type": "FILE_ADDED",
-                "section": "Global",
-                "content": "File created."
-            })
+            sections_found = _extract_sections_from_content(new_content)
+            if sections_found:
+                for sec_name, sec_content in sections_found:
+                    changes.append({
+                        "file": f"docs/memory/{filename}",
+                        "change_type": "SECTION_ADDED",
+                        "section": sec_name,
+                        "content": sec_content[:500]
+                    })
+            else:
+                # Fallback: no sections, use first meaningful lines
+                summary = new_content.strip()[:300] or "File created."
+                changes.append({
+                    "file": f"docs/memory/{filename}",
+                    "change_type": "FILE_ADDED",
+                    "section": "Global",
+                    "content": summary
+                })
             continue
 
         # If file deleted

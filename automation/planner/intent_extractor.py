@@ -31,10 +31,13 @@ KEYWORD_MAP = {
     "convergence": "L7",
     "score": "L7",
     "ranking": "L7",
+    "signal": "L7",
     "portfolio": "L8",
     "sizing": "L8",
     "risk": "L9",
     "execution": "L10",
+    "dashboard": "L10",
+    "observability": "L10",
     "harness": "L11",
 }
 
