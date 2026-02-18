@@ -102,9 +102,22 @@ def _extract_artifact_bundle(payload: Dict[str, Any]) -> Dict[str, str]:
 
     outputs = payload.get("outputs")
     if isinstance(outputs, list):
-        joined_outputs = "\n".join(_coerce_text(x) for x in outputs if x is not None)
-        if joined_outputs and not logs:
-            logs = joined_outputs
+        for output in outputs:
+            if not isinstance(output, dict):
+                continue
+            # Jules changeSet format: outputs[].changeSet.gitPatch.unidiffPatch
+            change_set = output.get("changeSet") or output.get("change_set")
+            if isinstance(change_set, dict) and not diff:
+                git_patch = change_set.get("gitPatch") or change_set.get("git_patch")
+                if isinstance(git_patch, dict):
+                    patch_text = git_patch.get("unidiffPatch") or git_patch.get("patch")
+                    if patch_text:
+                        diff = _coerce_text(patch_text)
+
+        if not logs:
+            joined_outputs = "\n".join(_coerce_text(x) for x in outputs if x is not None)
+            if joined_outputs:
+                logs = joined_outputs
 
     return {"logs": logs, "diff": diff, "tests": tests}
 

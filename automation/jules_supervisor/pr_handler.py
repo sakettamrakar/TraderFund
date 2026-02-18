@@ -19,6 +19,7 @@ except Exception:  # pragma: no cover - dependency guard
 from automation.jules_supervisor.cli_api import (
     jules_api_available,
     jules_api_get,
+    jules_api_post,
     jules_cli_available,
     parse_cli_output,
     run_cli_command,
@@ -44,6 +45,10 @@ def _normalize_pr_metadata(raw: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         or raw.get("pull_request_url")
     )
     if not pr_url:
+        return None
+
+    # Reject non-GitHub PR URLs (e.g. Jules session URLs like jules.google.com/session/...)
+    if not PR_URL_RE.match(str(pr_url)):
         return None
 
     branch = raw.get("branch") or raw.get("head_branch") or raw.get("headRefName")
@@ -148,6 +153,92 @@ def _detect_pr_cli(task_id: str) -> Optional[Dict[str, Any]]:
             return text_pr
 
     return None
+
+
+def extract_changeset_from_session(session_payload: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """
+    Extracts a pending changeSet from a Jules session payload.
+
+    Jules completes with outputs[].changeSet when the code is ready but
+    not yet applied (awaiting approval). Returns a dict with:
+        diff        — unified diff text
+        base_commit — baseCommitId from the patch
+        commit_msg  — suggestedCommitMessage
+        source      — source repo
+    Returns None if no changeSet is present.
+    """
+    outputs = session_payload.get("outputs", [])
+    if not isinstance(outputs, list):
+        return None
+
+    for output in outputs:
+        if not isinstance(output, dict):
+            continue
+        change_set = output.get("changeSet") or output.get("change_set")
+        if not isinstance(change_set, dict):
+            continue
+        git_patch = change_set.get("gitPatch") or change_set.get("git_patch")
+        if not isinstance(git_patch, dict):
+            continue
+        diff = git_patch.get("unidiffPatch") or git_patch.get("patch") or ""
+        if not diff.strip():
+            continue
+        return {
+            "diff": diff,
+            "base_commit": git_patch.get("baseCommitId"),
+            "commit_msg": git_patch.get("suggestedCommitMessage"),
+            "source": change_set.get("source"),
+        }
+    return None
+
+
+def approve_jules_changeset(task_id: str) -> Dict[str, Any]:
+    """
+    Approve a Jules session's pending changeSet, triggering PR creation.
+
+    Tries POST /sessions/{id}:apply, then :approve, then :submit as fallback.
+    Returns a result dict with keys: ok, pr_url (if available), method, error.
+    """
+    task_token = task_id.split("/")[-1]
+    apply_paths = [
+        f"sessions/{task_token}:apply",
+        f"sessions/{task_token}:approve",
+        f"sessions/{task_token}:submit",
+    ]
+
+    for path in apply_paths:
+        if not jules_api_available():
+            break
+        response = jules_api_post(path, body={})
+        if not response.get("ok"):
+            logger.warning("approve_jules_changeset: %s returned %s", path, response.get("error"))
+            continue
+
+        data = response.get("data") or {}
+        # Extract PR URL from response if Jules returns it immediately
+        pr_url = (
+            data.get("pr_url")
+            or data.get("url")
+            or data.get("pull_request_url")
+        )
+        # Some responses nest inside pullRequest obj
+        pr_obj = data.get("pullRequest") or data.get("pull_request")
+        if isinstance(pr_obj, dict) and not pr_url:
+            pr_url = pr_obj.get("url") or pr_obj.get("html_url")
+
+        # Validate it's a real GitHub PR URL
+        if pr_url and not PR_URL_RE.match(str(pr_url)):
+            pr_url = None
+
+        logger.info("approve_jules_changeset: applied via %s, pr_url=%s", path, pr_url)
+        return {"ok": True, "pr_url": pr_url, "method": path, "data": data}
+
+    return {
+        "ok": False,
+        "pr_url": None,
+        "method": None,
+        "error": "All apply endpoints failed or API unavailable.",
+    }
 
 
 def detect_jules_pr(task_id: str) -> Optional[Dict[str, Any]]:

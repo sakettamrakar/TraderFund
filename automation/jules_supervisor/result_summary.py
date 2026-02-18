@@ -1,8 +1,11 @@
 import json
 import logging
+import re
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
+
+_GITHUB_PR_RE = re.compile(r"https://github\.com/[^/]+/[^/]+/pull/\d+")
 
 class ResultSummary:
     def __init__(self, run_id: str):
@@ -46,8 +49,12 @@ class ResultSummary:
                         pr_data = json.load(f)
                         summary["pr_url"] = pr_data.get("pr_url")
                         summary["branch"] = pr_data.get("branch")
-                        if summary["pr_url"]:
+                        if summary["pr_url"] and _GITHUB_PR_RE.match(str(summary["pr_url"])):
                             summary["pr_created"] = True
+                        elif summary["pr_url"]:
+                            # Not a real GitHub PR (e.g. Jules session URL) — clear it
+                            summary["pr_url"] = None
+                            summary["pr_created"] = False
                 except json.JSONDecodeError:
                     pass
 

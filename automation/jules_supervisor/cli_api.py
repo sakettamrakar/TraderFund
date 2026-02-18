@@ -116,6 +116,49 @@ def parse_cli_output(output: str) -> Dict[str, Any]:
     return {"raw_text": text}
 
 
+def jules_api_post(path: str, body: Dict[str, Any] | None = None, timeout: int = 20) -> Dict[str, Any]:
+    """
+    Performs a POST request against Jules API.
+    Returns a normalized dictionary: {ok, data, status_code, error, url}.
+    """
+    if not jules_api_available():
+        return {"ok": False, "error": "API credentials missing."}
+    if requests is None:
+        return {"ok": False, "error": "requests module unavailable."}
+
+    api_key = (JULES_API_KEY or os.environ.get("JULES_API_KEY", "")).strip()
+    url = f"{JULES_API_URL.rstrip('/')}/{path.lstrip('/')}"
+    headers = {"X-Goog-Api-Key": api_key, "Content-Type": "application/json"}
+
+    logger.info("[Executor][Jules][API] POST %s", url)
+
+    try:
+        response = requests.post(url, headers=headers, json=body or {}, timeout=timeout)
+        payload: Any = None
+        try:
+            payload = response.json()
+        except Exception:
+            payload = {"raw_text": response.text or ""}
+
+        if response.status_code >= 400:
+            return {
+                "ok": False,
+                "status_code": response.status_code,
+                "data": payload,
+                "error": f"HTTP {response.status_code}",
+                "url": url,
+            }
+
+        return {
+            "ok": True,
+            "status_code": response.status_code,
+            "data": payload,
+            "url": url,
+        }
+    except Exception as exc:
+        return {"ok": False, "error": str(exc), "url": url}
+
+
 def jules_api_get(path: str, timeout: int = 20) -> Dict[str, Any]:
     """
     Performs a GET request against Jules API.

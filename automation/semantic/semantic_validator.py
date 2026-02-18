@@ -357,11 +357,31 @@ class SemanticValidator:
     # â”€â”€ Intent Loading â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
     def _load_intent(self, intent_file: str) -> str:
-        """Load intent from file or return raw string."""
+        """Load intent from file or return raw string.
+
+        If the file is JSON (e.g. human_intent.json), extracts the meaningful
+        intent text rather than dumping the entire JSON object to the LLM.
+        """
         try:
             path = Path(intent_file)
             if path.exists():
-                return path.read_text(encoding="utf-8").strip()
+                raw = path.read_text(encoding="utf-8").strip()
+                # Try to extract a concise intent string from known JSON schemas
+                if raw.startswith("{"):
+                    try:
+                        data = json.loads(raw)
+                        # human_intent.json schema: {user_intent: {goal, expected_behavior_change}}
+                        ui = data.get("user_intent") or data
+                        parts = []
+                        for key in ("goal", "expected_behavior_change", "intent", "objective", "description"):
+                            val = ui.get(key) if isinstance(ui, dict) else None
+                            if val and isinstance(val, str):
+                                parts.append(val.strip())
+                        if parts:
+                            return "\n".join(parts)
+                    except (json.JSONDecodeError, AttributeError):
+                        pass
+                return raw
         except Exception as e:
             logger.warning(f"Failed to load intent file: {e}")
         # Treat as raw intent string

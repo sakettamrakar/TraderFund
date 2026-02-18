@@ -314,7 +314,8 @@ def _resolve_pr_diff(run_id: str, pr_info: Dict[str, Any]) -> str:
             return text
 
     pr_url = str(pr_info.get("pr_url") or "")
-    if pr_url:
+    # Only fetch diff from real GitHub PR URLs — not Jules session/task URLs
+    if pr_url and GITHUB_PR_RE.match(pr_url):
         fetched = _fetch_pr_diff(pr_url)
         if fetched.strip():
             patch_path.write_text(fetched, encoding="utf-8")

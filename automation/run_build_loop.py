@@ -10,6 +10,7 @@ If any stage fails, the loop aborts immediately.
 """
 
 import sys
+import re
 import time
 import json
 import subprocess
@@ -53,6 +54,8 @@ from automation.jules_supervisor.pr_handler import (
     detect_jules_pr,
     fetch_pr_diff,
     persist_jules_pr,
+    extract_changeset_from_session,
+    approve_jules_changeset,
 )
 from automation.jules_supervisor.result_summary import ResultSummary
 from automation.merge_controller import handle_pr_with_semantic
@@ -158,12 +161,34 @@ def _run_semantic_validation(run_id, intent_path, action_plan, changed_files, st
     try:
         from automation.semantic.semantic_validator import SemanticValidator
 
-        # Get current diff
-        try:
-            diff_proc = subprocess.run(["git", "diff"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
-            diff = diff_proc.stdout
-        except:
-            diff = ""
+        # Prefer Jules changeSet diff (stored by artifact collector) over local git diff.
+        # When Jules completes with a changeSet it hasn't applied locally, git diff is
+        # empty and we must use the Jules-supplied patch.
+        diff = ""
+        jules_patch_path = PROJECT_ROOT / "automation" / "runs" / run_id / "jules_diff.patch"
+        if jules_patch_path.exists():
+            candidate = jules_patch_path.read_text(encoding="utf-8", errors="replace").strip()
+            # Only use if it looks like a real unified diff (reject HTML/session pages)
+            if candidate.startswith("diff --git") or candidate.startswith("--- "):
+                diff = candidate
+                # Derive changed_files from the Jules diff so overreach detection
+                # compares code files (not memory trigger files)
+                extracted = []
+                for line in diff.splitlines():
+                    if line.startswith("+++ b/"):
+                        f = line[6:].strip()
+                        if f and f != "/dev/null":
+                            extracted.append(f)
+                if extracted:
+                    changed_files = list(dict.fromkeys(extracted))  # deduplicated, ordered
+                    print(Fore.CYAN + f"  ▶ Using Jules changeset diff ({len(changed_files)} files)" + Style.RESET_ALL)
+
+        if not diff:
+            try:
+                diff_proc = subprocess.run(["git", "diff"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+                diff = diff_proc.stdout
+            except:
+                diff = ""
 
         validator = SemanticValidator(run_id, str(PROJECT_ROOT))
         report = validator.validate(
@@ -338,6 +363,21 @@ def create_jules_task(changed_files, action_plan=None):
                 instructions += f"- {instr}\n"
     else:
         instructions += "Please implement changes based on the modified files provided.\n"
+
+    # List target code files from the action plan (not the memory trigger files that
+    # Jules would mistakenly interpret as files to modify).
+    _protected = ("docs/memory/", "docs/epistemic/")
+    target_files = (
+        action_plan.get("target_files", []) if action_plan else []
+    )
+    code_refs = [f for f in (target_files or []) if not any(f.startswith(p) for p in _protected)]
+    # Fall back to changed_files only when no code target_files, but never include protected paths.
+    if not code_refs:
+        code_refs = [f for f in changed_files if not any(f.startswith(p) for p in _protected)]
+    if code_refs:
+        instructions += "\nFiles to implement changes in:\n" + "\n".join(code_refs)
+    else:
+        instructions += "\nPlease create or modify the appropriate Python source files to implement this."
 
     print(f"  Creating Jules task {task_id}...")
     try:
@@ -624,14 +664,36 @@ def main():
             collector = ArtifactCollector(config.journal.run_id)
             artifacts = collector.collect(task_id, task_status=task_status)
 
+            run_dir = PROJECT_ROOT / "automation" / "runs" / config.journal.run_id
+            diff_path = run_dir / "jules_diff.patch"
+
+            # ── Detect what Jules produced ────────────────────────────────
+            # Case A: session has a pending changeSet (code ready, awaiting approval)
+            # Case B: Jules already created a GitHub PR
+            # Case C: neither — fall through to local semantic only
+
+            session_payload = monitor_result.get("payload") or {}
+            pending_changeset = extract_changeset_from_session(session_payload)
+
             # PR detection (API first, CLI fallback)
             pr_metadata = detect_jules_pr(task_id)
             persist_jules_pr(config.journal.run_id, pr_metadata)
 
-            run_dir = PROJECT_ROOT / "automation" / "runs" / config.journal.run_id
-            diff_path = run_dir / "jules_diff.patch"
-            if pr_metadata and pr_metadata.get("pr_url"):
-                # If diff artifact is empty, fetch directly from PR URL.
+            _github_pr_re = re.compile(r"https://github\.com/[^/]+/[^/]+/pull/\d+")
+            _pr_url = (pr_metadata or {}).get("pr_url", "")
+            _has_real_github_pr = bool(_pr_url and _github_pr_re.match(str(_pr_url)))
+
+            # If artifact collector already wrote the changeset diff, prefer it.
+            # If not, write it from the session payload directly.
+            if pending_changeset and not (
+                diff_path.exists()
+                and diff_path.read_text(encoding="utf-8", errors="replace").strip().startswith("diff --git")
+            ):
+                diff_path.write_text(pending_changeset["diff"], encoding="utf-8")
+                print(Fore.CYAN + "  ▶ Jules changeSet diff extracted from session payload." + Style.RESET_ALL)
+
+            if _has_real_github_pr:
+                # Fetch diff from the GitHub PR if not already populated
                 if not diff_path.exists() or not diff_path.read_text(encoding="utf-8", errors="replace").strip():
                     pr_diff = fetch_pr_diff(pr_metadata["pr_url"])
                     if pr_diff:
@@ -641,17 +703,65 @@ def main():
                 "task_id": task_id,
                 "task_status": task_status,
                 "monitor_result": monitor_result,
-                "did_pr_exist": bool(pr_metadata),
+                "did_pr_exist": _has_real_github_pr,
                 "jules_pr": pr_metadata or {},
                 "jules_test_summary": artifacts.get("test_summary", {}),
                 "jules_artifacts": artifacts,
+                "pending_changeset": pending_changeset,
             }
 
             summary_gen = ResultSummary(config.journal.run_id)
             summary_gen.generate()
 
             merge_control_result = None
-            if pr_metadata and pr_metadata.get("pr_url"):
+
+            if pending_changeset and not _has_real_github_pr:
+                # ── Case A: changeSet awaiting approval ───────────────────
+                print(Fore.CYAN + "  ▶ Jules changeSet pending approval — running semantic gate..." + Style.RESET_ALL)
+
+                # Run semantic validation on the changeset diff
+                # _run_semantic_validation will read jules_diff.patch automatically
+                _run_semantic_validation(
+                    config.journal.run_id,
+                    human_intent_path,
+                    action_plan,
+                    changed_files,
+                    strict_mode=True,   # treat pending approval as strict
+                    jules_context=jules_context,
+                )
+
+                # Read back the report to check recommendation
+                _sem_report_path = run_dir / "semantic_report.json"
+                _sem_recommendation = "UNKNOWN"
+                if _sem_report_path.exists():
+                    try:
+                        _sem_recommendation = json.loads(
+                            _sem_report_path.read_text(encoding="utf-8")
+                        ).get("recommendation", "UNKNOWN").upper()
+                    except (json.JSONDecodeError, OSError):
+                        pass
+
+                if _sem_recommendation == "ACCEPT":
+                    print(Fore.GREEN + "  ✔ Semantic gate passed — approving Jules changeSet..." + Style.RESET_ALL)
+                    approval = approve_jules_changeset(task_id)
+                    if approval.get("ok"):
+                        approved_pr_url = approval.get("pr_url")
+                        print(Fore.GREEN + f"  ✔ Jules changeSet approved. PR: {approved_pr_url or 'created (URL pending)'}" + Style.RESET_ALL)
+                        # Persist the approved PR URL if Jules returned one
+                        if approved_pr_url:
+                            persist_jules_pr(config.journal.run_id, {
+                                "pr_url": approved_pr_url,
+                                "branch": (pr_metadata or {}).get("branch"),
+                                "commit_sha": pending_changeset.get("base_commit"),
+                                "created_at": pr_metadata.get("created_at") if pr_metadata else None,
+                            })
+                    else:
+                        print(Fore.YELLOW + f"  ⚠ Jules approval call failed: {approval.get('error')} (non-blocking — changeSet was semantically valid)" + Style.RESET_ALL)
+                else:
+                    _abort(f"Semantic gate rejected Jules changeSet (recommendation={_sem_recommendation}). Not applying.")
+
+            elif _has_real_github_pr:
+                # ── Case B: GitHub PR already exists — full pre-merge gate ──
                 print(Fore.CYAN + "  ▶ Pre-merge semantic gate..." + Style.RESET_ALL)
                 merge_control_result = handle_pr_with_semantic(
                     run_id=config.journal.run_id,
@@ -672,13 +782,11 @@ def main():
                         f"{merge_control_result.get('reason', 'unknown')}"
                     )
                 followup_run_id = merge_control_result.get("followup_run_id")
-                print(
-                    Fore.GREEN
-                    + f"  ✔ PR merged; follow-up run created: {followup_run_id}"
-                    + Style.RESET_ALL
-                )
+                print(Fore.GREEN + f"  ✔ PR merged; follow-up run created: {followup_run_id}" + Style.RESET_ALL)
+
             else:
-                # No PR to gate; preserve existing semantic flow.
+                # ── Case C: No changeSet, no PR — semantic only ────────────
+                print(Fore.YELLOW + "  ⚠ Jules completed but produced no changeSet or PR — running semantic only." + Style.RESET_ALL)
                 _run_semantic_validation(
                     config.journal.run_id,
                     human_intent_path,
