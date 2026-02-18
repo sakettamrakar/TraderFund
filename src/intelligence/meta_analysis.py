@@ -5,6 +5,8 @@ Responsibility: Consolidate intelligence and enforce regime dependency.
 """
 from typing import Dict, Any, Optional
 from datetime import datetime
+import logging
+import time
 from traderfund.regime.types import MarketBehavior
 
 class MetaAnalysis:
@@ -15,6 +17,7 @@ class MetaAnalysis:
         self.trust_score = 0.0
         self.status = "PENDING"
         self.regime_state = None
+        self.logger = logging.getLogger("MetaAnalysis")
 
     def _get_regime_category(self, behavior: Any) -> str:
         """
@@ -33,61 +36,83 @@ class MetaAnalysis:
                 technical_breakout_trust: float = 0.0,
                 momentum_trust: float = 0.0,
                 factor_alignment: bool = False,
+                signal_type: str = "Standard",
                 **kwargs) -> Dict[str, Any]:
         """
         Perform meta-analysis with strict regime dependency check (L3 Invariant 01).
         And Invariant 3: Regime-Aware Trust Adjustment.
         """
-        # Invariant 01 - Regime Dependency
-        if not regime_state:
-            self.trust_score = 0.0
-            self.status = "INSUFFICIENT_CONTEXT"
+        start_time = time.perf_counter()
+        
+        # Prepare log fields
+        log_signal_type = signal_type
+        log_regime_context = regime_state
+        log_reason = "Success"
+        
+        try:
+            # Invariant 01 - Regime Dependency
+            if not regime_state:
+                self.trust_score = 0.0
+                self.status = "INSUFFICIENT_CONTEXT"
+                log_reason = "Meta-Analysis MUST NOT execute without L1 context."
+                return {
+                    "trust_score": self.trust_score,
+                    "status": self.status,
+                    "reason": log_reason
+                }
+
+            self.regime_state = regime_state
+
+            # Extract behavior from regime_state
+            behavior = regime_state.get("behavior")
+
+            # Default to UNDEFINED if not present (handled as TRANSITION)
+            if not behavior:
+                behavior = MarketBehavior.UNDEFINED
+
+            regime_category = self._get_regime_category(behavior)
+
+            # Invariant 3 — Regime-Aware Trust Adjustment
+            # In CHOP or TRANSITION regime: Technical breakout trust ≤ 0.50
+            if regime_category in ["CHOP", "TRANSITION"]:
+                if technical_breakout_trust > 0.50:
+                    self.trust_score = 0.0
+                    self.status = "REJECTED"
+                    log_reason = f"Invariant 3 Violation: Breakout trust {technical_breakout_trust} > 0.50 in {regime_category} ({behavior})."
+                    return {
+                        "trust_score": self.trust_score,
+                        "status": self.status,
+                        "reason": log_reason
+                    }
+
+            # In TRENDING regime: Momentum trust ≥ 0.60 IF factor alignment present
+            if regime_category == "TRENDING":
+                if factor_alignment and momentum_trust < 0.60:
+                    self.trust_score = 0.0
+                    self.status = "REJECTED"
+                    log_reason = f"Invariant 3 Violation: Momentum trust {momentum_trust} < 0.60 in TRENDING ({behavior}) with factor alignment."
+                    return {
+                        "trust_score": self.trust_score,
+                        "status": self.status,
+                        "reason": log_reason
+                    }
+
+            self.status = "ACTIVE"
+            # Placeholder for actual meta-analysis logic
+            self.trust_score = 1.0 # Mock success if context provided
+
             return {
                 "trust_score": self.trust_score,
                 "status": self.status,
-                "reason": "Meta-Analysis MUST NOT execute without L1 context."
+                "regime_context": regime_state
             }
-
-        self.regime_state = regime_state
-
-        # Extract behavior from regime_state
-        behavior = regime_state.get("behavior")
-
-        # Default to UNDEFINED if not present (handled as TRANSITION)
-        if not behavior:
-            behavior = MarketBehavior.UNDEFINED
-
-        regime_category = self._get_regime_category(behavior)
-
-        # Invariant 3 — Regime-Aware Trust Adjustment
-        # In CHOP or TRANSITION regime: Technical breakout trust ≤ 0.50
-        if regime_category in ["CHOP", "TRANSITION"]:
-            if technical_breakout_trust > 0.50:
-                self.trust_score = 0.0
-                self.status = "REJECTED"
-                return {
-                    "trust_score": self.trust_score,
-                    "status": self.status,
-                    "reason": f"Invariant 3 Violation: Breakout trust {technical_breakout_trust} > 0.50 in {regime_category} ({behavior})."
-                }
-
-        # In TRENDING regime: Momentum trust ≥ 0.60 IF factor alignment present
-        if regime_category == "TRENDING":
-            if factor_alignment and momentum_trust < 0.60:
-                self.trust_score = 0.0
-                self.status = "REJECTED"
-                return {
-                    "trust_score": self.trust_score,
-                    "status": self.status,
-                    "reason": f"Invariant 3 Violation: Momentum trust {momentum_trust} < 0.60 in TRENDING ({behavior}) with factor alignment."
-                }
-
-        self.status = "ACTIVE"
-        # Placeholder for actual meta-analysis logic
-        self.trust_score = 1.0 # Mock success if context provided
-
-        return {
-            "trust_score": self.trust_score,
-            "status": self.status,
-            "regime_context": regime_state
-        }
+        finally:
+            latency_ms = (time.perf_counter() - start_time) * 1000
+            # Invariant 4 - Explainability Requirement
+            self.logger.info(
+                f"Trust Decision: Signal Type={log_signal_type} | "
+                f"Regime Context={log_regime_context} | "
+                f"Adjustment Reason={log_reason} | "
+                f"Final Trust Score={self.trust_score} | "
+                f"Computation Latency={latency_ms:.4f}ms"
+            )
