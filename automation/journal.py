@@ -7,6 +7,7 @@ Tracks the execution of autonomous runs for auditability and observability.
 import json
 import time
 import uuid
+from datetime import datetime
 from pathlib import Path
 
 class RunJournal:
@@ -57,8 +58,9 @@ class RunJournal:
         self.write()
 
     def write(self):
-        """Write the journal to a JSON file."""
-        filepath = self.log_dir / f"run_{self.run_id}.json"
+        """Write the journal to a JSON file named with a datetime timestamp."""
+        ts = datetime.fromtimestamp(self.data["timestamp_start"]).strftime("%Y-%m-%d_%H-%M-%S")
+        filepath = self.log_dir / f"run_{ts}_{self.run_id[:8]}.json"
         with open(filepath, "w", encoding="utf-8") as f:
             json.dump(self.data, f, indent=2)
         return filepath
