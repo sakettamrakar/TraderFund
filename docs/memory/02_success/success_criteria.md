@@ -70,11 +70,12 @@
 
 - **Test Invariant**: `TEST_ROUTER = true`
 
-## 6. Convergence Computation Observability
+## 6. Convergence Computation Observability (L7)
 
 - **Latency Logging**: All convergence scores must log computation latency.
 
 ## 7. L3 — Meta-Analysis Success
+<!-- Invariant 01: L3 Meta-Analysis Logic -->
 Invariant 01 — Regime Dependency
 
 Meta-Analysis MUST consume the current RegimeState (L1).
