@@ -117,6 +117,24 @@ Violations MUST be rejected during semantic validation.
 
 Purpose: Encode "don't trust breakouts in chop."
 
+🔹 Invariant 4 — Explainability Requirement
+
+Each trust decision MUST log:
+
+Signal type
+
+Regime context
+
+Adjustment reason
+
+Final trust score
+
+Computation latency (ms)
+
+Silent trust calculations are forbidden.
+
+Purpose: Enforce glass-box observability.
+
 - **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
 
 - **Test Invariant (Commit Trigger T4)**: No-op invariant for forced planner failure validation only.
