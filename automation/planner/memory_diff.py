@@ -145,11 +145,11 @@ def analyze_diff(old_state: Dict[str, str], new_state: Dict[str, str]) -> List[D
                         "file": f"docs/memory/{filename}",
                         "change_type": "SECTION_ADDED",
                         "section": sec_name,
-                        "content": sec_content[:500]
+                        "content": sec_content[:2000]
                     })
             else:
                 # Fallback: no sections, use first meaningful lines
-                summary = new_content.strip()[:300] or "File created."
+                summary = new_content.strip()[:500] or "File created."
                 changes.append({
                     "file": f"docs/memory/{filename}",
                     "change_type": "FILE_ADDED",
@@ -168,46 +168,54 @@ def analyze_diff(old_state: Dict[str, str], new_state: Dict[str, str]) -> List[D
             })
             continue
             
-        # Content changed - calculate diff
+        # Content changed - calculate diff using aggregation
         diff = difflib.ndiff(old_content.splitlines(), new_content.splitlines())
+        current_change = None
         
         line_idx = 0
         for line in diff:
             code = line[0]
-            text = line[2:]
+            text = line[2:] 
             
             if code == ' ':
                 line_idx += 1
+                # Context line means break in contiguous changes
+                if current_change:
+                    changes.append(current_change)
+                    current_change = None
             elif code == '-':
-                # Deletion (we don't increment line_idx for deletions in new file)
-                # But we might want to capture what was removed
-                pass 
+                # Deletion - Flush current add buffer
+                if current_change:
+                    changes.append(current_change)
+                    current_change = None
+                pass
             elif code == '+':
-                # Addition / Modification
-                # Identify section
+                # Addition
                 section = extract_section(new_content, line_idx)
                 
-                # Check if it looks like an invariant (bullet or numbered list)
-                if text.strip().startswith(("-", "*", "1.")):
-                    changes.append({
-                        "file": f"docs/memory/{filename}",
-                        "change_type": "INVARIANT_ADDED/MODIFIED",
-                        "section": section,
-                        "content": text.strip()
-                    })
+                # Try to merge with current_change
+                if (current_change and 
+                    current_change['section'] == section and 
+                    current_change['change_type'] == 'CONTENT_CHANGED'):
+                    # Append with newline, preserving indentation (no strip)
+                    current_change['content'] += '\n' + text
                 else:
-                    changes.append({
+                    # Flush previous
+                    if current_change:
+                        changes.append(current_change)
+                    
+                    current_change = {
                         "file": f"docs/memory/{filename}",
                         "change_type": "CONTENT_CHANGED",
                         "section": section,
-                        "content": text.strip()
-                    })
+                        "content": text
+                    }
                 line_idx += 1
-            elif code == '?':
-                pass # Intraline diff hints
+        
+        # Flush final buffer
+        if current_change:
+            changes.append(current_change)
                 
-    # Deduplicate changes (adjacent lines might trigger multiple events)
-    # For now, simple list.
     return changes
 
 

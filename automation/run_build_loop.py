@@ -308,10 +308,25 @@ def create_jules_task(changed_files, action_plan=None):
     adapter = JulesAdapter()
     task_id = config.journal.run_id
 
+    # Extract rich title from action plan context
+    title = "Automated Build Loop Task"
+    if action_plan:
+        # Try finding the user intent goal first (most descriptive)
+        try:
+            title = action_plan["context"]["human_intent"]["user_intent"]["goal"]
+        except (KeyError, TypeError):
+            # Fallback to objective
+            title = action_plan.get("objective", title)
+    
+    # Ensure title isn't too long for API (if applicable, but good practice)
+    if len(title) > 200:
+        title = title[:197] + "..."
+
     task_data = {
         "task_id": task_id,
         "changed_memory_files": changed_files,
         "purpose": action_plan.get("objective") if action_plan else "Automated Build Loop Task",
+        "title": title,
     }
 
     instructions = "Please address the following changes:\n"

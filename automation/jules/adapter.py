@@ -88,6 +88,7 @@ class JulesAdapter:
             pass
 
         return {
+            "title": task.get("title", "Jules Task"),
             "prompt": prompt,
             "sourceContext": {
                 "source": self.source_name,
