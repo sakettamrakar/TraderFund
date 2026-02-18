@@ -94,6 +94,13 @@ class DriftAnalyzer:
         plan = plan or {"status": "NO_PLAN", "objective": "Unknown"}
         target_files = target_files or plan.get("target_files", [])
 
+        # Log if diff will be truncated so the caller is always aware
+        if len(diff) > 12000:
+            logger.warning(
+                "DriftAnalyzer: DIFF_TRUNCATED=true original_len=%d truncated_to=12000",
+                len(diff),
+            )
+
         # ── Pass 1: Alignment Judge ──────────────────────────
         logger.info("Pass 1: Alignment Judge starting...")
         alignment = self._pass_alignment_judge(intent, plan, diff, success_criteria)

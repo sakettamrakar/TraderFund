@@ -170,6 +170,10 @@ def extract_changeset_from_session(session_payload: Dict[str, Any]) -> Optional[
     """
     outputs = session_payload.get("outputs", [])
     if not isinstance(outputs, list):
+        logger.warning(
+            "extract_changeset_from_session: SCHEMA_DRIFT outputs field is not a list (got %s)",
+            type(outputs).__name__,
+        )
         return None
 
     for output in outputs:
@@ -180,16 +184,26 @@ def extract_changeset_from_session(session_payload: Dict[str, Any]) -> Optional[
             continue
         git_patch = change_set.get("gitPatch") or change_set.get("git_patch")
         if not isinstance(git_patch, dict):
+            logger.warning(
+                "extract_changeset_from_session: SCHEMA_DRIFT gitPatch missing or wrong type in changeSet"
+            )
             continue
         diff = git_patch.get("unidiffPatch") or git_patch.get("patch") or ""
         if not diff.strip():
+            logger.warning("extract_changeset_from_session: EMPTY_PATCH changeSet contains empty diff")
             continue
+        logger.info(
+            "extract_changeset_from_session: SUCCESS diff_len=%d base_commit=%s",
+            len(diff),
+            git_patch.get("baseCommitId"),
+        )
         return {
             "diff": diff,
             "base_commit": git_patch.get("baseCommitId"),
             "commit_msg": git_patch.get("suggestedCommitMessage"),
             "source": change_set.get("source"),
         }
+    logger.warning("extract_changeset_from_session: NO_CHANGESET no valid changeSet found in session outputs")
     return None
 
 
