@@ -69,11 +69,11 @@ class JulesAdapter:
         """
         task_id = task.get("task_id", "unknown-task")
 
-        # Construct prompt from instructions plus explicit changes context
+        # Construct prompt from instructions.
+        # NOTE: We intentionally do NOT append changed_memory_files here.
+        # Memory/docs files must never be listed as targets — the caller
+        # (create_jules_task) already includes only safe code targets in instructions.
         prompt = instructions
-        files = task.get("changed_memory_files", [])
-        if files:
-            prompt += "\n\nRelevant files:\n" + "\n".join(files)
 
         # Detect current branch
         starting_branch = "main"

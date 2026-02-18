@@ -192,6 +192,40 @@ def extract_changeset_from_session(session_payload: Dict[str, Any]) -> Optional[
     return None
 
 
+def post_jules_followup_message(session_id: str, fix_prompt: str) -> Dict[str, Any]:
+    """
+    Post a follow-up message to an existing Jules session, asking it to fix issues.
+
+    Tries:
+      1. POST /sessions/{id}/messages   (conversational follow-up)
+      2. POST /sessions/{id}:resume     (resume with new prompt)
+      3. POST /sessions/{id}:retry      (retry with amended prompt)
+
+    Returns {ok, method, data, error}.
+    """
+    task_token = session_id.split("/")[-1]
+    endpoints = [
+        (f"sessions/{task_token}/messages", {"content": fix_prompt, "role": "user"}),
+        (f"sessions/{task_token}:resume",   {"prompt": fix_prompt}),
+        (f"sessions/{task_token}:retry",    {"prompt": fix_prompt}),
+    ]
+
+    for path, body in endpoints:
+        if not jules_api_available():
+            break
+        response = jules_api_post(path, body=body)
+        if response.get("ok"):
+            logger.info("post_jules_followup_message: posted via %s", path)
+            return {"ok": True, "method": path, "data": response.get("data", {})}
+        logger.warning("post_jules_followup_message: %s returned %s", path, response.get("error"))
+
+    return {
+        "ok": False,
+        "method": None,
+        "error": "All follow-up endpoints failed or API unavailable.",
+    }
+
+
 def approve_jules_changeset(task_id: str) -> Dict[str, Any]:
     """
     Approve a Jules session's pending changeSet, triggering PR creation.

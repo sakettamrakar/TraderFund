@@ -56,6 +56,7 @@ from automation.jules_supervisor.pr_handler import (
     persist_jules_pr,
     extract_changeset_from_session,
     approve_jules_changeset,
+    post_jules_followup_message,
 )
 from automation.jules_supervisor.result_summary import ResultSummary
 from automation.merge_controller import handle_pr_with_semantic
@@ -379,11 +380,23 @@ def create_jules_task(changed_files, action_plan=None):
     else:
         instructions += "\nPlease create or modify the appropriate Python source files to implement this."
 
+    # Explicit guard — Jules must never touch memory or documentation folders.
+    instructions += (
+        "\n\nFORBIDDEN — Do NOT create, modify, or delete any files under:\n"
+        "  - docs/memory/\n"
+        "  - docs/epistemic/\n"
+        "  - docs/ (any subdirectory)\n"
+        "  - .git/\n"
+        "Only modify source code files (src/, tests/, traderfund/, or similar Python modules). "
+        "Memory files are read-only reference documents; they must never be committed as part of this task."
+    )
+
     print(f"  Creating Jules task {task_id}...")
     try:
         payload = adapter.create_job(task_data, instructions)
         job_id = adapter.submit_job(payload)
         print(f"  Jules Job Submitted: {job_id}")
+        _save_last_jules_session(job_id)
         return job_id
     except Exception as exc:
         print(f"  Jules API submission failed: {exc}")
@@ -421,9 +434,86 @@ def create_jules_task(changed_files, action_plan=None):
 
         if cli_job_id:
             print(f"  Jules Job Submitted via CLI: {cli_job_id}")
+            _save_last_jules_session(str(cli_job_id))
             return str(cli_job_id)
 
     raise RuntimeError("Jules CLI fallback submission failed.")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Jules session helpers
+# ─────────────────────────────────────────────────────────────────────────────
+
+_LAST_SESSION_FILE = AUTOMATION_DIR / "history" / "last_jules_session.txt"
+
+
+def _save_last_jules_session(session_id: str) -> None:
+    """Persist the most recently submitted Jules session ID."""
+    try:
+        _LAST_SESSION_FILE.parent.mkdir(parents=True, exist_ok=True)
+        _LAST_SESSION_FILE.write_text(session_id.strip(), encoding="utf-8")
+    except OSError as exc:
+        print(Fore.YELLOW + f"  ⚠ Could not save last Jules session: {exc}" + Style.RESET_ALL)
+
+
+def _load_last_jules_session() -> str | None:
+    """Return the last saved Jules session ID, or None."""
+    try:
+        if _LAST_SESSION_FILE.exists():
+            val = _LAST_SESSION_FILE.read_text(encoding="utf-8").strip()
+            return val or None
+    except OSError:
+        pass
+    return None
+
+
+def _build_fix_prompt(report: dict, intent: str, diff: str) -> str:
+    """
+    Construct a precise fix prompt to post back to Jules when semantic
+    validation rejects or flags the changeset.
+
+    The prompt explains:
+      - What was wrong (violations, mismatches)
+      - What must be fixed
+      - Explicit constraint that memory/docs files are NOT to be touched
+    """
+    issues = []
+
+    contract_violations = report.get("contract_violations", [])
+    for v in contract_violations:
+        sev = v.get("severity", "")
+        msg = v.get("message") or v.get("file") or str(v)
+        issues.append(f"[CONTRACT {sev}] {msg}")
+
+    for m in report.get("drift", {}).get("missing_requirements", []):
+        issues.append(f"[MISSING] {m}")
+
+    for u in report.get("drift", {}).get("unintended_modifications", []):
+        issues.append(f"[UNINTENDED] {u}")
+
+    for s in report.get("drift", {}).get("semantic_mismatch", []):
+        issues.append(f"[MISMATCH] {s}")
+
+    # Flatten nested report structure too
+    for v in report.get("violations", []):
+        msg = v if isinstance(v, str) else v.get("message", str(v))
+        if msg not in issues:
+            issues.append(f"[VIOLATION] {msg}")
+
+    issues_text = "\n".join(f"  - {i}" for i in issues) if issues else "  - Review failed without specific issue details."
+
+    return (
+        "The previous implementation was reviewed by the automated semantic validation pipeline "
+        "and was NOT accepted. Please fix the following issues:\n\n"
+        f"{issues_text}\n\n"
+        f"Original intent:\n{intent[:600]}\n\n"
+        "Requirements:\n"
+        "  1. Fix only the listed issues — do not change unrelated code.\n"
+        "  2. All existing tests must continue to pass.\n"
+        "  3. FORBIDDEN — do NOT modify any file under: docs/, docs/memory/, docs/epistemic/, .git/\n"
+        "  4. Only modify source code files (src/, tests/, traderfund/, or similar Python modules).\n"
+        "  5. Submit an updated changeSet for review."
+    )
 
 
 def main():
@@ -432,6 +522,18 @@ def main():
     parser.add_argument("--jules", action="store_true", help="Use Jules executor with supervisor")
     parser.add_argument("--retrigger-from-intent", action="store_true", help="Skip memory diff and use existing human intent")
     parser.add_argument("--strict-semantic", action="store_true", help="Fail run if semantic validation does not ACCEPT")
+    parser.add_argument(
+        "--session",
+        default=None,
+        metavar="SESSION_ID",
+        help=(
+            "Skip Jules task creation and validate/approve an existing session. "
+            "Use this when re-triggering to avoid creating a garbage new task. "
+            "If omitted but --retrigger-from-intent is set, the last saved session is used automatically."
+        ),
+    )
+    parser.add_argument("--fix-retries", type=int, default=2, metavar="N",
+                        help="Max times to post a fix message to Jules and re-validate (default: 2)")
     args = parser.parse_args()
 
     # Initialize Config & Journal
@@ -465,7 +567,19 @@ def main():
         elif args.retrigger_from_intent:
             print(Fore.MAGENTA + "  Retrigger requested; bypassing commit trigger gate." + Style.RESET_ALL)
 
-        if not memory_changed and not args.retrigger_from_intent:
+        # When re-triggering, auto-resolve an existing session to avoid creating
+        # a new garbage task. --session takes precedence; fallback to last saved.
+        _reuse_session: str | None = None
+        if args.retrigger_from_intent or args.session:
+            explicit = args.session or _load_last_jules_session()
+            if explicit:
+                _reuse_session = explicit
+                print(Fore.MAGENTA + f"  ↩ Re-trigger: will reuse existing Jules session {_reuse_session}" + Style.RESET_ALL)
+                print(Fore.MAGENTA + "    (Skipping new task creation — validating existing session directly)" + Style.RESET_ALL)
+            elif args.session:
+                print(Fore.YELLOW + "  ⚠ --session flag given but no session ID found." + Style.RESET_ALL)
+
+        if not memory_changed and not args.retrigger_from_intent and not _reuse_session:
             print("  No new memory commits detected. Exiting cleanly.")
             config.journal.finish()
             sys.exit(0)
@@ -654,7 +768,12 @@ def main():
             # Phase AB: Stability check before Jules dispatch
             _run_stability_check(config.journal.run_id, action_plan)
 
-            task_id = create_jules_task(changed_files, action_plan)
+            if _reuse_session:
+                # Re-trigger path: skip task creation — reuse existing session
+                print(Fore.MAGENTA + f"  ↩ Reusing session: {_reuse_session}" + Style.RESET_ALL)
+                task_id = _reuse_session
+            else:
+                task_id = create_jules_task(changed_files, action_plan)
 
             monitor = TaskMonitor(config.journal.run_id)
             monitor_result = monitor.wait(task_id)
@@ -716,48 +835,138 @@ def main():
             merge_control_result = None
 
             if pending_changeset and not _has_real_github_pr:
-                # ── Case A: changeSet awaiting approval ───────────────────
+                # ── Case A: changeSet awaiting approval ─── with fix loop ──
                 print(Fore.CYAN + "  ▶ Jules changeSet pending approval — running semantic gate..." + Style.RESET_ALL)
 
-                # Run semantic validation on the changeset diff
-                # _run_semantic_validation will read jules_diff.patch automatically
-                _run_semantic_validation(
-                    config.journal.run_id,
-                    human_intent_path,
-                    action_plan,
-                    changed_files,
-                    strict_mode=True,   # treat pending approval as strict
-                    jules_context=jules_context,
-                )
-
-                # Read back the report to check recommendation
                 _sem_report_path = run_dir / "semantic_report.json"
                 _sem_recommendation = "UNKNOWN"
-                if _sem_report_path.exists():
-                    try:
-                        _sem_recommendation = json.loads(
-                            _sem_report_path.read_text(encoding="utf-8")
-                        ).get("recommendation", "UNKNOWN").upper()
-                    except (json.JSONDecodeError, OSError):
-                        pass
+                _sem_report: dict = {}
+                _fix_attempt = 0
+                _max_fix_retries = args.fix_retries  # default 2
 
+                while True:
+                    _run_semantic_validation(
+                        config.journal.run_id,
+                        human_intent_path,
+                        action_plan,
+                        changed_files,
+                        strict_mode=True,
+                        jules_context=jules_context,
+                    )
+
+                    if _sem_report_path.exists():
+                        try:
+                            _sem_report = json.loads(_sem_report_path.read_text(encoding="utf-8"))
+                            _sem_recommendation = _sem_report.get("recommendation", "UNKNOWN").upper()
+                        except (json.JSONDecodeError, OSError):
+                            _sem_recommendation = "UNKNOWN"
+
+                    if _sem_recommendation == "ACCEPT":
+                        break
+
+                    # Determine if errors are genuine (code defects) vs overreach/abort
+                    _contract_violations = _sem_report.get("contract_violations", [])
+                    _high_violations = [v for v in _contract_violations if v.get("severity") == "HIGH"]
+
+                    # Overreach (touching protected files) → do not retry, abort
+                    if any(
+                        "CONSTRAINT_BREAK" in str(v) or "protected" in str(v).lower()
+                        for v in _high_violations
+                    ):
+                        print(Fore.RED + "  ✘ Contract violation: protected path modification detected — will not retry." + Style.RESET_ALL)
+                        break
+
+                    if _fix_attempt >= _max_fix_retries:
+                        print(Fore.YELLOW + f"  ⚠ Max fix retries ({_max_fix_retries}) exhausted." + Style.RESET_ALL)
+                        break
+
+                    # Post a fix message and re-monitor
+                    _fix_attempt += 1
+                    print(Fore.YELLOW + f"  ↩ Semantic gate: {_sem_recommendation} — sending fix prompt to Jules (attempt {_fix_attempt}/{_max_fix_retries})..." + Style.RESET_ALL)
+
+                    _intent_text = ""
+                    if human_intent_path and Path(human_intent_path).exists():
+                        try:
+                            _intent_data = json.loads(Path(human_intent_path).read_text(encoding="utf-8"))
+                            _ui = _intent_data.get("user_intent") or _intent_data
+                            _intent_text = _ui.get("goal", "") + "\n" + _ui.get("expected_behavior_change", "")
+                        except Exception:
+                            _intent_text = str(human_intent_path)
+
+                    _current_diff = ""
+                    if diff_path.exists():
+                        _current_diff = diff_path.read_text(encoding="utf-8", errors="replace")[:2000]
+
+                    fix_prompt = _build_fix_prompt(_sem_report, _intent_text, _current_diff)
+                    fix_result = post_jules_followup_message(task_id, fix_prompt)
+                    if not fix_result.get("ok"):
+                        print(Fore.YELLOW + f"  ⚠ Could not post fix message to Jules: {fix_result.get('error')}" + Style.RESET_ALL)
+                        print(Fore.YELLOW + "    Fix prompt (copy manually if needed):" + Style.RESET_ALL)
+                        print(fix_prompt)
+                        break
+
+                    print(Fore.CYAN + f"  ▶ Fix message sent via {fix_result['method']} — waiting for Jules to respond..." + Style.RESET_ALL)
+                    monitor_result = monitor.wait(task_id)
+                    session_payload = monitor_result.get("payload") or {}
+                    pending_changeset = extract_changeset_from_session(session_payload)
+                    if pending_changeset:
+                        diff_path.write_text(pending_changeset["diff"], encoding="utf-8")
+                        print(Fore.CYAN + "  ▶ Jules updated changeSet extracted." + Style.RESET_ALL)
+                        # Re-extract changed_files from new diff
+                        _new_files = [
+                            l[6:].strip() for l in pending_changeset["diff"].splitlines()
+                            if l.startswith("+++ b/") and l[6:].strip() != "/dev/null"
+                        ]
+                        if _new_files:
+                            changed_files = list(dict.fromkeys(_new_files))
+                    else:
+                        print(Fore.YELLOW + "  ⚠ Jules fix did not produce a new changeSet diff." + Style.RESET_ALL)
+                        break
+
+                # ── Decision after loop ──────────────────────────────────
                 if _sem_recommendation == "ACCEPT":
                     print(Fore.GREEN + "  ✔ Semantic gate passed — approving Jules changeSet..." + Style.RESET_ALL)
                     approval = approve_jules_changeset(task_id)
                     if approval.get("ok"):
                         approved_pr_url = approval.get("pr_url")
                         print(Fore.GREEN + f"  ✔ Jules changeSet approved. PR: {approved_pr_url or 'created (URL pending)'}" + Style.RESET_ALL)
-                        # Persist the approved PR URL if Jules returned one
                         if approved_pr_url:
                             persist_jules_pr(config.journal.run_id, {
                                 "pr_url": approved_pr_url,
                                 "branch": (pr_metadata or {}).get("branch"),
-                                "commit_sha": pending_changeset.get("base_commit"),
+                                "commit_sha": pending_changeset.get("base_commit") if pending_changeset else None,
                                 "created_at": pr_metadata.get("created_at") if pr_metadata else None,
                             })
                     else:
-                        print(Fore.YELLOW + f"  ⚠ Jules approval call failed: {approval.get('error')} (non-blocking — changeSet was semantically valid)" + Style.RESET_ALL)
+                        print(Fore.YELLOW + f"  ⚠ Jules approval call failed: {approval.get('error')} (non-blocking)" + Style.RESET_ALL)
                 else:
+                    # Record the failure for human review
+                    _failure_record = {
+                        "run_id": config.journal.run_id,
+                        "session_id": task_id,
+                        "recommendation": _sem_recommendation,
+                        "fix_attempts": _fix_attempt,
+                        "issues": _sem_report.get("contract_violations", []) + _sem_report.get("drift", {}).get("missing_requirements", []),
+                        "session_url": f"https://jules.google.com/session/{task_id.split('/')[-1]}/",
+                        "report_path": str(_sem_report_path),
+                    }
+                    _failure_log = AUTOMATION_DIR / "history" / "validation_failures.json"
+                    try:
+                        _failure_log.parent.mkdir(parents=True, exist_ok=True)
+                        _existing = []
+                        if _failure_log.exists():
+                            try:
+                                _existing = json.loads(_failure_log.read_text(encoding="utf-8"))
+                            except Exception:
+                                _existing = []
+                        _existing.append(_failure_record)
+                        _failure_log.write_text(json.dumps(_existing, indent=2), encoding="utf-8")
+                    except OSError:
+                        pass
+                    print(Fore.RED + f"  ✘ Semantic gate: {_sem_recommendation} after {_fix_attempt} fix attempt(s)." + Style.RESET_ALL)
+                    print(Fore.RED + f"    Session for manual review: {_failure_record['session_url']}" + Style.RESET_ALL)
+                    print(Fore.RED + f"    Validation report: {_sem_report_path}" + Style.RESET_ALL)
+                    print(Fore.RED + f"    Failure logged to: {_failure_log}" + Style.RESET_ALL)
                     _abort(f"Semantic gate rejected Jules changeSet (recommendation={_sem_recommendation}). Not applying.")
 
             elif _has_real_github_pr:
