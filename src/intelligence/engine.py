@@ -12,6 +12,8 @@ Responsibilities:
 """
 import json
 import logging
+import os as _os
+import sys as _sys
 from pathlib import Path
 from typing import List, Dict, Any
 from datetime import datetime
@@ -21,6 +23,21 @@ from intelligence.symbol_universe import SymbolUniverseBuilder
 from intelligence.generators.volatility import VolatilityAttention
 from intelligence.generators.volume import VolumeAttention
 from intelligence.generators.price import PriceBehavior
+
+_INTEL_PROJECT_ROOT = _os.path.abspath(
+    _os.path.join(_os.path.dirname(__file__), "..", "..", "..")
+)
+if _INTEL_PROJECT_ROOT not in _sys.path:
+    _sys.path.insert(0, _INTEL_PROJECT_ROOT)
+
+try:
+    from automation.invariants.layer_integrations import gate_l7_convergence as _gate_l7
+except ImportError:  # pragma: no cover
+    import logging as _logging
+    _logging.getLogger(__name__).critical(
+        "CATASTROPHIC FIREWALL UNAVAILABLE — L7 invariant gate disabled"
+    )
+    raise
 
 class IntelligenceEngine:
     def __init__(self, output_dir: Path):
@@ -87,7 +104,14 @@ class IntelligenceEngine:
         
         # 5. Persist
         self._persist_snapshot(snapshot)
-        
+
+        # ── L7 Catastrophic Invariant Gate ──────────────────────────────────
+        # Signals without a conviction field default to "WATCHLIST" (exempt).
+        # Any caller that sets conviction="HIGH" must supply ≥3 lenses.
+        for _sig in enriched_signals:
+            _sig_dict = _sig.to_dict() if hasattr(_sig, "to_dict") else vars(_sig)
+            _gate_l7(_sig_dict)
+
         return snapshot
 
     def _run_generators(self, universe: List[str], market: str, data: Dict[str, Any]) -> List[AttentionSignal]:

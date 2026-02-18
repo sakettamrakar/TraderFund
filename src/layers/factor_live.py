@@ -9,10 +9,27 @@ SAFETY INVARIANTS:
 - No selection driving.
 - No asset ranking by factor.
 """
+import os as _os
+import sys as _sys
 from typing import Dict, List, Optional, Any
 from datetime import datetime
 from enum import Enum
 from pydantic import BaseModel, Field
+
+_FACTOR_PROJECT_ROOT = _os.path.abspath(
+    _os.path.join(_os.path.dirname(__file__), "..", "..", "..")
+)
+if _FACTOR_PROJECT_ROOT not in _sys.path:
+    _sys.path.insert(0, _FACTOR_PROJECT_ROOT)
+
+try:
+    from automation.invariants.layer_integrations import gate_l4_factor as _gate_l4
+except ImportError:  # pragma: no cover
+    import logging as _logging
+    _logging.getLogger(__name__).critical(
+        "CATASTROPHIC FIREWALL UNAVAILABLE — L4 invariant gate disabled"
+    )
+    raise
 
 
 class FactorType(str, Enum):
@@ -81,6 +98,8 @@ class FactorLayerLive:
         if self._current_snapshot is not None:
             self._history.append(self._current_snapshot)
         self._current_snapshot = snapshot
+        # ── L4 Catastrophic Invariant Gate ──────────────────────────────────
+        _gate_l4(snapshot)
     
     def get_current(self) -> Optional[FactorSnapshot]:
         """Get current factor state (READ-ONLY)."""

@@ -1,0 +1,339 @@
+"""
+Convergence Engine (L6) — Multi-Lens Regime-Aware Signal Aggregation
+=====================================================================
+Aggregates structured LensSignals from multiple independent lenses, enforces
+multi-lens confirmation, applies regime compatibility gating, computes a
+deterministic convergence score, and assigns a conviction grade.
+
+Guarantees:
+  • Zero randomness — identical inputs always produce identical output
+  • All scores bounded to [0.0, 1.0]
+  • Fail-safe on any missing or degenerate input
+  • Full explainability payload in every ConvergenceResult
+  • No external calls, no global mutable state, no time-based logic
+  • Computation latency measured and enforced (< 1000 ms)
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import logging
+import os
+import time
+from collections import Counter
+from typing import List, Optional
+
+from src.feedback.performance_feedback import PerformanceContext, PerformanceFeedbackEngine
+from src.models.convergence_models import (
+    ConvergenceResult,
+    ConvergenceStatus,
+    LensSignal,
+)
+from src.models.meta_models import RegimeState
+
+# ── Module-level constants (immutable, not mutable globals) ───────────────────
+_MIN_LENSES_FOR_ELIGIBLE = 3
+_MIN_LENSES_FOR_GRADE_A = 4
+_LATENCY_LIMIT_MS = 1000.0
+_DISPERSION_THRESHOLD = 0.22
+
+_GRADE_THRESHOLDS = (
+    (0.80, "A"),
+    (0.65, "B"),
+    (0.50, "C"),
+)  # anything below → D
+
+
+# ── File logger ───────────────────────────────────────────────────────────────────────────────
+def _build_logger(name: str, filename: str) -> logging.Logger:
+    logger = logging.getLogger(name)
+    if not logger.handlers:
+        _root = os.path.dirname(os.path.abspath(__file__))
+        for _ in range(8):
+            if os.path.isdir(os.path.join(_root, "src")):
+                break
+            _root = os.path.dirname(_root)
+        log_dir = os.path.join(_root, "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        fh = logging.FileHandler(os.path.join(log_dir, filename), encoding="utf-8")
+        fh.setFormatter(logging.Formatter("%(message)s"))
+        logger.addHandler(fh)
+        logger.setLevel(logging.INFO)
+    return logger
+
+
+_logger = _build_logger("convergence_engine", "convergence_engine.log")
+
+
+class ConvergenceEngine:
+    """
+    L6 Convergence Engine.
+
+    Accepts:
+        lenses      — list of LensSignal from independent analytical lenses
+        regime      — RegimeState from L1
+        meta_trust  — float trust score from L3 MetaAnalysis (TrustResult.trust_score)
+
+    Returns:
+        ConvergenceResult — fully populated, deterministic
+    """
+
+    def compute(
+        self,
+        lenses: List[LensSignal],
+        regime: RegimeState,
+        meta_trust: float,
+        performance_context: Optional[PerformanceContext] = None,
+    ) -> ConvergenceResult:
+        start = time.perf_counter()
+
+        lenses = lenses if lenses is not None else []
+        lens_count = len(lenses)
+        regime_str = getattr(regime, "regime", None) if regime is not None else None
+        meta_trust_clamped = self._clamp(meta_trust)
+
+        # ── Fail-safe gate ────────────────────────────────────────────────────
+        if meta_trust_clamped == 0.0 or regime_str is None or lens_count < 2:
+            return self._fail_safe(start, lenses, regime_str, meta_trust_clamped)
+
+        # ── Invariant: Directional alignment ─────────────────────────────────
+        directions = [ls.direction for ls in lenses]
+        direction_counts = Counter(directions)
+        unique_dirs = set(directions)
+        if len(unique_dirs) > 1:
+            # Mixed directions — catastrophic conflict
+            return self._conflict_result(start, lenses, regime_str, meta_trust_clamped)
+
+        winning_direction = directions[0]
+        aligned_lenses = lens_count  # all agree (conflict check passed)
+
+        # ── Invariant: Multi-lens requirement ─────────────────────────────────
+        status: ConvergenceStatus = "OK"
+        if lens_count < _MIN_LENSES_FOR_ELIGIBLE:
+            status = "LOW_CONFIDENCE"
+
+        # ── Regime compatibility gate ─────────────────────────────────────────
+        compatibilities = [self._clamp(ls.regime_compatibility) for ls in lenses]
+        avg_regime_compat = sum(compatibilities) / len(compatibilities)
+        if avg_regime_compat < 0.50:
+            status = "REGIME_MISMATCH"
+
+        # ── Confidence aggregation ────────────────────────────────────────────
+        confidences = [self._clamp(ls.confidence) for ls in lenses]
+        mean_conf = sum(confidences) / len(confidences)
+
+        # ── Dispersion (variance) ─────────────────────────────────────────────
+        dispersion = sum((c - mean_conf) ** 2 for c in confidences) / len(confidences)
+
+        if dispersion > _DISPERSION_THRESHOLD:
+            # Downgrade: HIGH_DISPERSION takes priority unless already more severe
+            if status == "OK":
+                status = "HIGH_DISPERSION"
+
+        # ── Convergence score formula ─────────────────────────────────────────
+        lens_count_factor = min(lens_count, 5) / 5.0
+        raw_score = (
+            mean_conf
+            * meta_trust_clamped
+            * avg_regime_compat
+            * lens_count_factor
+        )
+        base_score = self._clamp(raw_score)
+
+        # ── Performance modifier (Phase A adaptive feedback) ──────────────────────────
+        performance_modifier = 0.0
+        if performance_context is not None:
+            performance_modifier = PerformanceFeedbackEngine().compute_modifier(
+                performance_context
+            )
+        final_score = self._clamp(base_score * (1.0 + performance_modifier))
+
+        # ── Conviction grading ────────────────────────────────────────────────
+        grade = self._assign_grade(final_score, aligned_lenses, status)
+
+        # ── Latency guard ─────────────────────────────────────────────────────
+        latency = (time.perf_counter() - start) * 1000.0
+        if latency > _LATENCY_LIMIT_MS:
+            return self._fail_safe(
+                start,
+                lenses,
+                regime_str,
+                meta_trust_clamped,
+                override_status="LATENCY_VIOLATION",
+            )
+
+        input_hash = self._compute_hash(
+            lenses, regime_str, meta_trust_clamped, performance_context
+        )
+
+        _logger.info(json.dumps({
+            "component": "ConvergenceEngine",
+            "symbol": lenses[0].symbol if lenses else "",
+            "base_score": round(base_score, 6),
+            "performance_modifier": round(performance_modifier, 6),
+            "final_score": round(final_score, 6),
+            "status": status,
+            "latency_ms": round(latency, 3),
+            "input_hash": input_hash,
+        }, separators=(",", ":")))
+
+        return ConvergenceResult(
+            symbol=lenses[0].symbol if lenses else "",
+            direction=winning_direction,
+            lens_count=lens_count,
+            aligned_lenses=aligned_lenses,
+            mean_confidence=mean_conf,
+            meta_trust=meta_trust_clamped,
+            avg_regime_compatibility=avg_regime_compat,
+            score_dispersion=dispersion,
+            final_score=final_score,
+            conviction_grade=grade,
+            status=status,
+            latency_ms=latency,
+            input_hash=input_hash,
+            base_score=base_score,
+            performance_modifier=performance_modifier,
+        )
+
+    # ── Grading ───────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _assign_grade(
+        score: float, aligned_lenses: int, status: ConvergenceStatus
+    ) -> str:
+        """Deterministic grade assignment. Grade A requires >= 4 aligned lenses."""
+        for threshold, grade in _GRADE_THRESHOLDS:
+            if score >= threshold:
+                # Grade A additionally requires >= 4 aligned lenses
+                if grade == "A" and aligned_lenses < _MIN_LENSES_FOR_GRADE_A:
+                    return "B"
+                return grade
+        return "D"
+
+    # ── Hashing ───────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _compute_hash(
+        lenses: List[LensSignal],
+        regime_str: str,
+        meta_trust: float,
+        performance_context: Optional[PerformanceContext] = None,
+    ) -> str:
+        """SHA-256 (16-char prefix) over the deterministic canonical serialisation."""
+        lens_payload = sorted(
+            [
+                {
+                    "symbol": ls.symbol,
+                    "direction": ls.direction,
+                    "confidence": float(ls.confidence),
+                    "regime_compatibility": float(ls.regime_compatibility),
+                    "lens_name": ls.lens_name,
+                }
+                for ls in lenses
+            ],
+            key=lambda d: d["lens_name"],
+        )
+        perf_payload = None
+        if performance_context is not None:
+            perf_payload = {
+                "strategy_id": performance_context.strategy_id,
+                "realized_hit_rate": float(performance_context.realized_hit_rate),
+                "expected_hit_rate": float(performance_context.expected_hit_rate),
+                "realized_avg_return": float(performance_context.realized_avg_return),
+                "expected_avg_return": float(performance_context.expected_avg_return),
+            }
+        payload = json.dumps(
+            {
+                "lenses": lens_payload,
+                "meta_trust": float(meta_trust),
+                "performance_context": perf_payload,
+                "regime": regime_str,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        )
+        return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
+
+    # ── Utilities ─────────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _clamp(value) -> float:
+        if value is None:
+            return 0.0
+        try:
+            return max(0.0, min(1.0, float(value)))
+        except (TypeError, ValueError):
+            return 0.0
+
+    def _fail_safe(
+        self,
+        start: float,
+        lenses: List[LensSignal],
+        regime_str,
+        meta_trust: float,
+        override_status: ConvergenceStatus = "INSUFFICIENT_CONVERGENCE",
+    ) -> ConvergenceResult:
+        latency = (time.perf_counter() - start) * 1000.0
+        symbol = lenses[0].symbol if lenses else ""
+        lens_count = len(lenses)
+        input_hash = (
+            self._compute_hash(lenses, regime_str or "UNDEFINED", meta_trust)
+            if lenses
+            else ""
+        )
+        return ConvergenceResult(
+            symbol=symbol,
+            direction="NONE",
+            lens_count=lens_count,
+            aligned_lenses=0,
+            mean_confidence=0.0,
+            meta_trust=meta_trust,
+            avg_regime_compatibility=0.0,
+            score_dispersion=0.0,
+            final_score=0.0,
+            conviction_grade="D",
+            status=override_status,
+            latency_ms=latency,
+            input_hash=input_hash,
+            base_score=0.0,
+            performance_modifier=0.0,
+        )
+
+    def _conflict_result(
+        self,
+        start: float,
+        lenses: List[LensSignal],
+        regime_str: str,
+        meta_trust: float,
+    ) -> ConvergenceResult:
+        latency = (time.perf_counter() - start) * 1000.0
+        symbol = lenses[0].symbol if lenses else ""
+        lens_count = len(lenses)
+        input_hash = self._compute_hash(lenses, regime_str, meta_trust)
+        return ConvergenceResult(
+            symbol=symbol,
+            direction="CONFLICT",
+            lens_count=lens_count,
+            aligned_lenses=0,
+            mean_confidence=0.0,
+            meta_trust=meta_trust,
+            avg_regime_compatibility=0.0,
+            score_dispersion=0.0,
+            final_score=0.0,
+            conviction_grade="D",
+            status="DIRECTION_CONFLICT",
+            latency_ms=latency,
+            input_hash=input_hash,
+            base_score=0.0,
+            performance_modifier=0.0,
+        )
+
+    # ── Stability hook ────────────────────────────────────────────────────────
+
+    @staticmethod
+    def get_convergence_health() -> dict:
+        return {
+            "multi_lens_enforced": True,
+            "dispersion_logged": True,
+            "directional_integrity": True,
+        }

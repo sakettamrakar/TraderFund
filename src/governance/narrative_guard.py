@@ -18,9 +18,26 @@ from __future__ import annotations
 import datetime as dt
 import hashlib
 import json
+import os as _os
 import re
+import sys as _sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+_NARRATIVE_PROJECT_ROOT = _os.path.abspath(
+    _os.path.join(_os.path.dirname(__file__), "..", "..", "..")
+)
+if _NARRATIVE_PROJECT_ROOT not in _sys.path:
+    _sys.path.insert(0, _NARRATIVE_PROJECT_ROOT)
+
+try:
+    from automation.invariants.layer_integrations import gate_l2_narrative as _gate_l2
+except ImportError:  # pragma: no cover
+    import logging as _logging
+    _logging.getLogger(__name__).critical(
+        "CATASTROPHIC FIREWALL UNAVAILABLE — L2 invariant gate disabled"
+    )
+    raise
 
 try:
     from governance.suppression_state import compute_suppression_for_market
@@ -535,11 +552,14 @@ def compute_narrative_for_market(market: str) -> Dict[str, Any]:
             },
         )
 
-    return {
+    result_bundle = {
         "narrative": payload,
         "suppression": suppression_state,
         "suppression_registry": suppression_registry,
     }
+    # ── L2 Catastrophic Invariant Gate ──────────────────────────────────────
+    _gate_l2(payload)
+    return result_bundle
 
 
 def compute_narrative_for_markets(markets: Optional[List[str]] = None) -> Dict[str, Dict[str, Any]]:

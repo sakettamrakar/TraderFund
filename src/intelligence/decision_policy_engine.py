@@ -20,6 +20,18 @@ if str(PROJECT_ROOT) not in sys.path:
 if str(PROJECT_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
+try:
+    from automation.invariants.layer_integrations import (
+        gate_l5_strategy_regime as _gate_l5,
+        gate_l9_portfolio_regime as _gate_l9,
+    )
+except ImportError:  # pragma: no cover
+    import logging as _logging
+    _logging.getLogger(__name__).critical(
+        "CATASTROPHIC FIREWALL UNAVAILABLE — L5/L9 invariant gates disabled"
+    )
+    raise
+
 # F2 partiality controls
 try:
     from governance.canonical_partiality import (
@@ -188,6 +200,8 @@ class DecisionPolicyEngine:
             status = "RESTRICTED"
             if not reasons: reasons.append("Default restriction.")
 
+        # ── L5 Catastrophic Invariant Gate ────────────────────────────────
+        _gate_l5(permissions, regime_code, policy_status=status)
         return self._build_policy(
             market=market,
             status=status,
@@ -248,6 +262,8 @@ class DecisionPolicyEngine:
             if not reasons:
                 reasons.append("Default restriction.")
 
+        # ── L5 Catastrophic Invariant Gate ────────────────────────────────
+        _gate_l5(permissions, regime_code, policy_status=status)
         return self._build_policy(
             market=market,
             status=status,
@@ -278,7 +294,7 @@ class DecisionPolicyEngine:
         canonical_missing_roles: List[str] = None,
         canonical_stale_roles: List[str] = None,
     ) -> Dict[str, Any]:
-        return {
+        policy = {
             "policy_decision": {
                 "market": market,
                 "computed_at": datetime.datetime.now().isoformat(),
@@ -299,6 +315,15 @@ class DecisionPolicyEngine:
                 "version": "1.1.0-F2-DEGRADE"
             }
         }
+        # ── L9 Catastrophic Invariant Gate ──────────────────────────────────
+        # Regime conflict is detected when the system is HALTED due to a
+        # known (non-UNKNOWN) regime state.  The "RegimeConflict" flag MUST
+        # be present in that case.
+        _regime = str(regime_state).upper()
+        _conflict = (status == "HALTED") and (_regime not in ("UNKNOWN", ""))
+        _flags = ["RegimeConflict"] if _conflict else []
+        _gate_l9(_conflict, _flags, _regime if _regime else "UNKNOWN")
+        return policy
 
     def run(self):
         policy = self.evaluate()

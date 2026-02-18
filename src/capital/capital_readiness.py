@@ -1,5 +1,22 @@
+import os as _os
+import sys as _sys
 from typing import Dict, Any, List
 from .capital_plan import get_capital_config, TOTAL_PAPER_CAPITAL
+
+_CAP_PROJECT_ROOT = _os.path.abspath(
+    _os.path.join(_os.path.dirname(__file__), "..", "..", "..")
+)
+if _CAP_PROJECT_ROOT not in _sys.path:
+    _sys.path.insert(0, _CAP_PROJECT_ROOT)
+
+try:
+    from automation.invariants.layer_integrations import gate_l8_risk_caps as _gate_l8
+except ImportError:  # pragma: no cover
+    import logging as _logging
+    _logging.getLogger(__name__).critical(
+        "CATASTROPHIC FIREWALL UNAVAILABLE — L8 invariant gate disabled"
+    )
+    raise
 
 def check_capital_readiness(eligibility_resolution: Dict[str, Any], regime: str = "NEUTRAL") -> Dict[str, Any]:
     """
@@ -59,7 +76,7 @@ def check_capital_readiness(eligibility_resolution: Dict[str, Any], regime: str 
     if dd_state == "FROZEN" or kill_switch["global"] == "ARMED":
         readiness_status = "NOT_READY"
     
-    return {
+    result = {
         "status": readiness_status,
         "drawdown_state": dd_state,
         "kill_switch": kill_switch,
@@ -71,3 +88,6 @@ def check_capital_readiness(eligibility_resolution: Dict[str, Any], regime: str 
             "regime": regime
         }
     }
+    # ── L8 Catastrophic Invariant Gate ──────────────────────────────────────
+    _gate_l8(total_alloc, max_exposure=1.0)
+    return result

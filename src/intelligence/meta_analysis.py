@@ -6,8 +6,25 @@ Responsibility: Consolidate intelligence and enforce regime dependency.
 from typing import Dict, Any, Optional
 from datetime import datetime
 import logging
+import os as _os
+import sys as _sys
 import time
 from traderfund.regime.types import MarketBehavior
+
+_META_PROJECT_ROOT = _os.path.abspath(
+    _os.path.join(_os.path.dirname(__file__), "..", "..", "..")
+)
+if _META_PROJECT_ROOT not in _sys.path:
+    _sys.path.insert(0, _META_PROJECT_ROOT)
+
+try:
+    from automation.invariants.layer_integrations import gate_l3_trust as _gate_l3
+except ImportError:  # pragma: no cover
+    import logging as _logging
+    _logging.getLogger(__name__).critical(
+        "CATASTROPHIC FIREWALL UNAVAILABLE — L3 invariant gate disabled"
+    )
+    raise
 
 class MetaAnalysis:
     """
@@ -116,3 +133,8 @@ class MetaAnalysis:
                 f"Final Trust Score={self.trust_score} | "
                 f"Computation Latency={latency_ms:.4f}ms"
             )
+            # ── L3 Catastrophic Invariant Gate ──────────────────────────────
+            # Only fires when no other exception is already propagating.
+            import sys as _sys_exc
+            if _sys_exc.exc_info()[0] is None:
+                _gate_l3(self.trust_score)

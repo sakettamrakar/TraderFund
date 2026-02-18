@@ -1,10 +1,28 @@
 
+import os as _os
+import sys as _sys
+
+_TRADERFUND_PROJECT_ROOT = _os.path.abspath(
+    _os.path.join(_os.path.dirname(__file__), "..", "..", "..")
+)
+if _TRADERFUND_PROJECT_ROOT not in _sys.path:
+    _sys.path.insert(0, _TRADERFUND_PROJECT_ROOT)
+
 from typing import Optional
 from traderfund.regime.types import (
     MarketBehavior, DirectionalBias, RegimeState, ConfidenceComponents,
     RegimeOutput, RegimeFactors
 )
 from traderfund.regime.calculator import RawRegime
+
+try:
+    from automation.invariants.layer_integrations import gate_l1_regime as _gate_l1
+except ImportError:  # pragma: no cover
+    import logging as _logging
+    _logging.getLogger(__name__).critical(
+        "CATASTROPHIC FIREWALL UNAVAILABLE — L1 invariant gate disabled"
+    )
+    raise
 
 class StateManager:
     """
@@ -94,7 +112,7 @@ class StateManager:
         # 3. Confidence Calculation
         confidence = self._calculate_confidence(raw, factors)
         
-        return RegimeState(
+        regime_state = RegimeState(
             behavior=self.current_behavior,
             bias=self.current_bias,
             id=self.current_behavior.id,
@@ -102,6 +120,9 @@ class StateManager:
             total_confidence=(confidence.confluence_score * 0.4 + confidence.persistence_score * 0.4 + confidence.intensity_score * 0.2), # Simple weighted
             is_stable=(self.persistence_counter > 5)
         )
+        # ── L1 Catastrophic Invariant Gate ──────────────────────────────────
+        _gate_l1(regime_state)
+        return regime_state
 
     def _switch_state(self, new_behavior: MarketBehavior, new_bias: DirectionalBias):
         self.current_behavior = new_behavior
