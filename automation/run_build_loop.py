@@ -846,12 +846,13 @@ def main():
                 _max_fix_retries = args.fix_retries  # default 2
 
                 while True:
+                    # strict_mode=False — Case A owns the abort decision via the fix loop below
                     _run_semantic_validation(
                         config.journal.run_id,
                         human_intent_path,
                         action_plan,
                         changed_files,
-                        strict_mode=True,
+                        strict_mode=False,
                         jules_context=jules_context,
                     )
 
