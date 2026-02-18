@@ -1,4 +1,3 @@
-```python
 """
 Intelligence Engine (Read-Only).
 
@@ -59,10 +58,13 @@ class IntelligenceEngine:
         if len(signals) > 1:
             scores = [s.metric_value for s in signals]
             
-            # Calculate variance
+            # Calculate variance with latency logging (L7 Convergence Computation Observability)
+            start_time = datetime.now()
             n = len(scores)
             mean = sum(scores) / n
             variance = sum((x - mean) ** 2 for x in scores) / n
+            latency_ms = (datetime.now() - start_time).total_seconds() * 1000
+            self.logger.info(f"Convergence Computation Latency: {latency_ms:.2f}ms | Variance: {variance:.4f}")
             
             MIN_SCORE_VARIANCE = 0.15
             if variance < MIN_SCORE_VARIANCE:
@@ -156,4 +158,3 @@ class IntelligenceEngine:
         with open(path, "w") as f:
             json.dump(snapshot.to_dict(), f, indent=2)
             self.logger.info(f"Persisted snapshot to {path}")
-```
