@@ -101,6 +101,22 @@ If trust_score < 0.0 or > 1.0 → HARD FAILURE.
 
 Purpose: Prevent unstable scoring drift.
 
+🔹 Invariant 3 — Regime-Aware Trust Adjustment
+
+Trust logic MUST adapt to regime state:
+
+In CHOP or TRANSITION regime:
+
+Technical breakout trust ≤ 0.50
+
+In TRENDING regime:
+
+Momentum trust ≥ 0.60 IF factor alignment present
+
+Violations MUST be rejected during semantic validation.
+
+Purpose: Encode "don't trust breakouts in chop."
+
 - **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
 
 - **Test Invariant (Commit Trigger T4)**: No-op invariant for forced planner failure validation only.
