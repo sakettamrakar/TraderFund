@@ -184,16 +184,23 @@ def approve_session(session_id: str, dry_run: bool) -> None:
     if dry_run:
         _warn("DRY RUN — skipping approval API call.")
         return
-    from automation.jules_supervisor.pr_handler import approve_jules_changeset
+    from automation.jules_supervisor.pr_handler import approve_jules_changeset, poll_for_pr_after_approval
     _info(f"Calling approve_jules_changeset for session {session_id}...")
     result = approve_jules_changeset(f"sessions/{session_id}")
     if result.get("ok"):
-        _ok(f"Approval succeeded via {result.get('method')}")
-        if result.get("pr_url"):
-            print(f"    PR URL: {result['pr_url']}")
+        _ok(f"Approval sent via {result.get('method')}")
+        pr_url = result.get("pr_url")
+        if pr_url:
+            print(f"\n    ✔ PR created immediately: {pr_url}\n")
         else:
-            _warn("No PR URL returned — Jules may create the PR asynchronously.")
-            print(f"    Raw response: {json.dumps(result.get('data', {}), indent=4)}")
+            _info("No PR URL in approval response — Jules creates PRs asynchronously. Polling (up to 120s)...")
+            polled = poll_for_pr_after_approval(f"sessions/{session_id}", timeout=120, poll_interval=8)
+            if polled:
+                pr_url = polled["pr_url"]
+                print(f"\n    ✔ PR created: {pr_url}\n")
+            else:
+                _warn("PR not yet visible after 120s — Jules may still be processing.")
+                print(f"    Check manually: https://jules.google.com/session/{session_id}/")
     else:
         _fail(f"Approval failed: {result.get('error')}")
         print(f"    Raw result: {json.dumps(result, indent=4)}")

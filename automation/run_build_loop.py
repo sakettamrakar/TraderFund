@@ -57,6 +57,7 @@ from automation.jules_supervisor.pr_handler import (
     extract_changeset_from_session,
     approve_jules_changeset,
     post_jules_followup_message,
+    poll_for_pr_after_approval,
 )
 from automation.jules_supervisor.result_summary import ResultSummary
 from automation.merge_controller import handle_pr_with_semantic
@@ -929,14 +930,32 @@ def main():
                     approval = approve_jules_changeset(task_id)
                     if approval.get("ok"):
                         approved_pr_url = approval.get("pr_url")
-                        print(Fore.GREEN + f"  ✔ Jules changeSet approved. PR: {approved_pr_url or 'created (URL pending)'}" + Style.RESET_ALL)
                         if approved_pr_url:
+                            print(Fore.GREEN + f"  ✔ Jules changeSet approved. PR created: {approved_pr_url}" + Style.RESET_ALL)
                             persist_jules_pr(config.journal.run_id, {
                                 "pr_url": approved_pr_url,
                                 "branch": (pr_metadata or {}).get("branch"),
                                 "commit_sha": pending_changeset.get("base_commit") if pending_changeset else None,
                                 "created_at": pr_metadata.get("created_at") if pr_metadata else None,
                             })
+                        else:
+                            # Jules creates PRs asynchronously — poll until it appears
+                            print(Fore.CYAN + f"  ▶ Approval sent via {approval.get('method')} — polling for PR creation (up to 120s)..." + Style.RESET_ALL)
+                            polled_pr = poll_for_pr_after_approval(task_id, timeout=120, poll_interval=8)
+                            if polled_pr:
+                                approved_pr_url = polled_pr["pr_url"]
+                                print(Fore.GREEN + f"  ✔ PR created: {approved_pr_url}" + Style.RESET_ALL)
+                                persist_jules_pr(config.journal.run_id, {
+                                    "pr_url": approved_pr_url,
+                                    "branch": polled_pr.get("branch") or (pr_metadata or {}).get("branch"),
+                                    "commit_sha": polled_pr.get("commit_sha") or (pending_changeset.get("base_commit") if pending_changeset else None),
+                                    "created_at": polled_pr.get("created_at"),
+                                })
+                            else:
+                                print(Fore.YELLOW + "  ⚠ PR not yet visible after 120s — Jules may still be creating it." + Style.RESET_ALL)
+                                session_token = task_id.split('/')[-1]
+                                print(Fore.YELLOW + f"    Check: https://jules.google.com/session/{session_token}/" + Style.RESET_ALL)
+                                print(Fore.YELLOW + f"    Or run: python scripts/validate_and_approve_jules.py --session {session_token}" + Style.RESET_ALL)
                     else:
                         print(Fore.YELLOW + f"  ⚠ Jules approval call failed: {approval.get('error')} (non-blocking)" + Style.RESET_ALL)
                 else:

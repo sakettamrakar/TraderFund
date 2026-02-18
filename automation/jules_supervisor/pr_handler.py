@@ -7,6 +7,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
@@ -273,6 +274,60 @@ def approve_jules_changeset(task_id: str) -> Dict[str, Any]:
         "method": None,
         "error": "All apply endpoints failed or API unavailable.",
     }
+
+
+def poll_for_pr_after_approval(
+    task_id: str,
+    timeout: int = 120,
+    poll_interval: int = 8,
+) -> Optional[Dict[str, Any]]:
+    """
+    After calling approve_jules_changeset(), Jules creates the PR asynchronously.
+    Poll the session until a GitHub PR URL appears in the outputs, or timeout.
+
+    Returns the PR metadata dict (with pr_url) on success, or None on timeout.
+    """
+    if not jules_api_available():
+        return None
+
+    task_token = task_id.split("/")[-1]
+    path = f"sessions/{task_token}"
+    deadline = time.monotonic() + timeout
+    attempt = 0
+
+    logger.info("poll_for_pr_after_approval: polling %s for up to %ss", path, timeout)
+
+    while time.monotonic() < deadline:
+        attempt += 1
+        response = jules_api_get(path)
+        if not response.get("ok"):
+            time.sleep(poll_interval)
+            continue
+
+        payload = response.get("data") or {}
+
+        # Check outputs for a pullRequest object
+        for output in payload.get("outputs", []):
+            if not isinstance(output, dict):
+                continue
+            pr_obj = output.get("pullRequest") or output.get("pull_request")
+            if isinstance(pr_obj, dict):
+                meta = _normalize_pr_metadata(pr_obj)
+                if meta:
+                    logger.info("poll_for_pr_after_approval: PR found after %d polls", attempt)
+                    return meta
+
+        # Also scan the entire payload as text for a GitHub PR URL
+        text_pr = _extract_pr_from_text(json.dumps(payload))
+        if text_pr:
+            logger.info("poll_for_pr_after_approval: PR URL found in session text after %d polls", attempt)
+            return text_pr
+
+        logger.debug("poll_for_pr_after_approval: attempt %d — no PR yet, waiting %ss", attempt, poll_interval)
+        time.sleep(poll_interval)
+
+    logger.warning("poll_for_pr_after_approval: timed out after %ds with no PR URL", timeout)
+    return None
 
 
 def detect_jules_pr(task_id: str) -> Optional[Dict[str, Any]]:
