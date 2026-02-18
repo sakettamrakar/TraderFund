@@ -89,6 +89,18 @@ Meta-Analysis MUST NOT execute without L1 context.
 
 Purpose: Prevent level skipping.
 
+Invariant 2 — Trust Score Boundaries
+
+Every trust score MUST:
+
+Be within [0.0, 1.0]
+
+Be deterministic for identical inputs
+
+If trust_score < 0.0 or > 1.0 → HARD FAILURE.
+
+Purpose: Prevent unstable scoring drift.
+
 - **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
 
 - **Test Invariant (Commit Trigger T4)**: No-op invariant for forced planner failure validation only.
