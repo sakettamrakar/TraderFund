@@ -115,12 +115,12 @@ def build_watchlist(
             if 0 <= (ex_date - current_date).days <= 2:
                 log_entries.append(f"{symbol}: ex-dividend within 2 days")
                 continue
-        price_history = list(stock.get("price_history", []))[-6:]
+        price_history = stock.get("price_history", [])[-6:]
         change = _price_change_percentage(price_history)
         if abs(change) <= 3:
             log_entries.append(f"{symbol}: price change {change:.2f}% not strong")
             continue
-        volume_history = list(stock.get("volume_history", []))[-10:]
+        volume_history = stock.get("volume_history", [])[-10:]
         if _volume_spike_ratio(volume_history) <= 2:
             log_entries.append(f"{symbol}: volume spike not significant")
             continue
