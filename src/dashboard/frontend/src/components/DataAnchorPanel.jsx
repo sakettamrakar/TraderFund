@@ -27,7 +27,9 @@ const DataAnchorPanel = ({ market = "US" }) => {
 
     if (loading) return <div className="data-anchor-panel loading">Quantifying Data Scale...</div>;
     if (error) return <div className="data-anchor-panel error">Governance Binding Failure: {error}</div>;
-    if (!data?.parity) return <div className="data-anchor-panel empty">No Parity Data Registered</div>;
+    if (!data?.parity || !data?.source_artifact || !data?.trace_id || data?.epoch_bounded === false) {
+        return <div className="data-anchor-panel empty">UNAVAILABLE</div>;
+    }
 
     const { parity, trace } = data;
     const diagnostics = Object.entries(parity?.proxy_diagnostics || {});
@@ -37,7 +39,7 @@ const DataAnchorPanel = ({ market = "US" }) => {
             <div className="anchor-header">
                 <div className="epoch-badge">
                     <span className="epoch-label">Truth Epoch</span>
-                    <span className="epoch-id">{data?.truth_epoch?.epoch_id || "TE-2026-02-07"}</span>
+                    <span className="epoch-id">{data?.truth_epoch || "UNKNOWN"}</span>
                 </div>
                 <div className="market-badge">
                     <span className="market-label">Market Sector:</span>
@@ -67,10 +69,10 @@ const DataAnchorPanel = ({ market = "US" }) => {
 
             <div className="trace-footer">
                 <div className="trace-badge">
-                    A1.1 | Source Artifact: {trace?.source} | Generation: {data?.truth_epoch?.epoch_id || "TE-2026-02-07"}
+                    A1.1 | Source Artifact: {data?.source_artifact || trace?.source} | Generation: {data?.truth_epoch || "UNKNOWN"}
                 </div>
                 <div className="disclaimer-mini">
-                    Measurements reflect Truth Epoch {data?.truth_epoch?.epoch_id || "TE-2026-02-07"} and do not imply future sufficiency or intent.
+                    Measurements reflect Truth Epoch {data?.truth_epoch || "UNKNOWN"} and do not imply future sufficiency or intent.
                 </div>
             </div>
         </div>

@@ -1,0 +1,192 @@
+{
+  "timestamp": "2026-03-08T14:57:13.278685",
+  "steps": {
+    "1_regime_anchor_refresh": {
+      "status": "PASS",
+      "result": {
+        "SPY": {
+          "status": "OK",
+          "rows": 1333,
+          "last_date": "2026-03-06"
+        },
+        "QQQ": {
+          "status": "OK",
+          "rows": 1333,
+          "last_date": "2026-03-06"
+        },
+        "VIX": {
+          "status": "OK",
+          "rows": 1330,
+          "last_date": "2026-03-06"
+        },
+        "HYG": {
+          "status": "OK",
+          "rows": 1333,
+          "last_date": "2026-03-06"
+        },
+        "LQD": {
+          "status": "OK",
+          "rows": 1333,
+          "last_date": "2026-03-06"
+        },
+        "^TYX": {
+          "status": "OK",
+          "rows": 1333,
+          "last_date": "2026-03-06"
+        }
+      }
+    },
+    "2_us_daily_refresh": {
+      "status": "FAIL",
+      "error": "No module named 'ingestion.us_market'"
+    },
+    "3_india_in10y_refresh": {
+      "status": "PASS",
+      "result": {
+        "rows": 73,
+        "last_date": "2026-01-01",
+        "path": "c:\\GIT\\TraderFund\\data\\india\\IN10Y.csv"
+      }
+    },
+    "4_temporal_state_update": {
+      "status": "PASS",
+      "result": {
+        "US": {
+          "rdt": "2026-03-06",
+          "ctt": "2026-03-06",
+          "te": "2026-03-06",
+          "drift_days": 0,
+          "drift_status": "SYNC"
+        },
+        "INDIA": {
+          "rdt": "2026-03-06",
+          "ctt": "2026-03-06",
+          "te": "2026-03-06",
+          "drift_days": 0,
+          "drift_status": "SYNC"
+        }
+      }
+    },
+    "5_evolution_tick": {
+      "status": "PASS",
+      "result": {
+        "tick_id": "tick_1772962040",
+        "markets": {
+          "US": {
+            "files": 11,
+            "file_list": [
+              "capital_readiness.json",
+              "dispersion_breakout.json",
+              "expansion_transition.json",
+              "factor_context.json",
+              "liquidity_compression.json",
+              "macro_context.json",
+              "momentum_emergence.json",
+              "narrative_state.json",
+              "regime_context.json",
+              "strategy_resolution.json",
+              "suppression_state.json"
+            ],
+            "regime": "BULLISH",
+            "canonical_state": "CANONICAL_COMPLETE"
+          },
+          "INDIA": {
+            "files": 11,
+            "file_list": [
+              "capital_readiness.json",
+              "dispersion_breakout.json",
+              "expansion_transition.json",
+              "factor_context.json",
+              "liquidity_compression.json",
+              "macro_context.json",
+              "momentum_emergence.json",
+              "narrative_state.json",
+              "regime_context.json",
+              "strategy_resolution.json",
+              "suppression_state.json"
+            ],
+            "regime": "BEARISH",
+            "canonical_state": "CANONICAL_COMPLETE"
+          }
+        }
+      }
+    },
+    "6_governance_recompute": {
+      "status": "PASS",
+      "result": {
+        "US": {
+          "suppression_state": "MULTI_CAUSAL",
+          "suppression_reasons": 3,
+          "narrative_mode": "SILENCED"
+        },
+        "INDIA": {
+          "suppression_state": "NONE",
+          "suppression_reasons": 0,
+          "narrative_mode": "SILENCED"
+        }
+      }
+    },
+    "7_final_verification": {
+      "status": "PASS",
+      "result": {
+        "data_freshness": {
+          "SPY_daily": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "SPY_regime": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "QQQ_regime": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "VIX_regime": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "HYG_regime": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "LQD_regime": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "TNX": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "NIFTY50": {
+            "last_date": "2026-03-06",
+            "stale_days": 2,
+            "status": "FRESH"
+          },
+          "IN10Y": {
+            "last_date": "2026-01-01",
+            "stale_days": 66,
+            "status": "STALE"
+          }
+        },
+        "proxy_status": {
+          "US_equity_core": "OK",
+          "US_rates_anchor": "OK",
+          "INDIA_equity_core": "OK",
+          "INDIA_rates_anchor": "OK"
+        }
+      }
+    }
+  },
+  "summary": {
+    "all_pass": false,
+    "completed_at": "2026-03-08T14:57:21.763953"
+  }
+}

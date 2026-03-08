@@ -18,10 +18,26 @@
     ls data/decisions/US/$(date +%Y-%m-%d)
     ```
 - [ ] **Archive**: Ensure daily data is preserved.
+- [ ] **Run Post-Close Validation Sweep**:
+    ```powershell
+    foreach ($phase in 'ingestion','memory','research','evaluation','dashboard') {
+        python -m traderfund.validation.validation_runner --phase $phase --hook eod_check --market US
+        if ($LASTEXITCODE -ne 0) { break }
+    }
+    ```
+
+- [ ] **If A Phase Fails, Attempt Safe Phase-Local Remediation**:
+    ```powershell
+    python -m traderfund.validation.validation_runner --phase <phase> --hook eod_remediate --market US --auto-remediate
+    python -m traderfund.validation.validation_runner --phase <phase> --hook eod_verify --market US
+    ```
+    Replace `<phase>` with one of `ingestion`, `memory`, `research`, `evaluation`, or `dashboard`.
 
 ## 3. Reporting
 - [ ] **Generate Summary**:
     ```powershell
     python bin/run-skill.py --skill change-summarizer --diff-range "today"
     ```
+- [ ] **Review Validation Summaries**:
+    Check `logs/validation/` and capture any material issue in the relevant verification report.
 - [ ] **Log Entry**: Record "EOD Complete" in daily journal. 

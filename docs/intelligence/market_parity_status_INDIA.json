@@ -1,34 +1,54 @@
 {
-  "market": "INDIA",
-  "computed_at": "2026-02-07T21:55:52.823464",
-  "truth_epoch": "TE-2026-02-07",
-  "parity_status": "CANONICAL",
-  "proxy_diagnostics": {
-    "equity_core": {
-      "status": "ACTIVE",
-      "role": "equity_core",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\NIFTY50.csv",
-      "rows": 496
+    "market": "INDIA",
+    "computed_at": "2026-03-08T15:33:16.521424",
+    "truth_epoch": "TRUTH_EPOCH_2026-03-06_01",
+    "parity_status": "CANONICAL",
+    "proxy_diagnostics": {
+        "equity_core": {
+            "status": "ACTIVE",
+            "role": "equity_core",
+            "symbol": "NIFTY50",
+            "source": "Yahoo Finance (AlphaVantage)",
+            "provenance": "REAL",
+            "path": "data/india/NIFTY50.csv",
+            "rows": 511,
+            "staleness": "NONE",
+            "last_date": "2026-03-06"
+        },
+        "growth_proxy": {
+            "status": "ACTIVE",
+            "role": "growth_proxy",
+            "symbol": "BANKNIFTY",
+            "source": "Yahoo Finance (AlphaVantage)",
+            "provenance": "REAL",
+            "path": "data/india/BANKNIFTY.csv",
+            "rows": 511,
+            "staleness": "NONE",
+            "last_date": "2026-03-06"
+        },
+        "volatility_gauge": {
+            "status": "ACTIVE",
+            "role": "volatility_gauge",
+            "symbol": "INDIAVIX",
+            "source": "Yahoo Finance (AlphaVantage)",
+            "provenance": "REAL",
+            "path": "data/india/INDIAVIX.csv",
+            "rows": 511,
+            "staleness": "NONE",
+            "last_date": "2026-03-06"
+        },
+        "rates_anchor": {
+            "status": "ACTIVE",
+            "role": "rates_anchor",
+            "symbol": "IN10Y",
+            "source": "Yahoo Finance (AlphaVantage)",
+            "provenance": "REAL",
+            "path": "data/india/IN10Y.csv",
+            "rows": 73,
+            "staleness": "NONE",
+            "last_date": "2026-01-01"
+        }
     },
-    "sector_proxy": {
-      "status": "ACTIVE",
-      "role": "sector_proxy",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\BANKNIFTY.csv",
-      "rows": 492
-    },
-    "volatility_gauge": {
-      "status": "ACTIVE",
-      "role": "volatility_gauge",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\INDIAVIX.csv",
-      "rows": 492
-    },
-    "rates_anchor": {
-      "status": "ACTIVE",
-      "role": "rates_anchor",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\IN10Y.csv",
-      "rows": 72
-    }
-  },
-  "gaps": [],
-  "canonical_ready": true
+    "gaps": [],
+    "canonical_ready": true
 }

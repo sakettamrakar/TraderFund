@@ -1,8 +1,8 @@
 {
-    "system_stress_posture": "CRITICAL",
+    "system_stress_posture": "ELEVATED",
     "derived_from": {
-        "US": "SYSTEMIC_STRESS",
-        "INDIA": "NORMAL"
+        "US": "ELEVATED_STRESS",
+        "INDIA": "ELEVATED_STRESS"
     },
-    "truth_epoch": "TE-2026-01-30"
+    "truth_epoch": "TRUTH_EPOCH_2026-03-06_01"
 }

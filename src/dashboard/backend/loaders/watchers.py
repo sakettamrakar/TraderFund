@@ -1,6 +1,7 @@
 from dashboard.backend.utils.filesystem import get_ticks_history, read_json_safe
 import datetime
 from typing import Dict, Any
+from dashboard.backend.loaders.provenance import attach_provenance
 
 def load_watcher_timeline(market: str = "US", limit: int = 10) -> Dict[str, Any]:
     ticks = get_ticks_history(limit)
@@ -30,4 +31,5 @@ def load_watcher_timeline(market: str = "US", limit: int = 10) -> Dict[str, Any]
             "liquidity": liq.get("state", "NEUTRAL")
         })
         
-    return {"history": history}
+    source_artifact = f"docs/evolution/ticks/{ticks[0].name}/{market}/momentum_emergence.json" if ticks else f"docs/evolution/ticks/<latest>/{market}/momentum_emergence.json"
+    return attach_provenance({"history": history}, source_artifact)

@@ -6,12 +6,23 @@ import './SystemPosture.css';
 const SystemPosture = () => {
     const [stressData, setStressData] = useState(null);
     const [constraintData, setConstraintData] = useState(null);
+    const [loadError, setLoadError] = useState(null);
     const { isInspectionMode, activeScenario, meta } = useInspection();
 
     useEffect(() => {
         if (!isInspectionMode) {
-            getSystemStressPosture().then(setStressData).catch(console.error);
-            getSystemConstraintPosture().then(setConstraintData).catch(console.error);
+            Promise.all([getSystemStressPosture(), getSystemConstraintPosture()])
+                .then(([stressPayload, constraintPayload]) => {
+                    setStressData(stressPayload);
+                    setConstraintData(constraintPayload);
+                    setLoadError(null);
+                })
+                .catch(err => {
+                    console.error(err);
+                    setLoadError(err.message);
+                    setStressData(null);
+                    setConstraintData(null);
+                });
         }
     }, [isInspectionMode]);
 
@@ -67,6 +78,25 @@ const SystemPosture = () => {
         }
     }
 
+    const stressPayloadValid =
+        !!finalStressData?.posture?.system_stress_posture &&
+        !!finalStressData?.source_artifact &&
+        !!finalStressData?.trace_id &&
+        finalStressData?.epoch_bounded !== false;
+    const constraintPayloadValid =
+        !!finalConstraintData?.posture?.system_constraint_posture &&
+        !!finalConstraintData?.source_artifact &&
+        !!finalConstraintData?.trace_id &&
+        finalConstraintData?.epoch_bounded !== false;
+
+    if (!isInspectionMode && loadError) {
+        return <div className="system-posture-container"><div className="posture-widget constraint halted">Governance Error: {loadError}</div></div>;
+    }
+
+    if (!isInspectionMode && (!stressPayloadValid || !constraintPayloadValid)) {
+        return <div className="system-posture-container"><div className="posture-widget constraint neutral">UNAVAILABLE</div></div>;
+    }
+
     const stressPosture = finalStressData?.posture?.system_stress_posture || 'UNKNOWN';
     const constraintPosture = finalConstraintData?.posture?.system_constraint_posture || 'UNKNOWN';
 
@@ -93,7 +123,7 @@ const SystemPosture = () => {
                     ))}
                 </div>
                 <div className="trace-badge">
-                    Source: {finalStressData?.trace?.source} | Epoch: {finalStressData?.posture?.truth_epoch || 'N/A'}
+                    Source: {finalStressData?.source_artifact || finalStressData?.trace?.source} | Epoch: {finalStressData?.posture?.truth_epoch || finalStressData?.truth_epoch || 'N/A'}
                 </div>
             </div>
 
@@ -114,7 +144,7 @@ const SystemPosture = () => {
                     ))}
                 </div>
                 <div className="trace-badge">
-                    Source: {finalConstraintData?.trace?.source} | Epoch: {finalConstraintData?.posture?.truth_epoch || 'N/A'}
+                    Source: {finalConstraintData?.source_artifact || finalConstraintData?.trace?.source} | Epoch: {finalConstraintData?.posture?.truth_epoch || finalConstraintData?.truth_epoch || 'N/A'}
                 </div>
             </div>
         </div>

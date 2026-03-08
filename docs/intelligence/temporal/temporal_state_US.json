@@ -1,20 +1,20 @@
 {
     "market": "US",
-    "timestamp": "2026-02-09T14:33:27.801703Z",
+    "timestamp": "2026-03-08T09:27:19.896382Z",
     "temporal_state": {
         "raw_data_time": {
-            "timestamp": "2026-02-06",
+            "timestamp": "2026-03-06",
             "source": "data\\us_market\\SPY_daily.csv",
             "status": "VALID"
         },
         "canonical_truth_time": {
-            "timestamp": "2026-02-06",
+            "timestamp": "2026-03-06",
             "source": "canonical_validation_layer",
             "status": "VALID",
-            "last_validated": "2026-02-09T14:33:27.174544Z"
+            "last_validated": "2026-03-08T09:27:19.896382Z"
         },
         "truth_epoch": {
-            "timestamp": "2026-01-30",
+            "timestamp": "2026-03-06",
             "source": "governance_manifest",
             "status": "FROZEN",
             "reason": "Phase 4 Audit Freeze"
@@ -22,19 +22,19 @@
     },
     "drift_status": {
         "ingestion_drift_days": 0,
-        "evaluation_drift_days": 7,
+        "evaluation_drift_days": 0,
         "critical_future_leakage": false,
-        "status_code": "EVALUATION_PENDING",
-        "message": "Canonical data (2026-02-06) is ahead of Truth Epoch (2026-01-30). Drift=7d.",
+        "status_code": "SYNC",
+        "message": "System synchronized at frozen truth epoch boundary.",
         "max_drift_days": 7,
         "drift_limit_exceeded": false,
         "required_operator_action": null,
-        "human_explanation": "Evaluation is pending under freeze. Operator may request bounded catch-up windows if needed."
+        "human_explanation": "No evaluation drift is present."
     },
     "holds": {
         "ingestion_hold": false,
-        "evaluation_hold": true,
-        "reason": "Operator evaluation window requested. Awaiting manual catch-up execution."
+        "evaluation_hold": false,
+        "reason": "No drift."
     },
     "evaluation_window": {
         "request_id": "WIN-US-20260209143327",
@@ -50,8 +50,8 @@
         "notes": "Bounded catch-up requested. No TE advancement performed."
     },
     "governance_pause": {
-        "active": true,
-        "reason": "Awaiting operator-mediated bounded evaluation",
-        "required_operator_action": "APPROVE_AND_RUN_BOUNDED_WINDOW"
+        "active": false,
+        "reason": "No drift",
+        "required_operator_action": null
     }
 }

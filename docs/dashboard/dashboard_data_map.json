@@ -1,0 +1,236 @@
+{
+  "audit_timestamp": "2026-03-07T18:51:09+05:30",
+  "truth_epoch": "TE-2026-01-30",
+  "system_state": "OBSERVER_ONLY",
+
+  "panels": {
+    "temporal_truth_banner": {
+      "api_endpoint": "/api/intelligence/temporal/status?market={market}",
+      "source_artifact": "docs/intelligence/temporal/temporal_state_{market}.json",
+      "computed_at": "2026-02-09T14:33:27Z",
+      "staleness_days": 26,
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "truth_epoch": {"value": "2026-01-30", "status": "FROZEN"},
+        "canonical_truth_time": {"value": "2026-02-06"},
+        "raw_data_time": {"value": "2026-02-06", "source": "data/us_market/SPY_daily.csv"},
+        "drift_days": 7,
+        "max_drift_days": 7,
+        "drift_status": "EVALUATION_PENDING",
+        "evaluation_hold": true,
+        "evaluation_window": {"start": "2026-01-31", "end": "2026-02-04"}
+      },
+      "ingestion_dependencies": ["data/us_market/SPY_daily.csv"]
+    },
+
+    "execution_gate": {
+      "api_endpoint": "/api/system/status?market={market}",
+      "source_artifacts": [
+        "docs/intelligence/execution_gate_status.json",
+        "docs/intelligence/last_successful_evaluation.json"
+      ],
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "gate": "CLOSED",
+        "reasons": ["INV-NO-EXECUTION", "CAPITAL_NOT_CONNECTED", "STRATEGY_DISABLED"],
+        "last_evaluation": "2026-01-30T06:00:00Z"
+      },
+      "ingestion_dependencies": []
+    },
+
+    "system_stress_posture": {
+      "api_endpoint": "/api/intelligence/stress_posture",
+      "source_artifact": "docs/intelligence/system_stress_posture.json",
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "posture": "CRITICAL",
+        "US": "SYSTEMIC_STRESS",
+        "INDIA": "NORMAL"
+      },
+      "ingestion_dependencies": ["docs/intelligence/fragility_context_{market}.json"]
+    },
+
+    "system_constraint_posture": {
+      "api_endpoint": "/api/intelligence/constraint_posture",
+      "source_artifact": "docs/intelligence/system_posture.json",
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "posture": "MAINTENANCE_ONLY",
+        "US_allowed": ["ALLOW_POSITION_HOLD"],
+        "INDIA_allowed": ["ALLOW_POSITION_HOLD", "ALLOW_REBALANCING"]
+      },
+      "ingestion_dependencies": ["docs/intelligence/fragility_context_{market}.json"]
+    },
+
+    "system_narrative": {
+      "api_endpoint": "/api/system/narrative?market={market}",
+      "source_artifact": "docs/intelligence/narrative_state_{market}.json",
+      "computed_at": "2026-02-20T00:30:04Z",
+      "staleness_days": 15,
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "mode": "SILENCED",
+        "tone": "NO_OUTPUT",
+        "posture": "NARRATIVE_GATED",
+        "gating_reason": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT)."
+      },
+      "ingestion_dependencies": [
+        "docs/evolution/context/regime_context_US.json",
+        "docs/intelligence/canonical_partiality_state_US.json",
+        "docs/intelligence/decision_policy_US.json",
+        "docs/intelligence/fragility_context_US.json",
+        "docs/intelligence/suppression_reason_registry_US.json",
+        "docs/intelligence/suppression_state_US.json",
+        "docs/intelligence/temporal/temporal_state_US.json"
+      ]
+    },
+
+    "macro_context": {
+      "api_endpoint": "/api/macro/context?market={market}",
+      "source_artifact": "docs/evolution/ticks/{latest_tick}/{market}/macro_context.json",
+      "latest_tick": "tick_1771547402",
+      "latest_tick_date": "2026-02-20",
+      "staleness_days": 15,
+      "accuracy": "VERIFIED",
+      "ingestion_dependencies": ["data/regime/raw/*.csv"]
+    },
+
+    "decision_policy": {
+      "api_endpoint": "/api/intelligence/policy/{market}",
+      "source_artifact": "docs/intelligence/decision_policy_{market}.json",
+      "computed_at": "2026-02-09T20:30:05Z",
+      "staleness_days": 26,
+      "accuracy": "PARTIAL_MISMATCH",
+      "issue": "Dashboard shows UNKNOWN defaults instead of HALTED policy_state. Nested key: data.policy.policy_decision vs data.policy expected by component.",
+      "actual_values": {
+        "policy_state": "HALTED",
+        "permissions": ["OBSERVE_ONLY"],
+        "canonical_state": "CANONICAL_PARTIAL",
+        "missing_roles": ["rates_anchor"],
+        "epistemic_health": {"grade": "DEGRADED", "proxy_status": "DEGRADED"}
+      },
+      "ingestion_dependencies": [
+        "docs/intelligence/canonical_partiality_state_{market}.json",
+        "docs/evolution/context/regime_context_{market}.json"
+      ]
+    },
+
+    "fragility_context": {
+      "api_endpoint": "/api/intelligence/fragility/{market}",
+      "source_artifact": "docs/intelligence/fragility_context_{market}.json",
+      "computed_at": "2026-01-30T04:50:19Z",
+      "staleness_days": 36,
+      "accuracy": "PARTIAL_MISMATCH",
+      "issue": "Dashboard shows UNKNOWN defaults instead of SYSTEMIC_STRESS. Nested key: data.fragility.fragility_context vs data.fragility expected.",
+      "actual_values": {
+        "stress_state": "SYSTEMIC_STRESS",
+        "constraints_applied": ["ALLOW_LONG_ENTRY_SPECIAL", "ALLOW_LONG_ENTRY", "ALLOW_REBALANCING"],
+        "final_authorized_intents": ["ALLOW_POSITION_HOLD"]
+      },
+      "ingestion_dependencies": ["stress engine outputs"]
+    },
+
+    "intelligence_signals": {
+      "api_endpoint": "/api/intelligence/snapshot?market={market}",
+      "source_artifact": "docs/intelligence/snapshots/intelligence_{market}_{date}.json",
+      "latest_snapshot": "intelligence_US_2026-01-29.json",
+      "staleness_days": 37,
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "signal_count": 2,
+        "signals": [
+          {"symbol": "TSLA", "type": "VOLATILITY_EXPANSION", "overlay": "CAUTION"},
+          {"symbol": "TSLA", "type": "LARGE_MOVE_UP", "overlay": "ALLOWED"}
+        ]
+      },
+      "ingestion_dependencies": ["data/us_market/*.csv", "IntelligenceEngine"]
+    },
+
+    "suppression_status": {
+      "api_endpoint": "/api/intelligence/suppression/{market}",
+      "source_artifacts": [
+        "docs/intelligence/suppression_state_{market}.json",
+        "docs/intelligence/suppression_reason_registry_{market}.json"
+      ],
+      "computed_at": "2026-03-07T12:13:03Z",
+      "staleness_days": 0,
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "state": "MULTI_CAUSAL",
+        "primary_reason": "R-TEMPORAL-DRIFT",
+        "reason_count": 5,
+        "since": "2026-02-09T15:15:00Z"
+      },
+      "ingestion_dependencies": ["all policies + temporal state"]
+    },
+
+    "capital_readiness": {
+      "api_endpoint": "/api/capital/readiness?market={market}",
+      "source_artifact": "docs/evolution/ticks/{latest_tick}/{market}/capital_readiness.json",
+      "accuracy": "VERIFIED",
+      "data_fields": {
+        "status": "READY",
+        "all_allocations_zero": true
+      },
+      "ingestion_dependencies": ["evolution tick pipeline"]
+    },
+
+    "strategy_matrix": {
+      "api_endpoint": "/api/strategies/eligibility?market={market}",
+      "source_artifact": "docs/evolution/ticks/{latest_tick}/{market}/strategy_resolution.json",
+      "accuracy": "VERIFIED",
+      "ingestion_dependencies": ["regime_context", "factor_context", "strategy_registry"]
+    }
+  },
+
+  "raw_data_sources": {
+    "us_equity": {
+      "files": ["data/us_market/SPY_daily.csv", "data/us_market/QQQ_daily.csv", "data/us_market/IWM_daily.csv", "data/us_market/VIXY_daily.csv"],
+      "last_date": "2026-02-06",
+      "staleness_days": 29,
+      "needs_refresh": true,
+      "ingestion_class": "ingestion.market_loader.MarketLoader"
+    },
+    "us_regime": {
+      "files": ["data/regime/raw/SPY.csv", "data/regime/raw/QQQ.csv", "data/regime/raw/VIX.csv"],
+      "last_date": "2026-01-29",
+      "staleness_days": 37,
+      "needs_refresh": true,
+      "ingestion_class": "structural.proxy_adapter.ProxyAdapter"
+    },
+    "us_rates": {
+      "files": ["data/regime/raw/^TNX.csv", "data/regime/raw/^TYX.csv"],
+      "last_date": "2026-03-06",
+      "staleness_days": 1,
+      "needs_refresh": false,
+      "note": "Fresh but NOT ingested into canonical state due to frozen epoch"
+    },
+    "us_credit": {
+      "files": ["data/regime/raw/HYG.csv", "data/regime/raw/LQD.csv"],
+      "last_date": "unknown",
+      "needs_refresh": true
+    },
+    "india_equity": {
+      "files": ["data/india/NIFTY50.csv", "data/india/BANKNIFTY.csv"],
+      "last_date": "2026-03-06",
+      "staleness_days": 1,
+      "needs_refresh": false,
+      "ingestion_class": "ingestion.india_market_loader.IndiaMarketLoader"
+    },
+    "india_vol_rates": {
+      "files": ["data/india/INDIAVIX.csv", "data/india/IN10Y.csv"],
+      "last_date": "2026-03-06",
+      "staleness_days": 1,
+      "needs_refresh": false
+    }
+  },
+
+  "refresh_sequence": [
+    "1. Refresh raw CSV data (US equity + US regime files)",
+    "2. Advance Truth Epoch in temporal_state_{market}.json",
+    "3. Re-run canonical partiality check (relay.py --phase phase1)",
+    "4. Re-run evolution tick pipeline",
+    "5. Re-compute intelligence policies (decision, fragility, narrative, suppression)",
+    "6. Verify dashboard at http://localhost:5174/"
+  ]
+}

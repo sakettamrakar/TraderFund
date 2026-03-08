@@ -33,5 +33,7 @@ Promotion requires both global shadow exit criteria and phase-specific behaviora
 - Phase 6 (`Dashboard (Observer UI)`):
   - [Dashboard & Observability Success](../02_success/success_criteria.md#5-dashboard--observability-success)
 
-## OPEN_QUESTION
-- Governance enforcement mode in shadow is not explicitly specified in component contracts: should policy holds be fully active or observation-only during shadow promotion runs.
+## Governance Enforcement in Shadow Mode
+
+- `ACTION ITEM` [Target Resolution: Governance Lead]: Governance enforcement mode in shadow is not explicitly specified in component contracts.
+  > **Resolution Pointer**: Refer to V2 `docs/contracts/decision_policy_contract.md` to construct explicit rules on whether policy holds are fully active or observation-only during shadow promotion runs.

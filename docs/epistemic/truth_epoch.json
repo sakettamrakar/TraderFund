@@ -1,8 +1,8 @@
 {
     "epoch": {
-        "epoch_id": "TRUTH_EPOCH_2026-02-07_01",
-        "activation_time": "2026-02-07T21:50:00+05:30",
-        "frozen_by": "ANTIGRAVITY_AGENT",
+        "epoch_id": "TRUTH_EPOCH_2026-03-06_01",
+        "activation_time": "2026-03-08T14:57:19.883730+05:30",
+        "frozen_by": "SYSTEM_AUTO_ADVANCE",
         "mode": "CANONICAL_OBSERVATION",
         "immutable": true
     },
@@ -42,5 +42,5 @@
         "dashboard_shows_known_vs_unknown": true,
         "truth_epoch_visible": true
     },
-    "notes": "Truth epoch updated to 2026-02-07 post-ingestion. All market parity canonical."
+    "notes": "Truth epoch auto-advanced to 2026-03-06 following canonical refresh."
 }

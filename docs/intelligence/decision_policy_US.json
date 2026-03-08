@@ -1,26 +1,25 @@
 {
   "policy_decision": {
     "market": "US",
-    "computed_at": "2026-02-09T20:30:05.202887",
-    "policy_state": "HALTED",
+    "computed_at": "2026-03-08T15:38:36.997869",
+    "policy_state": "RESTRICTED",
     "permissions": [
       "OBSERVE_ONLY"
     ],
-    "blocked_actions": [],
-    "reason": "Partial canonical inputs (CANONICAL_PARTIAL). Missing roles: ['rates_anchor']. Stale roles: ['rates_anchor']. Regime inference disabled.",
-    "regime_state": "UNKNOWN",
-    "regime_confidence": "DEGRADED",
-    "regime_reason": "Partial canonical inputs",
-    "canonical_state": "CANONICAL_PARTIAL",
-    "canonical_missing_roles": [
-      "rates_anchor"
+    "blocked_actions": [
+      "ALLOW_LONG_ENTRY",
+      "ALLOW_SHORT_ENTRY"
     ],
-    "canonical_stale_roles": [
-      "rates_anchor"
-    ],
+    "reason": "Liquidity is TIGHT. New entries blocked.",
+    "regime_state": "BULLISH",
+    "regime_confidence": 1.0,
+    "regime_reason": "Regime evaluated on canonical-complete inputs.",
+    "canonical_state": "CANONICAL_COMPLETE",
+    "canonical_missing_roles": [],
+    "canonical_stale_roles": [],
     "epistemic_health": {
-      "grade": "DEGRADED",
-      "proxy_status": "DEGRADED"
+      "grade": "CANONICAL",
+      "proxy_status": "CANONICAL"
     },
     "version": "1.1.0-F2-DEGRADE"
   }

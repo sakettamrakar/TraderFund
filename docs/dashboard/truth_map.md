@@ -28,10 +28,10 @@ DASHBOARD LAYER (Read-Only Projection)
 ### 3.1. System Status Panel
 | Display Element | Truth Source | Artifact Path |
 | :--- | :--- | :--- |
-| Execution Gate Status | Decision Policy | `docs/intelligence/decision_policy_{market}.json` |
-| Gate Reason | Decision Policy | `.policy_decision.reason` |
-| Last Tick | Data Manifest | `data/manifest/{market}/last_tick.json` |
-| Governance Status | Parity Status | `docs/intelligence/india_parity_status.json` |
+| Execution Gate Status | Execution Gate | `docs/intelligence/execution_gate_status.json` |
+| Gate Reason | Execution Gate | `.reasons[]` |
+| Last Evaluation | Evaluation Meta | `docs/intelligence/last_successful_evaluation.json` |
+| Governance Status | Truth Epoch | `docs/epistemic/truth_epoch.json` |
 
 ### 3.2. Policy State Card
 | Display Element | Truth Source | Artifact Path |
@@ -60,15 +60,15 @@ DASHBOARD LAYER (Read-Only Projection)
 ### 3.5. Market Snapshot
 | Display Element | Truth Source | Artifact Path |
 | :--- | :--- | :--- |
-| Price Data | Data Layer | `data/regime/raw/{ticker}.csv` |
-| Regime Label | Regime Context | `docs/evolution/context/regime_context_{market}.json` |
-| Factor States | Factor Context | `docs/evolution/context/factor_context_{market}.json` |
+| Tick-Derived Market State | Tick Artifacts | `docs/evolution/ticks/<latest>/{market}/regime_context.json` |
+| Watcher States | Tick Artifacts | `docs/evolution/ticks/<latest>/{market}/liquidity_compression.json`, `momentum_emergence.json`, `dispersion_breakout.json`, `expansion_transition.json` |
+| Factor/Canonical Degradation | Tick Regime Context | `.canonical_state`, `.canonical_missing_roles`, `.canonical_stale_roles` |
 
 ### 3.6. Data Anchor Panel
 | Display Element | Truth Source | Artifact Path |
 | :--- | :--- | :--- |
-| Truth Epoch | Data Anchor | `docs/intelligence/data_anchor_{market}.json` |
-| Proxy Status | Parity Status | `docs/intelligence/india_parity_status.json` |
+| Truth Epoch | Truth Epoch + Parity Payload | `docs/epistemic/truth_epoch.json`, `docs/intelligence/market_parity_status_{market}.json` |
+| Proxy Status | Parity Status | `docs/intelligence/market_parity_status_{market}.json` |
 | Provenance | Parity Status | `.proxy_diagnostics.*.provenance` |
 
 ---

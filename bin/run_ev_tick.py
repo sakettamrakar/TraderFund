@@ -6,9 +6,12 @@ import sys
 import time
 from pathlib import Path
 
-# Setup Path to import from src
+# Setup Path to import from src AND root 
+# CRITICAL: PROJECT_ROOT must be at index 0 (first) because root-level 
+# 'ingestion.api_ingestion' must not be shadowed by 'src/ingestion/'
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from evolution.orchestration.ev_tick import EvTickOrchestrator
 

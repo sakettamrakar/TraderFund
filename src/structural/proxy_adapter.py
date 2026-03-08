@@ -27,17 +27,21 @@ class ProxyAdapter:
         m_cfg = self._config.get(market)
         if not m_cfg:
             raise ValueError(f"Market {market} not defined in Proxy Instance")
-            
-        tickers = m_cfg["roles"].get(role, [])
+
+        roles = m_cfg.get("roles", {})
+        if role not in roles:
+            raise ValueError(f"Role {role} is not defined for market {market}")
+
+        tickers = roles.get(role, [])
         bindings = m_cfg["ingestion_binding"]
-        
+
         paths = []
         for t in tickers:
             rel_path = bindings.get(t)
             if not rel_path:
-                continue # or raise error? Contract says Fail Closed for Primary.
+                raise ValueError(f"Ticker {t} has no ingestion binding for market {market}, role {role}")
             paths.append(self.root / rel_path)
-            
+
         return paths
 
     def get_proxy_status(self, market: str) -> str:

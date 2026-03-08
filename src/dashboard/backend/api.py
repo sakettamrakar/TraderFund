@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 import json
 import os
+import sys
 import datetime
 from typing import Dict, Any, List, Optional
 
@@ -10,6 +11,8 @@ print("LOADING API.PY V3 - DEBUG MODE ACTIVE")
 
 # --- Configuration & Paths ---
 BASE_DIR = Path(__file__).parent.parent.parent.parent # c:\GIT\TraderFund
+if str(BASE_DIR) not in sys.path:
+    sys.path.insert(0, str(BASE_DIR))
 DOCS_DIR = BASE_DIR / "docs"
 EV_DIR = DOCS_DIR / "evolution"
 TICKS_DIR = EV_DIR / "ticks"
@@ -181,7 +184,7 @@ async def get_system_status(market: str):
     Returns high-level system state based on canonical artifacts.
     """
     gate_path = DOCS_DIR / "intelligence" / "execution_gate_status.json"
-    last_ev_path = DOCS_DIR / "meta" / "last_successful_evaluation.json"
+    last_ev_path = DOCS_DIR / "intelligence" / "last_successful_evaluation.json"
     
     gate_data = _read_json_safe(gate_path)
     last_ev_data = _read_json_safe(last_ev_path)
@@ -191,7 +194,7 @@ async def get_system_status(market: str):
         "last_evaluation": last_ev_data,
         "trace": {
             "gate_source": "docs/intelligence/execution_gate_status.json",
-            "ev_source": "docs/meta/last_successful_evaluation.json"
+            "ev_source": "docs/intelligence/last_successful_evaluation.json"
         }
     }
 
@@ -200,12 +203,12 @@ async def get_evaluation_scope():
     """
     Returns the canonical market evaluation scope.
     """
-    scope_path = DOCS_DIR / "meta" / "market_evaluation_scope.json"
+    scope_path = DOCS_DIR / "intelligence" / "market_evaluation_scope.json"
     scope_data = _read_json_safe(scope_path)
     return {
         "scope": scope_data,
         "trace": {
-            "source": "docs/meta/market_evaluation_scope.json"
+            "source": "docs/intelligence/market_evaluation_scope.json"
         }
     }
 
@@ -337,7 +340,7 @@ async def get_strategy_eligibility(market: str):
     
     # First, try to read from daily resolution snapshot (preferred)
     # Market Scoped: docs/evolution/daily_strategy_resolution/{market}
-    daily_dir = PROJECT_ROOT / "docs" / "evolution" / "daily_strategy_resolution" / market
+    daily_dir = BASE_DIR / "docs" / "evolution" / "daily_strategy_resolution" / market
     
     resolution = None
     if daily_dir.exists():
@@ -446,7 +449,7 @@ async def get_capital_history(market: str):
     # OR we assume the API should just return what's available. 
     # Let's assume for now we look in `docs/capital/history/{market}/`. If not there, we return empty.
     
-    timeline_path = PROJECT_ROOT / "docs" / "capital" / "history" / f"capital_state_timeline_{market}.json"
+    timeline_path = BASE_DIR / "docs" / "capital" / "history" / f"capital_state_timeline_{market}.json"
     # If we haven't updated the recorder to handle this path, it might be writing global.
     # But we updated `ev_tick` to pass `market_dir`.
     
@@ -564,6 +567,116 @@ async def get_system_constraint_posture():
         }
     }
 
+
+# --- New Endpoints (Missing from frontend contract) ---
+
+@app.get("/api/intelligence/temporal/status")
+async def get_temporal_status(market: str):
+    """
+    Returns the temporal truth state (TE/CTT/RDT) and drift governance for a market.
+    """
+    temporal_path = DOCS_DIR / "intelligence" / "temporal" / f"temporal_state_{market}.json"
+    data = _read_json_safe(temporal_path)
+    if not data:
+        return {"error": f"No temporal state found for {market}"}
+    
+    # Enrich with trace metadata expected by the TemporalTruthBanner component
+    data["source_artifact"] = f"docs/intelligence/temporal/temporal_state_{market}.json"
+    data["trace_id"] = f"temporal-{market}-{data.get('timestamp', 'unknown')}"
+    data["epoch_bounded"] = True
+    return data
+
+
+@app.get("/api/system/narrative")
+async def get_system_narrative(market: str):
+    """
+    Returns the current system narrative state for a market.
+    """
+    narrative_path = DOCS_DIR / "intelligence" / f"narrative_state_{market}.json"
+    data = _read_json_safe(narrative_path)
+    if not data:
+        return {
+            "narrative_mode": "UNAVAILABLE",
+            "tone": "SILENT",
+            "posture": "NO_DATA",
+            "summary": f"No narrative state file found for market {market}.",
+            "gating_reason": f"Narrative state file missing for {market}."
+        }
+    return data
+
+
+@app.get("/api/intelligence/snapshot")
+async def get_intelligence_snapshot(market: str):
+    """
+    Returns the latest intelligence snapshot (signals) for a market.
+    """
+    snapshots_dir = DOCS_DIR / "intelligence" / "snapshots"
+    if not snapshots_dir.exists():
+        return {"signals": [], "timestamp": None, "error": "No snapshots directory found"}
+    
+    # Find the latest snapshot for this market
+    market_snapshots = sorted(
+        [f for f in snapshots_dir.iterdir() if f.name.startswith(f"intelligence_{market}_") and f.suffix == ".json"],
+        reverse=True
+    )
+    
+    if not market_snapshots:
+        return {"signals": [], "timestamp": None, "error": f"No intelligence snapshot found for {market}"}
+    
+    data = _read_json_safe(market_snapshots[0])
+    return data if data else {"signals": [], "timestamp": None}
+
+
+@app.get("/api/intelligence/suppression/{market}")
+async def get_suppression_status(market: str):
+    """
+    Returns the suppression state and reason registry for a market.
+    """
+    state_path = DOCS_DIR / "intelligence" / f"suppression_state_{market}.json"
+    registry_path = DOCS_DIR / "intelligence" / f"suppression_reason_registry_{market}.json"
+    
+    state_data = _read_json_safe(state_path)
+    registry_data = _read_json_safe(registry_path)
+    
+    if not state_data:
+        return {"error": f"No suppression state found for {market}"}
+    
+    # Build the payload expected by WhyNothingIsHappening.jsx
+    suppression_state = state_data.get("suppression_state", "NONE")
+    
+    # Build primary reason from suppression reasons list
+    reasons = state_data.get("suppression_reasons", [])
+    primary_reason = {}
+    secondary_reasons = []
+    if reasons:
+        primary_reason = reasons[0] if isinstance(reasons[0], dict) else {"reason_id": reasons[0]}
+        secondary_reasons = [r if isinstance(r, dict) else {"reason_id": r} for r in reasons[1:]]
+    
+    # Alternatively, if registry has structured reasons, use those
+    if registry_data and registry_data.get("reasons"):
+        reg_reasons = registry_data["reasons"]
+        if reg_reasons:
+            primary_reason = reg_reasons[0]
+            secondary_reasons = reg_reasons[1:]
+    
+    return {
+        "suppression": {
+            "suppression_state": suppression_state,
+            "primary_reason": primary_reason,
+            "secondary_reasons": secondary_reasons,
+            "since_timestamp": state_data.get("since_timestamp"),
+            "truth_epoch": state_data.get("truth_epoch")
+        },
+        "source_artifact": f"docs/intelligence/suppression_state_{market}.json",
+        "trace_id": f"suppression-{market}-{state_data.get('computed_at', 'unknown')}",
+        "truth_epoch": state_data.get("truth_epoch"),
+        "epoch_bounded": True
+    }
+
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    from utils.port_manager import ensure_service_assignment
+
+    assignment = ensure_service_assignment("dashboard_api")
+    uvicorn.run(app, host=assignment["bind_host"], port=int(assignment["port"]))

@@ -10,6 +10,7 @@ from typing import List, Optional
 from . import config
 from .controller import PipelineController
 from .models import ActivationDecision
+from traderfund.validation.validation_runner import ValidationRunner
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-7s | %(name)s | %(message)s")
 logger = logging.getLogger(__name__)
@@ -120,6 +121,15 @@ def run_pipeline_orchestration(symbols: Optional[List[str]] = None, dry_run: boo
     logger.info("=" * 60)
     logger.info("PIPELINE ACTIVATION CONTROLLER - Complete")
     logger.info("=" * 60)
+
+    ValidationRunner().run_post_research(
+        {
+            "source": "research_modules.pipeline_controller.runner",
+            "executed": executed,
+            "symbol_count": len(symbols),
+            "dry_run": dry_run,
+        }
+    )
     
     if not executed:
         return {"status": "NO_OP", "reason": "no stages triggered"}

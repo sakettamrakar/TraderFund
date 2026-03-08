@@ -1,14 +1,14 @@
 {
   "fragility_context": {
     "market": "INDIA",
-    "computed_at": "2026-02-09T20:27:40.106896",
-    "stress_state": "NORMAL",
+    "computed_at": "2026-03-08T15:36:57.915430",
+    "stress_state": "ELEVATED_STRESS",
     "constraints_applied": [],
     "final_authorized_intents": [
-      "ALLOW_POSITION_HOLD",
-      "ALLOW_LONG_ENTRY"
+      "ALLOW_REBALANCING",
+      "ALLOW_POSITION_HOLD"
     ],
-    "reason": "Nominal Conditions.",
+    "reason": "Elevated Volatility (India VIX: 19.88).",
     "version": "1.0.0-INDIA-SUBTRACTIVE"
   }
 }

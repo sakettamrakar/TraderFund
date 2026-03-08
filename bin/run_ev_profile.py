@@ -26,6 +26,7 @@ from typing import List
 
 # Setup Path to import from src
 PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from evolution.profile_loader import load_profile, EvaluationProfile
@@ -85,11 +86,13 @@ def run_ev_sequence(context_path: Path, output_dir: Path, window_id: str):
     # EV-RUN-2
     print(f"  [Window: {window_id}] EV-RUN-2: Decision Replay")
     replay = DecisionReplayWrapper(context_path=context_path)
+    replay.load_factor_context(factor_output_path)
     replay.execute_full_trace(output_dir=output_dir)
 
     # EV-RUN-3
     print(f"  [Window: {window_id}] EV-RUN-3: Paper P&L")
     pnl = PaperPnLCalculator(context_path=context_path)
+    pnl.load_factor_context(factor_output_path)
     pnl.generate_summary(output_dir=output_dir)
 
     # EV-RUN-4
@@ -100,6 +103,7 @@ def run_ev_sequence(context_path: Path, output_dir: Path, window_id: str):
     # EV-RUN-5
     print(f"  [Window: {window_id}] EV-RUN-5: Rejection Analysis")
     rej = RejectionAnalyzer(context_path=context_path)
+    rej.load_factor_context(factor_output_path)
     rej.generate_analysis(output_dir=output_dir)
 
     # EV-RUN-6
@@ -107,6 +111,7 @@ def run_ev_sequence(context_path: Path, output_dir: Path, window_id: str):
     # Bundle compiler needs input artifacts. Since we write to output_dir, it reads from there.
     # We pass context_path for metadata.
     compiler = BundleCompiler(context_path=context_path)
+    compiler.load_factor_context(factor_output_path)
     compiler.compile(output_dir=output_dir)
     
     print(f"  [Window: {window_id}] Sequence Complete.")

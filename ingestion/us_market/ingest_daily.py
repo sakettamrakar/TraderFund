@@ -4,6 +4,7 @@ import sys
 import logging
 import pandas as pd
 import time
+import yfinance as yf
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any
@@ -13,6 +14,7 @@ sys.path.append(os.getcwd())
 
 from ingestion.api_ingestion.alpha_vantage.client import AlphaVantageClient
 from ingestion.api_ingestion.alpha_vantage.key_pool import KeyPoolManager
+from traderfund.validation.validation_runner import ValidationRunner
 
 # Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -21,17 +23,29 @@ logger = logging.getLogger("USIngestion")
 class USMarketIngestor:
     SYMBOLS = ["SPY", "QQQ", "IWM", "VIXY", "TNX"]
     DATA_DIR = Path("data/us_market")
+    REGIME_DIR = Path("data/regime/raw")
 
     def __init__(self):
         self.key_pool = KeyPoolManager()
         self.DATA_DIR.mkdir(parents=True, exist_ok=True)
+        self.REGIME_DIR.mkdir(parents=True, exist_ok=True)
+
+    def _history_path(self, symbol: str) -> Path:
+        if symbol == "TNX":
+            return self.REGIME_DIR / "^TNX.csv"
+        return self.DATA_DIR / f"{symbol}_daily.csv"
+
+    def _date_column(self, symbol: str) -> str:
+        return "date" if symbol == "TNX" else "timestamp"
 
     def _load_history(self, symbol: str) -> pd.DataFrame:
-        path = self.DATA_DIR / f"{symbol}_daily.csv"
+        path = self._history_path(symbol)
+        date_col = self._date_column(symbol)
         if path.exists():
             try:
                 df = pd.read_csv(path)
-                df['timestamp'] = pd.to_datetime(df['timestamp'])
+                if date_col in df.columns:
+                    df[date_col] = pd.to_datetime(df[date_col])
                 return df
             except Exception as e:
                 logger.error(f"Corrupt history for {symbol}: {e}")
@@ -39,17 +53,52 @@ class USMarketIngestor:
         return pd.DataFrame()
 
     def _save_history(self, symbol: str, df: pd.DataFrame):
-        path = self.DATA_DIR / f"{symbol}_daily.csv"
+        path = self._history_path(symbol)
+        date_col = self._date_column(symbol)
         # Sort and deduplicate
-        df = df.sort_values('timestamp').drop_duplicates(subset=['timestamp'], keep='last')
+        df = df.sort_values(date_col).drop_duplicates(subset=[date_col], keep='last')
         df.to_csv(path, index=False)
         logger.info(f"Saved {len(df)} bars for {symbol}")
+
+    def _fetch_tnx_history(self, start_date: str | None) -> pd.DataFrame:
+        logger.info("Refreshing TNX via yfinance fallback (^TNX)...")
+        df = yf.download("^TNX", start=start_date or "2020-01-01", progress=False, auto_adjust=False)
+        if df.empty:
+            return pd.DataFrame()
+        if isinstance(df.columns, pd.MultiIndex):
+            df.columns = df.columns.get_level_values(0)
+        df = df.reset_index().rename(
+            columns={
+                "Date": "date",
+                "Open": "open",
+                "High": "high",
+                "Low": "low",
+                "Close": "close",
+                "Volume": "volume",
+            }
+        )
+        df["date"] = pd.to_datetime(df["date"], errors="coerce").dt.normalize()
+        df["symbol"] = "^TNX"
+        return df[["date", "symbol", "open", "high", "low", "close", "volume"]].dropna(subset=["date"])
 
     def ingest_symbol(self, symbol: str):
         logger.info(f"Ingesting {symbol}...")
         
         # 1. Check existing state
         df_hist = self._load_history(symbol)
+
+        if symbol == "TNX":
+            start_date = None
+            if not df_hist.empty and "date" in df_hist.columns:
+                start_date = (df_hist["date"].max() - pd.Timedelta(days=14)).strftime("%Y-%m-%d")
+            df_new = self._fetch_tnx_history(start_date)
+            if df_new.empty:
+                logger.error("TNX refresh failed: no data returned from yfinance")
+                return
+            df_final = pd.concat([df_hist, df_new]) if not df_hist.empty else df_new
+            self._save_history(symbol, df_final)
+            return
+
         # Force compact for Free Tier compatibility (100 bars)
         output_size = 'compact' 
         
@@ -119,3 +168,9 @@ class USMarketIngestor:
 if __name__ == "__main__":
     ingestor = USMarketIngestor()
     ingestor.run_all()
+    ValidationRunner().run_post_ingestion(
+        {
+            "source": "ingestion.us_market.ingest_daily",
+            "symbols": list(USMarketIngestor.SYMBOLS),
+        }
+    )

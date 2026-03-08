@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getIntelligenceSnapshot } from '../services/api';
+import { getMarketPolicy } from '../services/api';
 // Minimal Component for Epistemic Health (Proxy Status & Epoch)
 // Used in SystemStatus or other high-level views to ensure purity visibility
 
@@ -10,11 +10,8 @@ const EpistemicHealthCheck = ({ market }) => {
         // We reuse the Intelligence/Policy endpoint as it contains the epistemic health
         const fetchHealth = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/api/intelligence/policy/${market}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setHealth(data.policy_decision?.epistemic_health);
-                }
+                const data = await getMarketPolicy(market);
+                setHealth(data.policy_decision?.epistemic_health);
             } catch (e) {
                 console.error("Epistemic Check Failed:", e);
             }

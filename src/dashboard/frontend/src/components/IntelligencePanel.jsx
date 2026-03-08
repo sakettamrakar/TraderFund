@@ -53,7 +53,7 @@ const IntelligencePanel = ({ market }) => {
     // For now, let's render layout first then content logic.
 
     // Fallback data if null
-    const signals = data ? data.signals : [];
+    const signals = (data && Array.isArray(data.signals)) ? data.signals : [];
     const timestamp = data ? data.timestamp : null;
 
     const attentionSignals = signals.filter(s => s.overlay?.status !== 'BLOCKED');

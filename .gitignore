@@ -22,6 +22,10 @@ __pycache__/
 # ---- LOCAL ENV ----
 .env
 .env.*
+!.env.example
+
+# ---- LOCAL PORT STATE ----
+.runtime/
 
 # ---- LOGS ----
 logs/

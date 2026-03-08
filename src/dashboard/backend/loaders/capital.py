@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import os
+from dashboard.backend.loaders.provenance import attach_provenance
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent # c:\GIT\TraderFund
 
@@ -24,13 +25,13 @@ def _get_latest_tick_dir() -> Optional[Path]:
 def load_capital_readiness(market: str = "US") -> Dict[str, Any]:
     latest_tick = _get_latest_tick_dir()
     if not latest_tick:
-        return {"status": "UNKNOWN", "error": "No tick data found"}
+        return attach_provenance({"status": "UNKNOWN", "error": "No tick data found"}, "docs/evolution/ticks/<latest>/{market}/capital_readiness.json")
         
     readiness_path = latest_tick / market / "capital_readiness.json"
     if not readiness_path.exists():
-        return {"status": "UNKNOWN", "error": "Readiness snapshot not found"}
+        return attach_provenance({"status": "UNKNOWN", "error": "Readiness snapshot not found"}, f"docs/evolution/ticks/{latest_tick.name}/{market}/capital_readiness.json")
         
-    return _read_json_safe(readiness_path)
+    return attach_provenance(_read_json_safe(readiness_path), f"docs/evolution/ticks/{latest_tick.name}/{market}/capital_readiness.json")
 
 def load_capital_history(market: str = "US") -> Dict[str, Any]:
     # Try reading from tick-specific history/narrative if available
@@ -50,10 +51,10 @@ def load_capital_history(market: str = "US") -> Dict[str, Any]:
         if market == "US":
              timeline_path = PROJECT_ROOT / "docs" / "capital" / "history" / "capital_state_timeline.json"
         else:
-             return {"timeline": [], "current_posture": f"NO_HISTORY ({market})"}
+               return attach_provenance({"timeline": [], "current_posture": f"NO_HISTORY ({market})"}, f"docs/capital/history/capital_state_timeline_{market}.json")
 
     if not timeline_path.exists():
-        return {"timeline": [], "current_posture": "NO_HISTORY"}
+           return attach_provenance({"timeline": [], "current_posture": "NO_HISTORY"}, f"docs/capital/history/{timeline_path.name}")
         
     timeline = _read_json_safe(timeline_path)
     
@@ -61,7 +62,7 @@ def load_capital_history(market: str = "US") -> Dict[str, Any]:
     if timeline and len(timeline) > 0:
         current_posture = timeline[0].get("state", "IDLE")
         
-    return {
+    return attach_provenance({
         "timeline": timeline[:50], 
         "current_posture": current_posture
-    }
+    }, f"docs/capital/history/{timeline_path.name}")

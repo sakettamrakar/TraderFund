@@ -11,6 +11,18 @@ class MarketLoader:
     def __init__(self):
         self.adapter = ProxyAdapter()
 
+    def _load_csv_price_frame(self, path: Path) -> pd.DataFrame:
+        df = pd.read_csv(path)
+        df.columns = [c.title() for c in df.columns]
+        if 'Timestamp' in df.columns:
+            df.rename(columns={'Timestamp': 'Date'}, inplace=True)
+        if 'Datetime' in df.columns:
+            df.rename(columns={'Datetime': 'Date'}, inplace=True)
+        if 'Date' not in df.columns:
+            raise KeyError('Date')
+        df['Date'] = pd.to_datetime(df['Date'])
+        return df.set_index('Date').sort_index()
+
     def load_benchmark(self, market: str) -> pd.DataFrame:
         """
         Loads and aggregates the benchmark equity proxy.
@@ -18,7 +30,7 @@ class MarketLoader:
         INDIA: Loads RELIANCE.
         Returns: DataFrame with ['Date', 'Close']
         """
-        paths = self.adapter.get_ingestion_binding(market, "benchmark_equity")
+        paths = self.adapter.get_ingestion_binding(market, "equity_core")
         if not paths:
             raise ValueError(f"No benchmark binding for {market}")
             
@@ -28,42 +40,21 @@ class MarketLoader:
             dfs = []
             for p in paths:
                 if not p.exists(): continue
-                df = pd.read_csv(p)
-                # Normalize column names to title case or stick to lowercase
-                # Inspect showed lowercase. Let's start by normalizing keys to title case for consistency with rest of system
-                df.columns = [c.title() for c in df.columns] 
-                # Now we expect 'Date', 'Close'
-                df['Date'] = pd.to_datetime(df['Date'])
-                df = df.set_index('Date').sort_index()
-                dfs.append(df['Close']) 
+                dfs.append(self._load_csv_price_frame(p))
             
             if not dfs:
                 raise FileNotFoundError("No benchmark files found on disk")
             
             primary_path = paths[0]
-            df = pd.read_csv(primary_path)
-            df.columns = [c.title() for c in df.columns]
-            df['Date'] = pd.to_datetime(df['Date'])
-            df = df.set_index('Date').sort_index()
-            return df[['Close']]
+            return self._load_csv_price_frame(primary_path)
 
         elif market == "INDIA":
-             # JSONL Format
+            # CSV Format (NIFTY50.csv, BANKNIFTY.csv, etc.)
             path = paths[0]
             if not path.exists():
                 raise FileNotFoundError(f"Missing {path}")
             
-            records = []
-            with open(path, 'r') as f:
-                for line in f:
-                    records.append(json.loads(line))
-            
-            df = pd.DataFrame(records)
-            # Keys are lowercase: date, close
-            df['Date'] = pd.to_datetime(df['date'])
-            df = df.set_index('Date').sort_index()
-            df['Close'] = df['close'] 
-            return df[['Close']]
+            return self._load_csv_price_frame(path)
             
         return pd.DataFrame()
 
@@ -118,8 +109,5 @@ class MarketLoader:
         if not path.exists():
             return pd.DataFrame()
 
-        df = pd.read_csv(path)
-        df.columns = [c.title() for c in df.columns]
-        df['Date'] = pd.to_datetime(df['Date'])
-        df = df.set_index('Date').sort_index()
+        df = self._load_csv_price_frame(path)
         return df[['Close']]

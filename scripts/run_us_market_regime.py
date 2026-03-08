@@ -8,16 +8,35 @@ from pathlib import Path
 
 # Add project root
 sys.path.append(os.getcwd())
+src_root = Path(os.getcwd()) / "src"
+if str(src_root) not in sys.path:
+    sys.path.append(str(src_root))
 
 # Modules
 from ingestion.us_market.ingest_daily import USMarketIngestor
 from traderfund.regime.us_market.run_symbol_regime import SymbolRegimeRunner
 from traderfund.regime.us_market.market_aggregator import MarketAggregator
+from intelligence.decision_policy_engine import DecisionPolicyEngine
+from intelligence.fragility_policy_engine import FragilityPolicyEngine
 
 # Setup Logging
 # Console Handler only for immediate feedback
 logging.basicConfig(level=logging.INFO, format='%(message)s')
 logger = logging.getLogger("USOrchestrator")
+
+
+def _latest_us_tick_context() -> tuple[Path, Path] | None:
+    tick_root = Path("docs/evolution/ticks")
+    tick_dirs = sorted([path for path in tick_root.glob("tick_*") if path.is_dir()], key=lambda path: path.name)
+    if not tick_dirs:
+        return None
+
+    latest = tick_dirs[-1] / "US"
+    regime_path = latest / "regime_context.json"
+    factor_path = latest / "factor_context.json"
+    if regime_path.exists() and factor_path.exists():
+        return regime_path, factor_path
+    return None
 
 def main():
     print("\n" + "="*60)
@@ -165,6 +184,23 @@ def main():
             json.dump(parity_result, f, indent=4)
             
         print(f"Parity Status Updated: {out_path}")
+
+        # 7. Governance artifact generation for dashboard consumers
+        print("\n>>> STEP 5: GOVERNANCE ARTIFACT GENERATION")
+        context_paths = _latest_us_tick_context()
+        if not context_paths:
+            logger.error("Unable to locate latest US tick regime/factor context; skipping policy generation.")
+            return
+
+        regime_path, factor_path = context_paths
+        decision_output = Path("docs/intelligence/decision_policy_US.json")
+        fragility_output = Path("docs/intelligence/fragility_context_US.json")
+
+        DecisionPolicyEngine(regime_path, factor_path, decision_output).run()
+        FragilityPolicyEngine(decision_output, factor_path, fragility_output).run()
+
+        print(f"Decision Policy Updated: {decision_output}")
+        print(f"Fragility Context Updated: {fragility_output}")
 
     except Exception as e:
         logger.error(f"Aggregation Failed: {e}")

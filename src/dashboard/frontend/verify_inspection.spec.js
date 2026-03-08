@@ -1,8 +1,30 @@
 import { test, expect } from '@playwright/test';
+import fs from 'node:fs';
+import path from 'node:path';
+
+
+function resolveFrontendUrl() {
+    const runtimePath = path.resolve(__dirname, '../../..', '.runtime', 'service_ports.json');
+    if (!fs.existsSync(runtimePath)) {
+        return process.env.DASHBOARD_FRONTEND_URL || 'http://127.0.0.1:21011';
+    }
+
+    try {
+        const runtimeState = JSON.parse(fs.readFileSync(runtimePath, 'utf-8'));
+        const service = runtimeState.services?.dashboard_frontend;
+        if (service?.public_host && service?.port) {
+            return `http://${service.public_host}:${service.port}`;
+        }
+    } catch {
+        return process.env.DASHBOARD_FRONTEND_URL || 'http://127.0.0.1:21011';
+    }
+
+    return process.env.DASHBOARD_FRONTEND_URL || 'http://127.0.0.1:21011';
+}
 
 test('Verify Inspection Mode', async ({ page }) => {
     // 1. Open Dashboard
-    await page.goto('http://localhost:5174');
+    await page.goto(resolveFrontendUrl());
     await page.waitForSelector('.system-status-banner');
     await page.screenshot({ path: 'screenshot_1_live_mode.png' });
 

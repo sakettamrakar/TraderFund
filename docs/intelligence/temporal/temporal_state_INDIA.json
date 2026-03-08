@@ -1,20 +1,20 @@
 {
     "market": "INDIA",
-    "timestamp": "2026-02-09T14:33:28.424988Z",
+    "timestamp": "2026-03-08T09:27:19.901441Z",
     "temporal_state": {
         "raw_data_time": {
-            "timestamp": "2026-02-09",
+            "timestamp": "2026-03-06",
             "source": "data\\india\\NIFTY50.csv",
             "status": "VALID"
         },
         "canonical_truth_time": {
-            "timestamp": "2026-02-09",
+            "timestamp": "2026-03-06",
             "source": "canonical_validation_layer",
             "status": "VALID",
-            "last_validated": "2026-02-09T14:33:27.178340Z"
+            "last_validated": "2026-03-08T09:27:19.899935Z"
         },
         "truth_epoch": {
-            "timestamp": "2026-01-30",
+            "timestamp": "2026-03-06",
             "source": "governance_manifest",
             "status": "FROZEN",
             "reason": "Phase 4 Audit Freeze"
@@ -22,19 +22,19 @@
     },
     "drift_status": {
         "ingestion_drift_days": 0,
-        "evaluation_drift_days": 10,
+        "evaluation_drift_days": 0,
         "critical_future_leakage": false,
-        "status_code": "DRIFT_LIMIT_EXCEEDED",
-        "message": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.",
+        "status_code": "SYNC",
+        "message": "System synchronized at frozen truth epoch boundary.",
         "max_drift_days": 7,
-        "drift_limit_exceeded": true,
-        "required_operator_action": "REQUEST_EVALUATION_WINDOW(INDIA, window_start, window_end)",
-        "human_explanation": "Evaluation remains blocked because canonical data has moved too far ahead of frozen truth. Operator must submit bounded catch-up windows; TE will not auto-advance."
+        "drift_limit_exceeded": false,
+        "required_operator_action": null,
+        "human_explanation": "No evaluation drift is present."
     },
     "holds": {
         "ingestion_hold": false,
-        "evaluation_hold": true,
-        "reason": "Operator evaluation window requested. Awaiting manual catch-up execution."
+        "evaluation_hold": false,
+        "reason": "No drift."
     },
     "evaluation_window": {
         "request_id": "WIN-INDIA-20260209143328",
@@ -50,8 +50,8 @@
         "notes": "Bounded catch-up requested. No TE advancement performed."
     },
     "governance_pause": {
-        "active": true,
-        "reason": "Awaiting operator-mediated bounded evaluation",
-        "required_operator_action": "APPROVE_AND_RUN_BOUNDED_WINDOW"
+        "active": false,
+        "reason": "No drift",
+        "required_operator_action": null
     }
 }

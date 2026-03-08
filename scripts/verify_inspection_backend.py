@@ -1,8 +1,17 @@
 import requests
 import json
 import sys
+from pathlib import Path
 
-BASE_URL = "http://localhost:8000/api"
+
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from utils.port_manager import get_api_base_url
+
+
+BASE_URL = get_api_base_url()
 
 def test_live_status():
     print("Testing Live System Status...")

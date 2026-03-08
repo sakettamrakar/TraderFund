@@ -10,10 +10,10 @@ This document is the single source of truth for the mapping between frontend das
 | A0.1 | System Layer Health | system_layer_health.json | META | Yes (mechanical only) | Yes | Loud when stale | KEEP |
 | A1.1 | Data Scale / Data Coverage | market_parity_status.json (per market) | DATA / INTELLIGENCE | Yes (traceable only) | Yes | Explicit per missing role | KEEP |
 | A1.2 | Execution Gate Status | execution_gate_status.json (REQUIRED) | INTELLIGENCE / GOVERNANCE | Yes (block-only) | Yes | Default CLOSED, loud on missing | KEEP |
-| A1.3 | Last Successful Evaluation | last_successful_evaluation.json (REQUIRED) | META | No | Yes | NONE / STALE explicit | KEEP |
+| A1.3 | Last Successful Evaluation | last_successful_evaluation.json (REQUIRED) | INTELLIGENCE | No | Yes | NONE / STALE explicit | KEEP |
 | A2.1 | System Stress Posture | system_stress_posture.json | META / INTELLIGENCE | Yes (mechanical only) | Yes | UNKNOWN if any dependency missing | KEEP |
 | A2.2 | System Constraint Posture | system_posture.json | INTELLIGENCE (DERIVED) | Yes (referential only) | Yes | UNKNOWN if policy/fragility missing | KEEP |
-| A3.1 | Market Scope (Evaluated Markets) | market_evaluation_scope.json | META / INTELLIGENCE | Yes (referential) | Yes | Default UNKNOWN | KEEP |
+| A3.1 | Market Scope (Evaluated Markets) | market_evaluation_scope.json | INTELLIGENCE | Yes (referential) | Yes | Default UNKNOWN | KEEP |
 | A3.2 | Data Coverage (Market-Level) | market_parity_status_{MARKET}.json | DATA / INTELLIGENCE | Yes (referential) | Yes | Explicit per missing role | KEEP |
 | A3.3 | Capital Readiness | MISSING | INTELLIGENCE | No | Yes | Default BLOCKED | FIX |
 | A3.4 | Strategy Status | MISSING | INTELLIGENCE | No | Yes | Default DISABLED | FIX |

@@ -31,11 +31,11 @@ const WhyNothingIsHappening = ({ market = 'US' }) => {
         );
     }
 
-    if (!payload?.suppression) {
+    if (!payload?.suppression || !payload?.source_artifact || !payload?.trace_id || payload?.epoch_bounded === false) {
         return (
             <div className="why-panel">
                 <h3 className="why-title">Why Nothing Is Happening [{market}]</h3>
-                <div className="suppression-header blocked">ACTION BLOCKED DUE TO: NO SUPPRESSION DATA</div>
+                <div className="suppression-header blocked">ACTION BLOCKED DUE TO: UNAVAILABLE</div>
             </div>
         );
     }
@@ -89,7 +89,7 @@ const WhyNothingIsHappening = ({ market = 'US' }) => {
             </div>
 
             <div className="why-footer">
-                Truth Epoch: {suppression.truth_epoch || 'TE-2026-01-30'} | Execution remains disabled | Capital remains disabled
+                Truth Epoch: {payload.truth_epoch || suppression.truth_epoch || 'UNKNOWN'} | Execution remains disabled | Capital remains disabled
             </div>
         </div>
     );

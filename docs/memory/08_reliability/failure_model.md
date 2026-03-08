@@ -286,12 +286,13 @@ The Fragility Policy asks: **"Is the environment safe?"** It has **subtractive p
 
 Degraded states are explicitly declared, documented, and scoped. The system may operate in degraded mode only with full transparency.
 
-### 10.1 Active Degraded States
+### 10.1 Active Degraded States Summary
 
-| ID | Market | Description | Substitution | Epistemic Risk | Authorized Phase |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **DEG-IN-001** | India | Missing broad index (NIFTY50, BANKNIFTY) | `NSE_RELIANCE` as single-stock surrogate | Idiosyncratic risk conflated with systemic risk | Phase 10–11 only |
-| **DEG-US-001** | US | Missing Small Cap (IWM), Industrials (DIA) | None (SPY + QQQ only) | Blindness to small-cap rotation and breadth divergences | All phases (acceptable approximation) |
+> **Live Registry Delegation**: The exclusive live, operative registry for all degraded states and surrogate authorizations is V2: `docs/data/degraded_state_registry.md`. The details below have been removed to prevent duplicate definitions.
+
+| Active States Summarized | Enforcing Registry | Last Synced from V2 |
+| :--- | :--- | :--- |
+| `DEG-IN-001`, `DEG-US-001` | `docs/data/degraded_state_registry.md` | 2026-02-23 |
 
 ### 10.2 Degraded State Handling Rules
 
@@ -300,13 +301,11 @@ Degraded states are explicitly declared, documented, and scoped. The system may 
 | `Status == DEGRADED` | "⚠️ PROXY LIMITED" badge | Confidence capped at `MEDIUM` (0.5) | Tighter constraints (higher margin of safety) |
 | `Status == CANONICAL (with warnings)` | Secondary warning | No cap | Unchanged |
 
-### 10.3 Surrogate Authorization
+### 10.3 Surrogate Authorization Summary
 
-| Market | Index | Authorized Surrogate | Label Requirement |
-| :--- | :--- | :--- | :--- |
-| India | NIFTY | `NSE_RELIANCE` | Must display as "SURROGATE" in UI |
-| India | BANKNIFTY | `NSE_HDFCBANK` | Must display as "SURROGATE" in UI |
-| India | CNXIT | `NSE_INFY` | Must display as "SURROGATE" in UI |
+> **Live Registry Delegation**: The exclusive live, operative registry for surrogate authorizations is V2: `docs/data/degraded_state_registry.md`.
+
+*Refer to the V2 document for authorized indices, surrogates, and UI label requirements.*
 
 *(Sources: `docs/data/degraded_state_registry.md`, `docs/data/data_source_governance.md`)*
 

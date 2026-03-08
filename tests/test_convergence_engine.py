@@ -18,7 +18,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.layers.convergence_engine import ConvergenceEngine
+from src.layers.convergence_engine import ConvergenceEngine, RegimeContextMissingError
 from src.models.convergence_models import LensSignal, ConvergenceResult
 from src.models.meta_models import RegimeState
 
@@ -407,11 +407,10 @@ class TestRegimeMismatch:
         expected_compat = (0.60 + 0.70 + 0.80) / 3
         assert result.avg_regime_compatibility == pytest.approx(expected_compat, abs=1e-9)
 
-    def test_none_regime_returns_insufficient(self):
+    def test_none_regime_raises_explicit_halt(self):
         engine = ConvergenceEngine()
-        result = engine.compute(three_long_lenses(), None, 0.80)
-        assert result.status == "INSUFFICIENT_CONVERGENCE"
-        assert result.final_score == 0.0
+        with pytest.raises(RegimeContextMissingError):
+            engine.compute(three_long_lenses(), None, 0.80)
 
 
 # ── H — Latency Measurement ───────────────────────────────────────────────────
@@ -472,12 +471,10 @@ class TestFailSafePaths:
         result = engine.compute([], regime(), 0.80)
         assert result.aligned_lenses == 0
 
-    def test_no_exception_on_degenerate_inputs(self):
+    def test_degenerate_inputs_raise_explicit_halt_when_regime_missing(self):
         engine = ConvergenceEngine()
-        # Should never raise — always return a ConvergenceResult
-        result = engine.compute(None, None, None)
-        assert isinstance(result, ConvergenceResult)
-        assert result.final_score == 0.0
+        with pytest.raises(RegimeContextMissingError):
+            engine.compute(None, None, None)
 
     def test_conflict_aligned_lenses_zero(self):
         engine = ConvergenceEngine()

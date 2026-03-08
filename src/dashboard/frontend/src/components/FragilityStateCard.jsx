@@ -12,7 +12,7 @@ const FragilityStateCard = ({ market }) => {
         if (!isInspectionMode) {
             getMarketFragility(market)
                 .then(data => {
-                    setFragilityData(data.fragility); // Assuming API returns structure { fragility: ... }
+                    setFragilityData(data?.fragility_context || null);
                     setError(null);
                 })
                 .catch(err => {
@@ -76,13 +76,18 @@ const FragilityStateCard = ({ market }) => {
             <div className="fragility-card loading">
                 <div className="fragility-header">
                     <h3>Fragility Policy</h3>
-                    <span className="badge">LOADING...</span>
+                    <span className="badge">UNAVAILABLE</span>
                 </div>
             </div>
         )
     }
 
-    const { stress_state, constraints_applied, final_authorized_intents, reason } = finalFragilityData;
+    const { 
+        stress_state = 'UNKNOWN', 
+        constraints_applied = [], 
+        final_authorized_intents = [], 
+        reason = 'No fragility data available' 
+    } = finalFragilityData || {};
 
     let statusClass = 'normal';
     // Mapping various potential strings

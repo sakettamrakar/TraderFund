@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Dict, Any
 import json
+from dashboard.backend.loaders.provenance import attach_provenance, load_truth_epoch_id
 
 try:
     from governance.suppression_state import compute_suppression_for_market
@@ -25,7 +26,7 @@ def load_suppression_status(market: str = "US") -> Dict[str, Any]:
     payload = compute_suppression_for_market(market)
     summary = payload.get("summary", {})
     registry = payload.get("registry", {})
-    return {
+    return attach_provenance({
         "suppression": summary,
         "registry": registry,
         "trace": {
@@ -33,5 +34,5 @@ def load_suppression_status(market: str = "US") -> Dict[str, Any]:
             "registry_source": f"docs/intelligence/suppression_reason_registry_{market}.json",
             "audit_source": "docs/audit/f5_suppression/suppression_state_transitions.jsonl",
         },
-    }
+    }, f"docs/intelligence/suppression_state_{market}.json", load_truth_epoch_id())
 

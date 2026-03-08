@@ -85,14 +85,16 @@ Layers communicate via **immutable state snapshots**:
 - `FactorPermission` → binary grant flags; absence = denial (fail-closed)
 - `ContextualSignal` → wraps raw signal + regime context + factor permission
 
-### Prohibited Bypasses
+### Prohibited Bypasses (Design Declaration)
 
-| Ban | Rule | Rationale |
-| :--- | :--- | :--- |
-| BAN-1 | Signals must NOT infer regime directly | Regime classification is L1's exclusive responsibility |
-| BAN-2 | Strategies must NOT query macro state directly | Macro flows through Regime; direct access is a bypass |
-| BAN-3 | Execution must NOT evaluate signal confidence | Confidence evaluation belongs to Meta-Analysis (L3) |
-| BAN-4 | No layer may mutate upstream state | Upstream state is immutable from downstream perspective |
+> **Enforcement Authority**: These design rules are constitutionally enforced by the V2 contract `docs/contracts/layer_interaction_contract.md`.
+
+| Ban | Rule | Rationale | Enforcement Reference |
+| :--- | :--- | :--- | :--- |
+| BAN-1 | Signals must NOT infer regime directly | Regime classification is L1's exclusive responsibility | `layer_interaction_contract.md` § Prohibited Bypasses (BAN-1) |
+| BAN-2 | Strategies must NOT query macro state directly | Macro flows through Regime; direct access is a bypass | `layer_interaction_contract.md` § Prohibited Bypasses (BAN-2) |
+| BAN-3 | Execution must NOT evaluate signal confidence | Confidence evaluation belongs to Meta-Analysis (L3) | `layer_interaction_contract.md` § Prohibited Bypasses (BAN-3) |
+| BAN-4 | No layer may mutate upstream state | Upstream state is immutable from downstream perspective | `layer_interaction_contract.md` § Prohibited Bypasses (BAN-4) |
 
 ### Feedback Channels (Exception)
 
@@ -126,9 +128,9 @@ Feedback flows **upward to DESIGN**, not to STATE:
 | :--- | :--- |
 | Source | Ingestion Engine (L0) |
 | State | Cleaned, time-aligned, ticker-mapped Parquet |
-| Store | `data/analytics/{market}/prices/{freq}/` |
+| Store | `data/analytics/{market}/prices/{freq}/` for canonical daily bars and `data/processed/candles/intraday/` for canonical intraday bars |
 | Retention | Indefinite (Source of Truth) |
-| Schema | `timestamp(UTC), symbol, OHLCV, adj_close, split_coef` |
+| Schema | `timestamp(UTC), symbol, OHLCV` |
 
 ### 3. Cognitive State (Gold)
 

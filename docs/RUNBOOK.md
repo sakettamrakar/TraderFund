@@ -108,6 +108,46 @@ python -m research_modules.pipeline_controller.runner --run --symbols SYMBOL_NAM
 ### 5.3. Safe Re-execution
 The system is idempotent. Re-running a daily task will generally detect existing data and perform a "No-Op" unless specifically forced.
 
+### 5.4. Validation And Self-Healing
+Use the validation subsystem when you want a manual health check, a bounded safe repair attempt, or a structured failure summary.
+
+Run one phase:
+```powershell
+python -m traderfund.validation.validation_runner --phase ingestion --hook manual --market US
+```
+
+Run a full validation sweep:
+```powershell
+foreach ($phase in 'ingestion','memory','research','evaluation','dashboard') {
+  python -m traderfund.validation.validation_runner --phase $phase --hook manual --market US
+  if ($LASTEXITCODE -ne 0) { break }
+}
+```
+
+Allow safe auto-remediation for one phase:
+```powershell
+python -m traderfund.validation.validation_runner --phase dashboard --hook manual --market US --auto-remediate
+```
+
+Enable end-of-run validation review on the daily scheduler only when you explicitly want it:
+```powershell
+python infra_hardening/scheduler/wrapper.py --mode daily --enable-validation-review
+```
+
+To register the Windows scheduled daily task with the review enabled:
+```powershell
+python -m infra_hardening.scheduler.manage --register --daily --enable-validation-review
+```
+
+This keeps the review logic attached to the canonical daily path without making it part of the default scheduler command.
+
+Operator rules:
+- Use auto-remediation only on the specific failing phase.
+- Re-run the same phase after remediation to confirm a clean PASS.
+- Review `logs/validation/*_latest.json` for task results, diagnoses, and applied repairs.
+- Review `logs/validation/daily/latest_validation_review.json` when the daily review flag is enabled.
+- Do not treat raw hash drift in evaluation artifacts as nondeterminism until volatile timestamps are normalized.
+
 ---
 
 ## 6. Configuration & Controls
@@ -161,6 +201,9 @@ python -m infra_hardening.scheduler.manage --query
 
 # Force manual run via Wrapper (ensures logging)
 python infra_hardening/scheduler/wrapper.py --mode daily
+
+# Force manual run with validation review enabled
+python infra_hardening/scheduler/wrapper.py --mode daily --enable-validation-review
 ```
 
 **Logs:**
@@ -199,6 +242,16 @@ npm run dev
 ### How to safely resume?
 - Simply re-run the scheduler. The `incremental_update` and `backfill` modules track their own state and will pick up where they left off.
 - The `PipelineController` tracks last-run timestamps for every (symbol, stage) pair in `data/master/us/execution_history.parquet`.
+
+### Validation-led recovery
+If the system appears healthy operationally but outputs are stale, missing, or suspect, run the validation subsystem before retrying broader orchestration.
+
+Recommended recovery order:
+1. Run the failing phase through `traderfund.validation.validation_runner`.
+2. If a safe remediation is proposed, rerun that phase with `--auto-remediate`.
+3. Re-run the phase without auto-remediation.
+4. Re-run any downstream phases.
+5. Record the result in the appropriate verification or stabilization report if the issue required manual intervention.
 
 ### What NOT to do:
 - **Do NOT** manually delete files in `data/staging/` or `data/master/` unless performing a full reset.

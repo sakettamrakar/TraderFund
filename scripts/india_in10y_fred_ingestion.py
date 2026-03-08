@@ -32,6 +32,7 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 FRED_SERIES_ID = "INDIRLTLT01STM"
 FRED_API_URL = "https://api.stlouisfed.org/fred/series/observations"
+FRED_PUBLIC_CSV_URL = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={FRED_SERIES_ID}"
 
 
 def get_api_key() -> str:
@@ -48,7 +49,7 @@ def get_api_key() -> str:
     return key
 
 
-def fetch_india_10y_yield(api_key: str) -> pd.DataFrame:
+def fetch_india_10y_yield_from_api(api_key: str) -> pd.DataFrame:
     """
     Fetches India 10Y yield from FRED API.
     """
@@ -95,11 +96,40 @@ def fetch_india_10y_yield(api_key: str) -> pd.DataFrame:
     return df
 
 
+def fetch_india_10y_yield_from_public_csv() -> pd.DataFrame:
+    """
+    Fetches India 10Y yield from FRED's public CSV endpoint.
+    """
+    print(f"Fetching public FRED CSV: {FRED_SERIES_ID}")
+    df = pd.read_csv(FRED_PUBLIC_CSV_URL)
+    if df.empty:
+        raise ValueError("No observations returned from public FRED CSV")
+
+    df = df.rename(columns={"observation_date": "Date", FRED_SERIES_ID: "Close"})
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
+    df["Close"] = pd.to_numeric(df["Close"], errors="coerce")
+    df = df.dropna(subset=["Date", "Close"]).sort_values("Date").reset_index(drop=True)
+    print(f"Retrieved {len(df)} valid observations")
+    return df
+
+
+def fetch_india_10y_yield(api_key: str | None = None) -> pd.DataFrame:
+    if api_key:
+        return fetch_india_10y_yield_from_api(api_key)
+    return fetch_india_10y_yield_from_public_csv()
+
+
 def save_in10y(df: pd.DataFrame) -> Path:
     """
     Saves IN10Y data to canonical CSV format.
     """
     output_path = DATA_DIR / "IN10Y.csv"
+
+    df = df.copy()
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce").dt.normalize()
+    df["Close"] = pd.to_numeric(df["Close"], errors="coerce")
+    df = df.dropna(subset=["Date", "Close"]).drop_duplicates(subset=["Date"], keep="last")
+    df = df.sort_values("Date").reset_index(drop=True)
     
     # Remove any existing synthetic file
     if output_path.exists():
@@ -113,6 +143,21 @@ def save_in10y(df: pd.DataFrame) -> Path:
     return output_path
 
 
+def ingest_india_10y() -> Path:
+    """
+    Fetches and persists the canonical real-data IN10Y series.
+    """
+    try:
+        api_key = get_api_key()
+        print("API key retrieved from environment (not logged)")
+    except EnvironmentError:
+        api_key = None
+        print("FRED_API_KEY not set. Falling back to public FRED CSV endpoint.")
+
+    df = fetch_india_10y_yield(api_key)
+    return save_in10y(df)
+
+
 def main():
     print("=" * 60)
     print("INDIA IN10Y FRED INGESTION")
@@ -123,19 +168,12 @@ def main():
     print()
     
     try:
-        # Get API key from environment (never logged)
-        api_key = get_api_key()
-        print("API key retrieved from environment (not logged)")
-        
-        # Fetch data
-        df = fetch_india_10y_yield(api_key)
+        output_path = ingest_india_10y()
+        df = pd.read_csv(output_path, parse_dates=["Date"])
         
         # Validate minimum history
         if len(df) < 50:
             print(f"WARNING: Only {len(df)} observations. Minimum 100 recommended.")
-        
-        # Save
-        output_path = save_in10y(df)
         
         print()
         print("=" * 60)
@@ -147,10 +185,6 @@ def main():
         print(f"Latest Yield: {df['Close'].iloc[-1]:.2f}%")
         
         return True
-        
-    except EnvironmentError as e:
-        print(f"ENVIRONMENT ERROR: {e}")
-        return False
     except requests.RequestException as e:
         print(f"API ERROR: {e}")
         return False

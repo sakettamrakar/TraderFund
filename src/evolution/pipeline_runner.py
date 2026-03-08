@@ -5,9 +5,12 @@ from pathlib import Path
 
 # Add project root to path
 project_root = Path(__file__).parent.parent
+repo_root = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(repo_root))
 sys.path.insert(0, str(project_root))
 
 from evolution.profile_loader import load_profile, ModeType, WindowingType
+from traderfund.validation.validation_runner import ValidationRunner
 
 def run_step(step_name, command):
     print(f"[{step_name}] Executing: {' '.join(command)}")
@@ -65,6 +68,14 @@ def run_pipeline(profile_path: Path):
         # EV-RUN-6: Bundle Compiler
         run_step("EV-RUN-6", ["python", "src/evolution/compile_bundle.py", "--context", str(ctx_file), "--output", str(output_dir)])
         
+    ValidationRunner().run_post_evaluation(
+        {
+            "source": "src.evolution.pipeline_runner",
+            "profile": str(profile_path),
+            "window_count": len(context_paths),
+            "profile_id": profile.profile_id,
+        }
+    )
     print(f"EV-RUN Pipeline for {profile.profile_id} COMPLETED SUCCESSFULLY.")
 
 if __name__ == "__main__":

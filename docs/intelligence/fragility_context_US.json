@@ -1,18 +1,13 @@
 {
   "fragility_context": {
     "market": "US",
-    "computed_at": "2026-01-30T04:50:19.435940",
-    "stress_state": "SYSTEMIC_STRESS",
-    "constraints_applied": [
-      "ALLOW_LONG_ENTRY_SPECIAL",
-      "ALLOW_LONG_ENTRY",
-      "ALLOW_REBALANCING",
-      "ALLOW_SHORT_ENTRY"
-    ],
+    "computed_at": "2026-03-08T15:38:37.005433",
+    "stress_state": "ELEVATED_STRESS",
+    "constraints_applied": [],
     "final_authorized_intents": [
-      "ALLOW_POSITION_HOLD"
+      "OBSERVE_ONLY"
     ],
-    "reason": "CRITICAL VOLATILITY (101.58 > 35). | Blocking ALL entries due to Systemic Stress.",
+    "reason": "Elevated Volatility (34.45).",
     "version": "1.0.0-SUBTRACTIVE"
   }
 }

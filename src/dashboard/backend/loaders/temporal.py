@@ -2,6 +2,7 @@ from pathlib import Path
 import json
 import logging
 from typing import Dict, Any
+from dashboard.backend.loaders.provenance import attach_provenance
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 TEMPORAL_DIR = PROJECT_ROOT / "docs" / "intelligence" / "temporal"
@@ -76,7 +77,9 @@ def load_temporal_status(market: str):
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             payload = json.load(f)
-        return _normalize_temporal_payload(payload, market)
+        normalized = _normalize_temporal_payload(payload, market)
+        truth_epoch = normalized.get("temporal_state", {}).get("truth_epoch", {}).get("epoch_id")
+        return attach_provenance(normalized, f"docs/intelligence/temporal/temporal_state_{market}.json", truth_epoch)
     except Exception as e:
         logger.error(f"Failed to load temporal state for {market}: {e}")
         return {

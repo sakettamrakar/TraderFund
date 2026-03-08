@@ -323,7 +323,10 @@ class TemporalOrchestrator:
             state["temporal_state"]["canonical_truth_time"]["last_validated"] = datetime.datetime.utcnow().isoformat() + "Z"
             state["temporal_state"]["canonical_truth_time"]["status"] = "VALID"
 
-        te_str = state["temporal_state"]["truth_epoch"].get("timestamp", "1970-01-01")
+        global_te = self._load_truth_epoch_date()
+        state["temporal_state"]["truth_epoch"]["timestamp"] = global_te
+        
+        te_str = global_te
         ctt_str = state["temporal_state"]["canonical_truth_time"].get("timestamp", latest_date)
 
         dt_ctt = self._parse_date(ctt_str)

@@ -18,8 +18,8 @@ from typing import Dict, Any
 
 # Ensure project root is in path
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from evolution.factor_context_builder import FactorContextBuilder
 from evolution.watchers.momentum_emergence_watcher import MomentumEmergenceWatcher
@@ -50,7 +50,28 @@ from macro.macro_context_builder import MacroContextBuilder
 # Intelligence Engine (Step 3c)
 from intelligence.engine import IntelligenceEngine
 
-from ingestion.api_ingestion.alpha_vantage.market_data_ingestor import USMarketIngestor
+# USMarketIngestor lives in root-level ingestion/ which can conflict with src/ingestion/.
+# Wrapped in try/except: _ingest_data() already handles failure gracefully (uses stale data).
+try:
+    import importlib.util as _ilu
+    _spec = _ilu.spec_from_file_location(
+        "market_data_ingestor",
+        str(PROJECT_ROOT / "ingestion" / "api_ingestion" / "alpha_vantage" / "market_data_ingestor.py"),
+        submodule_search_locations=[str(PROJECT_ROOT)]
+    )
+    _mod = _ilu.module_from_spec(_spec)
+    # Ensure root ingestion package is resolvable for the module's own imports
+    import sys as _sys
+    _old_ingestion = _sys.modules.pop("ingestion", None)
+    _sys.path.insert(0, str(PROJECT_ROOT))
+    _spec.loader.exec_module(_mod)
+    USMarketIngestor = _mod.USMarketIngestor
+    if _old_ingestion:
+        _sys.modules["ingestion"] = _old_ingestion
+except Exception as _e:
+    print(f"  [WARN] USMarketIngestor not available: {_e}. Data ingestion step will be skipped.")
+    USMarketIngestor = None
+    
 from governance.canonical_partiality import (
     CANONICAL_COMPLETE,
     detect_and_persist_canonical_partiality,
@@ -134,6 +155,9 @@ class EvTickOrchestrator:
     def _ingest_data(self):
         print("  [Step 1] Ingesting Real Data (AlphaVantage)")
         try:
+            if USMarketIngestor is None:
+                print("    ! USMarketIngestor unavailable (namespace conflict). Using existing data.")
+                return
             ingestor = USMarketIngestor()
             # Core macro/market proxies for regime detection
             symbols = ["SPY", "QQQ", "IWM", "VIX"] 
@@ -175,19 +199,22 @@ class EvTickOrchestrator:
                         except: pass
                         
             elif market == "INDIA":
-                # Read NSE_RELIANCE_1d.jsonl
-                data_path = PROJECT_ROOT / "data" / "raw" / "api_based" / "angel" / "historical" / "NSE_RELIANCE_1d.jsonl"
+                # Read canonical NIFTY50 proxy (CSV format)
+                data_path = PROJECT_ROOT / "data" / "india" / "NIFTY50.csv"
                 if not data_path.exists():
-                    return "UNKNOWN", 0.0, "Data File Missing: NSE_RELIANCE"
+                    return "UNKNOWN", 0.0, "Data File Missing: NIFTY50.csv"
                 
-                symbol = "RELIANCE (NSE)"
+                symbol = "NIFTY 50"
+                import csv
                 with open(data_path, "r") as f:
-                    for line in f:
-                        if line.strip():
-                            try:
-                                rec = json.loads(line)
-                                prices.append(float(rec["close"]))
-                            except: pass
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        try:
+                            # NIFTY50.csv uses 'Close' (title case)
+                            close_val = row.get("Close") or row.get("close")
+                            if close_val:
+                                prices.append(float(close_val))
+                        except: pass
                             
             if not prices:
                 return "UNKNOWN", 0.0, f"No Price Data for {market}"
@@ -288,13 +315,29 @@ class EvTickOrchestrator:
         
         builder = MacroContextBuilder(output_dir=self.output_dir)
         
-        # In authentic mode, we should fetch this from data_ingestion or leave empty.
-        current_data = {
-            "VIX": {"close": 0.0},
-            "^TNX": {"close": 0.0},
-            "HYG": {"close": 0.0},
-            "LQD": {"close": 0.0} 
+        # Read REAL macro values from anchor data files
+        current_data = {}
+        macro_symbols = {
+            "VIX": PROJECT_ROOT / "data" / "regime" / "raw" / "VIX.csv",
+            "^TNX": PROJECT_ROOT / "data" / "regime" / "raw" / "^TNX.csv",
+            "HYG": PROJECT_ROOT / "data" / "regime" / "raw" / "HYG.csv",
+            "LQD": PROJECT_ROOT / "data" / "regime" / "raw" / "LQD.csv",
         }
+        for sym, path in macro_symbols.items():
+            try:
+                if path.exists():
+                    import csv as _csv
+                    with open(path, "r") as f:
+                        rows = list(_csv.DictReader(f))
+                    if rows:
+                        last = rows[-1]
+                        current_data[sym] = {"close": float(last.get("close", 0.0))}
+                    else:
+                        current_data[sym] = {"close": 0.0}
+                else:
+                    current_data[sym] = {"close": 0.0}
+            except Exception:
+                current_data[sym] = {"close": 0.0}
         
         builder.build(current_data, self.timestamp, market)
         return self.output_dir / market / "macro_context.json"

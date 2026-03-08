@@ -4,6 +4,12 @@
 > **Authoritative Source**: `docs/memory/03_domain/domain_model.md` is CANONICAL.
 > **Conflict Handling**: Where legacy source docs conflict with Domain Model, mark OPEN_CONFLICT.
 
+## Immutable External Dependencies (Version Locked)
+> **CRITICAL**: The following V2 contracts are locked and MUST NOT be overridden by V3 structural changes:
+> - **CON-001**: `docs/contracts/layer_interaction_contract.md` [Last Validated Version/Date: 2026-02-23]
+> - **CON-002**: `docs/contracts/proxy_dependency_contracts.md` [Last Validated Version/Date: 2026-02-23]
+> - **CON-003 NEVER**: `docs/contracts/execution_harness_contract.md` [Last Validated Version/Date: 2026-02-23]
+
 ---
 
 ## 1. Source Systems
@@ -103,9 +109,6 @@
 | `low` | `float64` | Raw low price | NO |
 | `close` | `float64` | Raw close price | NO |
 | `volume` | `int64` | Session volume | NO |
-| `adj_close` | `float64` | Adjusted close (from AV) | NO |
-| `dividend_amt` | `float64` | Dividend amount | YES (default 0.0) |
-| `split_coef` | `float64` | Split coefficient | YES (default 1.0) |
 
 **Storage**: `data/analytics/us/prices/{frequency}/`
 **Format**: Apache Parquet
@@ -584,25 +587,25 @@
 
 ---
 
-## Legacy Source Mapping
+## Immutable V2 Source Mapping
 
-| This Section | Legacy Source Document(s) |
-| :--- | :--- |
-| §1.1 Alpha Vantage | `docs/us_market_engine_design.md` |
-| §1.2 SmartAPI | `docs/INDIA_WEBSOCKET_ARCHITECTURE.md`, `docs/contracts/RAW_ANGEL_INTRADAY_SCHEMA.md` |
-| §1.3 Event Sources | `docs/memory/05_components/ingestion_events.yaml` (RQ-6) |
-| §2.1 US OHLCV | `docs/us_market_engine_design.md` §4 |
-| §2.2 India Raw | `docs/contracts/RAW_ANGEL_INTRADAY_SCHEMA.md` |
-| §2.3 India Processed | `docs/contracts/PROCESSED_INTRADAY_SCHEMA.md` |
-| §2.5 Factor Context | `docs/evolution/context/factor_context_schema.md` |
-| §2.6 Regime Input | `docs/epistemic/contracts/minimal_regime_input_contract.md` |
-| §2.7 Strategy Registry | `docs/contracts/strategy_registry_schema.md` |
-| §2.8 Paper Portfolio | `docs/evolution/portfolio/paper_portfolio_schema.md` |
-| §2.10 Watchers | `docs/evolution/watchers/*.md` |
-| §3 Proxy Sets | `docs/contracts/market_proxy_sets.md`, `docs/contracts/proxy_dependency_contracts.md`, `docs/contracts/india_proxy_sets.json` |
-| §4 Lineage | `docs/contracts/RAW_DATA_LINEAGE_RULES.md` |
-| §5 Temporal Truth | `docs/governance/temporal_truth_contract.md` |
-| §6 Retention | `docs/epistemic/data_retention_policy.md` |
-| §8 Dashboard API | `docs/dashboard/api_schema.md` |
-| §9 Coverage Gaps | `docs/data/coverage_gap_register.md` |
-| §10 Eval Profiles | `docs/evolution/evaluation_profiles/schema.md` |
+| This Section | Legacy Source Document(s) | Last Validated Date |
+| :--- | :--- | :--- |
+| §1.1 Alpha Vantage | `docs/us_market_engine_design.md` | 2026-02-23 |
+| §1.2 SmartAPI | `docs/INDIA_WEBSOCKET_ARCHITECTURE.md`, `docs/contracts/RAW_ANGEL_INTRADAY_SCHEMA.md` | 2026-02-23 |
+| §1.3 Event Sources | `docs/memory/05_components/ingestion_events.yaml` (RQ-6) | 2026-02-23 |
+| §2.1 US OHLCV | `docs/us_market_engine_design.md` §4 | 2026-02-23 |
+| §2.2 India Raw | `docs/contracts/RAW_ANGEL_INTRADAY_SCHEMA.md` | 2026-02-23 |
+| §2.3 India Processed | `docs/contracts/PROCESSED_INTRADAY_SCHEMA.md` | 2026-02-23 |
+| §2.5 Factor Context | `docs/evolution/context/factor_context_schema.md` | 2026-02-23 |
+| §2.6 Regime Input | `docs/epistemic/contracts/minimal_regime_input_contract.md` | 2026-02-23 |
+| §2.7 Strategy Registry | `docs/contracts/strategy_registry_schema.md` | 2026-02-23 |
+| §2.8 Paper Portfolio | `docs/evolution/portfolio/paper_portfolio_schema.md` | 2026-02-23 |
+| §2.10 Watchers | `docs/evolution/watchers/*.md` | 2026-02-23 |
+| §3 Proxy Sets | `docs/contracts/market_proxy_sets.md`, `docs/contracts/proxy_dependency_contracts.md`, `docs/contracts/india_proxy_sets.json` | 2026-02-23 |
+| §4 Lineage | `docs/contracts/RAW_DATA_LINEAGE_RULES.md` | 2026-02-23 |
+| §5 Temporal Truth | `docs/governance/temporal_truth_contract.md` | 2026-02-23 |
+| §6 Retention | `docs/epistemic/data_retention_policy.md` | 2026-02-23 |
+| §8 Dashboard API | `docs/dashboard/api_schema.md` | 2026-02-23 |
+| §9 Coverage Gaps | `docs/data/coverage_gap_register.md` | 2026-02-23 |
+| §10 Eval Profiles | `docs/evolution/evaluation_profiles/schema.md` | 2026-02-23 |

@@ -3,7 +3,7 @@
 ## Cross-Cutting
 - Component: `Governance`
 - Role: Constitutional policy enforcement across all phases.
-- `OPEN_QUESTION`: Governance is not assigned a single numbered phase in the source contracts; it is modeled as an always-on control plane.
+- `ACTION ITEM` [Target Resolution: Core Architecture Team]: Governance is not assigned a single numbered phase in the source contracts; it is modeled as an always-on control plane. Needs formal integration into the DAG validation logic.
 
 ## Phase 0: Ingestion
 - Purpose: Acquire and normalize market/event inputs for downstream cognition.
@@ -35,7 +35,7 @@
   - `Meta-Analysis Engine` requires Phase 1 outputs (`RegimeState`, `NarrativeObjects`).
   - `Factor Engine` requires trust-filtered context (`Meta-Analysis`) plus regime context.
   - Factor permissions are fail-closed; denied/unknown permissions block downstream style activation.
-- `OPEN_QUESTION`: `Meta-Analysis Engine` lists `Scanners/Lenses (L6)` as an upstream source, which conflicts with strict L1->L9 ordering; treat this as non-blocking telemetry input until contract clarification.
+- `ACTION ITEM` [Target Resolution: Epistemic Review Board]: `Meta-Analysis Engine` lists `Scanners/Lenses (L6)` as an upstream source, which conflicts with strict L1->L9 ordering; treat this as non-blocking telemetry input until contract clarification.
 
 ## Phase 3: Strategy + Discovery
 - Purpose: Activate eligible playbooks, then scan the universe in parallel lenses.

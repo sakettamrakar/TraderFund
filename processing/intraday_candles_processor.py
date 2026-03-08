@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import pandas as pd
+from traderfund.validation.validation_runner import ValidationRunner
 
 # Configure logging
 logging.basicConfig(
@@ -166,4 +167,11 @@ if __name__ == "__main__":
     ]
     
     status = processor.process_all(watchlist)
+    ValidationRunner().run_post_ingestion(
+        {
+            "source": "processing.intraday_candles_processor",
+            "status": status,
+            "watchlist_size": len(watchlist),
+        }
+    )
     logger.info(f"Processing complete. Status: {status}")

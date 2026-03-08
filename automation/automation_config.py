@@ -6,6 +6,16 @@ including the DRY_RUN flag and the active RunJournal instance.
 Also defines the SecurityViolation exception for safety guards.
 """
 
+import os
+
+from dotenv import find_dotenv, load_dotenv
+
+from utils.port_manager import get_service_url, load_environment
+
+
+load_dotenv(find_dotenv(usecwd=True))
+load_environment()
+
 class SecurityViolation(Exception):
     """Raised when an autonomous agent attempts to violate a safety invariant."""
     pass
@@ -29,7 +39,7 @@ class AutomationConfig:
         self.RECOVERY_WEIGHT = 0.05
         # Phase AB: Visual Validation
         self.visual_validation_enabled = True
-        self.base_url = "http://localhost:3000"
+        self.base_url = os.getenv("FRONTEND_BASE_URL") or get_service_url("dashboard_frontend")
         self.screenshot_baseline_path = "automation/visual/baseline.png"
 
     @classmethod
@@ -37,11 +47,5 @@ class AutomationConfig:
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
-
-# Global instance for easy import os
-from dotenv import load_dotenv, find_dotenv
-
-# Load .env explicitly
-load_dotenv(find_dotenv(usecwd=True))
 
 config = AutomationConfig.get()

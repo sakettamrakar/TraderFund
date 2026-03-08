@@ -1,22 +1,26 @@
 """
 Run Real Market Stories (Integration Test).
 
-FETCHE FROM: http://localhost:8000/api/public/market-stories
+FETCHES FROM: managed dashboard API /api/public/market-stories
 PIPES TO:    NarrativeGenesisEngine (Shadow Mode)
 """
 
 import sys
 import os
 import logging
+from pathlib import Path
 
 # Ensure project root is in path
-sys.path.append(os.getcwd())
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from traderfund.narrative.adapters.market_story_adapter import MarketStoryAdapter
 from narratives.genesis.engine import NarrativeGenesisEngine
 from narratives.repository.base import NarrativeRepository
 from narratives.core.models import Narrative
 from signals.core.enums import Market
+from utils.port_manager import get_api_base_url
 
 # Configure Logging
 logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
@@ -34,7 +38,7 @@ class AuditRepository(NarrativeRepository):
     def get_active_narratives(self, mkt): return []
 
 def main():
-    API_URL = "http://localhost:8000/api/public/market-stories?limit=10"
+    API_URL = get_api_base_url(include_api_prefix=True) + "/public/market-stories?limit=10"
 
     print("="*60)
     print(" REAL MARKET STORY INGESTION")

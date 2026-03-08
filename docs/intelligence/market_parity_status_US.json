@@ -1,7 +1,7 @@
 {
     "market": "US",
-    "computed_at": "2026-02-07T23:23:10.972286",
-    "truth_epoch": "TRUTH_EPOCH_2026-02-07_01",
+    "computed_at": "2026-03-08T15:38:36.965059",
+    "truth_epoch": "TRUTH_EPOCH_2026-03-06_01",
     "parity_status": "CANONICAL",
     "proxy_diagnostics": {
         "equity_core": {
@@ -11,7 +11,7 @@
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
             "path": "data\\us_market\\SPY_daily.csv",
-            "rows": 116,
+            "rows": 135,
             "staleness": "NONE"
         },
         "growth_proxy": {
@@ -21,7 +21,7 @@
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
             "path": "data\\us_market\\QQQ_daily.csv",
-            "rows": 116,
+            "rows": 135,
             "staleness": "NONE"
         },
         "volatility_gauge": {
@@ -31,7 +31,7 @@
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
             "path": "data\\us_market\\VIXY_daily.csv",
-            "rows": 116,
+            "rows": 135,
             "staleness": "NONE"
         },
         "rates_anchor": {
@@ -41,7 +41,7 @@
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
             "path": "data\\regime\\raw\\^TNX.csv",
-            "rows": 1308,
+            "rows": 1333,
             "staleness": "HIGH"
         }
     },

@@ -6,18 +6,24 @@ SmartAPI and persists them to append-only files.
 
 from __future__ import annotations
 
+import argparse
 import json
 import logging
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, time, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+from zoneinfo import ZoneInfo
 
 from .auth import AngelAuthManager
 from .config import config
 from .instrument_master import InstrumentMaster
+from traderfund.validation.validation_runner import ValidationRunner
 
 logger = logging.getLogger(__name__)
+IST = ZoneInfo("Asia/Kolkata")
+MARKET_OPEN = time(9, 15)
+MARKET_CLOSE = time(15, 30)
 
 
 class MarketDataIngestor:
@@ -60,6 +66,14 @@ class MarketDataIngestor:
         """Get file path for LTP snapshots."""
         return self._ltp_path / f"ltp_snapshot_{date_str}.jsonl"
 
+    def _now_ist(self) -> datetime:
+        return datetime.now(IST)
+
+    def _is_market_hours(self, moment: datetime) -> bool:
+        local_moment = moment.astimezone(IST) if moment.tzinfo else moment.replace(tzinfo=IST)
+        current_time = local_moment.timetz().replace(tzinfo=None)
+        return MARKET_OPEN <= current_time <= MARKET_CLOSE
+
     def fetch_candles(
         self,
         symbols: List[str],
@@ -87,7 +101,7 @@ class MarketDataIngestor:
 
         self._instruments.ensure_loaded()
 
-        now = datetime.now()
+        now = self._now_ist()
         if not to_time:
             to_time = now
         if not from_time:
@@ -165,7 +179,10 @@ class MarketDataIngestor:
             return []
 
         self._instruments.ensure_loaded()
-        now = datetime.now()
+        now = self._now_ist()
+        if not self._is_market_hours(now):
+            logger.warning("Skipping LTP fetch outside IST market hours")
+            return []
         ingestion_ts = now.isoformat()
 
         results = []
@@ -228,7 +245,7 @@ class MarketDataIngestor:
             return 0
 
         self._ensure_directories()
-        date_str = datetime.now().strftime("%Y-%m-%d")
+        date_str = self._now_ist().strftime("%Y-%m-%d")
         written = 0
 
         # Group by symbol and exchange
@@ -266,7 +283,7 @@ class MarketDataIngestor:
             return 0
 
         self._ensure_directories()
-        date_str = datetime.now().strftime("%Y-%m-%d")
+        date_str = self._now_ist().strftime("%Y-%m-%d")
         file_path = self._get_ltp_file_path(date_str)
 
         try:
@@ -301,3 +318,30 @@ class MarketDataIngestor:
         ltp_count = self.persist_ltp(ltp_records)
 
         return {"candles": candle_count, "ltp": ltp_count}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Run one Angel SmartAPI ingestion cycle for the configured watchlist.")
+    parser.add_argument("--interval", default=None, help="Override candle interval, for example ONE_MINUTE or FIVE_MINUTE.")
+    args = parser.parse_args()
+
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
+
+    ingestor = MarketDataIngestor()
+    counts = ingestor.ingest_watchlist(interval=args.interval)
+    ValidationRunner().run_post_ingestion(
+        {
+            "source": "angel_smartapi.market_data_ingestor",
+            "counts": counts,
+            "interval": args.interval,
+        }
+    )
+    logger.info("Ingestion cycle complete: %s", counts)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

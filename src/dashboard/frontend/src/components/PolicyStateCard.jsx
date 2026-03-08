@@ -12,7 +12,7 @@ const PolicyStateCard = ({ market }) => {
         if (!isInspectionMode) {
             getMarketPolicy(market)
                 .then(data => {
-                    setPolicyData(data.policy);
+                    setPolicyData(data?.policy_decision || null);
                     setError(null);
                 })
                 .catch(err => {
@@ -92,12 +92,18 @@ const PolicyStateCard = ({ market }) => {
     if (!finalPolicyData) {
         return (
             <div className="policy-card loading">
-                <h3>Loading Policy...</h3>
+                <h3>Policy Unavailable</h3>
             </div>
         )
     }
 
-    const { policy_state, permissions, blocked_actions, reason, epistemic_health } = finalPolicyData;
+    const { 
+        policy_state = 'UNKNOWN', 
+        permissions = [], 
+        blocked_actions = [], 
+        reason = 'No policy data available', 
+        epistemic_health = {} 
+    } = finalPolicyData || {};
     const isHealthy = epistemic_health?.proxy_status === 'CANONICAL' || isSimulated;
 
     // Status Colors

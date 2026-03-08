@@ -1,5 +1,14 @@
+import sys
+import threading
+import time
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
 
 from dashboard.backend.loaders.system_status import load_system_status
 from dashboard.backend.loaders.layer_health import load_layer_health
@@ -10,8 +19,13 @@ from dashboard.backend.loaders.meta_summary import load_meta_summary
 from dashboard.backend.loaders.narrative import load_system_narrative, load_system_blockers
 from dashboard.backend.loaders.capital import load_capital_readiness, load_capital_history
 from dashboard.backend.loaders.suppression import load_suppression_status
+from traderfund.validation.validation_runner import ValidationRunner
 
 app = FastAPI(title="TraderFund Market Intelligence Dashboard", version="1.0.0")
+VALIDATION_RUNNER = ValidationRunner(str(PROJECT_ROOT))
+VALIDATION_LOCK = threading.Lock()
+LAST_DASHBOARD_VALIDATION_AT = 0.0
+VALIDATION_TTL_SECONDS = 60.0
 
 # Allow CORS for local frontend
 app.add_middleware(
@@ -21,6 +35,31 @@ app.add_middleware(
     allow_methods=["GET"], # STRICTLY READ-ONLY
     allow_headers=["*"],
 )
+
+
+def _run_pre_refresh_validation_if_due(market: str) -> None:
+    global LAST_DASHBOARD_VALIDATION_AT
+    now = time.monotonic()
+    if now - LAST_DASHBOARD_VALIDATION_AT < VALIDATION_TTL_SECONDS:
+        return
+    with VALIDATION_LOCK:
+        now = time.monotonic()
+        if now - LAST_DASHBOARD_VALIDATION_AT < VALIDATION_TTL_SECONDS:
+            return
+        VALIDATION_RUNNER.run_pre_dashboard_refresh(
+            {
+                "market": market,
+                "source": "src.dashboard.backend.app",
+            }
+        )
+        LAST_DASHBOARD_VALIDATION_AT = now
+
+
+@app.middleware("http")
+async def validation_pre_refresh_middleware(request, call_next):
+    if request.method == "GET" and request.url.path.startswith("/api/"):
+        _run_pre_refresh_validation_if_due(request.query_params.get("market", "US"))
+    return await call_next(request)
 
 @app.get("/api/system/status")
 async def get_system_status(market: str = "US"):
@@ -158,4 +197,7 @@ async def get_temporal_status(market: str = "US"):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    from utils.port_manager import ensure_service_assignment
+
+    assignment = ensure_service_assignment("dashboard_api")
+    uvicorn.run(app, host=assignment["bind_host"], port=int(assignment["port"]))

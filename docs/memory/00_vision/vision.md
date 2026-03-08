@@ -10,7 +10,7 @@ The goal is **situational clarity under uncertainty**.
 ## Core Philosophy: The 13-Level Cognitive Hierarchy
 
 All analysis follows a strict, non-negotiable hierarchy.
-Lower levels may refine insight but can never override higher levels.
+Lower levels may refine insight but can never override higher levels. *(Interaction boundaries are governed constitutionally by `docs/contracts/layer_interaction_contract.md`)*
 
 **0. Purpose (Human Outcome)**
 Reduce emotional trading and structural misalignment through clear situational awareness.
@@ -64,7 +64,13 @@ Evaluates existing holdings for regime compatibility, narrative decay, and struc
 
 ## Anti-Patterns
 
-1.  **Level Skipping**: Acting on Technicals without Regime context.
-2.  **Black-Box Decision Engines**: Unexplainable models are forbidden.
-3.  **Future Prediction**: The system characterizes present probability, not forecasts.
-4.  **Hidden Uncertainty**: Confidence must always be visible.
+1.  **Level Skipping**: Acting on Technicals without Regime context. (Enforced via `docs/epistemic/architectural_invariants.md` and related validators)
+2.  **Black-Box Decision Engines**: Unexplainable models are forbidden. (Enforced via `docs/epistemic/architectural_invariants.md`)
+3.  **Future Prediction**: The system characterizes present probability, not forecasts. (Enforced via `docs/epistemic/architectural_invariants.md`)
+4.  **Hidden Uncertainty**: Confidence must always be visible. (Enforced via `docs/epistemic/architectural_invariants.md`)
+
+## Binding Contracts
+
+The vision principles, cognitive hierarchy, and anti-patterns described in this document are operationally enforced via V2 contracts. This document represents the structural intent, whereas runtime authority and safety guarantees are maintained in:
+- `docs/epistemic/architectural_invariants.md`
+- `docs/contracts/layer_interaction_contract.md`

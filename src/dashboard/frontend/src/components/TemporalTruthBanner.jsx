@@ -34,7 +34,7 @@ export default function TemporalTruthBanner({ market = "US" }) {
     return <div className="temporal-banner loading">Loading temporal state...</div>;
   }
 
-  if (error || !temporalState || temporalState.error) {
+  if (error || !temporalState || temporalState.error || !temporalState.source_artifact || !temporalState.trace_id || temporalState.epoch_bounded === false) {
     return <div className="temporal-banner error">TEMPORAL STATE UNAVAILABLE</div>;
   }
 
@@ -55,7 +55,7 @@ export default function TemporalTruthBanner({ market = "US" }) {
   else if (drift.status_code === "EVALUATION_PENDING") statusClass = "pending";
 
   const statusText = limitExceeded
-    ? "EVAL REQUIRED - DRIFT WINDOW EXCEEDED"
+    ? "STALE (DO NOT TRUST)"
     : drift.status_code || "UNKNOWN";
 
   return (

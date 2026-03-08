@@ -2,7 +2,7 @@
 
 > [!IMPORTANT]
 > **Authoritative Source**: `docs/memory/03_domain/domain_model.md` is CANONICAL.
-> This document describes runtime *intent* — how the system is designed to behave at execution time.
+> **Runtime Authority**: Runtime authority is legally bound by `docs/contracts/execution_harness_contract.md` (Constitutional — Binding). This document serves purely as a reference summary of runtime *intent* — how the system is designed to behave at execution time.
 > No implementation details. No scripts. No code.
 
 ---
@@ -229,16 +229,10 @@ IDLE → VALIDATE → BUILD GRAPH → EXECUTE LOOP → FINALIZE → IDLE
 
 ### 3.5 Harness Prohibitions
 
-| Prohibited | Correct Source |
-| :--- | :--- |
-| Infer regime from features | Receive from Regime (L1) |
-| Override factor permissions | Receive from Factor Analysis (L4) |
-| Generate beliefs from signals | Receive from Meta-Analysis (L3) |
-| Cache state across cycles | Require fresh state per cycle |
-| Reorder tasks for performance | Ordering is semantically meaningful |
-| Batch executions across cycles | Each cycle is atomic with fresh state |
+**Harness Prohibitions are constitutionally enforced by V2 contracts.**
 
-*(Source: `docs/contracts/execution_harness_contract.md`)*
+Rather than duplicating the constraint list here, all execution harness prohibitions (including state caching limits, task reordering, and bypass restrictions) are maintained and enforced exclusively via:
+- `docs/contracts/execution_harness_contract.md` (See *Harness Prohibitions* section)
 
 ---
 

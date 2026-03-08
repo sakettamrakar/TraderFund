@@ -4,9 +4,11 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "python ../../../scripts/prepare_dashboard_frontend.py",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
+    "prepreview": "python ../../../scripts/prepare_dashboard_frontend.py",
     "preview": "vite preview"
   },
   "dependencies": {

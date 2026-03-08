@@ -28,7 +28,7 @@ import pytest
 
 from src.feedback.performance_feedback import PerformanceContext, PerformanceFeedbackEngine
 from src.feedback.stability_adapter import StabilityAdapter
-from src.layers.convergence_engine import ConvergenceEngine
+from src.layers.convergence_engine import ConvergenceEngine, RegimeContextMissingError
 from src.layers.meta_analysis import MetaAnalysis
 from src.models.convergence_models import LensSignal
 from src.models.meta_models import RegimeState, SignalInput
@@ -417,19 +417,24 @@ class TestAcceptanceScenarios:
         result = _analyze_with_stability(1.0, _regime("TRENDING"), _signal("MOMENTUM", 0.70, True))
         assert result.effective_trust == pytest.approx(result.raw_trust, abs=1e-9)
 
-    def test_no_silent_failures_convergence(self):
-        """ConvergenceEngine must never raise; always return a valid result."""
+    def test_missing_regime_halts_convergence_explicitly(self):
+        """ConvergenceEngine must hard-halt when regime context is missing."""
         engine = ConvergenceEngine()
         ctx = PerformanceContext("X", 0.0, 1.0, -0.05, 0.01)
+        valid_result = engine.compute(_three_lenses(), _regime(), 0.80, ctx)
+        assert valid_result is not None
+        assert 0.0 <= valid_result.final_score <= 1.0
+
         for call in [
             lambda: engine.compute(None, None, None),
-            lambda: engine.compute([], _regime(), 0.0),
             lambda: engine.compute(_three_lenses(), None, 0.80),
-            lambda: engine.compute(_three_lenses(), _regime(), 0.80, ctx),
         ]:
-            result = call()
-            assert result is not None
-            assert 0.0 <= result.final_score <= 1.0
+            with pytest.raises(RegimeContextMissingError):
+                call()
+
+        fail_safe_result = engine.compute([], _regime(), 0.0)
+        assert fail_safe_result is not None
+        assert 0.0 <= fail_safe_result.final_score <= 1.0
 
     def test_no_silent_failures_meta_analysis(self):
         """MetaAnalysis must never raise; always return a valid TrustResult."""

@@ -40,6 +40,33 @@ except Exception:
     )
 
 
+def load_active_truth_epoch() -> str:
+    epoch_path = DOCS_DIR / "epistemic" / "truth_epoch.json"
+    gate_path = DOCS_DIR / "intelligence" / "execution_gate_status.json"
+
+    try:
+        if epoch_path.exists():
+            with open(epoch_path, "r", encoding="utf-8") as f:
+                epoch_payload = json.load(f)
+            epoch_id = str(epoch_payload.get("epoch", {}).get("epoch_id", ""))
+            if epoch_id.startswith("TRUTH_EPOCH_"):
+                return f"TE-{epoch_id.replace('TRUTH_EPOCH_', '').rsplit('_', 1)[0]}"
+    except Exception:
+        pass
+
+    try:
+        if gate_path.exists():
+            with open(gate_path, "r", encoding="utf-8") as f:
+                gate_payload = json.load(f)
+            truth_epoch = str(gate_payload.get("truth_epoch", ""))
+            if truth_epoch.startswith("TE-"):
+                return truth_epoch
+    except Exception:
+        pass
+
+    return "TE-2026-01-30"
+
+
 def load_india_data() -> Dict[str, pd.DataFrame]:
     """
     Loads all canonical India proxy data.
@@ -395,7 +422,7 @@ def main():
     data = load_india_data()
     print()
 
-    partiality = detect_and_persist_canonical_partiality(market="INDIA", truth_epoch="TE-2026-01-30")
+    partiality = detect_and_persist_canonical_partiality(market="INDIA", truth_epoch=load_active_truth_epoch())
     print(f"  Canonical State: {partiality.get('canonical_state')}")
     print()
 

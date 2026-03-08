@@ -6,11 +6,11 @@ from .workflows import get_daily_workflow, get_weekly_workflow
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)-7s | %(name)s | %(message)s")
 logger = logging.getLogger(__name__)
 
-def run_orchestration(mode: str = "daily", dry_run: bool = False):
+def run_orchestration(mode: str = "daily", dry_run: bool = False, include_validation_review: bool = False):
     engine = SchedulerEngine()
     
     if mode == "daily":
-        tasks = get_daily_workflow()
+        tasks = get_daily_workflow(include_validation_review=include_validation_review)
     elif mode == "weekly":
         tasks = get_weekly_workflow()
     else:
@@ -34,9 +34,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", type=str, default="daily", help="daily/weekly")
     parser.add_argument("--dry-run", action="store_true", help="Print plan only")
+    parser.add_argument("--enable-validation-review", action="store_true", help="Add daily validation review task")
     args = parser.parse_args()
     
-    run_orchestration(args.mode, args.dry_run)
+    run_orchestration(args.mode, args.dry_run, include_validation_review=args.enable_validation_review)
 
 if __name__ == "__main__":
     main()

@@ -1,16 +1,23 @@
-# React + Vite
+# Dashboard Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The dashboard frontend reads its preferred port from the repository `.env` file and its live cross-service targets from `.runtime/service_ports.json`.
 
-Currently, two official plugins are available:
+Startup flow:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. `npm run dev` runs `scripts/prepare_dashboard_frontend.py`
+2. The port manager reserves a free port inside TraderFund's `21000-21050` range
+3. Vite starts on that assigned port
+4. The `/api` proxy resolves the current dashboard API target from the shared runtime assignment file
 
-## React Compiler
+Useful commands:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+npm run dev
+npm run preview
+```
 
-## Expanding the ESLint configuration
+To inspect current assignments:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+python -m utils.port_manager show
+```

@@ -113,3 +113,7 @@ Ranked Pool + ExecutionEnvelope (L8) + PortfolioDiagnostics (L9) → Actionable 
 - **Clinical Review**: Human post-trade analysis of generated signals
 - **Orphan**: A data gap — missing expected data in a time series
 - **Genesis**: The signal generation and narrative creation process
+
+## Violation Detection & Enforcement
+
+The structural integrity of this CANONICAL domain model is actively monitored and enforced by the `epistemic/cognitive_order_validator.md` skill (and similar V2 architecture validators). Any deviations or direct modifications to the implementation that violate this schema will be caught conceptually by the system's review and validation layers, preventing execution of invalid cognitive flows.

@@ -1,5 +1,6 @@
 from typing import Dict, Any, List, Optional
 from dashboard.backend.utils.filesystem import get_latest_tick_dir, get_ticks_history, read_json_safe, PROJECT_ROOT
+from dashboard.backend.loaders.provenance import attach_provenance
 
 def _get_family_status_from_resolution(resolution: Dict[str, Any], family_id: str) -> str:
     strategies = resolution.get("strategies", [])
@@ -76,7 +77,7 @@ def load_strategy_eligibility(market: str = "US") -> Dict[str, Any]:
             resolution = read_json_safe(snapshots[0])
     
     if not resolution:
-        return {"strategies": [], "families": {}, "evolution_version": "v1", "error": "No resolution snapshot found"}
+        return attach_provenance({"strategies": [], "families": {}, "evolution_version": "v1", "error": "No resolution snapshot found"}, f"docs/evolution/ticks/<latest>/{market}/strategy_resolution.json")
     
     # Build family groupings for UI
     strategies_raw = resolution.get("strategies", [])
@@ -130,7 +131,12 @@ def load_strategy_eligibility(market: str = "US") -> Dict[str, Any]:
     for fid, duration_str in durations.items():
         families[fid]["duration"] = duration_str
     
-    return {
+    source_artifact = (
+        f"docs/evolution/ticks/{latest_tick.name}/{market}/strategy_resolution.json"
+        if latest_tick and (latest_tick / market / "strategy_resolution.json").exists()
+        else "docs/evolution/daily_strategy_resolution/<latest>.json"
+    )
+    return attach_provenance({
         "strategies": [s for fam in families.values() for s in fam["strategies"]],
         "families": families,
         "current_regime": resolution.get("current_regime", "UNDEFINED"),
@@ -139,4 +145,4 @@ def load_strategy_eligibility(market: str = "US") -> Dict[str, Any]:
         "evolution_frozen_date": resolution.get("evolution_frozen_date", ""),
         "resolved_at": resolution.get("resolved_at", ""),
         "source": "daily_snapshot"
-    }
+    }, source_artifact)

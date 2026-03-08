@@ -73,7 +73,7 @@ These boundaries are non-negotiable. Violation corrupts the entire system.
 | Layer | Storage | Mutability | Purpose |
 | :--- | :--- | :--- | :--- |
 | **Bronze (Raw)** | `data/raw/` JSONL | Append-only | External API responses, unvalidated |
-| **Silver (Canonical)** | `data/processed/` Parquet | Immutable after validation | Deduplicated, schema-conforming |
+| **Silver (Canonical)** | `data/analytics/{market}/prices/{freq}/` and `data/processed/candles/intraday/` Parquet | Immutable after validation | Deduplicated, schema-conforming canonical market data |
 | **Gold (Analytics)** | `data/decisions/`, `data/narratives/` | Immutable once generated | Regime, narrative, factor artifacts |
 | **Epistemic** | `docs/epistemic/ledger/` Markdown | Append-only (permanent) | Decisions, evolution, assumptions |
 | **Audit** | `logs/` JSON | 90-day active lifecycle | Operational telemetry |
@@ -133,6 +133,8 @@ These phases are completed and locked. Modifications require explicit lock-break
 These represent the DWBS-governed structural build, completed sequentially with gate validation.
 
 ### 5.1 Plane Summary
+
+> **CRITICAL**: Whenever `docs/architecture/DWBS.md` adds or completes a new engineering Plane, Section 5.1 of this document MUST be updated in the same PR.
 
 | # | Plane | Status | Gate | Key Milestone |
 | :--- | :--- | :--- | :--- | :--- |
@@ -203,6 +205,8 @@ Modules migrate through explicit authority classifications:
 | Risk Models | Various | `research_modules/risk_models/` | ✅ Complete |
 
 **Pending Migrations**:
+
+> **Note**: For the live, authoritative list of pending module migrations, refer directly to `docs/governance/MODULE_AUTHORITY_MATRIX.md`.
 
 | Module | Current Location | Target | Reason |
 | :--- | :--- | :--- | :--- |

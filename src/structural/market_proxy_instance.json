@@ -29,7 +29,7 @@
         "version": "1.1.0",
         "status": "CANONICAL",
         "roles": {
-            "benchmark_equity": [
+            "equity_core": [
                 "NIFTY50"
             ],
             "growth_proxy": [

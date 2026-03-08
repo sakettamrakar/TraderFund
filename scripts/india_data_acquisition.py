@@ -5,9 +5,11 @@ Implements strict delta-merge logic for India market data ingestion.
 import yfinance as yf
 import pandas as pd
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime
 import logging
 import sys
+
+from india_in10y_fred_ingestion import ingest_india_10y
 
 # Constants
 PROJECT_ROOT = Path(__file__).parent.parent
@@ -35,6 +37,51 @@ INDIA_TICKERS = {
     "BANKNIFTY": "^NSEBANK",
     "INDIAVIX": "^INDIAVIX",
 }
+
+
+def _normalize_yfinance_frame(df: pd.DataFrame) -> pd.DataFrame:
+    if isinstance(df.columns, pd.MultiIndex):
+        df.columns = df.columns.get_level_values(0)
+
+    frame = df.reset_index().rename(columns={"index": "Date"})
+    required_cols = ["Date", "Open", "High", "Low", "Close", "Volume"]
+    missing = [column for column in required_cols if column not in frame.columns]
+    if missing:
+        raise ValueError(f"Downloaded frame missing columns: {missing}")
+
+    frame = frame[required_cols].copy()
+    frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce").dt.normalize()
+    frame = frame.dropna(subset=["Date"]).drop_duplicates(subset=["Date"], keep="last")
+    frame = frame[frame["Date"].dt.weekday < 5]
+    return frame.sort_values("Date").reset_index(drop=True)
+
+
+def align_proxy_sessions(names: list[str]) -> bool:
+    frames: dict[str, pd.DataFrame] = {}
+    common_dates = None
+
+    for name in names:
+        path = DATA_DIR / f"{name}.csv"
+        if not path.exists():
+            continue
+        frame = pd.read_csv(path, parse_dates=["Date"])
+        frame["Date"] = pd.to_datetime(frame["Date"], errors="coerce").dt.normalize()
+        frame = frame.dropna(subset=["Date"]).drop_duplicates(subset=["Date"], keep="last")
+        frame = frame[frame["Date"].dt.weekday < 5].sort_values("Date").reset_index(drop=True)
+        frames[name] = frame
+        date_set = set(frame["Date"])
+        common_dates = date_set if common_dates is None else common_dates & date_set
+
+    if not frames or not common_dates:
+        logger.error("Unable to align India proxy sessions: no common weekday session set found.")
+        return False
+
+    for name, frame in frames.items():
+        aligned = frame[frame["Date"].isin(common_dates)].sort_values("Date").reset_index(drop=True)
+        aligned.to_csv(DATA_DIR / f"{name}.csv", index=False)
+        logger.info(f"Aligned {name} to {len(aligned)} common weekday sessions")
+
+    return True
 
 def download_ticker(name: str, ticker: str) -> bool:
     """
@@ -86,13 +133,7 @@ def download_ticker(name: str, ticker: str) -> bool:
             # But let's verify if we are truly up to date
             return True
 
-        # Flatten multi-index
-        if isinstance(new_data.columns, pd.MultiIndex):
-            new_data.columns = new_data.columns.get_level_values(0)
-        
-        new_data = new_data.reset_index()
-        if 'Date' in new_data.columns:
-            new_data['Date'] = pd.to_datetime(new_data['Date'])
+        new_data = _normalize_yfinance_frame(new_data)
             
         rows_fetched = len(new_data)
         logger.info(f"  Fetched {rows_fetched} rows.")
@@ -104,6 +145,7 @@ def download_ticker(name: str, ticker: str) -> bool:
             # Merge & Deduplicate: Keep LAST (newest fetch)
             # This handles corrections for the overlap date
             combined_df = combined_df.drop_duplicates(subset=['Date'], keep='last')
+            combined_df = combined_df[combined_df['Date'].dt.weekday < 5]
             combined_df = combined_df.sort_values('Date')
             
             rows_after = len(combined_df)
@@ -128,20 +170,15 @@ def download_ticker(name: str, ticker: str) -> bool:
         logger.error(f"ERROR during acquisition for {name}: {e}")
         return False
 
-def create_synthetic_in10y():
-    """Synthetic IN10Y generation (Placeholder for RBI integration)."""
-    logger.info("Generating synthetic IN10Y data...")
-    # ...existing synthetic logic preservation...
-    dates = pd.date_range(end=datetime.now(), periods=200, freq='B')
-    import numpy as np
-    np.random.seed(42)
-    yields = 7.0 + np.cumsum(np.random.randn(200) * 0.02)
-    
-    df = pd.DataFrame({'Date': dates, 'Close': yields})
-    output_path = DATA_DIR / "IN10Y.csv"
-    df.to_csv(output_path, index=False)
-    logger.info(f"Saved synthetic IN10Y to {output_path}")
-    return True
+def ingest_real_in10y() -> bool:
+    logger.info("Refreshing real IN10Y data from FRED...")
+    try:
+        output_path = ingest_india_10y()
+        logger.info(f"Saved real IN10Y to {output_path}")
+        return True
+    except Exception as exc:
+        logger.error(f"Failed to refresh real IN10Y data: {exc}")
+        return False
 
 def main():
     logger.info("=" * 60)
@@ -156,10 +193,13 @@ def main():
         except Exception as e:
             logger.critical(f"Unhandled exception for {name}: {e}")
             results[name] = "CRITICAL_FAILURE"
-            
-    # Synthetic IN10Y
-    create_synthetic_in10y()
-    results["IN10Y"] = "SYNTHETIC"
+
+    if align_proxy_sessions(list(INDIA_TICKERS.keys())):
+        logger.info("India proxy sessions aligned to common weekday dates")
+    else:
+        logger.error("India proxy session alignment failed")
+
+    results["IN10Y"] = "SUCCESS" if ingest_real_in10y() else "FAILED"
     
     logger.info("Run Complete. Results: " + str(results))
 

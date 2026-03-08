@@ -218,9 +218,13 @@ def _build_role_state(
     last_date = _read_last_canonical_date(path) if exists and path else None
     lag_days: Optional[int] = None
     stale_vs_ctt = False
+    
+    # Allow 70 days lag for INDIA IN10Y as it is monthly data.
+    max_lag = 70 if market == "INDIA" and logical_role == "rates_anchor" else MAX_ROLE_LAG_DAYS
+    
     if ctt_date and last_date:
         lag_days = (ctt_date - last_date).days
-        stale_vs_ctt = lag_days > MAX_ROLE_LAG_DAYS
+        stale_vs_ctt = lag_days > max_lag
 
     return {
         "logical_role": logical_role,
@@ -256,7 +260,8 @@ def detect_canonical_partiality(market: str, truth_epoch: str = "TE-2026-01-30")
         if state["stale_relative_to_ctt"]:
             stale_roles.append(role)
         if state["lag_days_vs_ctt"] is not None:
-            lag_values.append(int(state["lag_days_vs_ctt"]))
+            if not (market == "INDIA" and role == "rates_anchor"):
+                lag_values.append(int(state["lag_days_vs_ctt"]))
 
     freshness_skew_days = 0
     if lag_values:

@@ -1,6 +1,7 @@
 from typing import Dict, Any, List
 
 from dashboard.backend.loaders.suppression import load_suppression_status
+from dashboard.backend.loaders.provenance import attach_provenance
 
 try:
     from governance.narrative_guard import compute_narrative_for_market
@@ -15,7 +16,7 @@ def load_system_narrative(market: str = "US") -> Dict[str, Any]:
     """
     market = market.upper()
     payload = compute_narrative_for_market(market)
-    return payload.get("narrative", {})
+    return attach_provenance(payload.get("narrative", {}), f"docs/intelligence/narrative_state_{market}.json")
 
 
 def load_system_blockers(market: str = "US") -> List[Dict[str, Any]]:

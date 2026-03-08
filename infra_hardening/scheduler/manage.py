@@ -34,12 +34,14 @@ def run_schtasks(args: list):
         logger.error(f"Exception: {e}")
         return False
 
-def register_daily():
+def register_daily(enable_validation_review: bool = False):
     """Register daily task at 09:00."""
     logger.info(f"Registering {DAILY_TASK_NAME}...")
     
     # Command: python wrapper.py --mode daily
     action = f'"{PYTHON_EXE}" "{WRAPPER_SCRIPT}" --mode daily'
+    if enable_validation_review:
+        action += " --enable-validation-review"
     
     # /SC DAILY /TN Name /TR Action /ST 09:00 /F
     args = [
@@ -52,11 +54,13 @@ def register_daily():
     ]
     run_schtasks(args)
 
-def register_weekly():
+def register_weekly(enable_validation_review: bool = False):
     """Register weekly task on Saturday at 09:00."""
     logger.info(f"Registering {WEEKLY_TASK_NAME}...")
     
     action = f'"{PYTHON_EXE}" "{WRAPPER_SCRIPT}" --mode weekly'
+    if enable_validation_review:
+        action += " --enable-validation-review"
     
     # /SC WEEKLY /D SAT /TN Name /TR Action /ST 09:00 /F
     args = [
@@ -70,12 +74,14 @@ def register_weekly():
     ]
     run_schtasks(args)
 
-def register_test_run():
+def register_test_run(enable_validation_review: bool = False):
     """Register a one-time test task for 20:40 (8:40 PM)."""
     task_name = "US_Market_TEST_Run"
     logger.info(f"Registering TEST task {task_name} at 20:40...")
     
     action = f'"{PYTHON_EXE}" "{WRAPPER_SCRIPT}" --mode daily'
+    if enable_validation_review:
+        action += " --enable-validation-review"
     
     # /SC ONCE /TN Name /TR Action /ST 20:40 /F
     args = [
@@ -105,6 +111,7 @@ def main():
     parser.add_argument("--test", action="store_true", help="Register one-time TEST run at 20:00")
     parser.add_argument("--daily", action="store_true", help="Apply to Daily task")
     parser.add_argument("--weekly", action="store_true", help="Apply to Weekly task")
+    parser.add_argument("--enable-validation-review", action="store_true", help="Register tasks with the daily validation review enabled")
     
     args = parser.parse_args()
     
@@ -117,14 +124,14 @@ def main():
             delete_task(WEEKLY_TASK_NAME)
             
     elif args.register:
-        if args.daily: register_daily()
-        if args.weekly: register_weekly()
+        if args.daily: register_daily(enable_validation_review=args.enable_validation_review)
+        if args.weekly: register_weekly(enable_validation_review=args.enable_validation_review)
         if not args.daily and not args.weekly:
-            register_daily()
-            register_weekly()
+            register_daily(enable_validation_review=args.enable_validation_review)
+            register_weekly(enable_validation_review=args.enable_validation_review)
             
     elif args.test:
-        register_test_run()
+        register_test_run(enable_validation_review=args.enable_validation_review)
             
     elif args.query:
         list_tasks()

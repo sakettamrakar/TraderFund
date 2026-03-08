@@ -226,6 +226,15 @@ Every data-bearing widget must satisfy:
 | "You should..." / "Buy" / "Sell" | Implies recommendation |
 | "Opportunity" / "Profit" / "Target price" | Implies forecast |
 
+### 4.6 Deep Dive Operational Contracts
+
+For rigorous UI guardrail implementations, the V2 `dashboard/` directory holds the complete operational specifications. The following documents define the deep-dive observability constraints:
+
+- **`docs/dashboard/provenance_matrix.md`**: Enforces strict backward traceability; every projected value must visibly bind to its source artifact and execution run.
+- **`docs/dashboard/stress_inspection_mode_contract.md`**: Defines UI behavior during extreme market events or circuit breaker trips, prioritizing explicit visual warnings over standard data.
+- **`docs/dashboard/regime_visibility_rules.md`**: Specifies how regime classification confidence and stability are rendered, preventing false certainty.
+- **`docs/dashboard/staleness_and_honesty_checks.md`**: Outlines the strict protocol for handling latent data, ensuring the UI aggressively flags stale inputs instead of failing silently.
+
 *(Sources: `docs/dashboard/dashboard_truth_contract.md`, `docs/dashboard/temporal_truth_surface.md`, `docs/dashboard/ui_guardrails.md`)*
 
 ---

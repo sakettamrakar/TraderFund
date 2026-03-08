@@ -34,6 +34,10 @@ from src.models.convergence_models import (
 )
 from src.models.meta_models import RegimeState
 
+class RegimeContextMissingError(Exception):
+    """Raised when intelligence layers are executed without explicit regime context."""
+    pass
+
 # ── Module-level constants ────────────────────────────────────────────────────
 _MIN_LENSES_FOR_ELIGIBLE = 3
 _MIN_LENSES_FOR_GRADE_A = 4
@@ -132,7 +136,10 @@ class ConvergenceEngine:
         portfolio_bias = max(-0.40, min(0.0, float(portfolio_bias) if portfolio_bias is not None else 0.0))
 
         # ── Fail-safe gate ────────────────────────────────────────────────────
-        if meta_trust_clamped == 0.0 or regime_str is None or lens_count < 2:
+        if regime_str is None:
+            raise RegimeContextMissingError("Convergence Engine halted: RegimeContext is missing. Silencing or defaulting is prohibited.")
+            
+        if meta_trust_clamped == 0.0 or lens_count < 2:
             return self._fail_safe(start, lenses, regime_str, meta_trust_clamped)
 
         # ── Invariant: Directional alignment ─────────────────────────────────

@@ -75,19 +75,30 @@ No strategy may auto-promote itself. All trust transitions require Decision Ledg
 
 ---
 
-## 3. Safety Invariants
+## 3. Safety Invariants (Unified Superset)
+
+> **Notice**: This section serves as the definitive, unified superset of all system invariants, superseding the previous listing in V2 `docs/epistemic/architectural_invariants.md`.
 
 These invariants are the bedrock security guarantees. Violation of any invariant requires immediate system halt.
 
-| ID | Invariant | Description | Severity |
-| :--- | :--- | :--- | :--- |
-| `INV-NO-EXECUTION` | No Execution | System does not execute trades | **ABSOLUTE** |
-| `INV-NO-CAPITAL` | No Capital | System does not move money | **ABSOLUTE** |
-| `INV-NO-SELF-ACTIVATION` | No Self-Activation | System cannot promote itself to production | **ABSOLUTE** |
-| `INV-PROXY-CANONICAL` | Proxy Canonical | All market data must come through canonical proxies | **ABSOLUTE** |
-| `INV-TRUTH-EPOCH-EXPLICIT` | Truth Epoch Explicit | TE is never inferred from system clock | **ABSOLUTE** |
-| `INV-NO-TEMPORAL-INFERENCE` | No Temporal Inference | "now" and "today" are banned concepts | **ABSOLUTE** |
-| `INV-HONEST-STAGNATION` | Honest Stagnation | System admits when it has no new information | **ABSOLUTE** |
+| ID | Invariant | Description | Enforcement Provenance | Severity |
+| :--- | :--- | :--- | :--- | :--- |
+| `INV-NO-EXECUTION` | No Execution | System does not execute trades | `docs/capital/kill_switch.md` | **ABSOLUTE** |
+| `INV-NO-CAPITAL` | No Capital | System does not move money | `docs/capital/kill_switch.md` | **ABSOLUTE** |
+| `INV-NO-SELF-ACTIVATION` | No Self-Activation | System cannot promote itself to production | `docs/capital/kill_switch.md`, `docs/governance/RESEARCH_MODULE_GOVERNANCE.md` | **ABSOLUTE** |
+| `INV-PROXY-CANONICAL` | Proxy Canonical | All market data must come through canonical proxies | `docs/contracts/layer_interaction_contract.md` | **ABSOLUTE** |
+| `INV-TRUTH-EPOCH-EXPLICIT` | Truth Epoch Explicit | TE is never inferred from system clock | `docs/governance/temporal_truth_contract.md` | **ABSOLUTE** |
+| `INV-NO-TEMPORAL-INFERENCE` | No Temporal Inference | "now" and "today" are banned concepts | `docs/governance/temporal_truth_contract.md` | **ABSOLUTE** |
+| `INV-HONEST-STAGNATION` | Honest Stagnation | System admits when it has no new information | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-EVENT-TIME` | Event Time Integrity | All logic must proceed based on event_time | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-NO-LOOKAHEAD` | No Lookahead | Core abstractions prevent access to future data | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-IMMUTABLE-RAW` | Immutability of Raw Data | Data once ingested is never mutated | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-SEPARATION` | Separation of Concerns | Market pipelines and Logic/Execution are distinct | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-IDEMPOTENCY` | Idempotency | Re-runs on same input data yield same output | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-GLASS-BOX` | Glass-Box Observability | All thresholds are configurable and observable | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-COGNITIVE-ORDER` | Cognitive Ordering | Strict evaluation order: Regime → Strategy → Execution | `docs/epistemic/architectural_invariants.md` | **ABSOLUTE** |
+| `INV-NO-LAYER-BYPASS` | Layer Bypass Prohibition | Downstream logic cannot skip upstream constraints | `docs/contracts/layer_interaction_contract.md` | **ABSOLUTE** |
+| `INV-FACTOR-PERMISSION` | Factor Permissions | No signal may bypass factor permissions | `docs/epistemic/factor_layer_policy.md` | **ABSOLUTE** |
 
 *(Sources: `docs/epistemic/architectural_invariants.md`, existing trust.md)*
 

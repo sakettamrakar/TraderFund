@@ -1,0 +1,670 @@
+{
+  "timestamp": "2026-03-08T12:42:17.113314",
+  "phases": {
+    "anchor_validation": {
+      "status": "PASS",
+      "tables": {
+        "SPY": {
+          "file": "data\\us_market\\SPY_daily.csv",
+          "role": "equity_core",
+          "exists": true,
+          "rows": 116,
+          "columns": [
+            "timestamp",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2025-08-22",
+          "date_max": "2026-02-06",
+          "staleness_days": 30,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "300f00f2809a40757d75888310bc9f58",
+          "status": "ACTIVE"
+        },
+        "QQQ": {
+          "file": "data\\us_market\\QQQ_daily.csv",
+          "role": "growth_proxy",
+          "exists": true,
+          "rows": 116,
+          "columns": [
+            "timestamp",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2025-08-22",
+          "date_max": "2026-02-06",
+          "staleness_days": 30,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "8066d75dd5b23715a4444136454dd4f0",
+          "status": "ACTIVE"
+        },
+        "IWM": {
+          "file": "data\\us_market\\IWM_daily.csv",
+          "role": "small_cap_proxy",
+          "exists": true,
+          "rows": 116,
+          "columns": [
+            "timestamp",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2025-08-22",
+          "date_max": "2026-02-06",
+          "staleness_days": 30,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "10babca95e65fc59eecb219246008a4c",
+          "status": "ACTIVE"
+        },
+        "VIXY": {
+          "file": "data\\us_market\\VIXY_daily.csv",
+          "role": "volatility_gauge",
+          "exists": true,
+          "rows": 116,
+          "columns": [
+            "timestamp",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2025-08-22",
+          "date_max": "2026-02-06",
+          "staleness_days": 30,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "9b109d869188187d50439262cd435327",
+          "status": "ACTIVE"
+        },
+        "TNX": {
+          "file": "data\\regime\\raw\\^TNX.csv",
+          "role": "rates_anchor",
+          "exists": true,
+          "rows": 1333,
+          "columns": [
+            "date",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2021-01-26",
+          "date_max": "2026-03-06",
+          "staleness_days": 2,
+          "is_stale": false,
+          "schema_valid": true,
+          "data_hash": "bf69c84d2e18eced191f1cd453ce9353",
+          "status": "ACTIVE"
+        },
+        "SPY_regime": {
+          "file": "data\\regime\\raw\\SPY.csv",
+          "role": "regime_equity",
+          "exists": true,
+          "rows": 1308,
+          "columns": [
+            "date",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2021-01-26",
+          "date_max": "2026-01-29",
+          "staleness_days": 38,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "7fcf1a42976f3fcb51dfe2ceff0626da",
+          "status": "ACTIVE"
+        },
+        "QQQ_regime": {
+          "file": "data\\regime\\raw\\QQQ.csv",
+          "role": "regime_growth",
+          "exists": true,
+          "rows": 1308,
+          "columns": [
+            "date",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2021-01-26",
+          "date_max": "2026-01-29",
+          "staleness_days": 38,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "108c35a037b2d8cd169d800fc26e1dc2",
+          "status": "ACTIVE"
+        },
+        "VIX_regime": {
+          "file": "data\\regime\\raw\\VIX.csv",
+          "role": "regime_vol",
+          "exists": true,
+          "rows": 1305,
+          "columns": [
+            "date",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2021-01-26",
+          "date_max": "2026-01-29",
+          "staleness_days": 38,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "30e2149ad28f88ca3a00fd06c0837e93",
+          "status": "ACTIVE"
+        },
+        "HYG_regime": {
+          "file": "data\\regime\\raw\\HYG.csv",
+          "role": "credit_spread",
+          "exists": true,
+          "rows": 1308,
+          "columns": [
+            "date",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2021-01-26",
+          "date_max": "2026-01-29",
+          "staleness_days": 38,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "71f01a93be0a4ae7f7c8011a1f7ace0b",
+          "status": "ACTIVE"
+        },
+        "LQD_regime": {
+          "file": "data\\regime\\raw\\LQD.csv",
+          "role": "inv_grade",
+          "exists": true,
+          "rows": 1308,
+          "columns": [
+            "date",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2021-01-26",
+          "date_max": "2026-01-29",
+          "staleness_days": 38,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "970f96e9c529fce759fa09fa95017be3",
+          "status": "ACTIVE"
+        },
+        "TYX_regime": {
+          "file": "data\\regime\\raw\\^TYX.csv",
+          "role": "long_rates",
+          "exists": true,
+          "rows": 1308,
+          "columns": [
+            "date",
+            "symbol",
+            "open",
+            "high",
+            "low",
+            "close",
+            "volume"
+          ],
+          "date_min": "2021-01-26",
+          "date_max": "2026-01-29",
+          "staleness_days": 38,
+          "is_stale": true,
+          "schema_valid": true,
+          "data_hash": "949182dc774d2283f1e865ae38ceb8d7",
+          "status": "ACTIVE"
+        },
+        "NIFTY50": {
+          "file": "data\\india\\NIFTY50.csv",
+          "role": "india_equity_core",
+          "exists": true,
+          "rows": 511,
+          "columns": [
+            "Date",
+            "Close",
+            "High",
+            "Low",
+            "Open",
+            "Volume"
+          ],
+          "date_min": "2024-02-06",
+          "date_max": "2026-03-06",
+          "staleness_days": 2,
+          "is_stale": false,
+          "schema_valid": true,
+          "data_hash": "597b1f002d3c3b7aa2a01c777ac5fa91",
+          "status": "ACTIVE"
+        },
+        "BANKNIFTY": {
+          "file": "data\\india\\BANKNIFTY.csv",
+          "role": "india_sector_proxy",
+          "exists": true,
+          "rows": 511,
+          "columns": [
+            "Date",
+            "Close",
+            "High",
+            "Low",
+            "Open",
+            "Volume"
+          ],
+          "date_min": "2024-02-06",
+          "date_max": "2026-03-06",
+          "staleness_days": 2,
+          "is_stale": false,
+          "schema_valid": true,
+          "data_hash": "ac6a3fa789152d08546776a27b380039",
+          "status": "ACTIVE"
+        },
+        "INDIAVIX": {
+          "file": "data\\india\\INDIAVIX.csv",
+          "role": "india_volatility",
+          "exists": true,
+          "rows": 511,
+          "columns": [
+            "Date",
+            "Close",
+            "High",
+            "Low",
+            "Open",
+            "Volume"
+          ],
+          "date_min": "2024-02-06",
+          "date_max": "2026-03-06",
+          "staleness_days": 2,
+          "is_stale": false,
+          "schema_valid": true,
+          "data_hash": "3696bc42873ca4ac1acf8c58d7909941",
+          "status": "ACTIVE"
+        },
+        "IN10Y": {
+          "file": "data\\india\\IN10Y.csv",
+          "role": "india_rates_anchor",
+          "exists": true,
+          "rows": 73,
+          "columns": [
+            "Date",
+            "Close"
+          ],
+          "date_min": "2020-01-01",
+          "date_max": "2026-01-01",
+          "staleness_days": 66,
+          "is_stale": true,
+          "schema_valid": false,
+          "missing_columns": [
+            "open",
+            "high",
+            "low",
+            "volume"
+          ],
+          "data_hash": "d58460dd6e77aedbc5d880452c000fc3",
+          "status": "ACTIVE"
+        }
+      },
+      "errors": []
+    },
+    "daily_refresh": {
+      "status": "PASS",
+      "symbols": {
+        "SPY": {
+          "pre": {
+            "rows": 116,
+            "max_date": "2026-02-06",
+            "hash": "300f00f2809a40757d75888310bc9f58"
+          },
+          "post": {
+            "rows": 135,
+            "max_date": "2026-03-06",
+            "hash": "9fca5d86dc49d02c6ba0f77b3c026217"
+          },
+          "delta": {
+            "new_rows": 19,
+            "date_advanced": true,
+            "data_changed": true,
+            "status": "UPDATED"
+          }
+        },
+        "QQQ": {
+          "pre": {
+            "rows": 116,
+            "max_date": "2026-02-06",
+            "hash": "8066d75dd5b23715a4444136454dd4f0"
+          },
+          "post": {
+            "rows": 135,
+            "max_date": "2026-03-06",
+            "hash": "cd1682b1eb64bcdb37603b1710c1c210"
+          },
+          "delta": {
+            "new_rows": 19,
+            "date_advanced": true,
+            "data_changed": true,
+            "status": "UPDATED"
+          }
+        },
+        "IWM": {
+          "pre": {
+            "rows": 116,
+            "max_date": "2026-02-06",
+            "hash": "10babca95e65fc59eecb219246008a4c"
+          },
+          "post": {
+            "rows": 135,
+            "max_date": "2026-03-06",
+            "hash": "a6afb6be7bc4fd1bc8e75f6b73451120"
+          },
+          "delta": {
+            "new_rows": 19,
+            "date_advanced": true,
+            "data_changed": true,
+            "status": "UPDATED"
+          }
+        },
+        "VIXY": {
+          "pre": {
+            "rows": 116,
+            "max_date": "2026-02-06",
+            "hash": "9b109d869188187d50439262cd435327"
+          },
+          "post": {
+            "rows": 135,
+            "max_date": "2026-03-06",
+            "hash": "9b020ead14a5e3b0c53fbbe6ab809fb3"
+          },
+          "delta": {
+            "new_rows": 19,
+            "date_advanced": true,
+            "data_changed": true,
+            "status": "UPDATED"
+          }
+        },
+        "TNX": {
+          "pre": {
+            "rows": 1333,
+            "max_date": "2026-03-06",
+            "hash": "bf69c84d2e18eced191f1cd453ce9353"
+          },
+          "post": {
+            "rows": 1333,
+            "max_date": "2026-03-06",
+            "hash": "bf69c84d2e18eced191f1cd453ce9353"
+          },
+          "delta": {
+            "new_rows": 0,
+            "date_advanced": false,
+            "data_changed": false,
+            "status": "UNCHANGED"
+          }
+        }
+      },
+      "errors": [],
+      "execution": "SUCCESS"
+    },
+    "delta_validation": {
+      "status": "PASS",
+      "tests": {
+        "idempotency_SPY": {
+          "status": "PASS",
+          "total_rows": 135,
+          "unique_dates": 135,
+          "duplicates": 0
+        },
+        "idempotency_TNX": {
+          "status": "PASS",
+          "total_rows": 1333,
+          "unique_dates": 1333,
+          "duplicates": 0
+        },
+        "schema_SPY": {
+          "status": "PASS",
+          "expected": [
+            "close",
+            "high",
+            "low",
+            "open",
+            "timestamp",
+            "volume"
+          ],
+          "actual": [
+            "close",
+            "high",
+            "low",
+            "open",
+            "timestamp",
+            "volume"
+          ],
+          "missing": [],
+          "extra": []
+        },
+        "schema_TNX": {
+          "status": "PASS",
+          "expected": [
+            "close",
+            "date",
+            "high",
+            "low",
+            "open",
+            "symbol",
+            "volume"
+          ],
+          "actual": [
+            "close",
+            "date",
+            "high",
+            "low",
+            "open",
+            "symbol",
+            "volume"
+          ],
+          "missing": [],
+          "extra": []
+        },
+        "sort_SPY": {
+          "status": "PASS",
+          "is_sorted": true
+        },
+        "sort_TNX": {
+          "status": "PASS",
+          "is_sorted": true
+        },
+        "continuity_SPY": {
+          "status": "PASS",
+          "max_gap_days": 4
+        },
+        "continuity_TNX": {
+          "status": "PASS",
+          "max_gap_days": 4
+        }
+      },
+      "errors": []
+    },
+    "india_validation": {
+      "status": "FAIL",
+      "roles": {},
+      "errors": [
+        "No module named 'ingestion.india_market_loader'"
+      ]
+    },
+    "canonical_validation": {
+      "status": "PASS",
+      "markets": {
+        "US": {
+          "roles": {
+            "equity_core": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\us_market\\SPY_daily.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 135,
+              "last_date": "2026-03-06",
+              "status": "ACTIVE"
+            },
+            "growth_proxy": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\us_market\\QQQ_daily.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 135,
+              "last_date": "2026-03-06",
+              "status": "ACTIVE"
+            },
+            "volatility_gauge": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\us_market\\VIXY_daily.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 135,
+              "last_date": "2026-03-06",
+              "status": "ACTIVE"
+            },
+            "rates_anchor": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\regime\\raw\\^TNX.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 1333,
+              "last_date": "2026-03-06",
+              "status": "ACTIVE"
+            }
+          }
+        },
+        "INDIA": {
+          "roles": {
+            "equity_core": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\india\\NIFTY50.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 511,
+              "last_date": "2026-03-06",
+              "status": "ACTIVE"
+            },
+            "growth_proxy": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\india\\BANKNIFTY.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 511,
+              "last_date": "2026-03-06",
+              "status": "ACTIVE"
+            },
+            "volatility_gauge": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\india\\INDIAVIX.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 511,
+              "last_date": "2026-03-06",
+              "status": "ACTIVE"
+            },
+            "rates_anchor": {
+              "paths": [
+                "c:\\GIT\\TraderFund\\data\\india\\IN10Y.csv"
+              ],
+              "all_exist": true,
+              "has_data": true,
+              "rows": 73,
+              "last_date": "2026-01-01",
+              "status": "ACTIVE"
+            }
+          }
+        }
+      },
+      "errors": []
+    },
+    "freshness_check": {
+      "status": "PASS",
+      "files": {
+        "SPY_daily": {
+          "last_data_date": "2026-03-06",
+          "file_modified": "2026-03-08T12:42:19.015078",
+          "staleness_days": 2,
+          "is_fresh": true,
+          "rows": 135
+        },
+        "QQQ_daily": {
+          "last_data_date": "2026-03-06",
+          "file_modified": "2026-03-08T12:42:20.594351",
+          "staleness_days": 2,
+          "is_fresh": true,
+          "rows": 135
+        },
+        "TNX": {
+          "last_data_date": "2026-03-06",
+          "file_modified": "2026-03-08T12:42:27.526954",
+          "staleness_days": 2,
+          "is_fresh": true,
+          "rows": 1333
+        },
+        "NIFTY50": {
+          "last_data_date": "2026-03-06",
+          "file_modified": "2026-03-07T17:20:18.607997",
+          "staleness_days": 2,
+          "is_fresh": true,
+          "rows": 511
+        }
+      }
+    }
+  },
+  "summary": {
+    "anchor_validation": {
+      "status": "PASS",
+      "error_count": 0
+    },
+    "daily_refresh": {
+      "status": "PASS",
+      "error_count": 0
+    },
+    "delta_validation": {
+      "status": "PASS",
+      "error_count": 0
+    },
+    "india_validation": {
+      "status": "FAIL",
+      "error_count": 1
+    },
+    "canonical_validation": {
+      "status": "PASS",
+      "error_count": 0
+    },
+    "freshness_check": {
+      "status": "PASS",
+      "error_count": 0
+    }
+  }
+}

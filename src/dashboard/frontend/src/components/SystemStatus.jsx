@@ -28,6 +28,7 @@ const SystemStatus = ({ market }) => {
     let reasons = [];
     let traceData = {};
     let lastEval = 'NONE';
+    let truthEpoch = 'N/A';
 
     if (isInspectionMode) {
         gateStatus = 'CLOSED (SIMULATION)';
@@ -35,6 +36,7 @@ const SystemStatus = ({ market }) => {
         reasons = ['INSPECTION MODE ACTIVE', activeScenario ? activeScenario.condition_desc : 'SELECT SCENARIO'];
         traceData = { gate_source: 'Scenario Report', ev_source: 'N/A' };
         lastEval = 'SIMULATED';
+        truthEpoch = 'INSPECTION';
     } else if (data) {
         const { gate, last_evaluation, trace } = data;
         gateStatus = gate?.execution_gate || 'UNKNOWN';
@@ -42,6 +44,7 @@ const SystemStatus = ({ market }) => {
         reasons = gate?.reasons || [];
         traceData = trace;
         lastEval = last_evaluation?.last_successful_evaluation || 'NONE';
+        truthEpoch = data?.truth_epoch || gate?.truth_epoch || last_evaluation?.truth_epoch || 'N/A';
     }
 
     const statusClass = `status-tag ${gateStatus.toLowerCase().split(' ')[0]}`; // Handle 'CLOSED (SIM)'
@@ -102,7 +105,7 @@ const SystemStatus = ({ market }) => {
                     </div>
 
                     <div className="trace-badge">
-                        Trace: {traceData?.gate_source} | Epoch: {isInspectionMode ? 'INSPECTION' : (data?.gate?.truth_epoch || 'N/A')}
+                        Trace: {traceData?.gate_source} | Epoch: {truthEpoch}
                     </div>
                 </div>
 
@@ -119,7 +122,7 @@ const SystemStatus = ({ market }) => {
                     </div>
                     <div className="meta-item">
                         <span className="meta-label">GOVERNANCE</span>
-                        <span className="meta-value governance-clean">TE-2026-01-30 [FROZEN]</span>
+                        <span className="meta-value governance-clean">{isInspectionMode ? 'INSPECTION [LOCAL]' : (data?.governance_status || `${truthEpoch} [FROZEN]`)}</span>
                     </div>
                 </div>
             </div>

@@ -10,33 +10,56 @@
 
 *Criteria for trusting the "Game We Are Playing" assessment*
 
-- **Stability**: Regime classification remains stable for ≥3 consecutive sessions unless driven by explicit high-impact narrative events.
-- **Explainability**: Every regime transition is causally linked to specific factor movements or narrative clusters.
-- **Accuracy**: False regime flips (flip-flops within 2 days without price follow-through) occur in < 5% of trading days.
-- **Fail-Safe**: System defaults to "Undefined/High Volatility" (cash preservation) when inputs are ambiguous.
+🔹 **Invariant 1.1 — Regime Stability**
+Regime classification MUST remain stable for ≥3 consecutive sessions unless driven by explicit high-impact narrative events.
+
+🔹 **Invariant 1.2 — Explainability**
+Every regime transition MUST be causally linked to specific factor movements or narrative clusters.
+
+🔹 **Invariant 1.3 — Accuracy**
+False regime flips (flip-flops within 2 days without price follow-through) MUST occur in < 5% of trading days.
+
+🔹 **Invariant 1.4 — Fail-Safe**
+System MUST default to "Undefined/High Volatility" (cash preservation) when inputs are ambiguous.
 
 ## 2. Opportunity Discovery Success (L6-L7)
 
 *Criteria for trusting candidate generation and ranking*
 
-- **Factor Alignment**: ≥60% of High-Conviction Ideas exhibit positive directional alignment with the dominant Factor Regime within 10 trading sessions.
-- **Confluence Requirement**: High-Conviction status REQUIRES confirmation from ≥3 independent lenses.
-- **Lens Isolation**: Candidates surfaced by a single lens are strictly labeled "Watchlist" or "Low Confidence".
-- **Sizing Safety**: No candidate is recommended for entry without a corresponding stop-loss or invalidation level.
-- **Score Dispersion**: High-Conviction Ideas must exhibit minimum variance ≥ 0.24 across candidates. Flat distributions are invalid.
+🔹 **Invariant 2.1 — Factor Alignment**
+≥60% of High-Conviction Ideas MUST exhibit positive directional alignment with the dominant Factor Regime within 10 trading sessions.
+
+🔹 **Invariant 2.2 — Confluence Requirement**
+High-Conviction status REQUIRES confirmation from ≥3 independent lenses.
+
+🔹 **Invariant 2.3 — Lens Isolation**
+Candidates surfaced by a single lens MUST be strictly labeled "Watchlist" or "Low Confidence".
+
+🔹 **Invariant 2.4 — Sizing Safety**
+No candidate MUST be recommended for entry without a corresponding stop-loss or invalidation level.
+
+🔹 **Invariant 2.5 — Score Dispersion**
+High-Conviction Ideas MUST exhibit minimum variance ≥ 0.24 across candidates. Flat distributions are invalid.
 
 ## 3. Portfolio Intelligence Success (L8-L9)
 
 *Criteria for trusting risk management and diagnostics*
 
-- **Predictive Diagnostics**: "Regime Conflict" flags appear prior to 80% of major drawdowns (>5%) in historical replay.
-- **Narrative Sensitivity**: "Narrative Decay" flags appear within 3 sessions of material negative news events.
-- **Horizon Integrity**: All candidates are explicitly labeled with time horizons; operational mismatches (e.g., holding a Scalp for 2 weeks) are flagged immediately.
-- **Constraint Hardening**: No position ever exceeds `MAX_POSITION_SIZE` in simulation, regardless of conviction.
+🔹 **Invariant 3.1 — Predictive Diagnostics**
+"Regime Conflict" flags MUST appear prior to 80% of major drawdowns (>5%) in historical replay.
+
+🔹 **Invariant 3.2 — Narrative Sensitivity**
+"Narrative Decay" flags MUST appear within 3 sessions of material negative news events.
+
+🔹 **Invariant 3.3 — Horizon Integrity**
+All candidates MUST be explicitly labeled with time horizons; operational mismatches (e.g., holding a Scalp for 2 weeks) MUST be flagged immediately.
+
+🔹 **Invariant 3.4 — Constraint Hardening**
+No position MUST ever exceed `MAX_POSITION_SIZE` in simulation, regardless of conviction.
 
 ## 4. Phase Exit Criteria (Shadow Mode)
 
-*Defines milestones for moving to the next evolutionary phase*
+*Defines milestones for moving to the next evolutionary phase (enforced via `docs/governance/truth_advancement_gates.md`)*
 
 - **Stability**: Zero "Orphans" (data gaps) and zero critical crashes for 2 weeks sustained.
 - **Validation**: Consistent generation of "A" or "B" grade signals in Shadow Mode for 30 days.
@@ -66,9 +89,7 @@
 | **D** | Failure | Stop-loss hit or significant adverse excursion |
 
 *Source: `README.md`*
-<!-- shadow-run-test: 2026-02-11T03:33 -->
-
-- **Test Invariant**: `TEST_ROUTER = true`
+*Note: Testing implementations and test-specific invariants belong in the tests/ directory or a separate testing contract.*
 
 ## 6. Convergence Computation Observability (L7)
 
@@ -135,6 +156,4 @@ Silent trust calculations are forbidden.
 
 Purpose: Enforce glass-box observability.
 
-- **Test Invariant (Commit Trigger T2)**: No-op invariant for commit-trigger validation only.
 
-- **Test Invariant (Commit Trigger T4)**: No-op invariant for forced planner failure validation only.

@@ -2,6 +2,7 @@ from dashboard.backend.utils.filesystem import get_latest_tick_dir, read_json_sa
 from typing import Dict, Any, List
 import datetime
 from pathlib import Path
+from dashboard.backend.loaders.provenance import attach_provenance
 
 def _parse_timestamp(tick_name: str) -> datetime.datetime:
     ts_str = tick_name.replace("tick_", "")
@@ -138,7 +139,7 @@ def load_market_snapshot(market: str = "US") -> Dict[str, Any]:
         if current_states["Expansion"] != p_exp:
             alerts.append(f"Expansion Changed: {p_exp} -> {current_states['Expansion']}")
             
-    return {
+    return attach_provenance({
         "Regime": current_states["Regime"], # Case match Frontend expectation
         "Liquidity": current_states["Liquidity"],
         "Momentum": current_states["Momentum"],
@@ -154,5 +155,6 @@ def load_market_snapshot(market: str = "US") -> Dict[str, Any]:
         "Details": {
              "Momentum": mom.get("notes", ""), # Fix key access? mom has notes?
              "Liquidity": liq.get("notes", "")
-        }
-    }
+        },
+        "latest_tick": latest_tick.name,
+    }, f"docs/evolution/ticks/{latest_tick.name}/{market}/regime_context.json", regime.get("truth_epoch") or regime.get("epoch_id"))

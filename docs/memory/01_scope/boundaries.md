@@ -1,5 +1,9 @@
 # Scope & Boundaries
 
+> [!WARNING]
+> **Adapter Declaration**
+> Scope enforcement is delegated to V2 governance gates (see `docs/governance/truth_advancement_gates.md`). This document represents the structural intent.
+
 ## The Three Worlds
 
 > These boundaries are non-negotiable. Violation corrupts the entire system.
@@ -88,7 +92,10 @@
 - **Constraint**: No automated execution of rebalancing.
 
 ## Research Exit Criteria
-To graduate from Research to Production Candidate:
+
+> **Synchronization Rule**: When `docs/epistemic/current_phase.md` completes or advances, this Scope document MUST be synchronized.
+
+To graduate from Research to Production Candidate (enforced via `docs/governance/truth_advancement_gates.md`):
 1.  **Regime Stability**: Strategy performs predictably across 2+ distinct regimes.
 2.  **Lens Consensus**: High-conviction ideas consistently outperform baseline.
 3.  **Drawdown Control**: Max DD < defined threshold in simulation.

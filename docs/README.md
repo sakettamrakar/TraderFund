@@ -20,6 +20,7 @@ Standard procedures for human operators.
     - [End of Day](runbooks/end_of_day.md) (Updated Phase 3)
 - **Support**:
     - [Troubleshooting](runbooks/troubleshooting.md)
+    - Validation usage is integrated into the master runbook and daily procedures.
 
 ## 3. Skills & Governance
 - **Catalog**: [skills_catalog.md](epistemic/skills/skills_catalog.md)
@@ -30,3 +31,5 @@ Standard procedures for human operators.
 ## 4. Technical Specifications
 - [Architecture Overview](ARCHITECTURE_OVERVIEW.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
+- [Validation System](architecture/VALIDATION_SYSTEM.md)
+- [System Stabilization Report](verification_runs/SYSTEM_STABILIZATION_REPORT.md)

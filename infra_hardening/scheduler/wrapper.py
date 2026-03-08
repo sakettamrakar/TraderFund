@@ -43,6 +43,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--mode", type=str, required=True, choices=["daily", "weekly"])
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--enable-validation-review", action="store_true")
     args = parser.parse_args()
     
     log_file = setup_logging(args.mode)
@@ -59,7 +60,11 @@ def main():
         sys.exit(1)
         
     try:
-        run_orchestration(mode=args.mode, dry_run=args.dry_run)
+        run_orchestration(
+            mode=args.mode,
+            dry_run=args.dry_run,
+            include_validation_review=args.enable_validation_review,
+        )
         logger.info("Wrappper execution finished successfully.")
     except Exception as e:
         logger.exception(f"CRITICAL FAILURE in scheduled run: {e}")
