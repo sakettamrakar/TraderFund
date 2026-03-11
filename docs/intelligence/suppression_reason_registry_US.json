@@ -1,27 +1,9 @@
 {
   "market": "US",
   "truth_epoch": "TE-2026-03-06",
-  "computed_at": "2026-03-08T13:13:54Z",
+  "computed_at": "2026-03-11T03:30:19Z",
   "suppression_state": "MULTI_CAUSAL",
   "reasons": [
-    {
-      "reason_id": "R-DATA-PARTIAL",
-      "suppression_state": "DATA_PARTIAL",
-      "blocking_layer": "DATA",
-      "blocking_condition": "Canonical state CANONICAL_PARTIAL. Missing roles: ['rates_anchor']. Stale roles: ['NONE'].",
-      "affected_actions": [
-        "ALLOW_LONG_ENTRY",
-        "ALLOW_LONG_ENTRY_SPECIAL",
-        "ALLOW_POSITION_HOLD",
-        "ALLOW_REBALANCING",
-        "ALLOW_SHORT_ENTRY"
-      ],
-      "clearing_condition": "Restore canonical completeness and freshness alignment for required roles before allowing regime or policy expansion.",
-      "source_artifacts": [
-        "docs/intelligence/canonical_partiality_state_US.json"
-      ],
-      "since_timestamp": "2026-03-08T13:13:24Z"
-    },
     {
       "reason_id": "R-POLICY-BLOCKED",
       "suppression_state": "POLICY_BLOCKED",
@@ -59,6 +41,6 @@
       "since_timestamp": "2026-03-08T13:13:24Z"
     }
   ],
-  "reason_count": 3,
+  "reason_count": 2,
   "version": "1.0.0-F5"
 }

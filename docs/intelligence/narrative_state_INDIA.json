@@ -1,24 +1,24 @@
 {
   "market": "INDIA",
-  "computed_at": "2026-03-08T13:13:49Z",
+  "computed_at": "2026-03-11T03:30:19Z",
   "truth_epoch": "TE-2026-03-06",
-  "narrative_mode": "SILENCED",
-  "posture": "NARRATIVE_GATED",
-  "tone": "NO_OUTPUT",
-  "summary": "",
-  "silence_reason": "No material factual change versus last Truth Epoch narrative snapshot.",
-  "gating_reason": "No material factual change versus last Truth Epoch narrative snapshot.",
+  "narrative_mode": "CAUSAL_ONLY",
+  "posture": "ACTION_BLOCKED",
+  "tone": "CAUSAL",
+  "summary": "ACTION BLOCKED DUE TO: R-TEMPORAL-DRIFT. Market=INDIA; TruthEpoch=TE-2026-03-06; SuppressionState=TEMPORAL_DRIFT; CanonicalState=CANONICAL_COMPLETE; RegimeState=NEUTRAL; RegimeConfidence=0.8. Execution and capital remain disabled.",
+  "silence_reason": null,
+  "gating_reason": "ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).",
   "gating_reasons": [
     {
-      "code": "NO_MATERIAL_FACT_CHANGE",
-      "detail": "No material factual change versus last Truth Epoch narrative snapshot."
+      "code": "SUPPRESSION_STATE_ACTIVE",
+      "detail": "ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT)."
     }
   ],
   "regime_state": "NEUTRAL",
   "regime_confidence": "0.8",
   "regime_reason": "Regime evaluated on canonical-complete inputs.",
   "canonical_state": "CANONICAL_COMPLETE",
-  "suppression_state": "NONE",
+  "suppression_state": "TEMPORAL_DRIFT",
   "provenance_references": [
     "docs/evolution/context/regime_context_INDIA.json",
     "docs/intelligence/canonical_partiality_state_INDIA.json",
@@ -41,17 +41,21 @@
     "banned_terms_count": 17
   },
   "narrative_diff": {
-    "status": "UNCHANGED",
-    "changed_fields": [],
+    "status": "CHANGED",
+    "changed_fields": [
+      "evaluation_drift_days"
+    ],
     "baseline_truth_epoch": "TE-2026-03-06",
     "baseline_artifact": "docs\\intelligence\\narrative_state_INDIA.json"
   },
-  "material_facts_hash": "3daaf427189af036aa1762c5c9e8e893a3781dd1c75c9fc161a70319fa14b593",
+  "material_facts_hash": "25cc0d2f4424bdb9c14407ccf05ec3e21731a597dd7697890168e2e3a76003c6",
   "material_facts": {
     "market": "INDIA",
     "truth_epoch": "TE-2026-03-06",
-    "suppression_state": "NONE",
-    "suppression_reason_ids": [],
+    "suppression_state": "TEMPORAL_DRIFT",
+    "suppression_reason_ids": [
+      "R-TEMPORAL-DRIFT"
+    ],
     "canonical_state": "CANONICAL_COMPLETE",
     "canonical_missing_roles": [],
     "canonical_stale_roles": [],
@@ -63,8 +67,8 @@
       "ALLOW_POSITION_HOLD",
       "ALLOW_REBALANCING"
     ],
-    "drift_status_code": "SYNC",
-    "evaluation_drift_days": 0,
+    "drift_status_code": "EVALUATION_PENDING",
+    "evaluation_drift_days": 4,
     "drift_limit_exceeded": false
   },
   "version": "1.0.0-F3"

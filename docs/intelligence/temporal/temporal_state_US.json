@@ -1,6 +1,6 @@
 {
     "market": "US",
-    "timestamp": "2026-03-08T09:27:19.896382Z",
+    "timestamp": "2026-03-11T03:30:18.372652Z",
     "temporal_state": {
         "raw_data_time": {
             "timestamp": "2026-03-06",
@@ -11,7 +11,7 @@
             "timestamp": "2026-03-06",
             "source": "canonical_validation_layer",
             "status": "VALID",
-            "last_validated": "2026-03-08T09:27:19.896382Z"
+            "last_validated": "2026-03-11T03:30:18.372652Z"
         },
         "truth_epoch": {
             "timestamp": "2026-03-06",

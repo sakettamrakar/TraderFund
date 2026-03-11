@@ -1,17 +1,17 @@
 {
     "market": "INDIA",
-    "timestamp": "2026-03-08T09:27:19.901441Z",
+    "timestamp": "2026-03-11T03:30:18.376619Z",
     "temporal_state": {
         "raw_data_time": {
-            "timestamp": "2026-03-06",
+            "timestamp": "2026-03-10",
             "source": "data\\india\\NIFTY50.csv",
             "status": "VALID"
         },
         "canonical_truth_time": {
-            "timestamp": "2026-03-06",
+            "timestamp": "2026-03-10",
             "source": "canonical_validation_layer",
             "status": "VALID",
-            "last_validated": "2026-03-08T09:27:19.899935Z"
+            "last_validated": "2026-03-11T03:30:18.376619Z"
         },
         "truth_epoch": {
             "timestamp": "2026-03-06",
@@ -22,19 +22,19 @@
     },
     "drift_status": {
         "ingestion_drift_days": 0,
-        "evaluation_drift_days": 0,
+        "evaluation_drift_days": 4,
         "critical_future_leakage": false,
-        "status_code": "SYNC",
-        "message": "System synchronized at frozen truth epoch boundary.",
+        "status_code": "EVALUATION_PENDING",
+        "message": "Canonical data (2026-03-10) is ahead of Truth Epoch (2026-03-06). Drift=4d.",
         "max_drift_days": 7,
         "drift_limit_exceeded": false,
         "required_operator_action": null,
-        "human_explanation": "No evaluation drift is present."
+        "human_explanation": "Evaluation is pending under freeze. Operator may request bounded catch-up windows if needed."
     },
     "holds": {
         "ingestion_hold": false,
-        "evaluation_hold": false,
-        "reason": "No drift."
+        "evaluation_hold": true,
+        "reason": "Evaluation pending under frozen truth epoch."
     },
     "evaluation_window": {
         "request_id": "WIN-INDIA-20260209143328",
@@ -50,8 +50,8 @@
         "notes": "Bounded catch-up requested. No TE advancement performed."
     },
     "governance_pause": {
-        "active": false,
-        "reason": "No drift",
-        "required_operator_action": null
+        "active": true,
+        "reason": "Evaluation pending under freeze",
+        "required_operator_action": "REQUEST_EVALUATION_WINDOW(INDIA, window_start, window_end)"
     }
 }

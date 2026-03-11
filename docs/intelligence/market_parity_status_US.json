@@ -1,6 +1,6 @@
 {
     "market": "US",
-    "computed_at": "2026-03-08T15:38:36.965059",
+    "computed_at": "2026-03-11T09:00:18.083842",
     "truth_epoch": "TRUTH_EPOCH_2026-03-06_01",
     "parity_status": "CANONICAL",
     "proxy_diagnostics": {
@@ -10,9 +10,10 @@
             "symbol": "SPY",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data\\us_market\\SPY_daily.csv",
+            "path": "data/us_market/SPY_daily.csv",
             "rows": 135,
-            "staleness": "NONE"
+            "staleness": "NONE",
+            "last_date": "2026-03-06"
         },
         "growth_proxy": {
             "status": "ACTIVE",
@@ -20,9 +21,10 @@
             "symbol": "QQQ",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data\\us_market\\QQQ_daily.csv",
+            "path": "data/us_market/QQQ_daily.csv",
             "rows": 135,
-            "staleness": "NONE"
+            "staleness": "NONE",
+            "last_date": "2026-03-06"
         },
         "volatility_gauge": {
             "status": "ACTIVE",
@@ -30,19 +32,21 @@
             "symbol": "VIXY",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data\\us_market\\VIXY_daily.csv",
+            "path": "data/us_market/VIXY_daily.csv",
             "rows": 135,
-            "staleness": "NONE"
+            "staleness": "NONE",
+            "last_date": "2026-03-06"
         },
         "rates_anchor": {
-            "status": "ERROR",
+            "status": "ACTIVE",
             "role": "rates_anchor",
             "symbol": "TNX",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data\\regime\\raw\\^TNX.csv",
+            "path": "data/regime/raw/^TNX.csv",
             "rows": 1333,
-            "staleness": "HIGH"
+            "staleness": "NONE",
+            "last_date": "2026-03-06"
         }
     },
     "gaps": [],

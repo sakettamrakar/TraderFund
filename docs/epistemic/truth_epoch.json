@@ -1,7 +1,7 @@
 {
     "epoch": {
         "epoch_id": "TRUTH_EPOCH_2026-03-06_01",
-        "activation_time": "2026-03-08T14:57:19.883730+05:30",
+        "activation_time": "2026-03-11T09:00:18.360576+05:30",
         "frozen_by": "SYSTEM_AUTO_ADVANCE",
         "mode": "CANONICAL_OBSERVATION",
         "immutable": true

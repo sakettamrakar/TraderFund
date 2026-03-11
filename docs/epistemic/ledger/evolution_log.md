@@ -1400,3 +1400,211 @@ Verified authorization gating, dependency resolution, and zero side effects.
 - **Narrative Mode**: `EXPLANATORY`
 - **Narrative Gate**: No active narrative gating reason.
 - **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-09T06:00:02.624820] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-09T06:00:02.624820] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `NONE`
+- **Suppression Reason**: N/A
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: No material factual change versus last Truth Epoch narrative snapshot.
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-09T09:00:17.940442] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Liquidity is TIGHT. New entries blocked.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-09T09:00:17.940442] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `NONE`
+- **Suppression Reason**: N/A
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: No material factual change versus last Truth Epoch narrative snapshot.
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-09T23:00:06.079603] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Liquidity is TIGHT. New entries blocked.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-09T23:00:06.079603] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `NONE`
+- **Suppression Reason**: N/A
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: No material factual change versus last Truth Epoch narrative snapshot.
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-10T06:00:03.150592] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Liquidity is TIGHT. New entries blocked.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-10T06:00:03.150592] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `NONE`
+- **Suppression Reason**: N/A
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: No material factual change versus last Truth Epoch narrative snapshot.
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-10T09:00:18.925555] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Liquidity is TIGHT. New entries blocked.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-10T09:00:18.925555] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: Canonical data (2026-03-09) is ahead of Truth Epoch (2026-03-06). Drift=3d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-10T23:00:04.043464] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Liquidity is TIGHT. New entries blocked.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-10T23:00:04.043464] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: Canonical data (2026-03-09) is ahead of Truth Epoch (2026-03-06). Drift=3d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-11T06:00:02.817811] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Liquidity is TIGHT. New entries blocked.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-11T06:00:02.817811] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: Canonical data (2026-03-09) is ahead of Truth Epoch (2026-03-06). Drift=3d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-11T09:00:18.578609] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Liquidity is TIGHT. New entries blocked.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-03-11T09:00:18.578609] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: Canonical data (2026-03-10) is ahead of Truth Epoch (2026-03-06). Drift=4d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)

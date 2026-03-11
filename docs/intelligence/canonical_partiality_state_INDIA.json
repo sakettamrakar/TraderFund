@@ -1,8 +1,8 @@
 {
   "market": "INDIA",
-  "computed_at": "2026-03-08T10:06:57Z",
-  "truth_epoch": "TE-2026-03-06",
-  "canonical_truth_time": "2026-03-06",
+  "computed_at": "2026-03-11T03:30:19Z",
+  "truth_epoch": "TE-2026-01-30",
+  "canonical_truth_time": "2026-03-10",
   "canonical_state": "CANONICAL_COMPLETE",
   "required_roles": [
     "benchmark_equity",
@@ -17,7 +17,7 @@
       "status": "ACTIVE",
       "symbol": "NIFTY50",
       "path": "C:\\GIT\\TraderFund\\data\\india\\NIFTY50.csv",
-      "last_canonical_timestamp": "2026-03-06",
+      "last_canonical_timestamp": "2026-03-10",
       "lag_days_vs_ctt": 0,
       "stale_relative_to_ctt": false,
       "missing": false
@@ -28,7 +28,7 @@
       "status": "ACTIVE",
       "symbol": "BANKNIFTY",
       "path": "C:\\GIT\\TraderFund\\data\\india\\BANKNIFTY.csv",
-      "last_canonical_timestamp": "2026-03-06",
+      "last_canonical_timestamp": "2026-03-10",
       "lag_days_vs_ctt": 0,
       "stale_relative_to_ctt": false,
       "missing": false
@@ -39,7 +39,7 @@
       "status": "ACTIVE",
       "symbol": "INDIAVIX",
       "path": "C:\\GIT\\TraderFund\\data\\india\\INDIAVIX.csv",
-      "last_canonical_timestamp": "2026-03-06",
+      "last_canonical_timestamp": "2026-03-10",
       "lag_days_vs_ctt": 0,
       "stale_relative_to_ctt": false,
       "missing": false
@@ -51,7 +51,7 @@
       "symbol": "IN10Y",
       "path": "C:\\GIT\\TraderFund\\data\\india\\IN10Y.csv",
       "last_canonical_timestamp": "2026-01-01",
-      "lag_days_vs_ctt": 64,
+      "lag_days_vs_ctt": 68,
       "stale_relative_to_ctt": false,
       "missing": false
     }

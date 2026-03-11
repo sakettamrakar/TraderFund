@@ -1,9 +1,9 @@
 {
   "market": "US",
-  "computed_at": "2026-03-08T10:08:36Z",
+  "computed_at": "2026-03-11T03:30:19Z",
   "truth_epoch": "TE-2026-01-30",
   "canonical_truth_time": "2026-03-06",
-  "canonical_state": "CANONICAL_PARTIAL",
+  "canonical_state": "CANONICAL_COMPLETE",
   "required_roles": [
     "equity_core",
     "growth_proxy",
@@ -47,21 +47,19 @@
     "rates_anchor": {
       "logical_role": "rates_anchor",
       "resolved_role": "rates_anchor",
-      "status": "MISSING",
+      "status": "ACTIVE",
       "symbol": "TNX",
       "path": "C:\\GIT\\TraderFund\\data\\regime\\raw\\^TNX.csv",
       "last_canonical_timestamp": "2026-03-06",
       "lag_days_vs_ctt": 0,
       "stale_relative_to_ctt": false,
-      "missing": true
+      "missing": false
     }
   },
-  "missing_roles": [
-    "rates_anchor"
-  ],
+  "missing_roles": [],
   "stale_roles": [],
   "freshness_skew_days": 0,
-  "declaration_reason": "Required canonical roles missing or non-active.",
+  "declaration_reason": "All required canonical roles are present and freshness-aligned.",
   "policy": {
     "max_role_lag_days": 0,
     "max_freshness_skew_days": 0,

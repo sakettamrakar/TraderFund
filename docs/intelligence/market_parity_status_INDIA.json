@@ -1,6 +1,6 @@
 {
     "market": "INDIA",
-    "computed_at": "2026-03-08T15:33:16.521424",
+    "computed_at": "2026-03-11T09:00:18.126950",
     "truth_epoch": "TRUTH_EPOCH_2026-03-06_01",
     "parity_status": "CANONICAL",
     "proxy_diagnostics": {
@@ -11,9 +11,9 @@
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
             "path": "data/india/NIFTY50.csv",
-            "rows": 511,
+            "rows": 514,
             "staleness": "NONE",
-            "last_date": "2026-03-06"
+            "last_date": "2026-03-10"
         },
         "growth_proxy": {
             "status": "ACTIVE",
@@ -22,9 +22,9 @@
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
             "path": "data/india/BANKNIFTY.csv",
-            "rows": 511,
+            "rows": 514,
             "staleness": "NONE",
-            "last_date": "2026-03-06"
+            "last_date": "2026-03-10"
         },
         "volatility_gauge": {
             "status": "ACTIVE",
@@ -33,9 +33,9 @@
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
             "path": "data/india/INDIAVIX.csv",
-            "rows": 511,
+            "rows": 513,
             "staleness": "NONE",
-            "last_date": "2026-03-06"
+            "last_date": "2026-03-10"
         },
         "rates_anchor": {
             "status": "ACTIVE",
