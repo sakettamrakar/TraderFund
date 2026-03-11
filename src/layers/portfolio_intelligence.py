@@ -24,11 +24,12 @@ Diagnostic modules (in evaluation order):
 """
 from __future__ import annotations
 
+from dataclasses import asdict, dataclass
 import hashlib
 import json
 import time
 from datetime import datetime, timezone
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 from src.models.portfolio_models import (
     ConstraintActivitySummary,
@@ -955,3 +956,301 @@ class PortfolioIntelligenceEngine:
             input_hash=input_hash,
             timestamp=timestamp,
         )
+
+
+# Dry-run subsystem blueprint for user-owned broker portfolios.
+_PORTFOLIO_INTELLIGENCE_TRUTH_EPOCH = "TRUTH_EPOCH_2026-03-06_01"
+_PORTFOLIO_INTELLIGENCE_MARKETS: Tuple[str, ...] = ("US", "INDIA")
+_PORTFOLIO_INTELLIGENCE_AFFECTED_LAYERS: Tuple[str, ...] = (
+    "RESEARCH",
+    "MACRO",
+    "FACTOR",
+    "INTELLIGENCE",
+    "EVOLUTION",
+    "DASHBOARD",
+)
+_PORTFOLIO_INTELLIGENCE_INVARIANTS: Tuple[str, ...] = (
+    "INV-NO-EXECUTION",
+    "INV-NO-CAPITAL",
+    "INV-NO-SELF-ACTIVATION",
+    "INV-PROXY-CANONICAL",
+    "INV-READ-ONLY-DASHBOARD",
+)
+_PORTFOLIO_INTELLIGENCE_OBLIGATIONS: Tuple[str, ...] = (
+    "OBL-DATA-PROVENANCE-VISIBLE",
+    "OBL-TRUTH-EPOCH-DISCLOSED",
+    "OBL-REGIME-GATE-EXPLICIT",
+    "OBL-MARKET-PARITY",
+    "OBL-HONEST-STAGNATION",
+)
+
+
+@dataclass(frozen=True)
+class PortfolioIntelligenceComponentSpec:
+    """Read-only component contract for the broker portfolio subsystem."""
+
+    name: str
+    role: str
+    inputs: Tuple[str, ...]
+    outputs: Tuple[str, ...]
+    provenance_fields: Tuple[str, ...]
+    degraded_state: str
+
+
+@dataclass(frozen=True)
+class PortfolioIntelligenceIntegrationPoint:
+    """Describes how the subsystem consumes existing TraderFund layers."""
+
+    layer: str
+    interface: str
+    reads: Tuple[str, ...]
+    writes_back: bool
+    governance_note: str
+
+
+@dataclass(frozen=True)
+class PortfolioIntelligenceEndpointSpec:
+    """Dashboard endpoint contract for the portfolio intelligence surface."""
+
+    method: str
+    path: str
+    response_contract: str
+    market_scoped: bool
+    read_only: bool
+
+
+@dataclass(frozen=True)
+class PortfolioIntelligenceDashboardSpec:
+    """Read-only dashboard surface for multi-market portfolio intelligence."""
+
+    module_name: str
+    panels: Tuple[str, ...]
+    endpoints: Tuple[PortfolioIntelligenceEndpointSpec, ...]
+    disclaimers: Tuple[str, ...]
+    truth_epoch_visible: bool
+    provenance_visible: bool
+
+
+@dataclass(frozen=True)
+class PortfolioIntelligenceBlueprint:
+    """Deterministic dry-run blueprint for the user portfolio subsystem."""
+
+    name: str
+    intent: str
+    truth_epoch: str
+    frozen_epoch: bool
+    data_mode: str
+    execution_mode: str
+    markets: Tuple[str, ...]
+    affected_layers: Tuple[str, ...]
+    invariants: Tuple[str, ...]
+    obligations: Tuple[str, ...]
+    components: Tuple[PortfolioIntelligenceComponentSpec, ...]
+    integrations: Tuple[PortfolioIntelligenceIntegrationPoint, ...]
+    dashboard: PortfolioIntelligenceDashboardSpec
+    future_extensions: Tuple[str, ...]
+    notes: Tuple[str, ...]
+    blueprint_hash: str
+
+    def as_dict(self) -> Dict[str, Any]:
+        """Return a serializable representation for docs and inspection."""
+        return asdict(self)
+
+
+def _compute_blueprint_hash(payload: Dict[str, Any]) -> str:
+    raw = json.dumps(payload, sort_keys=True)
+    return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
+
+
+class PortfolioIntelligenceDesignBridge:
+    """
+    Dry-run integration bridge for user-owned broker portfolios.
+
+    This bridge does not ingest broker files, compute signals, or expose any
+    execution behavior. It only publishes the governed subsystem shape so the
+    architecture, dashboard, and future implementation tracks remain aligned
+    with the existing L9 engine.
+    """
+
+    def build_blueprint(self) -> PortfolioIntelligenceBlueprint:
+        components = (
+            PortfolioIntelligenceComponentSpec(
+                name="Portfolio Ingestion Engine",
+                role="Read broker exports and canonicalize import metadata per portfolio.",
+                inputs=("broker_export", "portfolio_registry", "market_scope"),
+                outputs=("raw_holdings", "portfolio_metadata", "import_audit_record"),
+                provenance_fields=("source_path", "broker", "imported_at", "checksum"),
+                degraded_state="Reject import and surface provenance gap.",
+            ),
+            PortfolioIntelligenceComponentSpec(
+                name="Holdings Normalization Engine",
+                role="Map raw positions into a canonical holding schema with weights and taxonomy.",
+                inputs=("raw_holdings", "ticker_mapping", "sector_taxonomy"),
+                outputs=("normalized_holdings", "classification_flags"),
+                provenance_fields=("symbol_source", "taxonomy_version", "normalization_timestamp"),
+                degraded_state="Emit UNKNOWN fields and explicit normalization flags.",
+            ),
+            PortfolioIntelligenceComponentSpec(
+                name="Market Data Enrichment Layer",
+                role="Attach price, fundamentals, technicals, events, and freshness metadata.",
+                inputs=("normalized_holdings", "canonical_market_data", "truth_epoch"),
+                outputs=("enriched_holdings", "staleness_report"),
+                provenance_fields=("price_source", "fundamental_source", "technical_source", "data_as_of"),
+                degraded_state="Mark degraded confidence and preserve raw observations.",
+            ),
+            PortfolioIntelligenceComponentSpec(
+                name="Intelligence Scoring Engine",
+                role="Produce holding-level diagnostics across fundamental, technical, factor, and sentiment lenses.",
+                inputs=("enriched_holdings", "macro_context", "factor_context", "research_context"),
+                outputs=("holding_intelligence_cards", "risk_flags", "regime_compatibility"),
+                provenance_fields=("score_inputs_hash", "model_version", "computed_at"),
+                degraded_state="Suppress conviction uplift and emit insufficient-context flags.",
+            ),
+            PortfolioIntelligenceComponentSpec(
+                name="Portfolio Analytics Engine",
+                role="Aggregate diversification, risk, structure, performance, and strategic insights.",
+                inputs=("holding_intelligence_cards", "portfolio_metadata", "evolution_feedback"),
+                outputs=("portfolio_diagnostics", "strategic_insights", "resilience_score"),
+                provenance_fields=("analysis_hash", "fx_source", "analysis_timestamp"),
+                degraded_state="Return partial analytics with honest stagnation disclosure.",
+            ),
+            PortfolioIntelligenceComponentSpec(
+                name="Dashboard Adapter",
+                role="Expose governed portfolio intelligence through GET-only dashboard contracts.",
+                inputs=("portfolio_diagnostics", "holding_intelligence_cards", "truth_epoch"),
+                outputs=("overview_payload", "holdings_payload", "combined_market_payload"),
+                provenance_fields=("trace", "truth_epoch", "data_as_of"),
+                degraded_state="Return read-only degraded payloads with traceable reasons.",
+            ),
+        )
+
+        integrations = (
+            PortfolioIntelligenceIntegrationPoint(
+                layer="RESEARCH",
+                interface="Research snapshots and issuer metadata",
+                reads=("coverage status", "sector or industry labels", "issuer fundamentals"),
+                writes_back=False,
+                governance_note="Read-only enrichment input for holding summaries.",
+            ),
+            PortfolioIntelligenceIntegrationPoint(
+                layer="MACRO",
+                interface="Macro and regime context",
+                reads=("regime state", "regime confidence", "rate environment", "macro provenance"),
+                writes_back=False,
+                governance_note="Regime compatibility must be explicit on every portfolio output.",
+            ),
+            PortfolioIntelligenceIntegrationPoint(
+                layer="FACTOR",
+                interface="Factor exposure state",
+                reads=("dominant factor", "per-symbol factor context", "permission state"),
+                writes_back=False,
+                governance_note="Factor context informs diagnostics only, never ranking or execution.",
+            ),
+            PortfolioIntelligenceIntegrationPoint(
+                layer="INTELLIGENCE",
+                interface="Canonical intelligence and fragility artifacts",
+                reads=("decision policy", "fragility posture", "suppression state", "truth epoch"),
+                writes_back=False,
+                governance_note="Subsystem must inherit canonical provenance and stale-state disclosure.",
+            ),
+            PortfolioIntelligenceIntegrationPoint(
+                layer="EVOLUTION",
+                interface="Paper portfolio and evaluation feedback",
+                reads=("strategy evaluation context", "portfolio feedback", "regime evaluation history"),
+                writes_back=False,
+                governance_note="Used for comparative diagnostics and not for user portfolio mutation.",
+            ),
+            PortfolioIntelligenceIntegrationPoint(
+                layer="DASHBOARD",
+                interface="FastAPI GET surfaces and frontend read models",
+                reads=("viewer market scope", "selected portfolio id"),
+                writes_back=False,
+                governance_note="Adapter remains GET-only and read-only under dashboard governance.",
+            ),
+        )
+
+        dashboard = PortfolioIntelligenceDashboardSpec(
+            module_name="Portfolio Intelligence",
+            panels=(
+                "Portfolio overview",
+                "Holdings intelligence",
+                "Diversification visualization",
+                "Risk monitor",
+                "Opportunity and risk monitor",
+                "Multi-market combined view",
+            ),
+            endpoints=(
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/overview/{market}", "PortfolioOverview", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/holdings/{market}/{portfolio_id}", "HoldingsIntelligence", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/diversification/{market}/{portfolio_id}", "DiversificationReport", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/risk/{market}/{portfolio_id}", "RiskDiagnosticReport", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/structure/{market}/{portfolio_id}", "StructureReport", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/performance/{market}/{portfolio_id}", "PerformanceReport", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/insights/{market}/{portfolio_id}", "StrategicInsightFeed", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/resilience/{market}/{portfolio_id}", "PortfolioResilienceScore", True, True),
+                PortfolioIntelligenceEndpointSpec("GET", "/api/portfolio/combined", "CombinedPortfolioView", False, True),
+            ),
+            disclaimers=(
+                "Advisory only. No trading, sizing, or activation is permitted.",
+                "Truth epoch, provenance, and staleness must remain visible.",
+                "Degraded or missing inputs must remain visible as honest stagnation.",
+            ),
+            truth_epoch_visible=True,
+            provenance_visible=True,
+        )
+
+        notes = (
+            "This blueprint extends the existing L9 structural diagnostic engine to user-owned broker portfolios without replacing L9.",
+            "US and INDIA share identical contracts, differing only in source adapters and canonical symbol or taxonomy mappings.",
+            "Combined market views remain analytical and require explicit FX provenance.",
+            "Regime gates cap confidence and surface degraded state when macro context is partial or stale.",
+        )
+
+        payload = {
+            "name": "Portfolio Intelligence Subsystem",
+            "intent": "Institutional-grade multi-market portfolio analysis",
+            "truth_epoch": _PORTFOLIO_INTELLIGENCE_TRUTH_EPOCH,
+            "frozen_epoch": True,
+            "data_mode": "REAL_ONLY",
+            "execution_mode": "DRY_RUN",
+            "markets": _PORTFOLIO_INTELLIGENCE_MARKETS,
+            "affected_layers": _PORTFOLIO_INTELLIGENCE_AFFECTED_LAYERS,
+            "invariants": _PORTFOLIO_INTELLIGENCE_INVARIANTS,
+            "obligations": _PORTFOLIO_INTELLIGENCE_OBLIGATIONS,
+            "components": [asdict(component) for component in components],
+            "integrations": [asdict(integration) for integration in integrations],
+            "dashboard": asdict(dashboard),
+            "future_extensions": (
+                "crypto portfolios",
+                "derivatives exposure",
+                "options strategies",
+                "cross-portfolio optimization",
+                "institutional risk models",
+            ),
+            "notes": notes,
+        }
+        blueprint_hash = _compute_blueprint_hash(payload)
+        return PortfolioIntelligenceBlueprint(
+            name=payload["name"],
+            intent=payload["intent"],
+            truth_epoch=payload["truth_epoch"],
+            frozen_epoch=payload["frozen_epoch"],
+            data_mode=payload["data_mode"],
+            execution_mode=payload["execution_mode"],
+            markets=payload["markets"],
+            affected_layers=payload["affected_layers"],
+            invariants=payload["invariants"],
+            obligations=payload["obligations"],
+            components=components,
+            integrations=integrations,
+            dashboard=dashboard,
+            future_extensions=payload["future_extensions"],
+            notes=payload["notes"],
+            blueprint_hash=blueprint_hash,
+        )
+
+
+def build_portfolio_intelligence_blueprint() -> PortfolioIntelligenceBlueprint:
+    """Convenience constructor for documentation and dry-run integration checks."""
+
+    return PortfolioIntelligenceDesignBridge().build_blueprint()

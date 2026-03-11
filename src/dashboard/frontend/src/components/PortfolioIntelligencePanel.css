@@ -1,0 +1,230 @@
+.portfolio-intelligence-panel {
+  background: #0f1724;
+  border: 1px solid #223047;
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 24px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+}
+
+.portfolio-intel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.portfolio-intel-header h3 {
+  margin: 0;
+  color: #7dd3fc;
+}
+
+.portfolio-intel-header p {
+  margin: 6px 0 0;
+  color: #93a4bc;
+  font-size: 0.85rem;
+}
+
+.portfolio-trace {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: #8aa0b8;
+  text-align: right;
+}
+
+.portfolio-error,
+.portfolio-empty {
+  background: #171f2f;
+  border: 1px dashed #465976;
+  border-radius: 10px;
+  padding: 16px;
+  color: #d8e1ec;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.portfolio-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.portfolio-metric {
+  background: linear-gradient(180deg, #172233 0%, #111926 100%);
+  border: 1px solid #223047;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.portfolio-metric span {
+  display: block;
+  color: #8aa0b8;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.portfolio-metric strong {
+  display: block;
+  margin-top: 8px;
+  color: #f8fafc;
+  font-size: 1rem;
+}
+
+.portfolio-selector-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.portfolio-selector-row button {
+  background: #152133;
+  border: 1px solid #29425d;
+  color: #c7d6e5;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.portfolio-selector-row button.active {
+  background: #1d4ed8;
+  border-color: #60a5fa;
+  color: #eff6ff;
+}
+
+.portfolio-intel-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.portfolio-card {
+  background: #121b2b;
+  border: 1px solid #223047;
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.portfolio-card h4,
+.portfolio-card h5 {
+  margin: 0 0 10px;
+  color: #dce8f5;
+}
+
+.portfolio-card h5 {
+  margin-top: 14px;
+  font-size: 0.82rem;
+}
+
+.portfolio-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.portfolio-table-header,
+.portfolio-table-row {
+  display: grid;
+  grid-template-columns: 1fr 0.7fr 0.8fr 1.4fr;
+  gap: 8px;
+  font-size: 0.78rem;
+}
+
+.portfolio-table-header {
+  color: #8aa0b8;
+  text-transform: uppercase;
+}
+
+.portfolio-table-row {
+  color: #e2e8f0;
+  background: #172233;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.breakdown-list,
+.insight-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(138, 160, 184, 0.12);
+  color: #d6e0ea;
+  font-size: 0.82rem;
+}
+
+.source-badge {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.source-badge.source-mcp {
+  background: rgba(34, 197, 94, 0.18);
+  color: #bbf7d0;
+}
+
+.source-badge.source-api {
+  background: rgba(59, 130, 246, 0.18);
+  color: #bfdbfe;
+}
+
+.source-badge.source-unavailable {
+  background: rgba(148, 163, 184, 0.18);
+  color: #cbd5e1;
+}
+
+.insight-item {
+  border-left: 4px solid #60a5fa;
+  background: #172233;
+  border-radius: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  color: #e5edf6;
+}
+
+.insight-item.yellow {
+  border-left-color: #f59e0b;
+}
+
+.insight-item.orange {
+  border-left-color: #f97316;
+}
+
+.insight-item.red {
+  border-left-color: #ef4444;
+}
+
+.portfolio-combined-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(138, 160, 184, 0.14);
+  color: #90a4b8;
+  font-size: 0.76rem;
+}
+
+@media (max-width: 980px) {
+  .portfolio-overview-grid,
+  .portfolio-intel-grid {
+    grid-template-columns: 1fr;
+  }
+}

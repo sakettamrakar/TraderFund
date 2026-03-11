@@ -195,6 +195,54 @@ async def get_temporal_status(market: str = "US"):
     """
     return load_temporal_status(market)
 
+from src.dashboard.backend.loaders.portfolio import (
+    load_combined_portfolio_view,
+    load_portfolio_diversification,
+    load_portfolio_holdings,
+    load_portfolio_insights,
+    load_portfolio_overview,
+    load_portfolio_performance,
+    load_portfolio_resilience,
+    load_portfolio_risk,
+    load_portfolio_structure,
+)
+
+@app.get("/api/portfolio/overview/{market}")
+async def get_portfolio_overview(market: str):
+    return load_portfolio_overview(market)
+
+@app.get("/api/portfolio/holdings/{market}/{portfolio_id}")
+async def get_portfolio_holdings(market: str, portfolio_id: str):
+    return load_portfolio_holdings(market, portfolio_id)
+
+@app.get("/api/portfolio/diversification/{market}/{portfolio_id}")
+async def get_portfolio_diversification(market: str, portfolio_id: str):
+    return load_portfolio_diversification(market, portfolio_id)
+
+@app.get("/api/portfolio/risk/{market}/{portfolio_id}")
+async def get_portfolio_risk(market: str, portfolio_id: str):
+    return load_portfolio_risk(market, portfolio_id)
+
+@app.get("/api/portfolio/structure/{market}/{portfolio_id}")
+async def get_portfolio_structure(market: str, portfolio_id: str):
+    return load_portfolio_structure(market, portfolio_id)
+
+@app.get("/api/portfolio/performance/{market}/{portfolio_id}")
+async def get_portfolio_performance(market: str, portfolio_id: str):
+    return load_portfolio_performance(market, portfolio_id)
+
+@app.get("/api/portfolio/insights/{market}/{portfolio_id}")
+async def get_portfolio_insights(market: str, portfolio_id: str):
+    return load_portfolio_insights(market, portfolio_id)
+
+@app.get("/api/portfolio/resilience/{market}/{portfolio_id}")
+async def get_portfolio_resilience(market: str, portfolio_id: str):
+    return load_portfolio_resilience(market, portfolio_id)
+
+@app.get("/api/portfolio/combined")
+async def get_combined_portfolio():
+    return load_combined_portfolio_view()
+
 if __name__ == "__main__":
     import uvicorn
     from utils.port_manager import ensure_service_assignment

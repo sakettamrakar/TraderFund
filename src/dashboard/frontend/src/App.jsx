@@ -17,6 +17,7 @@ import MacroContextPanel from './components/MacroContextPanel';
 import IntelligencePanel from './components/IntelligencePanel';
 import DataAnchorPanel from './components/DataAnchorPanel';
 import TemporalTruthBanner from './components/TemporalTruthBanner';
+import PortfolioIntelligencePanel from './components/PortfolioIntelligencePanel';
 import './components/GlobalHeader.css';
 import './App.css';
 
@@ -86,6 +87,7 @@ function App() {
           {/* EPISTEMIC RESTORATION: Data Anchor Panel - Shows above all content */}
           <DataAnchorPanel market={market} />
 
+          <PortfolioIntelligencePanel market={market} />
           <MacroContextPanel market={market} />
           <IntelligencePanel market={market} />
           <WhyNothingIsHappening market={market} />
