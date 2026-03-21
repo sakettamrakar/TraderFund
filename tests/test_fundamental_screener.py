@@ -1,5 +1,10 @@
+import os
+import sys
+
 import pandas as pd
-from src.core_modules.screening.fundamental_screener import fundamental_screener
+
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "src")))
+from core_modules.screening.fundamental_screener import fundamental_screener
 
 
 def test_fundamental_screener_basic():
