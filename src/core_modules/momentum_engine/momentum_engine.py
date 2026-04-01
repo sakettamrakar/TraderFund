@@ -114,8 +114,25 @@ class MomentumEngine:
                 f"Vol surge (x{latest['rel_vol']:.1f})"
             )
             
-            # Confidence calculation (simple heuristic for v0)
-            confidence = min(1.0, (latest['rel_vol'] / (self.vol_multiplier * 2)) + 0.5)
+            # Confidence calculation (v1)
+            # Base confidence for meeting all criteria
+            base_conf = 0.6
+
+            # 1. Volume Booster (0.0 to 0.2)
+            # Scale from vol_multiplier to 3x vol_multiplier
+            vol_excess = max(0.0, latest['rel_vol'] - self.vol_multiplier)
+            vol_cap = 2 * self.vol_multiplier  # The range above threshold to consider
+            vol_boost = min(0.2, (vol_excess / vol_cap) * 0.2)
+
+            # 2. HOD Proximity Booster (0.0 to 0.2)
+            # Closer to HOD is better. 0% dist = max boost.
+            if self.hod_proximity_pct > 0:
+                hod_fraction = hod_dist / self.hod_proximity_pct
+                hod_boost = max(0.0, (1.0 - hod_fraction) * 0.2)
+            else:
+                hod_boost = 0.2 # If tolerance is 0, we are at HOD
+
+            confidence = min(1.0, base_conf + vol_boost + hod_boost)
             
             signal = MomentumSignal(
                 symbol=symbol,
