@@ -66,6 +66,15 @@ class PortfolioIntelligenceConfig:
     usd_inr_manual_rate: float = field(
         default_factory=lambda: float(os.getenv("PORTFOLIO_USDINR_RATE", "0"))
     )
+    alpha_vantage_api_key: str = field(
+        default_factory=lambda: _first_env("ALPHAVANTAGE_API_KEY", "ALPHA_VANTAGE_API_KEY")
+    )
+    trader_news_api_url: str = field(
+        default_factory=lambda: _first_env("TRADER_NEWS_API_URL")
+    )
+    trader_news_lookback_hours: int = field(
+        default_factory=lambda: int(os.getenv("TRADER_NEWS_LOOKBACK_HOURS", "72"))
+    )
 
     @property
     def raw_dir(self) -> Path:
@@ -83,12 +92,22 @@ class PortfolioIntelligenceConfig:
     def registry_path(self) -> Path:
         return self.base_dir / "registry" / "portfolio_registry.json"
 
+    @property
+    def fund_metadata_dir(self) -> Path:
+        return self.base_dir / "fund_metadata"
+
+    @property
+    def benchmark_metadata_dir(self) -> Path:
+        return self.base_dir / "benchmark_metadata"
+
     def ensure_directories(self) -> None:
         for path in (
             self.base_dir,
             self.raw_dir,
             self.normalized_dir,
             self.analytics_dir,
+            self.fund_metadata_dir,
+            self.benchmark_metadata_dir,
             self.base_dir / "history",
             self.base_dir / "registry",
         ):

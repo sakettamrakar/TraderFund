@@ -197,14 +197,21 @@ async def get_temporal_status(market: str = "US"):
 
 from src.dashboard.backend.loaders.portfolio import (
     load_combined_portfolio_view,
+    load_portfolio_advisory,
     load_portfolio_diversification,
+    load_portfolio_exposure,
     load_portfolio_holdings,
     load_portfolio_insights,
+    load_portfolio_macro_alignment,
     load_portfolio_overview,
     load_portfolio_performance,
+    load_portfolio_refresh_status,
+    load_portfolio_research,
     load_portfolio_resilience,
     load_portfolio_risk,
     load_portfolio_structure,
+    load_portfolio_trend,
+    trigger_portfolio_refresh,
 )
 
 @app.get("/api/portfolio/overview/{market}")
@@ -238,6 +245,34 @@ async def get_portfolio_insights(market: str, portfolio_id: str):
 @app.get("/api/portfolio/resilience/{market}/{portfolio_id}")
 async def get_portfolio_resilience(market: str, portfolio_id: str):
     return load_portfolio_resilience(market, portfolio_id)
+
+@app.get("/api/portfolio/exposure/{market}/{portfolio_id}")
+async def get_portfolio_exposure(market: str, portfolio_id: str):
+    return load_portfolio_exposure(market, portfolio_id)
+
+@app.get("/api/portfolio/macro-alignment/{market}/{portfolio_id}")
+async def get_portfolio_macro_alignment(market: str, portfolio_id: str):
+    return load_portfolio_macro_alignment(market, portfolio_id)
+
+@app.get("/api/portfolio/research/{market}/{portfolio_id}")
+async def get_portfolio_research(market: str, portfolio_id: str):
+    return load_portfolio_research(market, portfolio_id)
+
+@app.get("/api/portfolio/advisory/{market}/{portfolio_id}")
+async def get_portfolio_advisory(market: str, portfolio_id: str):
+    return load_portfolio_advisory(market, portfolio_id)
+
+@app.get("/api/portfolio/refresh-status/{market}/{portfolio_id}")
+async def get_portfolio_refresh_status(market: str, portfolio_id: str):
+    return load_portfolio_refresh_status(market, portfolio_id)
+
+@app.get("/api/portfolio/trend/{market}/{portfolio_id}")
+async def get_portfolio_trend(market: str, portfolio_id: str, limit: int = 20):
+    return load_portfolio_trend(market, portfolio_id, limit=limit)
+
+@app.post("/api/portfolio/refresh/{market}/{portfolio_id}")
+async def post_portfolio_refresh(market: str, portfolio_id: str, account_name: str | None = None, headless_auth: bool = False):
+    return trigger_portfolio_refresh(market, portfolio_id, account_name=account_name, headless_auth=headless_auth)
 
 @app.get("/api/portfolio/combined")
 async def get_combined_portfolio():

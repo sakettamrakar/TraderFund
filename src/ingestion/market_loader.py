@@ -19,9 +19,23 @@ class MarketLoader:
         if 'Datetime' in df.columns:
             df.rename(columns={'Datetime': 'Date'}, inplace=True)
         if 'Date' not in df.columns:
-            raise KeyError('Date')
+            # Check for lowercase Date
+            if 'date' in df.columns:
+                df.rename(columns={'date': 'Date'}, inplace=True)
+            else:
+                raise KeyError('Date column not found in CSV')
         df['Date'] = pd.to_datetime(df['Date'])
         return df.set_index('Date').sort_index()
+
+    def _load_parquet_price_frame(self, path: Path) -> pd.DataFrame:
+        df = pd.read_parquet(path)
+        # Parquet files from USNormalizer have 'timestamp' as index
+        if df.index.name == 'timestamp':
+            df.index.name = 'Date'
+        
+        # Standardize column naming to Title case if not already
+        df.columns = [c.title() for c in df.columns]
+        return df.sort_index()
 
     def load_benchmark(self, market: str) -> pd.DataFrame:
         """
@@ -40,12 +54,17 @@ class MarketLoader:
             dfs = []
             for p in paths:
                 if not p.exists(): continue
-                dfs.append(self._load_csv_price_frame(p))
+                if p.suffix == ".parquet":
+                    dfs.append(self._load_parquet_price_frame(p))
+                else:
+                    dfs.append(self._load_csv_price_frame(p))
             
             if not dfs:
                 raise FileNotFoundError("No benchmark files found on disk")
             
             primary_path = paths[0]
+            if primary_path.suffix == ".parquet":
+                return self._load_parquet_price_frame(primary_path)
             return self._load_csv_price_frame(primary_path)
 
         elif market == "INDIA":

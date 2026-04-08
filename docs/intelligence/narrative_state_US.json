@@ -1,17 +1,21 @@
 {
   "market": "US",
-  "computed_at": "2026-03-11T03:30:19Z",
-  "truth_epoch": "TE-2026-03-06",
+  "computed_at": "2026-04-08T19:58:11Z",
+  "truth_epoch": "TE-2026-03-12",
   "narrative_mode": "SILENCED",
   "posture": "NARRATIVE_GATED",
   "tone": "NO_OUTPUT",
   "summary": "",
   "silence_reason": "No material factual change versus last Truth Epoch narrative snapshot.",
-  "gating_reason": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED).",
+  "gating_reason": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).",
   "gating_reasons": [
     {
       "code": "SUPPRESSION_STATE_ACTIVE",
-      "detail": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-POLICY-BLOCKED)."
+      "detail": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL)."
+    },
+    {
+      "code": "CANONICAL_STATE_INCOMPLETE",
+      "detail": "Canonical state is CANONICAL_PARTIAL; explanatory narrative is disallowed."
     },
     {
       "code": "NO_MATERIAL_FACT_CHANGE",
@@ -21,7 +25,7 @@
   "regime_state": "BULLISH",
   "regime_confidence": "1.0",
   "regime_reason": "Regime evaluated on canonical-complete inputs.",
-  "canonical_state": "CANONICAL_COMPLETE",
+  "canonical_state": "CANONICAL_PARTIAL",
   "suppression_state": "MULTI_CAUSAL",
   "provenance_references": [
     "docs/evolution/context/regime_context_US.json",
@@ -49,20 +53,26 @@
   "narrative_diff": {
     "status": "UNCHANGED",
     "changed_fields": [],
-    "baseline_truth_epoch": "TE-2026-03-06",
+    "baseline_truth_epoch": "TE-2026-03-12",
     "baseline_artifact": "docs\\intelligence\\narrative_state_US.json"
   },
-  "material_facts_hash": "72af8cc222624c9489e1413581929093305d7a13de37501f8a28c7e5dcc167ab",
+  "material_facts_hash": "e2df9d9b7161234aacc5d21715be0a137eeeed7a7612504ad944c6588c6074f5",
   "material_facts": {
     "market": "US",
-    "truth_epoch": "TE-2026-03-06",
+    "truth_epoch": "TE-2026-03-12",
     "suppression_state": "MULTI_CAUSAL",
     "suppression_reason_ids": [
+      "R-DATA-PARTIAL",
       "R-POLICY-BLOCKED",
       "R-FRAGILITY-CONSTRAINT"
     ],
-    "canonical_state": "CANONICAL_COMPLETE",
-    "canonical_missing_roles": [],
+    "canonical_state": "CANONICAL_PARTIAL",
+    "canonical_missing_roles": [
+      "equity_core",
+      "growth_proxy",
+      "volatility_gauge",
+      "rates_anchor"
+    ],
     "canonical_stale_roles": [],
     "regime_state": "BULLISH",
     "regime_confidence": "1.0",

@@ -66,11 +66,20 @@ try:
     _sys.path.insert(0, str(PROJECT_ROOT))
     _spec.loader.exec_module(_mod)
     USMarketIngestor = _mod.USMarketIngestor
+    # Load Normalizer as well
+    _spec_norm = _ilu.spec_from_file_location(
+        "normalizer",
+        str(PROJECT_ROOT / "ingestion" / "api_ingestion" / "alpha_vantage" / "normalizer.py")
+    )
+    _mod_norm = _ilu.module_from_spec(_spec_norm)
+    _spec_norm.loader.exec_module(_mod_norm)
+    USNormalizer = _mod_norm.USNormalizer
     if _old_ingestion:
         _sys.modules["ingestion"] = _old_ingestion
 except Exception as _e:
-    print(f"  [WARN] USMarketIngestor not available: {_e}. Data ingestion step will be skipped.")
+    print(f"  [WARN] USMarketIngestor/Normalizer not available: {_e}. Data ingestion step will be skipped.")
     USMarketIngestor = None
+    USNormalizer = None
     
 from governance.canonical_partiality import (
     CANONICAL_COMPLETE,
@@ -159,18 +168,28 @@ class EvTickOrchestrator:
                 print("    ! USMarketIngestor unavailable (namespace conflict). Using existing data.")
                 return
             ingestor = USMarketIngestor()
+            normalizer = USNormalizer() if USNormalizer else None
             # Core macro/market proxies for regime detection
-            symbols = ["SPY", "QQQ", "IWM", "VIX"] 
+            symbols = ["SPY", "QQQ", "IWM", "VIXY"] 
             
             for sym in symbols:
                 print(f"    - Fetching {sym}...", end="", flush=True)
                 res = ingestor.fetch_symbol_daily(sym, full_history=False)
                 status = res.get('status', 'UNKNOWN')
                 msg = res.get('msg', '')
-                print(f" {status} ({msg})")
+                raw_path = res.get('raw_path')
+                
+                if status == 'OK' and raw_path and normalizer:
+                     norm_res = normalizer.normalize_daily(sym, raw_path)
+                     if norm_res:
+                         print(f" OK (Saved & Normalized)")
+                     else:
+                         print(f" OK (Saved, Norm Failed)")
+                else:
+                     print(f" {status} ({msg})")
                 
         except Exception as e:
-            print(f"    ! Ingestion Failed: {e}")
+            print(f"    ! Ingestion/Normalization Failed: {e}")
             # We continue execution even if ingestion fails (using last known or mock)
             # strictly for this EV-TICK diagnostic phase to ensure logging happens.
         

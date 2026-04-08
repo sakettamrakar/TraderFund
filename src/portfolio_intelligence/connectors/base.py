@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import time
 from abc import ABC, abstractmethod
-from typing import List
+from typing import Any, List
 
 from requests import Session
 
@@ -64,3 +64,6 @@ class BrokerConnector(ABC):
     @abstractmethod
     def fetch_instruments(self) -> List[InstrumentRecord]:
         raise NotImplementedError
+
+    def fetch_mutual_fund_holdings(self) -> List[Any]:
+        return []

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\GIT\TraderFund\scripts\portfolio_tracker_refresh.py", line 54, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "C:\GIT\TraderFund\scripts\portfolio_tracker_refresh.py", line 31, in main
+    analytics = refresh_service.refresh_zerodha_portfolio(
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\GIT\TraderFund\src\portfolio_intelligence\service.py", line 378, in refresh_zerodha_portfolio
+    raise RuntimeError(_build_refresh_failure(diagnostics, mcp_probe["auth"], api_probe["auth"]))
+RuntimeError: Zerodha refresh failed after MCP-first routing. MCP: Kite MCP login required for read-only portfolio ingestion.. API fallback: Missing Zerodha credentials for read-only portfolio ingestion.. Diagnostics: broker_connectivity=AUTH_REQUIRED, mcp_status=MCP_PORTFOLIO_FETCH_ERROR, api_fallback=API_FALLBACK_AUTH_REQUIRED.

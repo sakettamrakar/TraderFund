@@ -1,0 +1,45 @@
+{
+  "regime_alignment_score": 1.0,
+  "narrative_alignment_score": 1.0,
+  "factor_alignment_score": 1.0,
+  "strategy_alignment_score": 1.0,
+  "concentration_score": 0.9043442857142858,
+  "exposure_balance_score": 0.37253040000000004,
+  "convergence_health_score": 1.0,
+  "global_status": "DEGRADED",
+  "flags": [
+    {
+      "code": "SECTOR_CLUSTERING_ORANGE",
+      "module": "EXPOSURE_SYMMETRY",
+      "severity": "ORANGE",
+      "message": "Sector Clustering: 'UNKNOWN' represents 78.4% of gross exposure (threshold: 70%). Portfolio is dangerously concentrated in one sector.",
+      "affected_symbol": null
+    },
+    {
+      "code": "DIRECTIONAL_ASYMMETRY",
+      "module": "EXPOSURE_SYMMETRY",
+      "severity": "YELLOW",
+      "message": "Directional Asymmetry: net/gross ratio is 1.00. Portfolio is highly one-sided with minimal hedge offset.",
+      "affected_symbol": null
+    }
+  ],
+  "severity_map": {
+    "SECTOR_CLUSTERING_ORANGE": "ORANGE",
+    "DIRECTIONAL_ASYMMETRY": "YELLOW"
+  },
+  "component_scores": {
+    "REGIME_ALIGNMENT": 1.0,
+    "NARRATIVE_DRIFT": 1.0,
+    "FACTOR_ALIGNMENT": 1.0,
+    "STRATEGY_MISAPPLICATION": 1.0,
+    "CONCENTRATION_CREEP": 0.9043442857142858,
+    "EXPOSURE_SYMMETRY": 0.37253040000000004,
+    "CONVERGENCE_HEALTH": 1.0,
+    "CONSTRAINT_FRICTION": 1.0,
+    "DRAWDOWN_BEHAVIOUR": 1.0,
+    "STABILITY_DRIFT": 0.7
+  },
+  "latency_ms": 0.3586000093491748,
+  "input_hash": "9a0f010a009e405d",
+  "timestamp": "2026-03-13T11:40:46.365203+00:00"
+}

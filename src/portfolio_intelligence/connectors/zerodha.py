@@ -3,10 +3,12 @@ from __future__ import annotations
 import csv
 import hashlib
 import io
+import os
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
 from ..config import BrokerCredentialSet
+from ..zerodha_browser_auth import obtain_access_token_via_browser
 from .base import (
     BrokerConnector,
     BrokerConnectorError,
@@ -38,6 +40,7 @@ class ZerodhaConnector(BrokerConnector):
         self.credentials = credentials
         self.access_token = credentials.access_token
         self._profile: Optional[Dict[str, Any]] = None
+        self.auth_mode = "ACCESS_TOKEN" if credentials.access_token else "UNAUTHENTICATED"
 
     def login_url(self) -> Optional[str]:
         if not self.credentials.api_key:
@@ -46,7 +49,8 @@ class ZerodhaConnector(BrokerConnector):
 
     def authenticate(self) -> BrokerAuthResult:
         missing = self.credentials.missing()
-        if missing:
+        can_auto_auth = bool(self.credentials.api_key and self.credentials.api_secret)
+        if missing and not (can_auto_auth and "KITE_ACCESS_TOKEN or KITE_REQUEST_TOKEN" in missing):
             return BrokerAuthResult(
                 broker=self.broker_name,
                 authenticated=False,
@@ -55,12 +59,32 @@ class ZerodhaConnector(BrokerConnector):
                 missing_credentials=missing,
             )
 
+        if not self.access_token and not self.credentials.request_token and can_auto_auth:
+            try:
+                self.access_token = obtain_access_token_via_browser(
+                    self.credentials.api_key,
+                    self.credentials.api_secret,
+                    headless=os.getenv("KITE_HEADLESS_AUTH", "false").strip().lower() in {"1", "true", "yes"},
+                    timeout_seconds=int(os.getenv("KITE_AUTH_TIMEOUT_SECONDS", "300")),
+                    persist_env=True,
+                )
+                self.auth_mode = "BROWSER_AUTH"
+            except Exception as exc:
+                return BrokerAuthResult(
+                    broker=self.broker_name,
+                    authenticated=False,
+                    message=f"Automated Zerodha browser auth failed: {exc}",
+                    login_url=self.login_url(),
+                    missing_credentials=["KITE_ACCESS_TOKEN"],
+                )
+
         if not self.access_token and self.credentials.request_token:
             self.access_token = self._generate_access_token(
                 api_key=self.credentials.api_key,
                 api_secret=self.credentials.api_secret,
                 request_token=self.credentials.request_token,
             )
+            self.auth_mode = "REQUEST_TOKEN"
 
         if not self.access_token:
             return BrokerAuthResult(
@@ -71,7 +95,20 @@ class ZerodhaConnector(BrokerConnector):
                 missing_credentials=["KITE_ACCESS_TOKEN"],
             )
 
-        profile = self._get_json("/user/profile")
+        try:
+            profile = self._get_json("/user/profile")
+        except Exception as exc:
+            if not can_auto_auth:
+                raise exc
+            self.access_token = obtain_access_token_via_browser(
+                self.credentials.api_key,
+                self.credentials.api_secret,
+                headless=os.getenv("KITE_HEADLESS_AUTH", "false").strip().lower() in {"1", "true", "yes"},
+                timeout_seconds=int(os.getenv("KITE_AUTH_TIMEOUT_SECONDS", "300")),
+                persist_env=True,
+            )
+            self.auth_mode = "BROWSER_REAUTH"
+            profile = self._get_json("/user/profile")
         self._profile = profile
         account_name = profile.get("user_name") or profile.get("user_shortname")
         account_id = profile.get("user_id")
@@ -99,6 +136,31 @@ class ZerodhaConnector(BrokerConnector):
                 pnl=float(item.get("pnl") or 0),
                 product="CNC",
                 instrument_token=item.get("instrument_token"),
+                asset_bucket="HOLDING",
+                security_name=item.get("tradingsymbol", ""),
+                raw=item,
+            )
+            for item in payload
+        ]
+
+    def fetch_mutual_fund_holdings(self) -> List[RawBrokerHolding]:
+        try:
+            payload = self._get_json("/mf/holdings")
+        except Exception:
+            return []
+        return [
+            RawBrokerHolding(
+                symbol=item.get("tradingsymbol") or item.get("fund") or item.get("folio", "MF"),
+                exchange="MF",
+                quantity=float(item.get("quantity") or 0),
+                average_price=float(item.get("average_price") or 0),
+                last_price=float(item.get("last_price") or 0),
+                pnl=float(item.get("pnl") or 0),
+                product="MF",
+                instrument_token=None,
+                asset_bucket="MUTUAL_FUND",
+                security_name=item.get("fund") or item.get("tradingsymbol"),
+                scheme_type=_infer_mf_scheme_type(item),
                 raw=item,
             )
             for item in payload
@@ -215,3 +277,20 @@ class ZerodhaConnector(BrokerConnector):
         if payload.get("status") != "success":
             raise BrokerConnectorError(f"Zerodha request failed for {path}: {payload}")
         return payload.get("data")
+
+
+def _infer_mf_scheme_type(item: Dict[str, Any]) -> str:
+    fund_name = str(item.get("fund") or "").upper()
+    if "NASDAQ" in fund_name or "CHINA" in fund_name:
+        return "GLOBAL_EQUITY_FUND"
+    if "INFRASTRUCTURE" in fund_name:
+        return "SECTOR_FUND"
+    if "SMALL CAP" in fund_name:
+        return "SMALL_CAP_FUND"
+    if "BALANCED" in fund_name or "ADVANTAGE" in fund_name:
+        return "HYBRID_FUND"
+    if "ELSS" in fund_name:
+        return "ELSS_FUND"
+    if "FLEXI CAP" in fund_name:
+        return "FLEXI_CAP_FUND"
+    return "MUTUAL_FUND"

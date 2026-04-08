@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -34,7 +35,12 @@ class KiteMCPConnector(MCPBrokerConnector):
         )
         self.server_url = server_url
         self.protocol_version = protocol_version
-        self.mcp_session_id = ""
+        self.persistence_path = os.path.join(
+            os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))),
+            ".runtime",
+            "mcp_sessions.json",
+        )
+        self.mcp_session_id = self._load_persisted_session()
         self.server_info: Dict[str, Any] = {}
         self._initialized = False
         self._profile: Dict[str, Any] | None = None
@@ -42,13 +48,34 @@ class KiteMCPConnector(MCPBrokerConnector):
         self._cached_positions: List[RawBrokerPosition] | None = None
 
     def connect_to_mcp(self) -> Dict[str, Any]:
-        if self._initialized and self.mcp_session_id:
+        if self._initialized:
             return {
                 "reachable": True,
                 "session_id": self.mcp_session_id,
                 "server_info": self.server_info,
                 "url": self.server_url,
             }
+
+        # Try to resume existing session
+        if self.mcp_session_id:
+            try:
+                # Check if session is alive with a minimal call
+                resp = self.session.post(
+                    self.server_url,
+                    headers={"mcp-session-id": self.mcp_session_id},
+                    json={"jsonrpc": "2.0", "id": "ping", "method": "ping"},
+                    timeout=5,
+                )
+                if resp.status_code == 200:
+                    self._initialized = True
+                    return {
+                        "reachable": True,
+                        "session_id": self.mcp_session_id,
+                        "server_info": self.server_info,
+                        "url": self.server_url,
+                    }
+            except Exception:
+                pass
 
         self._throttle()
         response = self.session.post(
@@ -70,6 +97,8 @@ class KiteMCPConnector(MCPBrokerConnector):
         if "result" not in payload:
             raise BrokerConnectorError(f"Kite MCP initialize failed: {payload}")
         self.mcp_session_id = response.headers.get("mcp-session-id", "")
+        if self.mcp_session_id:
+            self._save_persisted_session(self.mcp_session_id)
         self.server_info = payload["result"].get("serverInfo", {})
         self._initialized = True
         self._notify_initialized()
@@ -281,6 +310,32 @@ class KiteMCPConnector(MCPBrokerConnector):
             yield (item.exchange.upper(), item.symbol.upper())
         for item in positions:
             yield (item.exchange.upper(), item.symbol.upper())
+
+    def _load_persisted_session(self) -> str:
+        if not os.path.exists(self.persistence_path):
+            return ""
+        try:
+            with open(self.persistence_path, "r") as f:
+                data = json.load(f)
+                return data.get(self.server_url, "")
+        except Exception:
+            return ""
+
+    def _save_persisted_session(self, session_id: str) -> None:
+        data = {}
+        if os.path.exists(self.persistence_path):
+            try:
+                with open(self.persistence_path, "r") as f:
+                    data = json.load(f)
+            except Exception:
+                pass
+        data[self.server_url] = session_id
+        try:
+            os.makedirs(os.path.dirname(self.persistence_path), exist_ok=True)
+            with open(self.persistence_path, "w") as f:
+                json.dump(data, f)
+        except Exception:
+            pass
 
 
 def _extract_login_url(text: str) -> Optional[str]:

@@ -1,13 +1,13 @@
 {
   "fragility_context": {
     "market": "US",
-    "computed_at": "2026-03-08T15:38:37.005433",
+    "computed_at": "2026-04-09T01:30:09.763207",
     "stress_state": "ELEVATED_STRESS",
     "constraints_applied": [],
     "final_authorized_intents": [
       "OBSERVE_ONLY"
     ],
-    "reason": "Elevated Volatility (34.45).",
+    "reason": "Elevated Volatility (33.86).",
     "version": "1.0.0-SUBTRACTIVE"
   }
 }

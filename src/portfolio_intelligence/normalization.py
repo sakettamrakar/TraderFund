@@ -17,6 +17,34 @@ INDIA_SECTOR_MAP: Dict[str, Tuple[str, str]] = {
     "ITC": ("Consumer Staples", "Diversified Consumer"),
     "KOTAKBANK": ("Financials", "Banks"),
     "LT": ("Industrials", "Engineering"),
+    "ADANIGREEN": ("Utilities", "Renewable Energy"),
+    "BEL": ("Industrials", "Aerospace & Defense"),
+    "BHARATFORG": ("Industrials", "Auto Components"),
+    "GAIL": ("Utilities", "Gas Distribution"),
+    "HAL": ("Industrials", "Aerospace & Defense"),
+    "HAPPSTMNDS": ("Information Technology", "IT Services"),
+    "HCG": ("Healthcare", "Health Services"),
+    "IDEAFORGE": ("Industrials", "Aerospace & Defense"),
+    "IDFCFIRSTB": ("Financials", "Banks"),
+    "IEX": ("Financials", "Exchanges"),
+    "INDIGO": ("Industrials", "Airlines"),
+    "IRFC": ("Financials", "NBFC"),
+    "JIOFIN": ("Financials", "NBFC"),
+    "JSWENERGY": ("Utilities", "Power Generation"),
+    "KRSNAA": ("Healthcare", "Diagnostics"),
+    "KWIL": ("Consumer Staples", "Food & Beverages"),
+    "NATCOPHARM": ("Healthcare", "Pharmaceuticals"),
+    "OIL": ("Energy", "Oil & Gas"),
+    "PARAS": ("Industrials", "Aerospace & Defense"),
+    "POWERGRID": ("Utilities", "Power Transmission"),
+    "PVRINOX": ("Consumer Discretionary", "Entertainment"),
+    "SAIL": ("Basic Materials", "Steel"),
+    "TAKE-BE": ("Information Technology", "IT Services"),
+    "THYROCARE": ("Healthcare", "Diagnostics"),
+    "VIKRAMSOLR": ("Utilities", "Renewable Energy"),
+    "WAAREEENER": ("Utilities", "Renewable Energy"),
+    "WELCORP": ("Industrials", "Steel Products"),
+    "APOLLO": ("Healthcare", "Health Services"),
 }
 
 US_SECTOR_MAP: Dict[str, Tuple[str, str]] = {
@@ -48,6 +76,7 @@ def _instrument_index(instruments: Iterable[InstrumentRecord]) -> Dict[tuple[str
 def normalize_portfolio(
     *,
     holdings: List[RawBrokerHolding],
+    mutual_fund_holdings: List[RawBrokerHolding],
     positions: List[RawBrokerPosition],
     instruments: List[InstrumentRecord],
     portfolio_id: str,
@@ -59,6 +88,7 @@ def normalize_portfolio(
 ) -> Dict[str, object]:
     instrument_map = _instrument_index(instruments)
     rows: List[Dict[str, object]] = []
+    mutual_fund_rows: List[Dict[str, object]] = []
 
     for holding in holdings:
         rows.append(
@@ -104,8 +134,23 @@ def normalize_portfolio(
             )
         )
 
-    total_market_value = sum(float(row["market_value"]) for row in rows) or 1.0
+    for holding in mutual_fund_holdings:
+        mutual_fund_rows.append(
+            _normalize_mutual_fund_row(
+                holding=holding,
+                portfolio_id=portfolio_id,
+                broker=broker,
+                market=market,
+                account_name=account_name,
+                truth_epoch=truth_epoch,
+                data_as_of=data_as_of,
+            )
+        )
+
+    total_market_value = sum(float(row["market_value"]) for row in rows + mutual_fund_rows) or 1.0
     for row in rows:
+        row["weight_pct"] = round((float(row["market_value"]) / total_market_value) * 100.0, 4)
+    for row in mutual_fund_rows:
         row["weight_pct"] = round((float(row["market_value"]) / total_market_value) * 100.0, 4)
 
     return {
@@ -116,8 +161,11 @@ def normalize_portfolio(
         "data_as_of": data_as_of,
         "truth_epoch": truth_epoch,
         "total_market_value": round(total_market_value, 2),
-        "holding_count": len(rows),
+        "holding_count": len(rows) + len(mutual_fund_rows),
+        "equity_holding_count": len(rows),
+        "mutual_fund_count": len(mutual_fund_rows),
         "holdings": rows,
+        "mutual_fund_holdings": mutual_fund_rows,
     }
 
 
@@ -153,6 +201,7 @@ def _normalize_row(
         "market": market,
         "asset_bucket": asset_bucket,
         "ticker": symbol.upper(),
+        "security_name": symbol.upper(),
         "canonical_ticker": canonical,
         "exchange": exchange.upper(),
         "quantity": float(quantity or 0.0),
@@ -176,3 +225,72 @@ def _normalize_row(
             "raw_fields": sorted(raw.keys()),
         },
     }
+
+
+def _normalize_mutual_fund_row(
+    *,
+    holding: RawBrokerHolding,
+    portfolio_id: str,
+    broker: str,
+    market: str,
+    account_name: str,
+    truth_epoch: str,
+    data_as_of: str,
+) -> Dict[str, object]:
+    market_price = float(holding.last_price or holding.average_price or 0.0)
+    cost_basis = float(holding.quantity or 0.0) * float(holding.average_price or 0.0)
+    market_value = float(holding.quantity or 0.0) * market_price
+    pnl_pct = (float(holding.pnl or 0.0) / cost_basis * 100.0) if cost_basis else 0.0
+    sector, industry = _mutual_fund_classification(holding)
+    ticker = (holding.symbol or holding.security_name or "MUTUAL_FUND").upper()
+    return {
+        "portfolio_id": portfolio_id,
+        "broker": broker,
+        "account_name": account_name,
+        "market": market,
+        "asset_bucket": "MUTUAL_FUND",
+        "ticker": ticker,
+        "security_name": holding.security_name or ticker,
+        "canonical_ticker": ticker,
+        "exchange": "MF",
+        "quantity": float(holding.quantity or 0.0),
+        "cost_basis": round(cost_basis, 2),
+        "market_price": round(market_price, 4),
+        "market_value": round(market_value, 2),
+        "pnl": round(float(holding.pnl or 0.0), 2),
+        "pnl_pct": round(pnl_pct, 4),
+        "product": holding.product,
+        "sector": sector,
+        "industry": industry,
+        "benchmark_reference": holding.benchmark_reference,
+        "benchmark_provider": holding.benchmark_provider,
+        "underlying_holdings": holding.underlying_holdings,
+        "metadata_source": holding.metadata_source,
+        "geography": market,
+        "currency": "INR" if market == "INDIA" else "USD",
+        "instrument": None,
+        "factor_exposure": {},
+        "truth_epoch": truth_epoch,
+        "data_as_of": data_as_of,
+        "trace": {
+            "source": f"{broker.lower()}_api",
+            "normalization": "portfolio_intelligence.normalization",
+            "raw_fields": sorted(holding.raw.keys()),
+            "metadata_source": holding.metadata_source,
+        },
+    }
+
+
+def _mutual_fund_classification(holding: RawBrokerHolding) -> Tuple[str, str]:
+    name = f"{holding.security_name or ''} {holding.scheme_type or ''}".upper()
+    if "NASDAQ" in name or "GLOBAL" in name or "CHINA" in name:
+        return ("Global Funds", holding.scheme_type or "Global Equity Fund")
+    if "INFRASTRUCTURE" in name:
+        return ("Sector Funds", "Infrastructure Fund")
+    if "SMALL CAP" in name:
+        return ("Equity Funds", "Small Cap Fund")
+    if "BALANCED" in name or "HYBRID" in name or "ADVANTAGE" in name:
+        return ("Hybrid Funds", holding.scheme_type or "Hybrid Fund")
+    if "ELSS" in name:
+        return ("Tax Saver Funds", "ELSS Fund")
+    return ("Mutual Funds", holding.scheme_type or "Mutual Fund")

@@ -19,9 +19,9 @@
             "sector_proxies": {}
         },
         "ingestion_binding": {
-            "SPY": "data/us_market/SPY_daily.csv",
-            "QQQ": "data/us_market/QQQ_daily.csv",
-            "VIXY": "data/us_market/VIXY_daily.csv",
+            "SPY": "data/staging/us/daily/SPY.parquet",
+            "QQQ": "data/staging/us/daily/QQQ.parquet",
+            "VIXY": "data/staging/us/daily/VIXY.parquet",
             "TNX": "data/regime/raw/^TNX.csv"
         }
     },

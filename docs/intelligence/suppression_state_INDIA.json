@@ -1,9 +1,9 @@
 {
   "market": "INDIA",
-  "truth_epoch": "TE-2026-03-06",
-  "computed_at": "2026-03-11T03:30:19Z",
+  "truth_epoch": "TE-2026-03-12",
+  "computed_at": "2026-04-08T19:58:12Z",
   "suppression_state": "TEMPORAL_DRIFT",
-  "since_timestamp": "2026-03-11T03:30:19Z",
+  "since_timestamp": "2026-04-07T03:30:23Z",
   "affected_actions": [
     "ALLOW_LONG_ENTRY",
     "ALLOW_LONG_ENTRY_SPECIAL",
@@ -15,7 +15,7 @@
     "reason_id": "R-TEMPORAL-DRIFT",
     "suppression_state": "TEMPORAL_DRIFT",
     "blocking_layer": "GOVERNANCE",
-    "blocking_condition": "Canonical data (2026-03-10) is ahead of Truth Epoch (2026-03-06). Drift=4d.",
+    "blocking_condition": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=25d exceeds max=7d.",
     "affected_actions": [
       "ALLOW_LONG_ENTRY",
       "ALLOW_LONG_ENTRY_SPECIAL",
@@ -27,7 +27,7 @@
     "source_artifacts": [
       "docs/intelligence/temporal/temporal_state_INDIA.json"
     ],
-    "since_timestamp": "2026-03-11T03:30:19Z"
+    "since_timestamp": "2026-04-07T03:30:23Z"
   },
   "secondary_reasons": [],
   "clearance_statement": "ACTION UNBLOCKING REQUIRES ALL ACTIVE SUPPRESSION REASONS TO CLEAR. No automatic execution or truth advancement is permitted.",

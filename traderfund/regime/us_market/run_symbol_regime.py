@@ -13,11 +13,13 @@ from traderfund.regime.providers.liquidity import RVOLLiquidityProvider
 from traderfund.regime.providers.event import CalendarEventProvider
 from traderfund.regime.types import RegimeFactors, RegimeState
 from traderfund.regime.observability import RegimeFormatter
+from src.structural.proxy_adapter import ProxyAdapter # ADDED
 
 logger = logging.getLogger("USSymbolRegime")
 
 class SymbolRegimeRunner:
-    DATA_DIR = Path("data/us_market")
+    # Deprecated: Path is now managed by ProxyAdapter
+    # DATA_DIR = Path("data/us_market")
     
     def __init__(self):
         self.calc = RegimeCalculator()
@@ -27,15 +29,36 @@ class SymbolRegimeRunner:
         self.event = CalendarEventProvider()
         
     def run_for_symbol(self, symbol: str) -> Dict[str, Any]:
-        file_path = self.DATA_DIR / f"{symbol}_daily.csv"
-        if not file_path.exists():
-            logger.warning(f"No data for {symbol}")
+        adapter = ProxyAdapter()
+        try:
+            # We assume US market for this runner
+            m_cfg = adapter._config.get("US", {})
+            bindings = m_cfg.get("ingestion_binding", {})
+            file_path = adapter.root / bindings.get(symbol, "")
+        except:
+            logger.warning(f"No binding for {symbol} in ProxyAdapter")
+            return {}
+
+        if not file_path or not file_path.exists():
+            logger.warning(f"No data for {symbol} at {file_path}")
             return {}
             
         try:
-            df = pd.read_csv(file_path)
+            if file_path.suffix == ".parquet":
+                df = pd.read_parquet(file_path)
+                if df.index.name == 'timestamp':
+                    df.index.name = 'Date'
+                df.reset_index(inplace=True)
+                # Map 'Date' or 'timestamp' to 'timestamp' for the rest of the logic
+                df.rename(columns={'Date': 'timestamp', 'date': 'timestamp'}, inplace=True)
+            else:
+                df = pd.read_csv(file_path)
+            
             df['timestamp'] = pd.to_datetime(df['timestamp'])
             df = df.sort_values('timestamp')
+            
+            # Standardize columns for providers (Low, High, Close, Volume)
+            df.columns = [c.lower() for c in df.columns]
         except Exception as e:
             logger.error(f"Read error {symbol}: {e}")
             return {}
@@ -85,7 +108,9 @@ class SymbolRegimeRunner:
         if last_state:
             # Save Snapshot
             snapshot = RegimeFormatter.to_dict(last_state, last_factors, symbol)
-            out_path = self.DATA_DIR / f"{symbol}_regime.json"
+            # Save to analytics side? For now keep in us_market legacy for dashboard compat
+            out_path = Path("data/us_market") / f"{symbol}_regime.json"
+            out_path.parent.mkdir(parents=True, exist_ok=True)
             with open(out_path, 'w') as f:
                 json.dump(snapshot, f, indent=2)
             

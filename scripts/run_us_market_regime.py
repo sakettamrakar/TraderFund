@@ -154,11 +154,22 @@ def main():
             if p.exists():
                 try:
                     import pandas as pd
-                    df = pd.read_csv(p)
-                    rows = len(df)
-                    # Simple Freshness Check (Last 3 days)
-                    last_date = pd.to_datetime(df['timestamp'].iloc[-1])
-                    if (datetime.now() - last_date).days > 3:
+                    if p.suffix == ".parquet":
+                        df = pd.read_parquet(p)
+                        rows = len(df)
+                        # Parquet index is 'timestamp' or 'Date'
+                        if df.index.name in ['timestamp', 'Date']:
+                             last_date = pd.to_datetime(df.index[-1])
+                        else:
+                             # Try reset index if it's there
+                             last_date = pd.to_datetime(df.index[-1])
+                    else:
+                        df = pd.read_csv(p)
+                        rows = len(df)
+                        # Simple Freshness Check (Last 3 days)
+                        last_date = pd.to_datetime(df['timestamp'].iloc[-1])
+                    
+                    if (datetime.now() - last_date.replace(tzinfo=None)).days > 3:
                         status = "STALE"
                 except:
                     status = "ERROR"

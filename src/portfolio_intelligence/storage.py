@@ -60,6 +60,18 @@ class PortfolioArtifactStore:
     def load_latest_analytics(self, market: str, portfolio_id: str) -> Dict[str, Any]:
         return self._read_json(self.config.analytics_dir / market / portfolio_id / "latest.json")
 
+    def list_portfolio_history(self, market: str, portfolio_id: str, *, limit: int = 20) -> List[Dict[str, Any]]:
+        history_dir = self.config.base_dir / "history" / market / portfolio_id
+        if not history_dir.exists():
+            return []
+        payloads: List[Dict[str, Any]] = []
+        files = sorted([item for item in history_dir.iterdir() if item.is_file() and item.suffix == ".json"], key=lambda item: item.name)
+        for path in files[-limit:]:
+            payload = self._read_json(path)
+            if payload:
+                payloads.append(payload)
+        return payloads
+
     def list_market_analytics(self, market: str) -> List[Dict[str, Any]]:
         market_dir = self.config.analytics_dir / market
         if not market_dir.exists():

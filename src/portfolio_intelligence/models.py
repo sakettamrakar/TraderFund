@@ -39,6 +39,13 @@ class RawBrokerHolding:
     pnl: float
     product: str
     instrument_token: Optional[int]
+    asset_bucket: str = "HOLDING"
+    security_name: Optional[str] = None
+    scheme_type: Optional[str] = None
+    benchmark_reference: Optional[str] = None
+    benchmark_provider: Optional[str] = None
+    underlying_holdings: List[JsonDict] = field(default_factory=list)
+    metadata_source: Optional[str] = None
     raw: JsonDict = field(default_factory=dict)
 
 

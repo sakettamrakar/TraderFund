@@ -9,9 +9,11 @@ It runs in STRICT SHADOW MODE by default to prevent unauthorized trading.
 
 import logging
 import hashlib
+import json
 import requests
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from pydantic import BaseModel, Field, field_validator
 
 from narratives.core.models import Event
@@ -35,10 +37,12 @@ class MarketStory(BaseModel):
     region: str        # "US" | "GLOBAL"
     severity_hint: str # "LOW" | "MEDIUM" | "HIGH"
     source: str
+    url: Optional[str] = None
     # Semantic Enrichment (Optional - from upstream)
     semantic_tags: Optional[List[str]] = None
     event_type: Optional[str] = None      # ECONOMIC_DATA, GEOPOLITICAL, CORPORATE
     expectedness: Optional[str] = None    # EXPECTED, UNEXPECTED
+    mentioned_entities: Optional[List[str]] = None
 
 class NarrativeInput(BaseModel):
     """Internal Trader Narrative Input."""
@@ -71,9 +75,25 @@ class MarketStoryAdapter:
     Adapter to ingest MarketStory objects into NarrativeGenesisEngine.
     """
     
-    def __init__(self, engine: NarrativeGenesisEngine):
+    def __init__(self, engine: NarrativeGenesisEngine | None, state_path: str | None = None):
         self.engine = engine
-        self._processed_ids = set() # Simple in-memory dedupe for the run scope
+        self.state_path = Path(state_path) if state_path else None
+        self._processed_ids = self._load_state()
+
+    def _load_state(self) -> set[str]:
+        if not self.state_path or not self.state_path.exists():
+            return set()
+        try:
+            payload = json.loads(self.state_path.read_text(encoding="utf-8"))
+        except Exception:
+            return set()
+        return set(payload.get("processed_ids", []))
+
+    def _persist_state(self) -> None:
+        if not self.state_path:
+            return
+        self.state_path.parent.mkdir(parents=True, exist_ok=True)
+        self.state_path.write_text(json.dumps({"processed_ids": sorted(self._processed_ids)}, indent=2), encoding="utf-8")
 
     def convert_story(self, story: MarketStory) -> NarrativeInput:
         """Map external Story to internal NarrativeInput with heuristic weighting."""
@@ -103,15 +123,24 @@ class MarketStoryAdapter:
             expectedness=story.expectedness
         )
 
-    def fetch_stories_from_api(self, url: str) -> List[MarketStory]:
+    def fetch_stories_from_api(self, url: str, *, hours: int | None = 24) -> List[MarketStory]:
         """
         Fetch stories from the specified API endpoint.
         Fails gracefully on error.
         """
         try:
-            response = requests.get(url, timeout=2)
-            response.raise_for_status()
-            data = response.json()
+            data = None
+            last_error = None
+            for _ in range(3):
+                try:
+                    response = requests.get(url, timeout=5)
+                    response.raise_for_status()
+                    data = response.json()
+                    break
+                except Exception as exc:
+                    last_error = exc
+            if data is None:
+                raise last_error or RuntimeError("Unknown Trader News fetch failure")
             
             stories = []
             for item in data:
@@ -120,7 +149,19 @@ class MarketStoryAdapter:
                 except Exception as e:
                     logger.warning(f"ADAPTER: Failed to parse story item: {e}")
             
-            return stories
+            ordered = sorted(stories, key=lambda item: item.published_at)
+            if hours is None:
+                return ordered
+            cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+            filtered = []
+            for story in ordered:
+                try:
+                    timestamp = datetime.fromisoformat(story.published_at.replace("Z", "+00:00"))
+                except Exception:
+                    timestamp = datetime.now(timezone.utc)
+                if timestamp >= cutoff:
+                    filtered.append(story)
+            return filtered
             
         except Exception as e:
             logger.error(f"ADAPTER: API fetch failed: {e}")
@@ -155,6 +196,7 @@ class MarketStoryAdapter:
                 # Ideally, we'd check the DB, but "NO changes to narrative logic" limits us.
                 
                 self._processed_ids.add(dedupe_key)
+                self._persist_state()
                 
                 # 3. Bridge to Event
                 # We must bridge NarrativeInput -> Event for the engine
@@ -168,7 +210,7 @@ class MarketStoryAdapter:
                 logger.error(f"ADAPTER: Failed to process story {story.id}: {e}")
         
         # 4. Feed to Engine
-        if events_to_ingest:
+        if events_to_ingest and self.engine is not None:
             # We assume US Market for "Market Summary" stories for now based on context
             self.engine.ingest_events(Market.US, events_to_ingest)
             

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import asdict
 from datetime import datetime, timezone
+import time
 from typing import Any, Dict, List
 
 from .analytics import analyze_portfolio
@@ -11,6 +12,7 @@ from .connectors.base import BrokerConnector
 from .connectors.zerodha import ZerodhaConnector
 from .enrichment import enrich_portfolio
 from .normalization import normalize_portfolio
+from .refresh_runtime import PortfolioRefreshRuntime
 from .storage import PortfolioArtifactStore
 
 
@@ -44,6 +46,7 @@ class PortfolioIntelligenceService:
         connector: BrokerConnector,
         auth: Any,
         holdings: List[Any],
+        mutual_fund_holdings: List[Any],
         positions: List[Any],
         orders: List[Any],
         instruments: List[Any],
@@ -76,6 +79,7 @@ class PortfolioIntelligenceService:
             "portfolio_summary": portfolio_summary or {},
             "auth": asdict(auth),
             "holdings": [asdict(item) for item in holdings],
+            "mutual_fund_holdings": [asdict(item) for item in mutual_fund_holdings],
             "positions": [asdict(item) for item in positions],
             "orders": [asdict(item) for item in orders],
             "instrument_count": len(instruments),
@@ -90,6 +94,7 @@ class PortfolioIntelligenceService:
 
         normalized = normalize_portfolio(
             holdings=holdings,
+            mutual_fund_holdings=mutual_fund_holdings,
             positions=positions,
             instruments=instruments,
             portfolio_id=portfolio_id,
@@ -146,6 +151,7 @@ class PortfolioIntelligenceService:
 
         imported_at = datetime.now(timezone.utc).isoformat()
         holdings = connector.fetch_holdings()
+        mutual_fund_holdings = connector.fetch_mutual_fund_holdings()
         positions = connector.fetch_positions()
         orders = connector.fetch_orders()
         instruments = connector.fetch_instruments()
@@ -154,6 +160,7 @@ class PortfolioIntelligenceService:
             connector=connector,
             auth=auth,
             holdings=holdings,
+            mutual_fund_holdings=mutual_fund_holdings,
             positions=positions,
             orders=orders,
             instruments=instruments,
@@ -173,11 +180,15 @@ class PortfolioIntelligenceService:
         portfolio_id: str,
         account_name: str | None = None,
         market: str = "INDIA",
+        trigger: str = "service",
+        headless_auth: bool = False,
     ) -> Dict[str, Any]:
         return PortfolioRefreshService(self).refresh_zerodha_portfolio(
             portfolio_id=portfolio_id,
             account_name=account_name,
             market=market,
+            trigger=trigger,
+            headless_auth=headless_auth,
         )
 
     def load_overview(self, market: str) -> Dict[str, Any]:
@@ -275,12 +286,53 @@ class PortfolioIntelligenceService:
             "regime_gate_state": "BLOCKED",
             "overview": {"total_value": 0.0, "total_pnl": 0.0, "holding_count": 0},
             "holdings": [],
+            "mutual_fund_holdings": [],
             "diversification": {"sector_allocation": {}, "geography_allocation": {}, "factor_distribution": {}},
+            "mutual_fund_summary": {"count": 0, "total_value": 0.0, "allocation_pct": 0.0, "top_funds": []},
             "risk": {},
             "performance": {"winners": [], "laggards": [], "top_contributors": [], "bottom_contributors": []},
             "insights": [],
             "resilience": {"overall_score": 0.0, "classification": "UNAVAILABLE", "components": {}},
             "trace": {"source": f"data/portfolio_intelligence/analytics/{market}/{portfolio_id}/latest.json"},
+        }
+
+    def load_portfolio_trend(self, market: str, portfolio_id: str, *, limit: int = 20) -> Dict[str, Any]:
+        history = self.store.list_portfolio_history(market, portfolio_id, limit=limit)
+        points: List[Dict[str, Any]] = []
+        previous_resilience = None
+        previous_value = None
+        for payload in history:
+            resilience = float(((payload.get("resilience") or {}).get("overall_score") or 0.0))
+            total_value = float(((payload.get("overview") or {}).get("total_value") or 0.0))
+            point = {
+                "data_as_of": payload.get("data_as_of"),
+                "portfolio_refresh_timestamp": payload.get("portfolio_refresh_timestamp"),
+                "resilience_score": resilience,
+                "resilience_classification": ((payload.get("resilience") or {}).get("classification")),
+                "total_value": total_value,
+                "mutual_fund_allocation_pct": ((payload.get("mutual_fund_summary") or {}).get("allocation_pct", 0.0)),
+                "mutual_fund_support": (((payload.get("resilience") or {}).get("components") or {}).get("mutual_fund_support")),
+                "equity_sleeve_resilience": (((payload.get("resilience") or {}).get("components") or {}).get("equity_sleeve_resilience")),
+                "mutual_fund_sleeve_resilience": (((payload.get("resilience") or {}).get("components") or {}).get("mutual_fund_sleeve_resilience")),
+                "resilience_delta": round(resilience - previous_resilience, 4) if previous_resilience is not None else None,
+                "value_delta": round(total_value - previous_value, 2) if previous_value is not None else None,
+            }
+            points.append(point)
+            previous_resilience = resilience
+            previous_value = total_value
+
+        latest = points[-1] if points else None
+        drift = {
+            "resilience_change": latest.get("resilience_delta") if latest else None,
+            "value_change": latest.get("value_delta") if latest else None,
+            "observation_count": len(points),
+        }
+        return {
+            "portfolio_id": portfolio_id,
+            "market": market,
+            "history": points,
+            "drift": drift,
+            "truth_epoch": self.config.truth_epoch,
         }
 
     def load_combined(self) -> Dict[str, Any]:
@@ -335,47 +387,86 @@ class PortfolioRefreshService:
         portfolio_id: str,
         account_name: str | None = None,
         market: str = "INDIA",
+        trigger: str = "service",
+        headless_auth: bool = False,
     ) -> Dict[str, Any]:
+        if not PortfolioRefreshRuntime.acquire(market, portfolio_id):
+            raise RuntimeError("Portfolio refresh already in progress for this portfolio.")
+
+        started_at = time.perf_counter()
+        PortfolioRefreshRuntime.mark_started(market, portfolio_id, trigger=trigger, headless_auth=headless_auth)
         mcp_probe = self._probe_mcp()
         api_probe = self._probe_api(standby=bool(mcp_probe["can_ingest"]))
         diagnostics = self._compose_diagnostics(mcp_probe, api_probe)
 
-        if mcp_probe["can_ingest"]:
-            diagnostics["data_source"] = "MCP"
-            diagnostics["api_fallback"]["status"] = "API_FALLBACK_NOT_REQUIRED"
-            diagnostics["portfolio_refresh_timestamp"] = mcp_probe["imported_at"]
-            return self.service.ingest_snapshot(
-                connector=mcp_probe["connector"],
-                auth=mcp_probe["auth"],
-                holdings=mcp_probe["holdings"],
-                positions=mcp_probe["positions"],
-                orders=mcp_probe["orders"],
-                instruments=mcp_probe["instruments"],
-                portfolio_id=portfolio_id,
-                account_name=account_name,
-                market=market,
-                imported_at=mcp_probe["imported_at"],
-                data_source="MCP",
-                source_provenance="kite_mcp",
-                refresh_diagnostics=diagnostics,
-                portfolio_summary=mcp_probe["portfolio_summary"],
-            )
+        try:
+            if mcp_probe["can_ingest"]:
+                supplementary_mutual_funds = []
+                auth_mode = getattr(api_probe.get("connector"), "auth_mode", None) or "MCP_ONLY"
+                if api_probe["auth"].authenticated:
+                    supplementary_mutual_funds = _best_effort_fetch(api_probe["connector"].fetch_mutual_fund_holdings)
+                diagnostics["data_source"] = "MCP"
+                diagnostics["auth_mode"] = auth_mode
+                diagnostics["api_fallback"]["status"] = (
+                    "API_SUPPLEMENTED_MUTUAL_FUNDS" if supplementary_mutual_funds else "API_FALLBACK_NOT_REQUIRED"
+                )
+                diagnostics["portfolio_refresh_timestamp"] = mcp_probe["imported_at"]
+                analytics = self.service.ingest_snapshot(
+                    connector=mcp_probe["connector"],
+                    auth=mcp_probe["auth"],
+                    holdings=mcp_probe["holdings"],
+                    mutual_fund_holdings=supplementary_mutual_funds,
+                    positions=mcp_probe["positions"],
+                    orders=mcp_probe["orders"],
+                    instruments=mcp_probe["instruments"],
+                    portfolio_id=portfolio_id,
+                    account_name=account_name,
+                    market=market,
+                    imported_at=mcp_probe["imported_at"],
+                    data_source="MCP",
+                    source_provenance="kite_mcp",
+                    refresh_diagnostics=diagnostics,
+                    portfolio_summary=mcp_probe["portfolio_summary"],
+                )
+                PortfolioRefreshRuntime.mark_success(
+                    market,
+                    portfolio_id,
+                    duration_seconds=time.perf_counter() - started_at,
+                    data_source="MCP",
+                    auth_mode=auth_mode,
+                )
+                return analytics
 
-        if api_probe["auth"].authenticated:
-            diagnostics["data_source"] = "API"
-            diagnostics["broker_connectivity"] = "READ_ONLY_OK"
-            diagnostics["api_fallback"]["status"] = "API_FALLBACK_IN_USE"
-            return self.service.refresh_from_connector(
-                connector=api_probe["connector"],
-                portfolio_id=portfolio_id,
-                account_name=account_name,
-                market=market,
-                data_source="API",
-                source_provenance="kite_connect_api",
-                refresh_diagnostics=diagnostics,
-            )
+            if api_probe["auth"].authenticated:
+                diagnostics["data_source"] = "API"
+                diagnostics["broker_connectivity"] = "READ_ONLY_OK"
+                diagnostics["api_fallback"]["status"] = "API_FALLBACK_IN_USE"
+                diagnostics["auth_mode"] = getattr(api_probe.get("connector"), "auth_mode", "ACCESS_TOKEN")
+                analytics = self.service.refresh_from_connector(
+                    connector=api_probe["connector"],
+                    portfolio_id=portfolio_id,
+                    account_name=account_name,
+                    market=market,
+                    data_source="API",
+                    source_provenance="kite_connect_api",
+                    refresh_diagnostics=diagnostics,
+                )
+                PortfolioRefreshRuntime.mark_success(
+                    market,
+                    portfolio_id,
+                    duration_seconds=time.perf_counter() - started_at,
+                    data_source="API",
+                    auth_mode=diagnostics["auth_mode"],
+                )
+                return analytics
 
-        raise RuntimeError(_build_refresh_failure(diagnostics, mcp_probe["auth"], api_probe["auth"]))
+            raise RuntimeError(_build_refresh_failure(diagnostics, mcp_probe["auth"], api_probe["auth"]))
+        except Exception as exc:
+            auth_mode = getattr(api_probe.get("connector"), "auth_mode", None) if isinstance(api_probe, dict) else None
+            PortfolioRefreshRuntime.mark_failure(market, portfolio_id, error=str(exc), auth_mode=auth_mode)
+            raise
+        finally:
+            PortfolioRefreshRuntime.release(market, portfolio_id)
 
     def _probe_mcp(self) -> Dict[str, Any]:
         connector = self.service.build_kite_mcp_connector()

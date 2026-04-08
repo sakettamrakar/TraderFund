@@ -1,20 +1,20 @@
 {
     "market": "INDIA",
-    "timestamp": "2026-03-11T03:30:18.376619Z",
+    "timestamp": "2026-04-08T03:30:19.923231Z",
     "temporal_state": {
         "raw_data_time": {
-            "timestamp": "2026-03-10",
+            "timestamp": "2026-04-06",
             "source": "data\\india\\NIFTY50.csv",
             "status": "VALID"
         },
         "canonical_truth_time": {
-            "timestamp": "2026-03-10",
+            "timestamp": "2026-04-06",
             "source": "canonical_validation_layer",
             "status": "VALID",
-            "last_validated": "2026-03-11T03:30:18.376619Z"
+            "last_validated": "2026-04-08T03:30:19.922231Z"
         },
         "truth_epoch": {
-            "timestamp": "2026-03-06",
+            "timestamp": "2026-03-12",
             "source": "governance_manifest",
             "status": "FROZEN",
             "reason": "Phase 4 Audit Freeze"
@@ -22,19 +22,19 @@
     },
     "drift_status": {
         "ingestion_drift_days": 0,
-        "evaluation_drift_days": 4,
+        "evaluation_drift_days": 25,
         "critical_future_leakage": false,
-        "status_code": "EVALUATION_PENDING",
-        "message": "Canonical data (2026-03-10) is ahead of Truth Epoch (2026-03-06). Drift=4d.",
+        "status_code": "DRIFT_LIMIT_EXCEEDED",
+        "message": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=25d exceeds max=7d.",
         "max_drift_days": 7,
-        "drift_limit_exceeded": false,
-        "required_operator_action": null,
-        "human_explanation": "Evaluation is pending under freeze. Operator may request bounded catch-up windows if needed."
+        "drift_limit_exceeded": true,
+        "required_operator_action": "REQUEST_EVALUATION_WINDOW(INDIA, window_start, window_end)",
+        "human_explanation": "Evaluation remains blocked because canonical data has moved too far ahead of frozen truth. Operator must submit bounded catch-up windows; TE will not auto-advance."
     },
     "holds": {
         "ingestion_hold": false,
         "evaluation_hold": true,
-        "reason": "Evaluation pending under frozen truth epoch."
+        "reason": "Drift window exceeded. Operator-mediated catch-up required."
     },
     "evaluation_window": {
         "request_id": "WIN-INDIA-20260209143328",
@@ -51,7 +51,7 @@
     },
     "governance_pause": {
         "active": true,
-        "reason": "Evaluation pending under freeze",
+        "reason": "Drift threshold exceeded",
         "required_operator_action": "REQUEST_EVALUATION_WINDOW(INDIA, window_start, window_end)"
     }
 }

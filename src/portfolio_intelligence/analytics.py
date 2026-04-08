@@ -3,12 +3,22 @@ from __future__ import annotations
 from collections import defaultdict
 from typing import Any, Dict, List
 
+from src.portfolio_intelligence.exposure_engine import PortfolioExposureEngine
+from src.portfolio_intelligence.mutual_fund_research_engine import MutualFundResearchEngine
+from src.portfolio_intelligence.news_event_intelligence import PortfolioEventIntelligenceBuilder
+from src.portfolio_intelligence.portfolio_intelligence_engine import PortfolioIntelligenceEngine
+from src.portfolio_intelligence.portfolio_strategy_engine import PortfolioStrategyEngine
+from src.portfolio_intelligence.stock_research_engine import StockResearchEngine
+from src.portfolio_intelligence.synthesis import PortfolioNarrativeSynthesizer
+
 
 def analyze_portfolio(payload: Dict[str, Any], *, usd_inr_rate: float = 0.0) -> Dict[str, Any]:
     holdings = payload.get("holdings", [])
-    total_value = sum(float(item.get("market_value") or 0.0) for item in holdings)
-    total_cost = sum(float(item.get("cost_basis") or 0.0) for item in holdings)
-    total_pnl = sum(float(item.get("pnl") or 0.0) for item in holdings)
+    mutual_fund_holdings = payload.get("mutual_fund_holdings", [])
+    all_portfolio_rows = holdings + mutual_fund_holdings
+    total_value = sum(float(item.get("market_value") or 0.0) for item in all_portfolio_rows)
+    total_cost = sum(float(item.get("cost_basis") or 0.0) for item in all_portfolio_rows)
+    total_pnl = sum(float(item.get("pnl") or 0.0) for item in all_portfolio_rows)
 
     holding_cards: List[Dict[str, Any]] = []
     sector_allocation: Dict[str, float] = defaultdict(float)
@@ -33,6 +43,12 @@ def analyze_portfolio(payload: Dict[str, Any], *, usd_inr_rate: float = 0.0) -> 
     winners = sorted(holding_cards, key=lambda item: item["pnl_pct"], reverse=True)[:5]
     laggards = sorted(holding_cards, key=lambda item: item["pnl_pct"])[:5]
 
+    mutual_fund_research_engine = MutualFundResearchEngine()
+    mutual_fund_intelligence = mutual_fund_research_engine.build_intelligence(
+        mutual_fund_holdings,
+        total_portfolio_value=total_value,
+    )
+
     diversification_score = round(max(0.0, 1.0 - _hhi(sector_allocation) / 10000.0), 4)
     concentration_score = round(max(0.0, 1.0 - sum(top_weights[:3]) / 100.0), 4)
     regime_alignment_score = round(
@@ -43,10 +59,20 @@ def analyze_portfolio(payload: Dict[str, Any], *, usd_inr_rate: float = 0.0) -> 
         sum(float(card["factor_exposure"]["momentum"]) * card["weight_pct"] / 100.0 for card in holding_cards),
         4,
     ) if holding_cards else 0.0
-    resilience_score = round(
+    mutual_fund_support = _mutual_fund_support_score(mutual_fund_intelligence)
+    equity_sleeve_resilience = round(
         (diversification_score + concentration_score + regime_alignment_score + momentum_health) / 4.0,
         4,
-    )
+    ) if holding_cards else 0.0
+    mutual_fund_allocation_weight = round(
+        sum(float(item.get("market_value") or 0.0) for item in mutual_fund_holdings) / total_value,
+        4,
+    ) if total_value else 0.0
+    equity_allocation_weight = round(max(0.0, 1.0 - mutual_fund_allocation_weight), 4)
+    mutual_fund_sleeve_resilience = mutual_fund_support if mutual_fund_holdings else None
+    equity_resilience_contribution = round(equity_sleeve_resilience * equity_allocation_weight, 4)
+    mutual_fund_resilience_contribution = round((mutual_fund_sleeve_resilience or 0.0) * mutual_fund_allocation_weight, 4)
+    resilience_score = round(equity_resilience_contribution + mutual_fund_resilience_contribution, 4)
 
     insights = _build_insights(
         holding_cards=holding_cards,
@@ -54,6 +80,54 @@ def analyze_portfolio(payload: Dict[str, Any], *, usd_inr_rate: float = 0.0) -> 
         factor_distribution=dict(factor_distribution),
         regime_gate_state=regime_gate_state,
     )
+
+    # ── Exposure Engine ───────────────────────────────────────────────────────
+    exposure_engine = PortfolioExposureEngine()
+    exposure_analysis = exposure_engine.compute_full_exposure(
+        holdings,
+        mutual_fund_holdings=mutual_fund_holdings,
+        macro_context=regime_backdrop,
+        factor_context=factor_backdrop,
+        portfolio_id=payload["portfolio_id"],
+        market=payload["market"],
+        truth_epoch=payload["truth_epoch"],
+        data_as_of=payload["data_as_of"],
+    )
+    stock_research_engine = StockResearchEngine()
+    event_intelligence_builder = PortfolioEventIntelligenceBuilder()
+    event_intelligence = event_intelligence_builder.build(holdings=holding_cards, market=payload["market"])
+    research_profiles = stock_research_engine.build_profiles(
+        holding_cards,
+        market=payload["market"],
+        macro_context=regime_backdrop,
+        regime_gate_state=regime_gate_state,
+        event_intelligence_map=event_intelligence.stock_event_map,
+    )
+    portfolio_intelligence_engine = PortfolioIntelligenceEngine()
+    intelligence_bundle = portfolio_intelligence_engine.build_portfolio_intelligence(
+        research_profiles=research_profiles,
+        exposure_analysis=exposure_analysis,
+        market=payload["market"],
+        truth_epoch=payload["truth_epoch"],
+    )
+    strategy_engine = PortfolioStrategyEngine()
+    strategy_bundle = strategy_engine.build_strategy_package(
+        research_profiles=research_profiles,
+        mutual_fund_intelligence=mutual_fund_intelligence,
+        exposure_analysis=exposure_analysis,
+        macro_context=regime_backdrop,
+        factor_context=factor_backdrop,
+        market=payload["market"],
+        truth_epoch=payload["truth_epoch"],
+    )
+    synthesis_layer = PortfolioNarrativeSynthesizer()
+    synthesized_narrative = synthesis_layer.synthesize(
+        suggestions=strategy_bundle["portfolio_strategy_suggestions"],
+        research_profiles=research_profiles,
+        portfolio_event_alerts=event_intelligence.portfolio_event_alerts,
+        enable_llm=False,
+    )
+    insights.extend(_event_insights(event_intelligence.portfolio_event_alerts))
 
     return {
         "portfolio_id": payload["portfolio_id"],
@@ -73,9 +147,12 @@ def analyze_portfolio(payload: Dict[str, Any], *, usd_inr_rate: float = 0.0) -> 
             "total_cost_basis": round(total_cost, 2),
             "total_pnl": round(total_pnl, 2),
             "total_pnl_pct": round((total_pnl / total_cost * 100.0), 4) if total_cost else 0.0,
-            "holding_count": len(holding_cards),
+            "holding_count": len(holding_cards) + len(mutual_fund_holdings),
+            "equity_holding_count": len(holding_cards),
+            "mutual_fund_count": len(mutual_fund_holdings),
         },
         "holdings": holding_cards,
+        "mutual_fund_holdings": mutual_fund_holdings,
         "diversification": {
             "sector_allocation": _round_map(sector_allocation),
             "geography_allocation": _round_map(geography_allocation),
@@ -83,6 +160,16 @@ def analyze_portfolio(payload: Dict[str, Any], *, usd_inr_rate: float = 0.0) -> 
             "diversification_score": diversification_score,
             "effective_positions": round(1.0 / max(_hhi(sector_allocation) / 10000.0, 0.0001), 2),
         },
+        "mutual_fund_summary": {
+            "count": len(mutual_fund_holdings),
+            "total_value": round(sum(float(item.get("market_value") or 0.0) for item in mutual_fund_holdings), 2),
+            "allocation_pct": round(
+                sum(float(item.get("market_value") or 0.0) for item in mutual_fund_holdings) / total_value * 100.0,
+                4,
+            ) if total_value else 0.0,
+            "top_funds": sorted(mutual_fund_holdings, key=lambda item: item.get("weight_pct", 0), reverse=True)[:5],
+        },
+        "mutual_fund_intelligence": mutual_fund_intelligence,
         "risk": {
             "concentration_score": concentration_score,
             "top_3_weight_pct": round(sum(top_weights[:3]), 4),
@@ -110,14 +197,48 @@ def analyze_portfolio(payload: Dict[str, Any], *, usd_inr_rate: float = 0.0) -> 
         "resilience": {
             "overall_score": resilience_score,
             "classification": _resilience_classification(resilience_score),
+            "explainability": {
+                "method": "allocation_weighted_sleeve_blend",
+                "formula": "overall = equity_sleeve_resilience * equity_weight + fund_sleeve_resilience * fund_weight",
+                "equity_inputs": {
+                    "diversification": diversification_score,
+                    "concentration": concentration_score,
+                    "regime_alignment": regime_alignment_score,
+                    "momentum_health": momentum_health,
+                },
+                "fund_inputs": {
+                    "mutual_fund_support": mutual_fund_support if mutual_fund_holdings else None,
+                    "allocation_weight": mutual_fund_allocation_weight,
+                },
+            },
             "components": {
+                "equity_sleeve_resilience": equity_sleeve_resilience,
+                "mutual_fund_sleeve_resilience": mutual_fund_sleeve_resilience,
+                "equity_allocation_weight": equity_allocation_weight,
+                "mutual_fund_allocation_weight": mutual_fund_allocation_weight,
+                "equity_resilience_contribution": equity_resilience_contribution,
+                "mutual_fund_resilience_contribution": mutual_fund_resilience_contribution,
                 "diversification": diversification_score,
                 "concentration": concentration_score,
                 "regime_alignment": regime_alignment_score,
                 "momentum_health": momentum_health,
+                "mutual_fund_support": mutual_fund_support if mutual_fund_holdings else None,
             },
         },
         "combined_view": _combined_stub(payload["market"], total_value, usd_inr_rate),
+        "exposure_analysis": exposure_analysis,
+        "stock_research_profiles": intelligence_bundle["stock_research_profiles"],
+        "portfolio_risk_alerts": strategy_bundle["portfolio_risk_alerts"],
+        "portfolio_suggestions": strategy_bundle["portfolio_strategy_suggestions"],
+        "stock_intelligence_summaries": intelligence_bundle["stock_intelligence_summaries"],
+        "valuation_overview": intelligence_bundle["valuation_overview"],
+        "portfolio_strategy_summary": strategy_bundle["portfolio_strategy_summary"],
+        "portfolio_strengthening_insights": strategy_bundle["portfolio_strengthening_insights"],
+        "portfolio_opportunity_signals": strategy_bundle["portfolio_opportunity_signals"],
+        "news_adapter_status": event_intelligence.adapter_status,
+        "portfolio_event_alerts": event_intelligence.portfolio_event_alerts,
+        "portfolio_event_timeline": event_intelligence.portfolio_event_timeline,
+        "research_synthesis": synthesized_narrative,
         "trace": {
             "source": f"data/portfolio_intelligence/analytics/{payload['market']}/{payload['portfolio_id']}/latest.json",
             "analytics_engine": "portfolio_intelligence.analytics",
@@ -204,6 +325,31 @@ def _correlation_cluster(sector_allocation: Dict[str, float]) -> Dict[str, Any]:
     }
 
 
+def _mutual_fund_support_score(mutual_fund_intelligence: Dict[str, Any]) -> float:
+    profiles = mutual_fund_intelligence.get("fund_profiles", [])
+    if not profiles:
+        return 0.0
+
+    allocation_mix = mutual_fund_intelligence.get("allocation_mix", {})
+    score = 0.5
+
+    if allocation_mix.get("Global Funds", 0.0) >= 5.0:
+        score += 0.12
+    if allocation_mix.get("Hybrid Funds", 0.0) >= 3.0:
+        score += 0.14
+    if allocation_mix.get("Sector Funds", 0.0) >= 20.0:
+        score -= 0.14
+
+    high_risk_profiles = sum(1 for profile in profiles if profile.get("risk_level") == "HIGH")
+    score -= min(high_risk_profiles * 0.05, 0.15)
+
+    top_weight = max(float(profile.get("portfolio_weight", 0.0)) for profile in profiles)
+    if top_weight >= 25.0:
+        score -= 0.12
+
+    return round(max(0.0, min(1.0, score)), 4)
+
+
 def _regime_gate_state(macro_context: Dict[str, Any], factor_context: Dict[str, Any]) -> str:
     if not macro_context or not factor_context:
         return "BLOCKED"
@@ -268,6 +414,22 @@ def _build_insights(
                 }
             )
 
+    return insights
+
+
+def _event_insights(portfolio_event_alerts: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    insights: List[Dict[str, Any]] = []
+    for item in portfolio_event_alerts[:5]:
+        insights.append(
+            {
+                "category": "PORTFOLIO_EVENT",
+                "severity": "RED" if item.get("risk_level") == "HIGH" else "YELLOW",
+                "headline": item.get("headline"),
+                "detail": item.get("potential_risk_implications"),
+                "affected_holdings": [item.get("ticker")],
+                "trace": item.get("trace", {}),
+            }
+        )
     return insights
 
 

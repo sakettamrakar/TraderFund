@@ -1,7 +1,7 @@
 {
     "market": "US",
-    "computed_at": "2026-03-11T09:00:18.083842",
-    "truth_epoch": "TRUTH_EPOCH_2026-03-06_01",
+    "computed_at": "2026-04-09T01:30:09.709134",
+    "truth_epoch": "TRUTH_EPOCH_2026-03-12_01",
     "parity_status": "CANONICAL",
     "proxy_diagnostics": {
         "equity_core": {
@@ -10,10 +10,9 @@
             "symbol": "SPY",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/us_market/SPY_daily.csv",
-            "rows": 135,
-            "staleness": "NONE",
-            "last_date": "2026-03-06"
+            "path": "data\\staging\\us\\daily\\SPY.parquet",
+            "rows": 100,
+            "staleness": "NONE"
         },
         "growth_proxy": {
             "status": "ACTIVE",
@@ -21,10 +20,9 @@
             "symbol": "QQQ",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/us_market/QQQ_daily.csv",
-            "rows": 135,
-            "staleness": "NONE",
-            "last_date": "2026-03-06"
+            "path": "data\\staging\\us\\daily\\QQQ.parquet",
+            "rows": 100,
+            "staleness": "NONE"
         },
         "volatility_gauge": {
             "status": "ACTIVE",
@@ -32,21 +30,19 @@
             "symbol": "VIXY",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/us_market/VIXY_daily.csv",
-            "rows": 135,
-            "staleness": "NONE",
-            "last_date": "2026-03-06"
+            "path": "data\\staging\\us\\daily\\VIXY.parquet",
+            "rows": 100,
+            "staleness": "NONE"
         },
         "rates_anchor": {
-            "status": "ACTIVE",
+            "status": "ERROR",
             "role": "rates_anchor",
             "symbol": "TNX",
             "source": "Yahoo Finance (AlphaVantage)",
             "provenance": "REAL",
-            "path": "data/regime/raw/^TNX.csv",
-            "rows": 1333,
-            "staleness": "NONE",
-            "last_date": "2026-03-06"
+            "path": "data\\regime\\raw\\^TNX.csv",
+            "rows": 1355,
+            "staleness": "HIGH"
         }
     },
     "gaps": [],

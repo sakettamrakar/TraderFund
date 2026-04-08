@@ -1,7 +1,7 @@
 {
     "epoch": {
-        "epoch_id": "TRUTH_EPOCH_2026-03-06_01",
-        "activation_time": "2026-03-11T09:00:18.360576+05:30",
+        "epoch_id": "TRUTH_EPOCH_2026-03-12_01",
+        "activation_time": "2026-04-08T09:00:19.905719+05:30",
         "frozen_by": "SYSTEM_AUTO_ADVANCE",
         "mode": "CANONICAL_OBSERVATION",
         "immutable": true
@@ -42,5 +42,5 @@
         "dashboard_shows_known_vs_unknown": true,
         "truth_epoch_visible": true
     },
-    "notes": "Truth epoch auto-advanced to 2026-03-06 following canonical refresh."
+    "notes": "Truth epoch auto-advanced to 2026-03-12 following canonical refresh."
 }

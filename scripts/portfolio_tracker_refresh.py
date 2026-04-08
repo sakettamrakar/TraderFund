@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -20,7 +21,11 @@ def main() -> int:
     parser.add_argument("--portfolio-id", default="zerodha_primary")
     parser.add_argument("--account-name", default="Zerodha Primary")
     parser.add_argument("--validate-only", action="store_true")
+    parser.add_argument("--headless-auth", action="store_true")
     args = parser.parse_args()
+
+    if args.headless_auth:
+        os.environ["KITE_HEADLESS_AUTH"] = "true"
 
     service = PortfolioIntelligenceService()
     refresh_service = PortfolioRefreshService(service)
