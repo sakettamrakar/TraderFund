@@ -1,20 +1,20 @@
 {
     "market": "INDIA",
-    "timestamp": "2026-04-08T03:30:19.923231Z",
+    "timestamp": "2026-05-05T03:30:18.056720Z",
     "temporal_state": {
         "raw_data_time": {
-            "timestamp": "2026-04-06",
+            "timestamp": "2026-05-04",
             "source": "data\\india\\NIFTY50.csv",
             "status": "VALID"
         },
         "canonical_truth_time": {
-            "timestamp": "2026-04-06",
+            "timestamp": "2026-05-04",
             "source": "canonical_validation_layer",
             "status": "VALID",
-            "last_validated": "2026-04-08T03:30:19.922231Z"
+            "last_validated": "2026-05-05T03:30:18.055718Z"
         },
         "truth_epoch": {
-            "timestamp": "2026-03-12",
+            "timestamp": "2026-04-07",
             "source": "governance_manifest",
             "status": "FROZEN",
             "reason": "Phase 4 Audit Freeze"
@@ -22,10 +22,10 @@
     },
     "drift_status": {
         "ingestion_drift_days": 0,
-        "evaluation_drift_days": 25,
+        "evaluation_drift_days": 27,
         "critical_future_leakage": false,
         "status_code": "DRIFT_LIMIT_EXCEEDED",
-        "message": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=25d exceeds max=7d.",
+        "message": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=27d exceeds max=7d.",
         "max_drift_days": 7,
         "drift_limit_exceeded": true,
         "required_operator_action": "REQUEST_EVALUATION_WINDOW(INDIA, window_start, window_end)",

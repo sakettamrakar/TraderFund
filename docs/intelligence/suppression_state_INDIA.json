@@ -1,9 +1,9 @@
 {
   "market": "INDIA",
-  "truth_epoch": "TE-2026-03-12",
-  "computed_at": "2026-04-08T19:58:12Z",
-  "suppression_state": "TEMPORAL_DRIFT",
-  "since_timestamp": "2026-04-07T03:30:23Z",
+  "truth_epoch": "TE-2026-04-07",
+  "computed_at": "2026-05-13T17:30:10Z",
+  "suppression_state": "MULTI_CAUSAL",
+  "since_timestamp": "2026-04-16T03:30:21Z",
   "affected_actions": [
     "ALLOW_LONG_ENTRY",
     "ALLOW_LONG_ENTRY_SPECIAL",
@@ -15,7 +15,7 @@
     "reason_id": "R-TEMPORAL-DRIFT",
     "suppression_state": "TEMPORAL_DRIFT",
     "blocking_layer": "GOVERNANCE",
-    "blocking_condition": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=25d exceeds max=7d.",
+    "blocking_condition": "EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=27d exceeds max=7d.",
     "affected_actions": [
       "ALLOW_LONG_ENTRY",
       "ALLOW_LONG_ENTRY_SPECIAL",
@@ -27,9 +27,28 @@
     "source_artifacts": [
       "docs/intelligence/temporal/temporal_state_INDIA.json"
     ],
-    "since_timestamp": "2026-04-07T03:30:23Z"
+    "since_timestamp": "2026-05-05T03:30:20Z"
   },
-  "secondary_reasons": [],
+  "secondary_reasons": [
+    {
+      "reason_id": "R-DATA-PARTIAL",
+      "suppression_state": "DATA_PARTIAL",
+      "blocking_layer": "DATA",
+      "blocking_condition": "Canonical state CANONICAL_PARTIAL. Missing roles: ['rates_anchor']. Stale roles: ['rates_anchor'].",
+      "affected_actions": [
+        "ALLOW_LONG_ENTRY",
+        "ALLOW_LONG_ENTRY_SPECIAL",
+        "ALLOW_POSITION_HOLD",
+        "ALLOW_REBALANCING",
+        "ALLOW_SHORT_ENTRY"
+      ],
+      "clearing_condition": "Restore canonical completeness and freshness alignment for required roles before allowing regime or policy expansion.",
+      "source_artifacts": [
+        "docs/intelligence/canonical_partiality_state_INDIA.json"
+      ],
+      "since_timestamp": "2026-04-16T03:30:21Z"
+    }
+  ],
   "clearance_statement": "ACTION UNBLOCKING REQUIRES ALL ACTIVE SUPPRESSION REASONS TO CLEAR. No automatic execution or truth advancement is permitted.",
   "version": "1.0.0-F5"
 }

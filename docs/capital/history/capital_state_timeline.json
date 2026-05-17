@@ -1,5 +1,617 @@
 [
   {
+    "timestamp": "2026-05-13T23:00:11.020763",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-13T23:00:10.816352",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-08T23:00:05.261498",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-08T23:00:05.019240",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-06T23:00:05.656840",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-06T23:00:05.462585",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-05T23:00:03.586557",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-05T23:00:03.398863",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-05T09:00:20.370704",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-05T09:00:20.213189",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-05T06:00:08.033469",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-05T06:00:07.879504",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-04T23:00:03.571206",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-04T23:00:03.385377",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-04T09:00:20.881275",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-04T09:00:20.752276",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-04T06:00:05.165238",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-04T06:00:04.969953",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-02T09:00:21.978083",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-02T09:00:21.744992",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-01T23:00:07.275399",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-05-01T23:00:07.088020",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-29T23:00:04.715079",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-29T23:00:04.532154",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-28T23:00:04.047277",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-28T23:00:03.832808",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-28T09:00:19.337761",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-28T09:00:19.177142",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-28T06:00:41.938287",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-28T06:00:41.756255",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-27T23:12:56.282498",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-27T23:12:55.818560",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-20T23:00:04.728509",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-20T23:00:04.516991",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-20T09:00:22.446954",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-20T09:00:22.183434",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-20T06:00:11.151306",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-20T06:00:10.870658",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-19T09:00:22.418036",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-19T09:00:22.207503",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-18T09:00:21.919626",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-18T09:00:21.677548",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-17T23:00:04.831126",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-17T23:00:04.572143",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-17T09:00:22.880619",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-17T09:00:22.732987",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-17T06:00:09.299681",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-17T06:00:09.079173",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-16T23:00:04.232816",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-16T23:00:03.948224",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-16T09:00:21.456298",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-16T09:00:21.311412",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-16T06:00:07.630482",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-16T06:00:07.276909",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-13T23:00:04.529589",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-13T23:00:04.283405",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-13T09:00:21.594893",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-13T09:00:21.458967",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-13T06:00:06.873363",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-13T06:00:06.670381",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-10T23:00:04.538428",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-10T23:00:04.316220",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-10T09:00:20.262754",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-10T09:00:20.095143",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-10T06:00:05.037053",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-10T06:00:04.900091",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-09T23:00:05.356992",
+    "tick_id": "INDIA",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
+    "timestamp": "2026-04-09T23:00:05.142316",
+    "tick_id": "US",
+    "state": "IDLE",
+    "primary_blocker": "STRATEGY",
+    "eligible_strategies": 0,
+    "capital_ceiling_available": 100.0,
+    "reason": "No strategies passed eligibility and factor requirements."
+  },
+  {
     "timestamp": "2026-04-09T01:28:12.139185",
     "tick_id": "INDIA",
     "state": "IDLE",

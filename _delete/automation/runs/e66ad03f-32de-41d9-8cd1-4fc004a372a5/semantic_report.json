@@ -1,0 +1,49 @@
+{
+  "run_id": "e66ad03f-32de-41d9-8cd1-4fc004a372a5",
+  "timestamp": "2026-02-18T17:07:35.710867",
+  "recommendation": "REVIEW",
+  "final_score": 0.95,
+  "base_score": 1.0,
+  "alignment": {
+    "intent_match": 1.0,
+    "plan_match": 1.0,
+    "component_scope_respected": true
+  },
+  "drift": {
+    "overreach_detected": false,
+    "missing_requirements": [],
+    "unintended_modifications": [],
+    "semantic_mismatch": [
+      "The regime classification logic in `_get_regime_category` is brittle. It compares the input `behavior` directly against `MarketBehavior` enum members (`if behavior in [MarketBehavior.MEAN_REVERTING_LOW_VOL, ...]`). If the `regime_state` dictionary contains the behavior as a string (e.g., from JSON deserialization), this comparison will fail. Consequently, all regimes would be misclassified as 'TRANSITION', making the 'TRENDING' validation logic unreachable and the 'CHOP' validation indistinguishable from 'TRANSITION'."
+    ]
+  },
+  "scoring_breakdown": [
+    "Base score = mean(1.00, 1.00) = 1.00",
+    "Semantic mismatch penalty: -0.05 \u00d7 1 = -0.05",
+    "Total penalty = 0.05",
+    "Final score = max(0, 1.00 - 0.05) = 0.9500",
+    "Recommendation = REVIEW"
+  ],
+  "explanation_tree": [
+    "Intent: 7. l3 \u2014 meta-analysis success\n7. l3 \u2014 meta-analysis success\n- Primary Goal: 7. l3 \u2014 meta-analysis success\n- Expected Beh",
+    "Plan Objective: 7. l3 \u2014 meta-analysis success",
+    "Alignment Judge: intent_match=1.00, plan_match=1.00",
+    "\ud83d\udd34 Mismatch: The regime classification logic in `_get_regime_category` is brittle. It compares the input `behavior` directly against `MarketBehavior` enum members (`if behavior in [MarketBehavior.MEAN_REVERTING_LOW_VOL, ...]`). If the `regime_state` dictionary contains the behavior as a string (e.g., from JSON deserialization), this comparison will fail. Consequently, all regimes would be misclassified as 'TRANSITION', making the 'TRENDING' validation logic unreachable and the 'CHOP' validation indistinguishable from 'TRANSITION'."
+  ],
+  "contract_violations": [],
+  "passes_completed": 2,
+  "coverage_flags": [],
+  "intent_alignment_score": 0.95,
+  "success_criteria_alignment": 1.0,
+  "layer_integrity": "PASS",
+  "drift_detected": false,
+  "violations": [],
+  "drift_reasoning": "Intent: 7. l3 \u2014 meta-analysis success\n7. l3 \u2014 meta-analysis success\n- Primary Goal: 7. l3 \u2014 meta-analysis success\n- Expected Beh; Plan Objective: 7. l3 \u2014 meta-analysis success; Alignment Judge: intent_match=1.00, plan_match=1.00",
+  "did_pr_exist": false,
+  "tests_passed": 0,
+  "tests_failed": 0,
+  "test_failure_rate": 0.0,
+  "jules_pr": {},
+  "jules_test_summary": {},
+  "strict_failure": false
+}

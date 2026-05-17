@@ -1,9 +1,9 @@
 {
   "market": "INDIA",
-  "computed_at": "2026-04-08T19:58:11Z",
+  "computed_at": "2026-05-13T17:30:10Z",
   "truth_epoch": "TE-2026-01-30",
-  "canonical_truth_time": "2026-04-06",
-  "canonical_state": "CANONICAL_COMPLETE",
+  "canonical_truth_time": "2026-05-04",
+  "canonical_state": "CANONICAL_PARTIAL",
   "required_roles": [
     "benchmark_equity",
     "growth_proxy",
@@ -16,8 +16,8 @@
       "resolved_role": "equity_core",
       "status": "ACTIVE",
       "symbol": "NIFTY50",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\NIFTY50.csv",
-      "last_canonical_timestamp": "2026-04-06",
+      "path": "c:\\GIT\\TraderFund\\data\\india\\NIFTY50.csv",
+      "last_canonical_timestamp": "2026-05-04",
       "lag_days_vs_ctt": 0,
       "stale_relative_to_ctt": false,
       "missing": false
@@ -27,8 +27,8 @@
       "resolved_role": "growth_proxy",
       "status": "ACTIVE",
       "symbol": "BANKNIFTY",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\BANKNIFTY.csv",
-      "last_canonical_timestamp": "2026-04-06",
+      "path": "c:\\GIT\\TraderFund\\data\\india\\BANKNIFTY.csv",
+      "last_canonical_timestamp": "2026-05-04",
       "lag_days_vs_ctt": 0,
       "stale_relative_to_ctt": false,
       "missing": false
@@ -38,8 +38,8 @@
       "resolved_role": "volatility_gauge",
       "status": "ACTIVE",
       "symbol": "INDIAVIX",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\INDIAVIX.csv",
-      "last_canonical_timestamp": "2026-04-06",
+      "path": "c:\\GIT\\TraderFund\\data\\india\\INDIAVIX.csv",
+      "last_canonical_timestamp": "2026-05-04",
       "lag_days_vs_ctt": 0,
       "stale_relative_to_ctt": false,
       "missing": false
@@ -47,19 +47,23 @@
     "rates_anchor": {
       "logical_role": "rates_anchor",
       "resolved_role": "rates_anchor",
-      "status": "ACTIVE",
+      "status": "MISSING",
       "symbol": "IN10Y",
-      "path": "C:\\GIT\\TraderFund\\data\\india\\IN10Y.csv",
+      "path": "c:\\GIT\\TraderFund\\data\\india\\IN10Y.csv",
       "last_canonical_timestamp": "2026-02-01",
-      "lag_days_vs_ctt": 64,
-      "stale_relative_to_ctt": false,
-      "missing": false
+      "lag_days_vs_ctt": 92,
+      "stale_relative_to_ctt": true,
+      "missing": true
     }
   },
-  "missing_roles": [],
-  "stale_roles": [],
+  "missing_roles": [
+    "rates_anchor"
+  ],
+  "stale_roles": [
+    "rates_anchor"
+  ],
   "freshness_skew_days": 0,
-  "declaration_reason": "All required canonical roles are present and freshness-aligned.",
+  "declaration_reason": "Required canonical roles missing or non-active.",
   "policy": {
     "max_role_lag_days": 0,
     "max_freshness_skew_days": 0,

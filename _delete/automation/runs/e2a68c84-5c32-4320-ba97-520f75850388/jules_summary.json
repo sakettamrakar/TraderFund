@@ -1,0 +1,11 @@
+{
+  "executor": "JULES",
+  "task_status": "COMPLETED",
+  "pr_created": true,
+  "tests_passed": false,
+  "files_modified": 0,
+  "insertions": 0,
+  "deletions": 0,
+  "branch": null,
+  "pr_url": "https://jules.google.com/session/8536881943867005939"
+}

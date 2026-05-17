@@ -1,0 +1,48 @@
+{
+  "task_id": "sessions/8536881943867005939",
+  "status": "COMPLETED",
+  "raw_status": "COMPLETED",
+  "last_update": "2026-02-17T12:13:26.242729+00:00",
+  "source": "API",
+  "payload": {
+    "name": "sessions/8536881943867005939",
+    "title": "Task e2a68c84-5c32-4320-ba97-520f75850388: Implement memory updates based on 1 intents.",
+    "createTime": "2026-02-17T12:02:17.745101822Z",
+    "updateTime": "2026-02-17T12:13:24.637408Z",
+    "state": "COMPLETED",
+    "sourceContext": {
+      "source": "sources/github/sakettamrakar/TraderFund",
+      "githubRepoContext": {
+        "startingBranch": "main"
+      },
+      "environmentVariablesEnabled": true
+    },
+    "prompt": "Please address the following changes:\nObjective: Implement memory updates based on 1 intents.\nDetailed Instructions:\n- Primary Goal: Unspecified update\n- Expected Behavior: No specific behavior change extracted.\n- Implementing 'Unspecified update' logic based on high-level intent.\n\n\nRelevant files:\ndocs/memory/02_success/success_criteria.md",
+    "url": "https://jules.google.com/session/8536881943867005939",
+    "id": "8536881943867005939",
+    "outputs": [
+      {
+        "changeSet": {
+          "source": "sources/github/sakettamrakar/TraderFund",
+          "gitPatch": {
+            "unidiffPatch": "diff --git a/docs/memory/02_success/success_criteria.md b/docs/memory/02_success/success_criteria.md\nindex 65a8ecb..f7aec03 100644\n--- a/docs/memory/02_success/success_criteria.md\n+++ b/docs/memory/02_success/success_criteria.md\n@@ -23,7 +23,7 @@\n - **Confluence Requirement**: High-Conviction status REQUIRES confirmation from \u22653 independent lenses.\n - **Lens Isolation**: Candidates surfaced by a single lens are strictly labeled \"Watchlist\" or \"Low Confidence\".\n - **Sizing Safety**: No candidate is recommended for entry without a corresponding stop-loss or invalidation level.\n-- **Score Dispersion**: High-Conviction Ideas must exhibit minimum variance \u2265 0.24 across candidates. Flat distributions are invalid.\n+- **Score Dispersion**: High-Conviction Ideas must exhibit minimum variance \u2265 0.15 across candidates. Flat distributions are invalid.\n \n ## 3. Portfolio Intelligence Success (L8-L9)\n \ndiff --git a/src/intelligence/engine.py b/src/intelligence/engine.py\nindex 042f388..64966d1 100644\n--- a/src/intelligence/engine.py\n+++ b/src/intelligence/engine.py\n@@ -53,7 +53,7 @@ class IntelligenceEngine:\n         signals = self._run_generators(universe, market, market_data_snapshot)\n         \n         # L6-L7 Opportunity Discovery Success Gate: Score Dispersion\n-        # High-Conviction Ideas must exhibit a minimum score variance of 0.18 across candidates.\n+        # High-Conviction Ideas must exhibit a minimum score variance of 0.15 across candidates.\n         # Flat score distributions are invalid.\n         if len(signals) > 1:\n             scores = [s.metric_value for s in signals]\n@@ -63,7 +63,7 @@ class IntelligenceEngine:\n             mean = sum(scores) / n\n             variance = sum((x - mean) ** 2 for x in scores) / n\n             \n-            MIN_SCORE_VARIANCE = 0.21\n+            MIN_SCORE_VARIANCE = 0.15\n             if variance < MIN_SCORE_VARIANCE:\n                 self.logger.warning(\n                     f\"OPPORTUNITY DISCOVERY FAILURE: Score variance {variance:.4f} is below threshold {MIN_SCORE_VARIANCE}. \"\ndiff --git a/src/strategy/registry.py b/src/strategy/registry.py\nindex 54eca5d..dd62ca8 100644\n--- a/src/strategy/registry.py\n+++ b/src/strategy/registry.py\n@@ -42,7 +42,7 @@ STRATEGY_REGISTRY = {\n         \"factor_contract\": {\n             \"momentum\": {\"min_state\": \"EMERGING\"},\n             \"dispersion\": {\"min_state\": \"BREAKOUT\"},\n-            \"score_dispersion\": {\"min_variance\": 0.18}\n+            \"score_dispersion\": {\"min_variance\": 0.15}\n         },\n         \"safety_behavior\": \"reject\",\n         \"evolution_status\": \"EVOLUTION_ONLY\",\n@@ -354,7 +354,7 @@ STRATEGY_REGISTRY = {\n         },\n         \"factor_contract\": {\n             \"dispersion\": {\"min_state\": \"BREAKOUT\"},\n-            \"score_dispersion\": {\"min_variance\": 0.18}\n+            \"score_dispersion\": {\"min_variance\": 0.15}\n         },\n         \"safety_behavior\": \"reject\",\n         \"evolution_status\": \"EVOLUTION_ONLY\",\n@@ -371,7 +371,7 @@ STRATEGY_REGISTRY = {\n         },\n         \"factor_contract\": {\n             \"dispersion\": {\"min_state\": \"BREAKOUT\"},\n-            \"score_dispersion\": {\"min_variance\": 0.18}\n+            \"score_dispersion\": {\"min_variance\": 0.15}\n         },\n         \"safety_behavior\": \"reject\",\n         \"evolution_status\": \"EVOLUTION_ONLY\",\ndiff --git a/tests/test_intelligence_dispersion.py b/tests/test_intelligence_dispersion.py\nnew file mode 100644\nindex 0000000..857cf2f\n--- /dev/null\n+++ b/tests/test_intelligence_dispersion.py\n@@ -0,0 +1,42 @@\n+import unittest\n+from unittest.mock import MagicMock, patch\n+from intelligence.engine import IntelligenceEngine\n+from intelligence.contracts import AttentionSignal\n+from pathlib import Path\n+from datetime import datetime\n+\n+class TestIntelligenceDispersion(unittest.TestCase):\n+    def test_score_dispersion(self):\n+        # Use a temporary directory for output to avoid clutter\n+        engine = IntelligenceEngine(Path(\"/tmp/test_output\"))\n+        \n+        # Create signals with variance 0.16\n+        # Values: 1.0, 1.8. Mean=1.4. Var=((0.4^2 + 0.4^2)/2) = 0.16.\n+        sig1 = AttentionSignal(\n+            symbol=\"A\", signal_type=\"TEST\", domain=\"TEST\", metric_label=\"Test\",\n+            metric_value=1.0, unit=\"x\", baseline=\"0\", reason=\"Test\",\n+            explanation={}, timestamp=datetime.now().isoformat(), market=\"US\"\n+        )\n+        sig2 = AttentionSignal(\n+            symbol=\"B\", signal_type=\"TEST\", domain=\"TEST\", metric_label=\"Test\",\n+            metric_value=1.8, unit=\"x\", baseline=\"0\", reason=\"Test\",\n+            explanation={}, timestamp=datetime.now().isoformat(), market=\"US\"\n+        )\n+        \n+        # Mock _run_generators to return these signals\n+        with patch.object(engine, '_run_generators', return_value=[sig1, sig2]):\n+            # Mock _persist_snapshot to avoid file I/O and directory creation\n+            with patch.object(engine, '_persist_snapshot'):\n+                # Mock universe builder to return dummy symbols\n+                engine.universe_builder.get_symbols = MagicMock(return_value=[\"A\", \"B\"])\n+                \n+                # Run cycle\n+                snapshot = engine.run_cycle(\"US\", {}, {})\n+                \n+                # Assert that signals are preserved\n+                # Current threshold is 0.21, so 0.16 should fail (signals cleared).\n+                # New threshold is 0.15, so 0.16 should pass (signals preserved).\n+                self.assertTrue(len(snapshot.signals) > 0, \"Signals were cleared due to dispersion check\")\n+\n+if __name__ == '__main__':\n+    unittest.main()\n",
+            "baseCommitId": "fc166345ea54008b048115812c4f1c42d2f0d135",
+            "suggestedCommitMessage": "Update Score Dispersion Variance Threshold to 0.15\n\n- Lowered MIN_SCORE_VARIANCE in `src/intelligence/engine.py` from 0.21 to 0.15.\n- Updated documentation in `docs/memory/02_success/success_criteria.md` from 0.24 to 0.15.\n- Updated strategy registry configurations in `src/strategy/registry.py` from 0.18 to 0.15.\n- Added `tests/test_intelligence_dispersion.py` to verify the variance check logic."
+          }
+        }
+      },
+      {
+        "pullRequest": {
+          "url": "https://github.com/sakettamrakar/TraderFund/pull/37",
+          "title": "Update Score Dispersion Variance Threshold to 0.15",
+          "description": "Lowered the minimum score variance requirement for High-Conviction Ideas from 0.24 (in docs) / 0.21 (in engine) / 0.18 (in registry) to a unified 0.15, as per the intent in memory_diff.json. Added tests/test_intelligence_dispersion.py to verify the logic.\n\n---\n*PR created automatically by Jules for task [8536881943867005939](https://jules.google.com/task/8536881943867005939) started by @sakettamrakar*",
+          "baseRef": "main",
+          "headRef": "update-score-dispersion-threshold-8536881943867005939"
+        }
+      }
+    ]
+  },
+  "error": null,
+  "poll_count": 57,
+  "duration_seconds": 667.77
+}

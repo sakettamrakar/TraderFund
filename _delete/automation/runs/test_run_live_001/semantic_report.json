@@ -1,0 +1,10 @@
+{
+  "run_id": "test_run_live_001",
+  "intent_alignment_score": 0.33,
+  "success_criteria_alignment": 0.5,
+  "layer_integrity": "PASS",
+  "drift_detected": true,
+  "violations": [],
+  "recommendation": "REVISE",
+  "drift_reasoning": "The code changes only implement the first step of the plan (execution time logging). The other two requirements, error rate tracking and the health check endpoint, are completely missing from the provided diff. This represents a partial and incomplete implementation of the stated intent."
+}

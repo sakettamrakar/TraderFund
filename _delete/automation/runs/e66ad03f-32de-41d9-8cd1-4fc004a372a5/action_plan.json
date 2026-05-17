@@ -1,0 +1,44 @@
+{
+  "status": "ACTION_REQUIRED",
+  "objective": "7. l3 — meta-analysis success",
+  "target_files": [
+    "src/intelligence/meta_analysis.py",
+    "tests/test_meta_analysis.py"
+  ],
+  "target_components": [],
+  "detailed_instructions": [
+    "7. l3 — meta-analysis success\n- Primary Goal: 7. l3 — meta-analysis success\n- Expected Behavior: Update 7. l3 — meta-analysis success (L3): 🔹 Invariant 3 — Regime-Aware Trust Adjustment\n\nTrust logic MUST adapt to regime state:\n\nIn CHOP or TRANSITION regime:\n\nTechnical breakout trust ≤ 0.50\n\nIn TRENDING regime:\n\nMomentum trust ≥ 0.60 IF factor alignment present\n\nViolations MUST be rejected during semantic validation.\n\nPurpose: Encode \"don't trust breakouts in chop.\"\n\n- Implementing '7. l3 — meta-analysis success' logic based on update: \"🔹 Invariant 3 — Regime-Aware Trust Adjustment\n\nTrust logic MUST adapt to regime state:\n\nIn CHOP or TRANSITION regime:\n\nTechnical breakout trust ≤ 0.50\n\nIn TRENDING regime:\n\nMomentum trust ≥ 0.60 IF factor alignment present\n\nViolations MUST be rejected during semantic validation.\n\nPurpose: Encode \"don't trust breakouts in chop.\"\n\"\n\n\nRelevant files:\ndocs/memory/02_success/success_criteria.md"
+  ],
+  "forbidden_paths": [
+    "docs/memory/**",
+    ".git/**"
+  ],
+  "context": {
+    "intents": [
+      {
+        "concept": "7. l3 — meta-analysis success",
+        "domain_level": "L3",
+        "intent": "7. l3 — meta-analysis success\n- Primary Goal: 7. l3 — meta-analysis success\n- Expected Behavior: Update 7. l3 — meta-analysis success (L3): 🔹 Invariant 3 — Regime-Aware Trust Adjustment\n\nTrust logic MUST adapt to regime state:\n\nIn CHOP or TRANSITION regime:\n\nTechnical breakout trust ≤ 0.50\n\nIn TRENDING regime:\n\nMomentum trust ≥ 0.60 IF factor alignment present\n\nViolations MUST be rejected during semantic validation.\n\nPurpose: Encode \"don't trust breakouts in chop.\"\n\n- Implementing '7. l3 — meta-analysis success' logic based on update: \"🔹 Invariant 3 — Regime-Aware Trust Adjustment\n\nTrust logic MUST adapt to regime state:\n\nIn CHOP or TRANSITION regime:\n\nTechnical breakout trust ≤ 0.50\n\nIn TRENDING regime:\n\nMomentum trust ≥ 0.60 IF factor alignment present\n\nViolations MUST be rejected during semantic validation.\n\nPurpose: Encode \"don't trust breakouts in chop.\"\n\"\n\n\nRelevant files:\ndocs/memory/02_success/success_criteria.md",
+        "source": "jules_session"
+      }
+    ],
+    "human_intent": {
+      "run_id": "e66ad03f-32de-41d9-8cd1-4fc004a372a5",
+      "memory_change_summary": "Detected via Jules session changeset.",
+      "user_intent": {
+        "goal": "7. l3 — meta-analysis success",
+        "expected_behavior_change": "7. l3 — meta-analysis success\n- Primary Goal: 7. l3 — meta-analysis success\n- Expected Behavior: Update 7. l3 — meta-analysis success (L3): 🔹 Invariant 3 — Regime-Aware Trust Adjustment\n\nTrust logic MUST adapt to regime state:\n\nIn CHOP or TRANSITION regime:\n\nTechnical breakout trust ≤ 0.50\n\nIn TRENDING regime:\n\nMomentum trust ≥ 0.60 IF factor alignment present\n\nViolations MUST be rejected during semantic validation.\n\nPurpose: Encode \"don't trust breakouts in chop.\"\n\n- Implementing '7. l3 — meta-analysis success' logic based on update: \"🔹 Invariant 3 — Regime-Aware Trust Adjustment\n\nTrust logic MUST adapt to regime state:\n\nIn CHOP or TRANSITION regime:\n\nTechnical breakout trust ≤ 0.50\n\nIn TRENDING regime:\n\nMomentum trust ≥ 0.60 IF factor alignment present\n\nViolations MUST be rejected during semantic validation.\n\nPurpose: Encode \"don't trust breakouts in chop.\"\n\"\n\n\nRelevant files:\ndocs/memory/02_success/success_criteria.md",
+        "affected_layers": [],
+        "risk_profile": "moderate",
+        "non_goals": "Do not regress existing functionality.",
+        "visual_expectations": "N/A",
+        "constraints": "Ensure all tests pass.",
+        "acceptance_signal": "Validation pipeline success."
+      },
+      "auto_generated": true,
+      "manually_modified": false,
+      "original_intents": [],
+      "timestamp": "2026-02-18T11:36:12.954240+00:00"
+    }
+  }
+}

@@ -1,9 +1,9 @@
 {
   "market": "US",
-  "truth_epoch": "TE-2026-03-12",
-  "computed_at": "2026-04-08T19:58:11Z",
+  "truth_epoch": "TE-2026-04-07",
+  "computed_at": "2026-05-13T17:30:10Z",
   "suppression_state": "MULTI_CAUSAL",
-  "since_timestamp": "2026-03-08T13:13:24Z",
+  "since_timestamp": "2026-04-09T17:30:05Z",
   "affected_actions": [
     "ALLOW_LONG_ENTRY",
     "ALLOW_LONG_ENTRY_SPECIAL",
@@ -15,7 +15,7 @@
     "reason_id": "R-DATA-PARTIAL",
     "suppression_state": "DATA_PARTIAL",
     "blocking_layer": "DATA",
-    "blocking_condition": "Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].",
+    "blocking_condition": "Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].",
     "affected_actions": [
       "ALLOW_LONG_ENTRY",
       "ALLOW_LONG_ENTRY_SPECIAL",
@@ -27,14 +27,33 @@
     "source_artifacts": [
       "docs/intelligence/canonical_partiality_state_US.json"
     ],
-    "since_timestamp": "2026-04-07T03:30:23Z"
+    "since_timestamp": "2026-05-02T03:30:21Z"
   },
   "secondary_reasons": [
+    {
+      "reason_id": "R-REGIME-DEGRADED",
+      "suppression_state": "REGIME_DEGRADED",
+      "blocking_layer": "INTELLIGENCE",
+      "blocking_condition": "Regime degraded to UNKNOWN. Partial canonical inputs",
+      "affected_actions": [
+        "ALLOW_LONG_ENTRY",
+        "ALLOW_LONG_ENTRY_SPECIAL",
+        "ALLOW_POSITION_HOLD",
+        "ALLOW_REBALANCING",
+        "ALLOW_SHORT_ENTRY"
+      ],
+      "clearing_condition": "Regime must be recomputed on canonical-complete inputs and declared non-degraded.",
+      "source_artifacts": [
+        "docs/intelligence/decision_policy_US.json",
+        "docs/evolution/context/regime_context_US.json"
+      ],
+      "since_timestamp": "2026-04-09T17:30:05Z"
+    },
     {
       "reason_id": "R-POLICY-BLOCKED",
       "suppression_state": "POLICY_BLOCKED",
       "blocking_layer": "INTELLIGENCE",
-      "blocking_condition": "Liquidity is TIGHT. New entries blocked.",
+      "blocking_condition": "Partial canonical inputs (CANONICAL_PARTIAL). Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE']. Regime inference disabled.",
       "affected_actions": [
         "ALLOW_LONG_ENTRY",
         "ALLOW_LONG_ENTRY_SPECIAL",
@@ -46,13 +65,13 @@
       "source_artifacts": [
         "docs/intelligence/decision_policy_US.json"
       ],
-      "since_timestamp": "2026-03-08T13:13:24Z"
+      "since_timestamp": "2026-04-09T17:30:05Z"
     },
     {
       "reason_id": "R-FRAGILITY-CONSTRAINT",
       "suppression_state": "FRAGILITY_CONSTRAINT",
       "blocking_layer": "INTELLIGENCE",
-      "blocking_condition": "Elevated Volatility (34.45).",
+      "blocking_condition": "Elevated Volatility (33.86).",
       "affected_actions": [
         "ALLOW_LONG_ENTRY",
         "ALLOW_LONG_ENTRY_SPECIAL",
@@ -64,7 +83,7 @@
       "source_artifacts": [
         "docs/intelligence/fragility_context_US.json"
       ],
-      "since_timestamp": "2026-03-08T13:13:24Z"
+      "since_timestamp": "2026-04-09T17:30:05Z"
     }
   ],
   "clearance_statement": "ACTION UNBLOCKING REQUIRES ALL ACTIVE SUPPRESSION REASONS TO CLEAR. No automatic execution or truth advancement is permitted.",

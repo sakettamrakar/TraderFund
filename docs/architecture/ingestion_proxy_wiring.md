@@ -58,7 +58,44 @@ To transition the TraderFund ingestion layer from a "Single-File Dependency" mod
 
 ---
 
-## 4. Implementation Constraints
+## 4. India Market Parity Flow
+
+> Previously in `india_parity_flow.md`. Consolidated here.
+
+### 4.1 State Transition: DEGRADED → CANONICAL
+
+**DEGRADED** (single-stock surrogate):
+```
+RELIANCE.NS → Regime Context (Low Confidence) → Factor Context (Partial/Inferred)
+  → Decision Policy: OBSERVE_ONLY (Forced) → Fragility Policy: NOT_EVALUATED
+```
+
+**CANONICAL** (multi-proxy set):
+```
+NIFTY50 + BANKNIFTY + INDIAVIX + IN10Y → Regime Context (High Confidence)
+  → Factor Context (Full Coverage) → Decision Policy: Dynamic → Fragility Policy: Full
+```
+
+### 4.2 Parity Check Engine
+Component: `IndiaParityChecker`
+- **Inputs**: `india_proxy_sets.json`, data manifest
+- **Logic**: For each canonical proxy: file exists, row count >= `required_history_days`, latest date within 2 trading days
+- **Output**: `parity_status.json` with `{status: CANONICAL | DEGRADED, gaps: [...]}`
+
+### 4.3 Decision Policy Gate
+- `DEGRADED` → `OBSERVE_ONLY`
+- `CANONICAL` → dynamic evaluation
+
+### 4.4 Dashboard Indicator
+DataAnchorPanel "Parity Readiness": Red (DEGRADED), Yellow (PARTIAL), Green (CANONICAL)
+
+### 4.5 Safeguards
+- No automatic promotion — requires explicit operator acknowledgment
+- Fail-closed: missing/corrupt `parity_status.json` defaults to DEGRADED
+
+---
+
+## 5. Implementation Constraints
 1.  **Fail-Closed**: If a primary proxy (SPY for US, Reliance for IN) is missing, the entire market ingestion must fail. Secondary proxies (QQQ) are optional but desired.
 2.  **Date Alignment**: All proxies must align to the *primary* proxy's date index.
 3.  **Gap Handling**: Gaps defined in `coverage_gap_register.md` must result in `null` fields in the output object, NOT interpolated values.

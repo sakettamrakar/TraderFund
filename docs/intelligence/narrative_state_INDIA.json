@@ -1,17 +1,21 @@
 {
   "market": "INDIA",
-  "computed_at": "2026-04-08T19:58:12Z",
-  "truth_epoch": "TE-2026-03-12",
+  "computed_at": "2026-05-13T17:30:10Z",
+  "truth_epoch": "TE-2026-04-07",
   "narrative_mode": "SILENCED",
   "posture": "NARRATIVE_GATED",
   "tone": "NO_OUTPUT",
   "summary": "",
   "silence_reason": "No material factual change versus last Truth Epoch narrative snapshot.",
-  "gating_reason": "ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).",
+  "gating_reason": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).",
   "gating_reasons": [
     {
       "code": "SUPPRESSION_STATE_ACTIVE",
-      "detail": "ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT)."
+      "detail": "ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT)."
+    },
+    {
+      "code": "CANONICAL_STATE_INCOMPLETE",
+      "detail": "Canonical state is CANONICAL_PARTIAL; explanatory narrative is disallowed."
     },
     {
       "code": "NO_MATERIAL_FACT_CHANGE",
@@ -21,8 +25,8 @@
   "regime_state": "NEUTRAL",
   "regime_confidence": "0.8",
   "regime_reason": "Regime evaluated on canonical-complete inputs.",
-  "canonical_state": "CANONICAL_COMPLETE",
-  "suppression_state": "TEMPORAL_DRIFT",
+  "canonical_state": "CANONICAL_PARTIAL",
+  "suppression_state": "MULTI_CAUSAL",
   "provenance_references": [
     "docs/evolution/context/regime_context_INDIA.json",
     "docs/intelligence/canonical_partiality_state_INDIA.json",
@@ -47,20 +51,25 @@
   "narrative_diff": {
     "status": "UNCHANGED",
     "changed_fields": [],
-    "baseline_truth_epoch": "TE-2026-03-12",
+    "baseline_truth_epoch": "TE-2026-04-07",
     "baseline_artifact": "docs\\intelligence\\narrative_state_INDIA.json"
   },
-  "material_facts_hash": "d8b0634698ed774624265b424c5eebe6ab1234439b8fc1c08474a853ae05a24e",
+  "material_facts_hash": "753dca21cf4bca6112b11f45a1191f7bc57a4558ce26cfade0859000ff9a4fb1",
   "material_facts": {
     "market": "INDIA",
-    "truth_epoch": "TE-2026-03-12",
-    "suppression_state": "TEMPORAL_DRIFT",
+    "truth_epoch": "TE-2026-04-07",
+    "suppression_state": "MULTI_CAUSAL",
     "suppression_reason_ids": [
-      "R-TEMPORAL-DRIFT"
+      "R-TEMPORAL-DRIFT",
+      "R-DATA-PARTIAL"
     ],
-    "canonical_state": "CANONICAL_COMPLETE",
-    "canonical_missing_roles": [],
-    "canonical_stale_roles": [],
+    "canonical_state": "CANONICAL_PARTIAL",
+    "canonical_missing_roles": [
+      "rates_anchor"
+    ],
+    "canonical_stale_roles": [
+      "rates_anchor"
+    ],
     "regime_state": "NEUTRAL",
     "regime_confidence": "0.8",
     "regime_reason": "Regime evaluated on canonical-complete inputs.",
@@ -70,7 +79,7 @@
       "ALLOW_REBALANCING"
     ],
     "drift_status_code": "DRIFT_LIMIT_EXCEEDED",
-    "evaluation_drift_days": 25,
+    "evaluation_drift_days": 27,
     "drift_limit_exceeded": true
   },
   "version": "1.0.0-F3"

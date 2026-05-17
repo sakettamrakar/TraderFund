@@ -1,8 +1,8 @@
 {
   "market": "US",
-  "computed_at": "2026-04-08T20:00:09Z",
+  "computed_at": "2026-05-13T17:30:10Z",
   "truth_epoch": "TE-2026-01-30",
-  "canonical_truth_time": "2026-03-12",
+  "canonical_truth_time": "2026-04-07",
   "canonical_state": "CANONICAL_PARTIAL",
   "required_roles": [
     "equity_core",
@@ -14,50 +14,52 @@
     "equity_core": {
       "logical_role": "equity_core",
       "resolved_role": "equity_core",
-      "status": "ACTIVE",
+      "status": "MISSING",
       "symbol": "SPY",
-      "path": "C:\\GIT\\TraderFund\\data\\staging\\us\\daily\\SPY.parquet",
+      "path": "c:\\GIT\\TraderFund\\data\\staging\\us\\daily\\SPY.parquet",
       "last_canonical_timestamp": null,
       "lag_days_vs_ctt": null,
       "stale_relative_to_ctt": false,
-      "missing": false
+      "missing": true
     },
     "growth_proxy": {
       "logical_role": "growth_proxy",
       "resolved_role": "growth_proxy",
-      "status": "ACTIVE",
+      "status": "MISSING",
       "symbol": "QQQ",
-      "path": "C:\\GIT\\TraderFund\\data\\staging\\us\\daily\\QQQ.parquet",
+      "path": "c:\\GIT\\TraderFund\\data\\staging\\us\\daily\\QQQ.parquet",
       "last_canonical_timestamp": null,
       "lag_days_vs_ctt": null,
       "stale_relative_to_ctt": false,
-      "missing": false
+      "missing": true
     },
     "volatility_gauge": {
       "logical_role": "volatility_gauge",
       "resolved_role": "volatility_gauge",
-      "status": "ACTIVE",
+      "status": "MISSING",
       "symbol": "VIXY",
-      "path": "C:\\GIT\\TraderFund\\data\\staging\\us\\daily\\VIXY.parquet",
+      "path": "c:\\GIT\\TraderFund\\data\\staging\\us\\daily\\VIXY.parquet",
       "last_canonical_timestamp": null,
       "lag_days_vs_ctt": null,
       "stale_relative_to_ctt": false,
-      "missing": false
+      "missing": true
     },
     "rates_anchor": {
       "logical_role": "rates_anchor",
       "resolved_role": "rates_anchor",
-      "status": "MISSING",
+      "status": "ACTIVE",
       "symbol": "TNX",
-      "path": "C:\\GIT\\TraderFund\\data\\regime\\raw\\^TNX.csv",
-      "last_canonical_timestamp": "2026-04-08",
-      "lag_days_vs_ctt": -27,
+      "path": "c:\\GIT\\TraderFund\\data\\regime\\raw\\^TNX.csv",
+      "last_canonical_timestamp": "2026-05-01",
+      "lag_days_vs_ctt": -24,
       "stale_relative_to_ctt": false,
-      "missing": true
+      "missing": false
     }
   },
   "missing_roles": [
-    "rates_anchor"
+    "equity_core",
+    "growth_proxy",
+    "volatility_gauge"
   ],
   "stale_roles": [],
   "freshness_skew_days": 0,

@@ -1,20 +1,20 @@
 {
     "market": "US",
-    "timestamp": "2026-04-08T03:30:19.919231Z",
+    "timestamp": "2026-05-05T03:30:18.051751Z",
     "temporal_state": {
         "raw_data_time": {
-            "timestamp": "2026-03-12",
+            "timestamp": "2026-04-07",
             "source": "data\\us_market\\SPY_daily.csv",
             "status": "VALID"
         },
         "canonical_truth_time": {
-            "timestamp": "2026-03-12",
+            "timestamp": "2026-04-07",
             "source": "canonical_validation_layer",
             "status": "VALID",
-            "last_validated": "2026-04-08T03:30:19.918232Z"
+            "last_validated": "2026-05-05T03:30:18.051751Z"
         },
         "truth_epoch": {
-            "timestamp": "2026-03-12",
+            "timestamp": "2026-04-07",
             "source": "governance_manifest",
             "status": "FROZEN",
             "reason": "Phase 4 Audit Freeze"

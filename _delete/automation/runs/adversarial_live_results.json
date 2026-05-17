@@ -1,0 +1,157 @@
+{
+  "test_1_partial": {
+    "run_id": "adversarial_partial_001",
+    "timestamp": "2026-02-16T23:58:58.240996",
+    "recommendation": "REJECT",
+    "final_score": 0.015,
+    "base_score": 0.215,
+    "alignment": {
+      "intent_match": 0.1,
+      "plan_match": 0.33,
+      "component_scope_respected": true
+    },
+    "drift": {
+      "overreach_detected": false,
+      "missing_requirements": [
+        "Add error rate tracking with a counter",
+        "Add a health check endpoint that returns strategy status"
+      ],
+      "unintended_modifications": [],
+      "semantic_mismatch": []
+    },
+    "scoring_breakdown": [
+      "Base score = mean(0.10, 0.33) = 0.22",
+      "Missing requirements penalty: -0.10 \u00d7 2 = -0.20",
+      "  \u25b8 Missing: Add error rate tracking with a counter",
+      "  \u25b8 Missing: Add a health check endpoint that returns strategy status",
+      "Total penalty = 0.20",
+      "Final score = max(0, 0.22 - 0.20) = 0.0150",
+      "Recommendation = REJECT"
+    ],
+    "explanation_tree": [
+      "Intent: Implement full observability for the momentum strategy pipeline.",
+      "Plan Objective: Add observability to momentum pipeline",
+      "Alignment Judge: intent_match=0.10, plan_match=0.33",
+      "\u274c Missing: Add error rate tracking with a counter",
+      "\u274c Missing: Add a health check endpoint that returns strategy status",
+      "\u26a0 Coverage gap: Plan targets 'src/api/health.py' but it was not modified."
+    ],
+    "contract_violations": [],
+    "passes_completed": 2,
+    "coverage_flags": [
+      "\u26a0 Coverage gap: Plan targets 'src/api/health.py' but it was not modified."
+    ],
+    "intent_alignment_score": 0.015,
+    "success_criteria_alignment": 0.33,
+    "layer_integrity": "PASS",
+    "drift_detected": true,
+    "violations": [],
+    "drift_reasoning": "Intent: Implement full observability for the momentum strategy pipeline.; Plan Objective: Add observability to momentum pipeline; Alignment Judge: intent_match=0.10, plan_match=0.33"
+  },
+  "test_2_overreach": {
+    "run_id": "adversarial_overreach_001",
+    "timestamp": "2026-02-16T23:59:58.129447",
+    "recommendation": "REJECT",
+    "final_score": 0.0,
+    "base_score": 0.55,
+    "alignment": {
+      "intent_match": 0.5,
+      "plan_match": 0.6,
+      "component_scope_respected": false
+    },
+    "drift": {
+      "overreach_detected": true,
+      "missing_requirements": [
+        "The plan specified adding logging to the 'FactorLayer.calculate' method, but the 'FactorLayer' class was deleted."
+      ],
+      "unintended_modifications": [
+        "The class 'FactorLayer' was renamed to 'EnhancedFactorEngine'.",
+        "A new dependency on the 'numpy' library was introduced.",
+        "The 'calculate' method signature was changed to accept a new optional parameter 'regime'.",
+        "New conditional logic was added based on the 'regime' parameter, changing the calculation for 'RISK_OFF' scenarios.",
+        "The original calculation logic was changed from 'data * 2' to 'np.multiply(data, 2.0)'."
+      ],
+      "semantic_mismatch": []
+    },
+    "scoring_breakdown": [
+      "Base score = mean(0.50, 0.60) = 0.55",
+      "Scope penalty: -0.30 (component_scope_respected=false)",
+      "Overreach penalty: -0.20 (overreach_detected=true)",
+      "Missing requirements penalty: -0.10 \u00d7 1 = -0.10",
+      "  \u25b8 Missing: The plan specified adding logging to the 'FactorLayer.calculate' method, but the 'FactorLayer' class was deleted.",
+      "Unintended modifications penalty: -0.10 \u00d7 5 = -0.50",
+      "  \u25b8 Unintended: The class 'FactorLayer' was renamed to 'EnhancedFactorEngine'.",
+      "  \u25b8 Unintended: A new dependency on the 'numpy' library was introduced.",
+      "  \u25b8 Unintended: The 'calculate' method signature was changed to accept a new optional parameter 'regime'.",
+      "  \u25b8 Unintended: New conditional logic was added based on the 'regime' parameter, changing the calculation for 'RISK_OFF' scenarios.",
+      "  \u25b8 Unintended: The original calculation logic was changed from 'data * 2' to 'np.multiply(data, 2.0)'.",
+      "Total penalty = 1.10",
+      "Final score = max(0, 0.55 - 1.10) = 0.0000",
+      "Recommendation = REJECT"
+    ],
+    "explanation_tree": [
+      "Intent: Add detailed logging to the FactorLayer.calculate method.",
+      "Plan Objective: Add logging to FactorLayer.calculate",
+      "Alignment Judge: intent_match=0.50, plan_match=0.60",
+      "\u26a0 Scope violation: implementation touches components outside plan",
+      "\ud83d\udea8 Overreach detected: diff modifies beyond authorized scope",
+      "\u274c Missing: The plan specified adding logging to the 'FactorLayer.calculate' method, but the 'FactorLayer' class was deleted.",
+      "\u26a0 Unintended: The class 'FactorLayer' was renamed to 'EnhancedFactorEngine'.",
+      "\u26a0 Unintended: A new dependency on the 'numpy' library was introduced.",
+      "\u26a0 Unintended: The 'calculate' method signature was changed to accept a new optional parameter 'regime'.",
+      "\u26a0 Unintended: New conditional logic was added based on the 'regime' parameter, changing the calculation for 'RISK_OFF' scenarios.",
+      "\u26a0 Unintended: The original calculation logic was changed from 'data * 2' to 'np.multiply(data, 2.0)'."
+    ],
+    "contract_violations": [],
+    "passes_completed": 2,
+    "coverage_flags": [],
+    "intent_alignment_score": 0.0,
+    "success_criteria_alignment": 0.6,
+    "layer_integrity": "PASS",
+    "drift_detected": true,
+    "violations": [],
+    "drift_reasoning": "Intent: Add detailed logging to the FactorLayer.calculate method.; Plan Objective: Add logging to FactorLayer.calculate; Alignment Judge: intent_match=0.50, plan_match=0.60"
+  },
+  "test_3_perfect": {
+    "run_id": "adversarial_perfect_001",
+    "timestamp": "2026-02-17T00:00:53.035238",
+    "recommendation": "ACCEPT",
+    "final_score": 1.0,
+    "base_score": 1.0,
+    "alignment": {
+      "intent_match": 1.0,
+      "plan_match": 1.0,
+      "component_scope_respected": true
+    },
+    "drift": {
+      "overreach_detected": false,
+      "missing_requirements": [],
+      "unintended_modifications": [],
+      "semantic_mismatch": []
+    },
+    "scoring_breakdown": [
+      "Base score = mean(1.00, 1.00) = 1.00",
+      "Total penalty = 0.00",
+      "Final score = max(0, 1.00 - 0.00) = 1.0000",
+      "Recommendation = ACCEPT"
+    ],
+    "explanation_tree": [
+      "Intent: Add execution time logging to FactorLayer.calculate method.",
+      "Plan Objective: Add timing log to calculate()",
+      "Alignment Judge: intent_match=1.00, plan_match=1.00"
+    ],
+    "contract_violations": [],
+    "passes_completed": 2,
+    "coverage_flags": [],
+    "intent_alignment_score": 1.0,
+    "success_criteria_alignment": 1.0,
+    "layer_integrity": "PASS",
+    "drift_detected": false,
+    "violations": [],
+    "drift_reasoning": "Intent: Add execution time logging to FactorLayer.calculate method.; Plan Objective: Add timing log to calculate(); Alignment Judge: intent_match=1.00, plan_match=1.00"
+  },
+  "summary": {
+    "passed": 3,
+    "failed": 0
+  }
+}

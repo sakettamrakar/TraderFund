@@ -1,0 +1,10 @@
+{
+  "run_id": "test_run_001",
+  "intent_alignment_score": 1.0,
+  "success_criteria_alignment": 1.0,
+  "layer_integrity": "PASS",
+  "drift_detected": false,
+  "violations": [],
+  "recommendation": "ACCEPT",
+  "drift_reasoning": "Mock execution (analysis skipped)."
+}

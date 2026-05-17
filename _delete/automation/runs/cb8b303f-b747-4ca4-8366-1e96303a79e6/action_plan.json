@@ -1,0 +1,44 @@
+{
+  "status": "ACTION_REQUIRED",
+  "objective": "7. l3 — meta-analysis success",
+  "target_files": [
+    "src/intelligence/meta_analysis.py",
+    "tests/test_meta_analysis_logging.py"
+  ],
+  "target_components": [],
+  "detailed_instructions": [
+    "7. l3 — meta-analysis success\n- Primary Goal: 7. l3 — meta-analysis success\n- Expected Behavior: Update 7. l3 — meta-analysis success (L3): 🔹 Invariant 4 — Explainability Requirement\n\nEach trust decision MUST log:\n\nSignal type\n\nRegime context\n\nAdjustment reason\n\nFinal trust score\n\nComputation latency (ms)\n\nSilent trust calculations are forbidden.\n\nPurpose: Enforce glass-box observability.\n\n- Implementing '7. l3 — meta-analysis success' logic based on update: \"🔹 Invariant 4 — Explainability Requirement\n\nEach trust decision MUST log:\n\nSignal type\n\nRegime context\n\nAdjustment reason\n\nFinal trust score\n\nComputation latency (ms)\n\nSilent trust calculations are forbidden.\n\nPurpose: Enforce glass-box observability.\n\"\n\nPlease create or modify the appropriate Python source files to implement this.\n\nFORBIDDEN — Do NOT create, modify, or delete any files under:\n  - docs/memory/\n  - docs/epistemic/\n  - docs/ (any subdirectory)\n  - .git/\nOnly modify source code files (src/, tests/, traderfund/, or similar Python modules). Memory files are read-only reference documents; they must never be committed as part of this task."
+  ],
+  "forbidden_paths": [
+    "docs/memory/**",
+    ".git/**"
+  ],
+  "context": {
+    "intents": [
+      {
+        "concept": "7. l3 — meta-analysis success",
+        "domain_level": "L3",
+        "intent": "7. l3 — meta-analysis success\n- Primary Goal: 7. l3 — meta-analysis success\n- Expected Behavior: Update 7. l3 — meta-analysis success (L3): 🔹 Invariant 4 — Explainability Requirement\n\nEach trust decision MUST log:\n\nSignal type\n\nRegime context\n\nAdjustment reason\n\nFinal trust score\n\nComputation latency (ms)\n\nSilent trust calculations are forbidden.\n\nPurpose: Enforce glass-box observability.\n\n- Implementing '7. l3 — meta-analysis success' logic based on update: \"🔹 Invariant 4 — Explainability Requirement\n\nEach trust decision MUST log:\n\nSignal type\n\nRegime context\n\nAdjustment reason\n\nFinal trust score\n\nComputation latency (ms)\n\nSilent trust calculations are forbidden.\n\nPurpose: Enforce glass-box observability.\n\"\n\nPlease create or modify the appropriate Python source files to implement this.\n\nFORBIDDEN — Do NOT create, modify, or delete any files under:\n  - docs/memory/\n  - docs/epistemic/\n  - docs/ (any subdirectory)\n  - .git/\nOnly modify source code files (src/, tests/, traderfund/, or similar Python modules). Memory files are read-only reference documents; they must never be committed as part of this task.",
+        "source": "jules_session"
+      }
+    ],
+    "human_intent": {
+      "run_id": "cb8b303f-b747-4ca4-8366-1e96303a79e6",
+      "memory_change_summary": "Detected via Jules session changeset.",
+      "user_intent": {
+        "goal": "7. l3 — meta-analysis success",
+        "expected_behavior_change": "7. l3 — meta-analysis success\n- Primary Goal: 7. l3 — meta-analysis success\n- Expected Behavior: Update 7. l3 — meta-analysis success (L3): 🔹 Invariant 4 — Explainability Requirement\n\nEach trust decision MUST log:\n\nSignal type\n\nRegime context\n\nAdjustment reason\n\nFinal trust score\n\nComputation latency (ms)\n\nSilent trust calculations are forbidden.\n\nPurpose: Enforce glass-box observability.\n\n- Implementing '7. l3 — meta-analysis success' logic based on update: \"🔹 Invariant 4 — Explainability Requirement\n\nEach trust decision MUST log:\n\nSignal type\n\nRegime context\n\nAdjustment reason\n\nFinal trust score\n\nComputation latency (ms)\n\nSilent trust calculations are forbidden.\n\nPurpose: Enforce glass-box observability.\n\"\n\nPlease create or modify the appropriate Python source files to implement this.\n\nFORBIDDEN — Do NOT create, modify, or delete any files under:\n  - docs/memory/\n  - docs/epistemic/\n  - docs/ (any subdirectory)\n  - .git/\nOnly modify source code files (src/, tests/, traderfund/, or similar Python modules). Memory files are read-only reference documents; they must never be committed as part of this task.",
+        "affected_layers": [],
+        "risk_profile": "moderate",
+        "non_goals": "Do not regress existing functionality.",
+        "visual_expectations": "N/A",
+        "constraints": "Ensure all tests pass.",
+        "acceptance_signal": "Validation pipeline success."
+      },
+      "auto_generated": true,
+      "manually_modified": false,
+      "original_intents": [],
+      "timestamp": "2026-02-18T13:44:36.856058+00:00"
+    }
+  }
+}

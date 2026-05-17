@@ -1,0 +1,16 @@
+{
+  "task_id": "sessions/8536881943867005939",
+  "status_hint": "COMPLETED",
+  "collected_at": "2026-02-17T12:13:29.773948+00:00",
+  "api_available": true,
+  "cli_available": false,
+  "used_api": true,
+  "used_cli": false,
+  "errors": [],
+  "artifacts": {
+    "logs": "automation\\runs\\e2a68c84-5c32-4320-ba97-520f75850388\\jules_logs.txt",
+    "diff": "automation\\runs\\e2a68c84-5c32-4320-ba97-520f75850388\\jules_diff.patch",
+    "tests": "automation\\runs\\e2a68c84-5c32-4320-ba97-520f75850388\\jules_tests.txt",
+    "test_summary": "automation\\runs\\e2a68c84-5c32-4320-ba97-520f75850388\\jules_test_summary.json"
+  }
+}

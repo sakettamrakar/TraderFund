@@ -3064,3 +3064,887 @@ Verified authorization gating, dependency resolution, and zero side effects.
 - **Narrative Mode**: `SILENCED`
 - **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
 - **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-09T23:00:02.427632] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-09T23:00:02.427632] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=25d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-10T06:00:02.581301] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-10T06:00:02.581301] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=25d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-10T09:00:18.675147] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-10T09:00:18.675147] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: Canonical data (2026-04-09) is ahead of Truth Epoch (2026-04-07). Drift=2d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-10T23:00:03.734613] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-10T23:00:03.734613] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: Canonical data (2026-04-09) is ahead of Truth Epoch (2026-04-07). Drift=2d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-13T06:00:03.966348] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-13T06:00:03.966348] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `TEMPORAL_DRIFT`
+- **Suppression Reason**: Canonical data (2026-04-09) is ahead of Truth Epoch (2026-04-07). Drift=2d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state TEMPORAL_DRIFT (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-13T09:00:19.933435] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-13T09:00:19.933435] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical data (2026-04-10) is ahead of Truth Epoch (2026-04-07). Drift=3d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-13T23:00:03.585352] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-13T23:00:03.585352] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical data (2026-04-10) is ahead of Truth Epoch (2026-04-07). Drift=3d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-16T06:00:03.155805] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-16T06:00:03.155805] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical data (2026-04-10) is ahead of Truth Epoch (2026-04-07). Drift=3d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-16T09:00:19.374233] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-16T09:00:19.374233] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=8d exceeds max=7d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-16T23:00:03.205772] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-16T23:00:03.205772] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=8d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-17T06:00:05.445959] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-17T06:00:05.445959] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=8d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-17T09:00:21.006228] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-17T09:00:21.006228] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=9d exceeds max=7d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-17T23:00:03.281750] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-17T23:00:03.281750] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=9d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-18T09:00:19.860800] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-18T09:00:19.860800] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-19T09:00:20.725599] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-19T09:00:20.725599] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-20T06:00:06.717013] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-20T06:00:06.717013] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-20T09:00:20.874350] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-20T09:00:20.874350] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-20T23:00:03.415910] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-20T23:00:03.415910] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-27T23:12:47.403945] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-27T23:12:47.403945] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-28T06:00:03.135558] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-28T06:00:03.135558] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=10d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-28T09:00:17.785838] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-28T09:00:17.785838] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=20d exceeds max=7d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-28T23:00:03.273588] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-28T23:00:03.273588] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=20d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-29T23:00:02.493273] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-04-29T23:00:02.493273] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=20d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-01T23:00:04.231346] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge', 'rates_anchor']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-01T23:00:04.231346] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=20d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-02T09:00:20.200655] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-02T09:00:20.200655] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=23d exceeds max=7d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-04T06:00:03.080615] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-04T06:00:03.080615] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=23d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-04T09:00:19.240996] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-04T09:00:19.240996] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=23d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-04T23:00:03.018699] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-04T23:00:03.018699] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=23d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-05T06:00:02.690458] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-05T06:00:02.690458] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=23d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-05T09:00:18.236508] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-05T09:00:18.236508] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=27d exceeds max=7d.
+- **Narrative Mode**: `CAUSAL_ONLY`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-05T23:00:03.033587] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-05T23:00:03.033587] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=27d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-06T23:00:03.292083] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-06T23:00:03.292083] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=27d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-08T23:00:02.819278] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-08T23:00:02.819278] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=27d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-13T23:00:07.191774] EV-TICK Passive Trace [US]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: Canonical state CANONICAL_PARTIAL. Missing roles: ['equity_core', 'growth_proxy', 'volatility_gauge']. Stale roles: ['NONE'].
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-DATA-PARTIAL).
+- **Action**: NONE (Passive Diagnosis)
+
+### [2026-05-13T23:00:07.191774] EV-TICK Passive Trace [INDIA]
+- **Type**: CRON_TICK
+- **Momentum**: `NONE`
+- **Liquidity**: `NEUTRAL`
+- **Expansion**: `NONE`
+- **Dispersion**: `NONE`
+- **Strategies**: 0/24 eligible (Evolution v1)
+- **Suppression State**: `MULTI_CAUSAL`
+- **Suppression Reason**: EVAL REQUIRED - DRIFT WINDOW EXCEEDED. Drift=27d exceeds max=7d.
+- **Narrative Mode**: `SILENCED`
+- **Narrative Gate**: ACTION BLOCKED DUE TO suppression state MULTI_CAUSAL (R-TEMPORAL-DRIFT).
+- **Action**: NONE (Passive Diagnosis)

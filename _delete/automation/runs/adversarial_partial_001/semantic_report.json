@@ -1,0 +1,49 @@
+{
+  "run_id": "adversarial_partial_001",
+  "timestamp": "2026-02-16T23:58:58.240996",
+  "recommendation": "REJECT",
+  "final_score": 0.015,
+  "base_score": 0.215,
+  "alignment": {
+    "intent_match": 0.1,
+    "plan_match": 0.33,
+    "component_scope_respected": true
+  },
+  "drift": {
+    "overreach_detected": false,
+    "missing_requirements": [
+      "Add error rate tracking with a counter",
+      "Add a health check endpoint that returns strategy status"
+    ],
+    "unintended_modifications": [],
+    "semantic_mismatch": []
+  },
+  "scoring_breakdown": [
+    "Base score = mean(0.10, 0.33) = 0.22",
+    "Missing requirements penalty: -0.10 \u00d7 2 = -0.20",
+    "  \u25b8 Missing: Add error rate tracking with a counter",
+    "  \u25b8 Missing: Add a health check endpoint that returns strategy status",
+    "Total penalty = 0.20",
+    "Final score = max(0, 0.22 - 0.20) = 0.0150",
+    "Recommendation = REJECT"
+  ],
+  "explanation_tree": [
+    "Intent: Implement full observability for the momentum strategy pipeline.",
+    "Plan Objective: Add observability to momentum pipeline",
+    "Alignment Judge: intent_match=0.10, plan_match=0.33",
+    "\u274c Missing: Add error rate tracking with a counter",
+    "\u274c Missing: Add a health check endpoint that returns strategy status",
+    "\u26a0 Coverage gap: Plan targets 'src/api/health.py' but it was not modified."
+  ],
+  "contract_violations": [],
+  "passes_completed": 2,
+  "coverage_flags": [
+    "\u26a0 Coverage gap: Plan targets 'src/api/health.py' but it was not modified."
+  ],
+  "intent_alignment_score": 0.015,
+  "success_criteria_alignment": 0.33,
+  "layer_integrity": "PASS",
+  "drift_detected": true,
+  "violations": [],
+  "drift_reasoning": "Intent: Implement full observability for the momentum strategy pipeline.; Plan Objective: Add observability to momentum pipeline; Alignment Judge: intent_match=0.10, plan_match=0.33"
+}

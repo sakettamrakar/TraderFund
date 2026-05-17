@@ -281,3 +281,32 @@ Validation now runs automatically at these boundaries:
 - before dashboard refresh in `src/dashboard/backend/app.py`
 
 The dashboard integration is throttled with a short TTL so validation remains continuous without running on every GET request.
+
+---
+
+## Phase Integration Map
+
+> Previously in `VALIDATION_INTEGRATION_REPORT.md`. Consolidated here.
+
+### Component Coverage by Phase
+
+**Ingestion**:
+`ingestion/api_ingestion/alpha_vantage/`, `angel_smartapi/`, `historical_backfill/`, `incremental_update/`, `universe_expansion/`, `processing/intraday_candles_processor.py`, `src/ingestion/`
+
+**Memory Layer (V3)**:
+`docs/memory/`, `docs/contracts/layer_interaction_contract.md`, `docs/verification_runs/RUN_002_MEMORY.md`, `src/layers/`, `docs/intelligence/`
+
+**Research & Factor Computation**:
+`research_modules/` (pipeline_controller, universe_hygiene, structural_capability, energy_setup, participation_trigger, momentum_confirmation, sustainability_risk), `src/layers/factor_live.py`, `src/intelligence/`
+
+**Evaluation / Evolution**:
+`src/evolution/` (pipeline_runner, factor_context_builder, bulk_evaluator, decision_replay, paper_pnl, rejection_analysis, compile_bundle), `docs/evolution/evaluation_profiles/`
+
+**Dashboard**:
+`src/dashboard/backend/app.py`, `src/dashboard/backend/loaders/`, `src/dashboard/frontend/src/`, `docs/dashboard/`
+
+### Reused Capabilities
+
+**Desk Skills**: `constraint-validator`, `cognitive-order-validator`, `decision-ledger-curator`, `audit-log-viewer` — integrated via `bin/run-skill.py`
+
+**LLM APIs**: `llm_integration/client.py`, `automation/gemini_bridge.py`, `automation/executors/gemini_fallback.py` — used only for explanatory diagnostics and remediation suggestions

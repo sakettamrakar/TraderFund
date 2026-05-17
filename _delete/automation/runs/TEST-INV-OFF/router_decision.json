@@ -1,0 +1,15 @@
+{
+  "available_executors": [
+    "JULES",
+    "GEMINI"
+  ],
+  "selected_executor": "JULES",
+  "priority_list": [
+    "JULES",
+    "GEMINI"
+  ],
+  "human_flag": false,
+  "execution_mode": "AUTONOMOUS",
+  "reason": "Selected by priority order: JULES",
+  "timestamp": "2026-03-07T10:56:20.415154+00:00"
+}

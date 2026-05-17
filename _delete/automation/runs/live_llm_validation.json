@@ -1,0 +1,36 @@
+{
+  "test_1_ambiguous_diff": {
+    "drift_detected": true,
+    "reasoning": "Significant semantic drift detected. The initial intent was solely to add logging to the `FactorLayer.calculate` method for observability. The implementation, however, introduced several major, unplanned changes: 1) The class was renamed from `FactorLayer` to `EnhancedFactorEngine`. 2) The method signature for `calculate` was altered to accept a new `regime` parameter, changing its public contract. 3) New conditional business logic was added based on the `regime` value, which is a substantial feature addition, not a logging enhancement. 4) A new dependency on the `numpy` library was introduced. While the logging was added, it was bundled with a significant and unrequested refactoring and feature addition.",
+    "alignment_score": 0.3,
+    "missing_elements": [
+      "The plan specified modifying 'FactorLayer', but the class was renamed.",
+      "The plan did not include changing the 'calculate' method's signature.",
+      "The plan did not include adding new business logic (e.g., the 'RISK_OFF' condition).",
+      "The plan did not mention adding a dependency on 'numpy'."
+    ]
+  },
+  "test_2_partial_impl": {
+    "drift_detected": true,
+    "reasoning": "The code changes only partially fulfill the plan. While Step 1 (execution time logging) is correctly implemented in `MomentumStrategy.scan()`, the implementation for Step 2 (error rate tracking) and Step 3 (health check endpoint) is completely missing. The diff only contains changes for `src/strategy/momentum_strategy.py` and does not include the planned changes for `src/api/health.py` or any error counting logic.",
+    "alignment_score": 0.33,
+    "missing_elements": [
+      "Add error rate tracking with a counter",
+      "Add a health check endpoint that returns strategy status"
+    ]
+  },
+  "test_3_full_pipeline": {
+    "run_id": "test_run_live_001",
+    "intent_alignment_score": 0.33,
+    "success_criteria_alignment": 0.5,
+    "layer_integrity": "PASS",
+    "drift_detected": true,
+    "violations": [],
+    "recommendation": "REVISE",
+    "drift_reasoning": "The code changes only implement the first step of the plan (execution time logging). The other two requirements, error rate tracking and the health check endpoint, are completely missing from the provided diff. This represents a partial and incomplete implementation of the stated intent."
+  },
+  "summary": {
+    "passed": 3,
+    "failed": 0
+  }
+}
