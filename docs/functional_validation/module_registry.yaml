@@ -1,0 +1,193 @@
+# Functional validation module registry.
+# This is a queue for feature-level validation, not a unit-test checklist.
+
+modules:
+  ingestion:
+    status: pending
+    priority: high
+    purpose: "Convert external or raw market inputs into canonical, timestamped, lineage-safe artifacts."
+    primary_paths:
+      - "ingestion/api_ingestion/alpha_vantage"
+      - "ingestion/api_ingestion/angel_smartapi"
+      - "ingestion/historical_backfill"
+      - "ingestion/incremental_update"
+      - "ingestion/universe_expansion"
+      - "processing/intraday_candles_processor.py"
+      - "src/ingestion"
+      - "traderfund/pipeline/artifact_contract.py"
+    functional_questions:
+      - "Can a known fixture or sample raw input be ingested into the canonical schema without silent field loss?"
+      - "Are timestamps normalized and traceable to the source market/session?"
+      - "Are nulls, duplicates, and missing files surfaced as explicit validation failures?"
+      - "Does the artifact contract point to the producer and expected path for missing data?"
+    evidence_required:
+      - "input fixture or raw artifact"
+      - "generated artifact path"
+      - "schema and timestamp comparison"
+      - "lineage or producer field"
+    suggested_jules_task: "Functional-validate one ingestion path using fixture data. Prove the canonical output schema, timestamps, null handling, and lineage behavior with exact artifact evidence. Add or improve a focused functional validation only if the fixture and expected behavior are clear."
+
+  pipeline_artifacts:
+    status: pending
+    priority: high
+    purpose: "Declare, resolve, and verify canonical pipeline artifacts used by downstream modules."
+    primary_paths:
+      - "traderfund/pipeline/artifact_contract.py"
+      - "traderfund/pipeline/daily.py"
+      - "traderfund/validation/validation_registry.py"
+      - "docs/contracts/CANONICAL_DATA_CONTRACT.md"
+    functional_questions:
+      - "Can each phase resolve the artifact it claims to consume?"
+      - "When an artifact is missing, does the system explain which producer and path are expected?"
+      - "Do downstream modules avoid falling back to stale or unrelated files?"
+    evidence_required:
+      - "manifest entry"
+      - "resolved path"
+      - "missing-artifact error details"
+      - "consumer module"
+    suggested_jules_task: "Trace one canonical artifact from producer declaration to consumer validation. Verify that a missing artifact produces actionable producer/path details instead of silent fallback or garbage values."
+
+  dashboard_backend:
+    status: pending
+    priority: high
+    purpose: "Load canonical artifacts and expose dashboard APIs without inventing values."
+    primary_paths:
+      - "src/dashboard/backend/app.py"
+      - "src/dashboard/backend/loaders"
+      - "docs/dashboard/LOADER_ARTIFACT_MAP.md"
+      - "docs/dashboard/api_schema.md"
+      - "docs/dashboard/dashboard_truth_contract.md"
+    functional_questions:
+      - "Does each API field come from the documented loader and artifact?"
+      - "Does stale, missing, or malformed input become an explicit error/warning payload?"
+      - "Are provenance fields attached consistently?"
+    evidence_required:
+      - "API route"
+      - "loader function"
+      - "source artifact"
+      - "response JSON field"
+      - "error/staleness behavior"
+    suggested_jules_task: "Pick one dashboard backend route and trace every displayed data field to its loader and source artifact. Identify any invented, stale, or silently defaulted values. Add a focused fixture-backed functional validation if feasible."
+
+  dashboard_frontend:
+    status: pending
+    priority: high
+    purpose: "Render dashboard truth surfaces honestly, with traceability, staleness, and read-only behavior."
+    primary_paths:
+      - "src/dashboard/frontend/src"
+      - "docs/dashboard/dashboard_truth_contract.md"
+      - "docs/dashboard/surface_catalog.md"
+      - "docs/dashboard/data_wiring.md"
+      - "docs/dashboard/ui_semantic_audit.md"
+    functional_questions:
+      - "Does the rendered widget match the backend response exactly?"
+      - "Does the UI show stale/missing data as a visible warning?"
+      - "Are forbidden semantics absent: rankings, arbitrary scores, buy/sell language, misleading color direction?"
+      - "Is the dashboard read-only?"
+    evidence_required:
+      - "backend response sample"
+      - "rendered widget or screenshot"
+      - "field-to-widget mapping"
+      - "staleness and missing-data state"
+    suggested_jules_task: "Functionally validate one dashboard widget from backend response to rendered UI. Prove whether the widget displays real values, provenance, stale/missing states, and no forbidden semantics. Do not do broad visual cleanup."
+
+  portfolio_intelligence:
+    status: pending
+    priority: medium
+    purpose: "Generate portfolio exposure, risk, enrichment, and guidance values from traceable inputs."
+    primary_paths:
+      - "src/portfolio_intelligence"
+      - "docs/portfolio_metric_definitions.md"
+      - "docs/portfolio_exposure_engine_design.md"
+      - "docs/portfolio_dashboard_audit_report.md"
+    functional_questions:
+      - "Can one portfolio sample be traced through exposure, enrichment, and output metrics?"
+      - "Are generated values reproducible from documented formulas?"
+      - "Are missing broker credentials or unavailable connectors handled safely?"
+    evidence_required:
+      - "sample portfolio input"
+      - "computed metric"
+      - "formula or source logic"
+      - "dashboard/API consumer"
+    suggested_jules_task: "Choose one portfolio metric and trace it from sample input through computation to its consumer. Verify the value calculation step by step and flag any undocumented fallback or misleading dashboard presentation."
+
+  regime_engine:
+    status: pending
+    priority: medium
+    purpose: "Classify market regime, gating, directional bias, and dashboard regime state from deterministic inputs."
+    primary_paths:
+      - "traderfund/regime"
+      - "src/layers/convergence_engine.py"
+      - "src/layers/meta_analysis.py"
+      - "docs/Regime_Engine_Overview.md"
+      - "docs/Regime_Dashboard_Runbook.md"
+    functional_questions:
+      - "Does a known market fixture produce the expected regime state and gating decision?"
+      - "Are regime values consistent between backend artifacts and dashboard display?"
+      - "Are uncertainty and mixed signals preserved instead of collapsed into false confidence?"
+    evidence_required:
+      - "input market fixture"
+      - "computed regime output"
+      - "gating decision"
+      - "dashboard/API representation"
+    suggested_jules_task: "Validate one regime scenario end-to-end from fixture input to computed regime/gate output and dashboard representation. Prove whether mixed or uncertain states remain honest."
+
+  research_modules:
+    status: pending
+    priority: medium
+    purpose: "Generate research signals, sentiment, volatility context, and backtesting evidence without contaminating execution or memory."
+    primary_paths:
+      - "research_modules"
+      - "src/intelligence"
+      - "docs/research_product_architecture.md"
+      - "docs/governance/RESEARCH_MODULE_GOVERNANCE.md"
+    functional_questions:
+      - "Does a research module produce deterministic output for the same fixture?"
+      - "Does it avoid writing to production or execution surfaces?"
+      - "Are research outputs explainable and gated before downstream use?"
+    evidence_required:
+      - "fixture input"
+      - "research output"
+      - "repeat-run comparison"
+      - "write-surface check"
+    suggested_jules_task: "Pick one research module and validate deterministic fixture behavior, output explanation, and no production/execution writes. Keep the scope to one module and one feature path."
+
+  evaluation_evolution:
+    status: pending
+    priority: medium
+    purpose: "Replay, score, and evolve decisions in dry-run form without capital or execution mutation."
+    primary_paths:
+      - "src/evolution"
+      - "docs/evolution/evaluation_profiles"
+      - "docs/verification/PHASE_4_EVALUATION_EVOLUTION_VALIDATION.md"
+    functional_questions:
+      - "Does one evaluation profile produce stable scores across repeated runs?"
+      - "Can score components be explained from inputs?"
+      - "Are dry-run and no-capital constraints enforced?"
+    evidence_required:
+      - "evaluation profile"
+      - "input bundle"
+      - "score breakdown"
+      - "repeat-run comparison"
+      - "no-capital/no-execution proof"
+    suggested_jules_task: "Validate one evaluation profile with a fixture or existing sample. Prove score stability and explain one generated score from its inputs while confirming no execution or capital mutation."
+
+  validation_system:
+    status: pending
+    priority: medium
+    purpose: "Run and report phase validation in a way that catches functional failures before dashboards or downstream modules consume bad data."
+    primary_paths:
+      - "traderfund/validation"
+      - "docs/architecture/VALIDATION_SYSTEM.md"
+      - "docs/verification/MASTER_VALIDATION_INDEX.md"
+    functional_questions:
+      - "Do phase checks detect bad fixture data instead of only checking file existence?"
+      - "Do results include actionable reason and details?"
+      - "Do dashboard checks prevent garbage UI from passing?"
+    evidence_required:
+      - "phase"
+      - "validation task"
+      - "fixture or artifact"
+      - "structured result JSON"
+      - "diagnosis/remediation proposal"
+    suggested_jules_task: "Review one validation phase and strengthen one check so it verifies functional behavior, not just file presence. Include a failing fixture or clear before/after evidence."
