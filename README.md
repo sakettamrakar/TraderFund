@@ -2,6 +2,27 @@
 
 TraderFund is a disciplined algorithmic trading research and observation platform. It implements a multi-layer data pipeline—from raw ingestion to processed analytics—focused on momentum-based intraday strategies.
 
+## Repository Navigation Authority
+
+**⚠️ ACTIVE RECOVERY PHASE ⚠️**
+TraderFund is currently undergoing a repository stabilization effort. Please consult the following authoritative documents before making changes:
+
+Current baseline: fixture-mode daily pipeline plus trustworthy validation.
+
+- **Current Repository Assessment:** [`docs/CURRENT_REPOSITORY_ASSESSMENT.md`](docs/CURRENT_REPOSITORY_ASSESSMENT.md)
+- **Active Recovery Plan (DWBS):** [`docs/architecture/DWBS_REPOSITORY_RECOVERY_2026-05-17.md`](docs/architecture/DWBS_REPOSITORY_RECOVERY_2026-05-17.md)
+- **Current Recovery Backlog:** [`docs/recovery/RECOVERY_BACKLOG_2026-05-17.md`](docs/recovery/RECOVERY_BACKLOG_2026-05-17.md)
+- **Archive and Ignore Policy:** [`docs/recovery/ARCHIVE_AND_IGNORE_POLICY_2026-05-17.md`](docs/recovery/ARCHIVE_AND_IGNORE_POLICY_2026-05-17.md)
+- **Operational Runbook:** [`docs/RUNBOOK.md`](docs/RUNBOOK.md)
+
+Historical/reference docs:
+
+- [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md) is a historical implementation snapshot, not the active backlog.
+- [`docs/System_Backlog_and_Refinements.md`](docs/System_Backlog_and_Refinements.md) is a historical refinement backlog, not the active recovery task list.
+- [`docs/VISION_BACKLOG.md`](docs/VISION_BACKLOG.md) is awareness-only and not actionable.
+
+Do not add new features unless the recovery milestone remains green or there is an explicit recorded decision to defer a failing recovery gate.
+
 ## Core Modules
 
 ### 1. Data Ingestion (`ingestion/`)
@@ -38,9 +59,17 @@ TraderFund is a disciplined algorithmic trading research and observation platfor
 ## Getting Started
 
 1. **Setup**:
+   TraderFund requires **Python 3.11**.
+
+   To install the default dependencies (core, API, broker, dev):
    ```bash
    pip install -r requirements.txt
+   ```
+   *Note: For heavy ML and research, use `pip install -r requirements/research.txt`*
+
+   ```bash
    # Configure .env with Angel One credentials
+   cp .env.example .env
    ```
 
 2. **Ingest Data**:
@@ -77,18 +106,24 @@ TraderFund is a disciplined algorithmic trading research and observation platfor
    ```
    Use this only after reviewing the failure and only for the specific phase you want the subsystem to repair.
 
-8. **Run Daily Scheduler With Validation Review Enabled**:
+8. **Run Canonical Daily Pipeline (Dry Run / Fixture Mode)**:
+   ```bash
+   python -m traderfund.pipeline.daily --market fixture
+   ```
+   This is the single authoritative entrypoint for the daily cycle.
+
+9. **Run Daily Scheduler With Validation Review Enabled**:
    ```bash
    python infra_hardening/scheduler/wrapper.py --mode daily --enable-validation-review
    ```
    This adds an end-of-run validation review task that aggregates the latest phase summaries into `logs/validation/daily/`. It is opt-in and is not part of the default daily workflow unless you pass the flag.
 
-9. **Start Dashboard API**:
+10. **Start Dashboard API**:
    ```bash
    python scripts/start_dashboard_api.py --reload
    ```
 
-10. **Start Dashboard Frontend**:
+11. **Start Dashboard Frontend**:
    ```bash
    cd src/dashboard/frontend
    npm run dev
@@ -119,6 +154,20 @@ When adding this pattern to future projects:
 2. Add a shared port manager that persists runtime assignments.
 3. Make every startup path read env defaults and runtime assignments instead of hardcoded ports.
 4. Keep frontend proxies and internal service URLs dynamic by reading the shared runtime assignment file.
+
+## Dashboard Authority
+
+> **Canonical Dashboard:** src/dashboard/backend (FastAPI) + src/dashboard/frontend (React/Vite)
+>
+> The legacy dashboard/ folder at the repo root contains static HTML/JS files and design spec docs.
+> It is **read-only / archived** and should not receive new feature work.
+> All dashboard development targets src/dashboard/.
+
+| Surface | Path | Status |
+| :--- | :--- | :--- |
+| Backend API | src/dashboard/backend/ | **Canonical** - maintained |
+| Frontend UI | src/dashboard/frontend/ | **Canonical** - maintained |
+| Legacy static dashboard | dashboard/ | **Archived** - read-only reference |
 
 ## Governance & Safety
 - **PHASE LOCK**: All modules adhere to strict Phase-Lock restrictions.

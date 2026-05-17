@@ -1,9 +1,17 @@
 # System Backlog and Refinements
 
-**Status:** LIVING DOCUMENT
+> [!IMPORTANT]
+> Historical/reference backlog only. This file is not the current execution
+> backlog. Use `docs/recovery/RECOVERY_BACKLOG_2026-05-17.md` for current
+> recovery task picking. Items in this document must be copied into a new
+> dated DWBS or current roadmap before implementation.
+
+**Status:** HISTORICAL REFERENCE - NOT CURRENT BACKLOG
 **Last Updated:** 2026-01-17
 
-This is the **single source of truth** for all future refinements to the regime-aware narrative intelligence platform.
+This was previously the **single source of truth** for refinements to the
+regime-aware narrative intelligence platform. It is now retained as historical
+context only.
 
 ---
 

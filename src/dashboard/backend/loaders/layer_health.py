@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any
 from dashboard.backend.loaders.provenance import attach_provenance
+from dashboard.backend.loaders.manifest_loader import attach_freshness
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 
@@ -11,13 +12,13 @@ def load_layer_health(market: str = "US") -> Dict[str, Any]:
     """
     path = PROJECT_ROOT / "docs" / "intelligence" / "system_layer_health.json"
     if not path.exists():
-        return attach_provenance({
+        return attach_freshness(attach_provenance({
             "DATA": {"status": "UNKNOWN"},
             "FACTOR": {"status": "UNKNOWN"},
             "INTELLIGENCE": {"status": "UNKNOWN"},
             "GOVERNANCE": {"status": "UNKNOWN"},
             "error": "Artifact missing: docs/intelligence/system_layer_health.json"
-        }, "docs/intelligence/system_layer_health.json")
+        }, "docs/intelligence/system_layer_health.json"), "docs/intelligence/system_layer_health.json", market_mode=market)
     
     try:
         with open(path, 'r', encoding='utf-8') as f:
@@ -35,6 +36,6 @@ def load_layer_health(market: str = "US") -> Dict[str, Any]:
                 "truth_epoch": data.get("truth_epoch"),
                 "role_id": "A0.1"
             }
-            return attach_provenance(result, "docs/intelligence/system_layer_health.json", data.get("truth_epoch"))
+            return attach_freshness(attach_provenance(result, "docs/intelligence/system_layer_health.json", data.get("truth_epoch")), "docs/intelligence/system_layer_health.json", market_mode=market)
     except Exception as e:
-        return attach_provenance({"error": str(e)}, "docs/intelligence/system_layer_health.json")
+        return attach_freshness(attach_provenance({"error": str(e)}, "docs/intelligence/system_layer_health.json"), "docs/intelligence/system_layer_health.json", market_mode=market)

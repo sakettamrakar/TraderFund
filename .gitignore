@@ -14,6 +14,11 @@ observations/*
 *.csv
 *.feather
 
+# ---- CANONICAL TEST FIXTURES ----
+!data/
+!data/fixtures/
+!data/fixtures/**
+
 # ---- CACHES ----
 __pycache__/
 *.pyc
@@ -117,3 +122,13 @@ automation/runs/
 automation/history/
 automation/intent/*_intent_translation.json
 automation/intent/*_intent_override.json
+
+# ---- ARCHIVED & STALE SURFACES ----
+_delete/
+graphify-out/
+analysis/
+analytics/
+research_audit/
+research_reports/
+alpha_discovery/
+presentation/

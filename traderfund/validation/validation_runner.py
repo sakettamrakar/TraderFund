@@ -52,7 +52,7 @@ class ValidationRunner:
             "hook": hook or "manual",
             "started_at": started_at,
             "completed_at": datetime.now(timezone.utc).isoformat(),
-            "metadata": metadata,
+            "metadata": {k: v for k, v in metadata.items() if isinstance(v, (str, int, float, bool, list, dict, type(None)))},
             "component_map": self.registry.component_map(),
             "results": [result.to_dict() for result in results],
             "diagnoses": [diagnosis.to_dict() for diagnosis in diagnoses],

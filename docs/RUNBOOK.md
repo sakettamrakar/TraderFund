@@ -5,6 +5,21 @@
 
 ---
 
+## Recovery Navigation
+
+Current recovery and stabilization authority:
+
+- Current assessment: `docs/CURRENT_REPOSITORY_ASSESSMENT.md`
+- Recovery DWBS: `docs/architecture/DWBS_REPOSITORY_RECOVERY_2026-05-17.md`
+- Current recovery backlog: `docs/recovery/RECOVERY_BACKLOG_2026-05-17.md`
+- Archive/ignore policy: `docs/recovery/ARCHIVE_AND_IGNORE_POLICY_2026-05-17.md`
+
+The active recovery baseline is fixture-mode daily pipeline plus trustworthy
+validation. Future feature work should depend on that baseline staying green or
+on an explicit recorded defer decision.
+
+---
+
 ## 1. System Overview
 
 The TraderFund Intelligence Platform is a sophisticated behavioral research system designed to identify and track structural momentum in the US equity markets.

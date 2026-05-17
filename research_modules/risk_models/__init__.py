@@ -23,15 +23,15 @@ MINIMUM_ACTIVATION_PHASE = 6
 
 def _check_phase_lock() -> None:
     """Fail fast if the current phase is below the activation threshold."""
-    if ACTIVE_PHASE < MINIMUM_ACTIVATION_PHASE:
+    active_phase = int(os.environ.get("TRADERFUND_ACTIVE_PHASE", "5"))
+    if active_phase < MINIMUM_ACTIVATION_PHASE:
         raise RuntimeError(
             f"PHASE LOCK: Risk Models module requires Phase {MINIMUM_ACTIVATION_PHASE}+. "
-            f"Current phase is {ACTIVE_PHASE}. This module is RESEARCH-ONLY."
+            f"Current phase is {active_phase}. This module is RESEARCH-ONLY."
         )
 
 
-# Check on import
-_check_phase_lock()
+# Phase lock moved to runtime entrypoints (e.g., RiskSimulator.__init__)
 
 from .risk_snapshot import RiskSnapshot
 from .simulator import RiskSimulator

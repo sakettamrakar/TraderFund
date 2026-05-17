@@ -142,7 +142,7 @@ class TestSafetyGuards:
         result = subprocess.run(
             ["python", "-c",
              "import os; os.environ['TRADERFUND_ACTIVE_PHASE']='5'; "
-             "from paper_trading.execution import PaperTradeExecutor"],
+             "from paper_trading.execution import PaperTradeExecutor; PaperTradeExecutor()"],
             capture_output=True,
             text=True,
             cwd=str(Path(__file__).parent.parent.parent.parent),

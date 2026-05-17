@@ -1,0 +1,53 @@
+{
+  "market": "fixture",
+  "timestamp": "2026-05-17T00:00:00Z",
+  "temporal_state": {
+    "raw_data_time": {
+      "timestamp": "2026-05-17",
+      "source": "data/fixtures/raw/fixture_raw.jsonl",
+      "status": "VALID"
+    },
+    "canonical_truth_time": {
+      "timestamp": "2026-05-17",
+      "source": "data/fixtures/processed/fixture_processed.parquet",
+      "status": "VALID",
+      "last_validated": "2026-05-17T00:00:00Z"
+    },
+    "truth_epoch": {
+      "epoch_id": "FIXTURE-2026-05-17",
+      "timestamp": "2026-05-17",
+      "source": "logs/validation/pipeline_manifest.json",
+      "status": "FIXTURE",
+      "reason": "Fixture-mode dashboard validation"
+    }
+  },
+  "drift_status": {
+    "ingestion_drift_days": 0,
+    "evaluation_drift_days": 0,
+    "critical_future_leakage": false,
+    "status_code": "SYNC",
+    "message": "Fixture temporal state is synchronized.",
+    "max_drift_days": 7,
+    "drift_limit_exceeded": false,
+    "required_operator_action": null,
+    "human_explanation": "Fixture mode uses static canonical test artifacts."
+  },
+  "holds": {
+    "ingestion_hold": false,
+    "evaluation_hold": false,
+    "reason": "Fixture temporal state is valid."
+  },
+  "evaluation_window": {
+    "request_id": "FIXTURE-WINDOW-2026-05-17",
+    "market": "fixture",
+    "window_start": "2026-05-17",
+    "window_end": "2026-05-17",
+    "requested_at": "2026-05-17T00:00:00Z",
+    "status": "FIXTURE"
+  },
+  "governance_pause": {
+    "active": false,
+    "reason": "Fixture temporal state is valid.",
+    "required_operator_action": null
+  }
+}

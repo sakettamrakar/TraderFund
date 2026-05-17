@@ -7,6 +7,7 @@
 > [!IMPORTANT]
 > This document captures the **full conceptual horizon** of what this system could become over years.
 > It is NOT a roadmap. It is NOT an implementation plan. It is a **vision exercise** for awareness and inspiration.
+> Current pickable recovery tasks live in `docs/recovery/RECOVERY_BACKLOG_2026-05-17.md`.
 
 ---
 

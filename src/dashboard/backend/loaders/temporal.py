@@ -3,6 +3,7 @@ import json
 import logging
 from typing import Dict, Any
 from dashboard.backend.loaders.provenance import attach_provenance
+from dashboard.backend.loaders.manifest_loader import attach_freshness
 
 PROJECT_ROOT = Path(__file__).parent.parent.parent.parent.parent
 TEMPORAL_DIR = PROJECT_ROOT / "docs" / "intelligence" / "temporal"
@@ -79,7 +80,7 @@ def load_temporal_status(market: str):
             payload = json.load(f)
         normalized = _normalize_temporal_payload(payload, market)
         truth_epoch = normalized.get("temporal_state", {}).get("truth_epoch", {}).get("epoch_id")
-        return attach_provenance(normalized, f"docs/intelligence/temporal/temporal_state_{market}.json", truth_epoch)
+        return attach_freshness(attach_provenance(normalized, f"docs/intelligence/temporal/temporal_state_{market}.json", truth_epoch), f"docs/intelligence/temporal/temporal_state_{market}.json", market_mode=market)
     except Exception as e:
         logger.error(f"Failed to load temporal state for {market}: {e}")
         return {

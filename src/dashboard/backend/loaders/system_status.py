@@ -1,6 +1,7 @@
 from typing import Dict, Any
 from dashboard.backend.loaders.intelligence import load_execution_gate, load_last_evaluation
 from dashboard.backend.loaders.provenance import attach_provenance, load_truth_epoch_id
+from dashboard.backend.loaders.manifest_loader import attach_freshness
 
 def load_system_status(market: str = "US") -> Dict[str, Any]:
     """
@@ -13,7 +14,7 @@ def load_system_status(market: str = "US") -> Dict[str, Any]:
     truth_epoch = load_truth_epoch_id()
     gate_payload = dict(gate_data.get("gate", {}))
     gate_payload["truth_epoch"] = truth_epoch
-    return attach_provenance({
+    result = attach_provenance({
         "gate": gate_payload,
         "last_evaluation": eval_data,
         "trace": {
@@ -23,3 +24,4 @@ def load_system_status(market: str = "US") -> Dict[str, Any]:
         "governance_status": f"{truth_epoch} [FROZEN]",
         "truth_epoch": truth_epoch,
     }, "docs/intelligence/execution_gate_status.json", truth_epoch)
+    return attach_freshness(result, "docs/intelligence/execution_gate_status.json", market_mode=market)

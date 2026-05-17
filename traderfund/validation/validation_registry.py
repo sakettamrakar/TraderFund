@@ -166,20 +166,88 @@ class ValidationRegistry:
         missing = set(required_columns) - columns
         return columns, missing
 
+    # ── Manifest-aware helpers (RR-B.4) ─────────────────────────────────────
+
+    def _resolve_from_manifest(self, context: ValidationContext, artifact_id: str) -> Path | None:
+        """
+        Try to resolve an artifact path from the manifest attached to
+        context.metadata.  Returns None if no manifest is present, the
+        entry is missing, or the entry has status != 'present'.
+        """
+        manifest = context.metadata.get("manifest")
+        if manifest is None:
+            return None
+        entry = manifest.get_entry(artifact_id)
+        if entry is None or entry.status != "present":
+            return None
+        resolved = self.repo_root / entry.path
+        return resolved if resolved.exists() else None
+
+    def _missing_artifact_details(self, context: ValidationContext, artifact_id: str) -> Dict[str, Any]:
+        """
+        Build an actionable error dict that names the missing producer,
+        expected path pattern, and market mode.
+        """
+        try:
+            from traderfund.pipeline.artifact_contract import ARTIFACT_CONTRACT
+            descriptor = ARTIFACT_CONTRACT.get(artifact_id)
+        except ImportError:
+            descriptor = None
+
+        info: Dict[str, Any] = {"artifact_id": artifact_id}
+        if descriptor:
+            info["producer"] = descriptor.producer
+            info["expected_pattern"] = descriptor.path_pattern
+            info["action"] = f"Run the '{descriptor.producer}' stage or verify fixture data at '{descriptor.path_pattern}'"
+        info["market_mode"] = context.metadata.get("market", "unknown")
+        return info
+
+    def _resolve_artifact(
+        self,
+        context: ValidationContext,
+        artifact_id: str,
+        fallback_pattern: str,
+    ) -> Path | None:
+        """Resolve from manifest first, then fall back to glob pattern."""
+        path = self._resolve_from_manifest(context, artifact_id)
+        if path is not None:
+            return path
+        return self._latest_path(fallback_pattern)
+
+    # ── Ingestion checks (manifest-aware) ────────────────────────────────
+
     def _check_ingestion_schema(self, context: ValidationContext):
-        raw_path = self._latest_path("data/raw/api_based/angel/intraday_ohlc/*.jsonl")
-        processed_path = self._latest_path("data/processed/candles/intraday/*.parquet")
-        us_path = self._latest_path("data/raw/us/*/*_daily.json")
+        market = context.metadata.get("market", "US")
+        if market == "fixture":
+            raw_path = self._resolve_artifact(context, "fixture_raw", "data/fixtures/raw/*.jsonl")
+            processed_path = self._resolve_artifact(context, "fixture_processed", "data/fixtures/processed/*.parquet")
+            us_path = self._resolve_artifact(context, "fixture_us_daily", "data/fixtures/us/*.json")
+            raw_id, proc_id, us_id = "fixture_raw", "fixture_processed", "fixture_us_daily"
+        else:
+            raw_path = self._resolve_artifact(context, "ingestion_raw_india", "data/raw/api_based/angel/intraday_ohlc/*.jsonl")
+            processed_path = self._resolve_artifact(context, "ingestion_processed_india", "data/processed/candles/intraday/*.parquet")
+            us_path = self._resolve_artifact(context, "ingestion_raw_us", "data/raw/us/*/*_daily.json")
+            raw_id, proc_id, us_id = "ingestion_raw_india", "ingestion_processed_india", "ingestion_raw_us"
+
         if raw_path is None or processed_path is None or us_path is None:
+            missing_details: Dict[str, Any] = {
+                "raw_found": raw_path is not None,
+                "processed_found": processed_path is not None,
+                "us_found": us_path is not None,
+            }
+            # Add actionable info for each missing artifact
+            if raw_path is None:
+                missing_details["raw_action"] = self._missing_artifact_details(context, raw_id)
+            if processed_path is None:
+                missing_details["processed_action"] = self._missing_artifact_details(context, proc_id)
+            if us_path is None:
+                missing_details["us_action"] = self._missing_artifact_details(context, us_id)
+
             return fail_result(
                 context.phase,
                 "schema_validation",
                 "missing_ingestion_artifacts",
-                details={
-                    "raw_found": raw_path is not None,
-                    "processed_found": processed_path is not None,
-                    "us_found": us_path is not None,
-                },
+                details=missing_details,
             )
 
         raw_required = ["symbol", "exchange", "interval", "timestamp", "open", "high", "low", "close", "volume", "source", "ingestion_ts"]
@@ -211,9 +279,18 @@ class ValidationRegistry:
     def _check_ingestion_timestamps(self, context: ValidationContext):
         if pd is None:
             return skip_result(context.phase, "timestamp_validation", "pandas_unavailable")
-        path = self._latest_path("data/raw/api_based/angel/ltp_snapshots/*.jsonl") or self._latest_path("data/raw/api_based/angel/intraday_ohlc/*.jsonl")
+        market = context.metadata.get("market", "US")
+        if market == "fixture":
+            path = self._resolve_artifact(context, "fixture_raw", "data/fixtures/raw/*.jsonl")
+        else:
+            path = self._resolve_artifact(context, "ingestion_raw_india", "data/raw/api_based/angel/ltp_snapshots/*.jsonl") \
+                or self._resolve_artifact(context, "ingestion_raw_india", "data/raw/api_based/angel/intraday_ohlc/*.jsonl")
         if path is None:
-            return fail_result(context.phase, "timestamp_validation", "missing_timestamp_artifact")
+            artifact_id = "fixture_raw" if market == "fixture" else "ingestion_raw_india"
+            return fail_result(
+                context.phase, "timestamp_validation", "missing_timestamp_artifact",
+                details=self._missing_artifact_details(context, artifact_id),
+            )
         frame = pd.DataFrame(self._read_jsonl(path))
         if frame.empty or "timestamp" not in frame.columns:
             return fail_result(context.phase, "timestamp_validation", "missing_timestamp_column", evidence=[str(path)])
@@ -240,9 +317,17 @@ class ValidationRegistry:
     def _check_ingestion_nulls(self, context: ValidationContext):
         if pd is None:
             return skip_result(context.phase, "null_handling", "pandas_unavailable")
-        path = self._latest_path("data/processed/candles/intraday/*.parquet")
+        market = context.metadata.get("market", "US")
+        if market == "fixture":
+            path = self._resolve_artifact(context, "fixture_processed", "data/fixtures/processed/*.parquet")
+        else:
+            path = self._resolve_artifact(context, "ingestion_processed_india", "data/processed/candles/intraday/*.parquet")
         if path is None:
-            return fail_result(context.phase, "null_handling", "missing_processed_intraday_artifact")
+            artifact_id = "fixture_processed" if market == "fixture" else "ingestion_processed_india"
+            return fail_result(
+                context.phase, "null_handling", "missing_processed_intraday_artifact",
+                details=self._missing_artifact_details(context, artifact_id),
+            )
         frame = pd.read_parquet(path)
         required = ["symbol", "exchange", "timestamp", "open", "high", "low", "close", "volume"]
         missing_cols = [column for column in required if column not in frame.columns]

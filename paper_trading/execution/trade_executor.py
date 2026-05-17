@@ -69,6 +69,8 @@ class PaperTradeExecutor:
             session_name: Session name for logging.
             log_dir: Directory for trade logs.
         """
+        from . import _check_phase_lock
+        _check_phase_lock()
         self.slippage_pct = slippage_pct
         self.default_quantity = default_quantity
         self.exit_minutes = exit_minutes

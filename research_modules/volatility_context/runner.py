@@ -50,6 +50,8 @@ class ContextRunner:
             atr_period: Period for ATR calculation.
             lookback_period: Period for historical comparisons.
         """
+        from . import _check_phase_lock
+        _check_phase_lock()
         self.atr_period = atr_period
         self.lookback_period = lookback_period
 

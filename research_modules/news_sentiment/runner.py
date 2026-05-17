@@ -36,6 +36,8 @@ class SentimentRunner:
         Args:
             sources: List of NewsSource instances.
         """
+        from . import _check_phase_lock
+        _check_phase_lock()
         self.fetcher = RawNewsFetcher(sources or [])
 
     def add_source(self, source: NewsSource) -> None:

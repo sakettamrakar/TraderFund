@@ -1,0 +1,3 @@
+pytest
+pytest-cov
+playwright==1.44.0

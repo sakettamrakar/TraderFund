@@ -36,6 +36,8 @@ class RiskSimulator:
             capital: Total available capital for simulations.
             default_risk_pct: Default risk percentage per trade (0-100).
         """
+        from . import _check_phase_lock
+        _check_phase_lock()
         self.capital = capital
         self.default_risk_pct = default_risk_pct
 

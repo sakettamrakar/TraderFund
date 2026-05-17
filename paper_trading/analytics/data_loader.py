@@ -56,6 +56,8 @@ def load_trade_logs(
     Returns:
         DataFrame with trade logs.
     """
+    from . import _check_phase_lock
+    _check_phase_lock()
     log_dir = log_dir or DEFAULT_LOG_DIR
     log_dir = Path(log_dir)
 

@@ -1,7 +1,7 @@
 import re
 import pytest
 import logging
-from src.intelligence.meta_analysis import MetaAnalysis
+from intelligence.meta_analysis import MetaAnalysis
 from traderfund.regime.types import MarketBehavior
 
 

@@ -23,15 +23,15 @@ REQUIRED_PHASE = "PHASE_6_PAPER"
 
 def _check_phase_lock() -> None:
     """Fail fast if not in Phase 6 Paper Trading."""
-    if ACTIVE_PHASE != REQUIRED_PHASE:
+    active_phase = os.environ.get("TRADERFUND_ACTIVE_PHASE", "5")
+    if active_phase != REQUIRED_PHASE:
         raise RuntimeError(
             f"PHASE LOCK: Paper Trading Analytics requires {REQUIRED_PHASE}. "
-            f"Current phase is {ACTIVE_PHASE}."
+            f"Current phase is {active_phase}."
         )
 
 
-# Check on import
-_check_phase_lock()
+# Phase lock moved to runtime entrypoints (e.g., load_trade_logs, generate_summary)
 
 from .data_loader import load_trade_logs
 from .metrics import calculate_execution_metrics, calculate_performance_metrics

@@ -1,0 +1,10 @@
+pandas==2.2.2
+numpy==1.26.4
+requests==2.31.0
+python-dotenv==1.0.1
+pyyaml
+tqdm
+loguru
+logzero==1.7.0
+colorama
+pydantic

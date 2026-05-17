@@ -249,7 +249,7 @@ class TestGuardrailEnforcement:
         result = subprocess.run(
             ["python", "-c",
              "import os; os.environ['TRADERFUND_ACTIVE_PHASE']='5'; "
-             "from research_modules.news_sentiment import SentimentRunner"],
+             "from research_modules.news_sentiment import SentimentRunner; SentimentRunner()"],
             capture_output=True,
             text=True,
             cwd=str(Path(__file__).parent.parent.parent.parent),
@@ -314,40 +314,42 @@ class TestOutputIsolation:
         """Sentiment analysis should not create any production files."""
         from research_modules.news_sentiment.ingestion.news_sources import MockNewsSource, NewsArticle
         from research_modules.news_sentiment.runner import SentimentRunner
+        from unittest.mock import patch
 
-        # Track production directories
-        production_dirs = [
-            Path("logs"),
-            Path("observations"),
-            Path("data/processed"),
-        ]
-        files_before = {}
-        for d in production_dirs:
-            if d.exists():
-                files_before[str(d)] = len(list(d.rglob("*")))
+        with patch.dict(os.environ, {"TRADERFUND_ACTIVE_PHASE": "6"}):
+            # Track production directories
+            production_dirs = [
+                Path("logs"),
+                Path("observations"),
+                Path("data/processed"),
+            ]
+            files_before = {}
+            for d in production_dirs:
+                if d.exists():
+                    files_before[str(d)] = len(list(d.rglob("*")))
 
-        # Create mock source with test article
-        mock_articles = [
-            NewsArticle(
-                source="test",
-                title="Test Article",
-                content="Test content with earnings and profit",
-                published_at=datetime.now(),
-                fetched_at=datetime.now(),
-                symbol="TEST",
-            )
-        ]
-        mock_source = MockNewsSource(mock_articles)
+            # Create mock source with test article
+            mock_articles = [
+                NewsArticle(
+                    source="test",
+                    title="Test Article",
+                    content="Test content with earnings and profit",
+                    published_at=datetime.now(),
+                    fetched_at=datetime.now(),
+                    symbol="TEST",
+                )
+            ]
+            mock_source = MockNewsSource(mock_articles)
 
-        # Run analysis
-        runner = SentimentRunner([mock_source])
-        snapshot = runner.analyze("TEST", hours=24)
+            # Run analysis
+            runner = SentimentRunner([mock_source])
+            snapshot = runner.analyze("TEST", hours=24)
 
-        # Verify no new files
-        for d in production_dirs:
-            if d.exists():
-                files_after = len(list(d.rglob("*")))
-                assert files_after == files_before.get(str(d), 0), f"New files in {d}!"
+            # Verify no new files
+            for d in production_dirs:
+                if d.exists():
+                    files_after = len(list(d.rglob("*")))
+                    assert files_after == files_before.get(str(d), 0), f"New files in {d}!"
 
         print("\n✅ NO PRODUCTION FILES WRITTEN")
 

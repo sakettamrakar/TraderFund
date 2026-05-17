@@ -1,5 +1,12 @@
 # TraderFund Intelligence Platform - Implementation Status & Backlog
 
+> [!IMPORTANT]
+> Historical/reference snapshot only. This file is not the current execution
+> backlog. Use `docs/recovery/RECOVERY_BACKLOG_2026-05-17.md` for pickable
+> recovery tasks and `docs/architecture/DWBS_REPOSITORY_RECOVERY_2026-05-17.md`
+> for task dependencies.
+
+**Current Status:** HISTORICAL REFERENCE - NOT CURRENT BACKLOG
 **Generated:** 2026-01-12
 **Status:** 🚧 ACTIVE DEVELOPMENT (US Market Integration)
 
@@ -59,7 +66,7 @@
 | 9 | **Reports** | Research Output | `research_modules/research_output` | 🟡 | Daily brief done, Weekly pending |
 | 10| **Governance** | Decision Policy | `src/intelligence/` | ✅ | US (Active), India (Restricted) |
 | 10| **Governance** | Fragility Policy | `src/intelligence/` | 🟡 | Design Complete, Initial Artifacts |
-
+| 15| **Hardening** | Safety Hardening | `scripts/epistemic_validator.py` | ✅ | Phase D Governance & Safety Hardening Complete |
 
 ---
 
@@ -123,5 +130,5 @@ python -m research_modules.research_output.runner --generate --type daily --symb
 
 ---
 
-**Document Version:** 1.1 (Reconciled with US Market Implementation)
-**Last Updated:** 2026-01-12
+**Document Version:** 1.2 (Reconciled with US Market and Phase D Hardening)
+**Last Updated:** 2026-05-17

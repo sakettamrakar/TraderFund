@@ -35,6 +35,8 @@ def generate_summary(df: pd.DataFrame) -> DashboardSummary:
     Returns:
         DashboardSummary with insights.
     """
+    from . import _check_phase_lock
+    _check_phase_lock()
     if df.empty:
         return DashboardSummary(
             session_summary="No trades to analyze.",
